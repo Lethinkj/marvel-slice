@@ -1,0 +1,359 @@
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
+import { useNavChildren } from '../../hooks/useSupabase';
+
+function hasChildren(item) {
+  return (item.children && item.children.length > 0) || hasNavChildren(item);
+}
+
+function hasNavChildren(item) {
+  return item._navChildren && item._navChildren.length > 0;
+}
+
+function DesktopNavItem({
+  item,
+  depth,
+  isOpen,
+  onOpen,
+  onClose,
+  onItemClick,
+  closeDelay: cd,
+}) {
+  const containerRef = useRef(null);
+  const closeTimer = useRef(null);
+
+  const { data: navChildren } = useNavChildren(
+    depth === 0 && !item.path ? item.label : null
+  );
+
+  const resolvedChildren = item.children || item._navChildren || navChildren || [];
+  const hasSub = resolvedChildren.length > 0;
+
+  const scheduleClose = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => onClose(), cd);
+  }, [onClose, cd]);
+
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
+
+  function handleKeyDown(e) {
+    const container = containerRef.current;
+    if (!container) return;
+    const items = container.querySelectorAll('[role="menuitem"]:not([data-hidden])');
+    const currentIndex = Array.from(items).indexOf(document.activeElement);
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        items[(currentIndex + 1) % items.length]?.focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        items[(currentIndex - 1 + items.length) % items.length]?.focus();
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        if (hasSub && depth > 0) {
+          onOpen();
+          requestAnimationFrame(() => {
+            container.querySelector(':scope > [data-submenu] [role="menuitem"]')?.focus();
+          });
+        }
+        break;
+      case 'ArrowLeft':
+      case 'Escape':
+        e.preventDefault();
+        onClose();
+        container.closest('[data-menu-item]')?.querySelector('[role="menuitem"]')?.focus();
+        break;
+    }
+  }
+
+  if (!hasSub) {
+    return (
+      <Link
+        to={item.path || '#'}
+        role="menuitem"
+        className="block px-5 py-2.5 text-base text-gray-700 hover:bg-brand-accent/10 hover:text-brand-accent rounded-md transition-colors"
+        onClick={onItemClick}
+        tabIndex={0}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  if (depth === 0) {
+    return (
+      <div
+        ref={containerRef}
+        data-menu-item
+        className="relative"
+        onMouseEnter={() => { cancelClose(); onOpen(); }}
+        onMouseLeave={scheduleClose}
+        onKeyDown={handleKeyDown}
+      >
+        <button
+          role="menuitem"
+          aria-haspopup="true"
+          aria-expanded={isOpen}
+          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors ${
+            isOpen ? 'text-brand-orange' : 'text-dark-navy hover:text-brand-orange'
+          }`}
+          onClick={() => (isOpen ? onClose() : onOpen())}
+        >
+          {item.label}
+          <FiChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="absolute left-0 top-full mt-1.5 bg-white shadow-xl rounded-xl border border-gray-100 py-3 z-50 min-w-[240px]"
+              role="menu"
+              data-submenu
+            >
+              <SubmenuItems
+                items={resolvedChildren}
+                depth={1}
+                onItemClick={onItemClick}
+                closeDelay={cd}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      data-menu-item
+      className="relative"
+      onMouseEnter={() => { cancelClose(); onOpen(); }}
+      onMouseLeave={scheduleClose}
+      onKeyDown={handleKeyDown}
+    >
+      <button
+        role="menuitem"
+        aria-haspopup="true"
+        aria-expanded={isOpen}
+        className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-base rounded-md transition-colors ${
+          isOpen
+            ? 'bg-brand-accent/10 text-brand-accent'
+            : 'text-gray-700 hover:bg-gray-50 hover:text-dark-navy'
+        }`}
+        onClick={() => (isOpen ? onClose() : onOpen())}
+      >
+        <span>{item.label}</span>
+        <FiChevronRight className="w-4 h-4 shrink-0 text-gray-400" />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -4 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="absolute left-full top-0 ml-1.5 bg-white shadow-xl rounded-xl border border-gray-100 py-3 z-50 min-w-[240px]"
+            role="menu"
+            data-submenu
+          >
+            <SubmenuItems
+              items={resolvedChildren}
+              depth={depth + 1}
+              onItemClick={onItemClick}
+              closeDelay={cd}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function SubmenuItems({ items, depth, onItemClick, closeDelay }) {
+  const [openIdx, setOpenIdx] = useState(null);
+  const openTimer = useRef(null);
+
+  const handleOpen = useCallback((idx) => {
+    if (openTimer.current) clearTimeout(openTimer.current);
+    openTimer.current = setTimeout(() => setOpenIdx(idx), 0);
+  }, []);
+
+  const handleClose = useCallback((idx) => {
+    setOpenIdx((prev) => (prev === idx ? null : prev));
+  }, []);
+
+  useEffect(() => {
+    return () => { if (openTimer.current) clearTimeout(openTimer.current); };
+  }, []);
+
+  return items.map((child, idx) => {
+    const childItem = (
+      <DesktopNavItem
+        key={idx}
+        item={child}
+        depth={depth}
+        isOpen={openIdx === idx}
+        onOpen={() => handleOpen(idx)}
+        onClose={() => handleClose(idx)}
+        onItemClick={onItemClick}
+        closeDelay={closeDelay}
+      />
+    );
+
+    if (depth === 1) {
+      return <div key={idx} className={child.children || child._navChildren ? '' : 'min-w-[200px]'}>{childItem}</div>;
+    }
+    return childItem;
+  });
+}
+
+export default function NavDropdown({ items, onItemClick, closeDelay = 250 }) {
+  const [openIdx, setOpenIdx] = useState(null);
+  const openTimer = useRef(null);
+
+  const handleOpen = useCallback((idx) => {
+    if (openTimer.current) clearTimeout(openTimer.current);
+    openTimer.current = setTimeout(() => setOpenIdx(idx), 0);
+  }, []);
+
+  const handleClose = useCallback((idx) => {
+    setOpenIdx((prev) => (prev === idx ? null : prev));
+  }, []);
+
+  useEffect(() => {
+    function onKeyDown(e) {
+      if (e.key === 'Escape' && openIdx !== null) setOpenIdx(null);
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [openIdx]);
+
+  useEffect(() => {
+    return () => { if (openTimer.current) clearTimeout(openTimer.current); };
+  }, []);
+
+  return (
+    <nav role="menubar" className="flex items-center gap-1">
+      {items.map((item, idx) => {
+        const hasChildrenFromNav = !item.path && item.label;
+        if (!item.path && !hasChildrenFromNav) {
+          return null;
+        }
+        return item.path ? (
+          <Link
+            key={idx}
+            to={item.path}
+            role="menuitem"
+            className="px-3 py-2 text-sm font-medium text-dark-navy hover:text-brand-orange whitespace-nowrap rounded-md transition-colors"
+            onClick={onItemClick}
+          >
+            {item.label}
+          </Link>
+        ) : (
+          <DesktopNavItem
+            key={idx}
+            item={item}
+            depth={0}
+            isOpen={openIdx === idx}
+            onOpen={() => handleOpen(idx)}
+            onClose={() => handleClose(idx)}
+            onItemClick={onItemClick}
+            closeDelay={closeDelay}
+          />
+        );
+      })}
+    </nav>
+  );
+}
+
+/* ==================================================================
+   MOBILE
+   ================================================================== */
+
+function MobileNavItem({ item, depth = 0, onItemClick }) {
+  const [open, setOpen] = useState(false);
+  const { data: navChildren } = useNavChildren(
+    depth === 0 && !item.path ? item.label : null
+  );
+  const resolvedChildren = item.children || item._navChildren || navChildren || [];
+  const hasSub = resolvedChildren.length > 0;
+
+  if (!hasSub) {
+    return (
+      <Link
+        to={item.path || '#'}
+        className="block px-5 py-3 text-base text-gray-700 hover:text-brand-accent hover:bg-gray-50 rounded-md transition-colors"
+        onClick={onItemClick}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors ${
+          depth === 0
+            ? 'font-medium text-dark-navy hover:text-brand-orange'
+            : 'text-gray-700 hover:text-brand-accent hover:bg-gray-50'
+        }`}
+      >
+        <span>{item.label}</span>
+        <FiChevronDown className={`w-5 h-5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="mobile-sub"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className={`py-1 ${depth === 0 ? 'pl-6' : 'pl-4'} border-l-2 border-gray-100 ml-5`}>
+              {resolvedChildren.map((child, idx) => (
+                <MobileNavItem key={idx} item={child} depth={depth + 1} onItemClick={onItemClick} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export function MobileNav({ items, onItemClick }) {
+  return (
+    <div className="px-2 py-4 space-y-1">
+      {items.map((item, idx) => (
+        <MobileNavItem key={idx} item={item} depth={0} onItemClick={onItemClick} />
+      ))}
+    </div>
+  );
+}
