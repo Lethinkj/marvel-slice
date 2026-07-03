@@ -431,6 +431,43 @@ begin
 end;
 $$;
 
+-- Create admin, only admins can create
+drop function if exists create_admin(uuid, text, text, text, text);
+create or replace function create_admin(
+  p_creator_id uuid,
+  p_email text,
+  p_full_name text,
+  p_role text,
+  p_password text
+)
+returns jsonb
+language sql
+security definer
+as $$
+  with created as (
+    insert into admin_profiles (
+      id,
+      email,
+      full_name,
+      role,
+      password_hash
+    )
+    select
+      gen_random_uuid(),
+      p_email,
+      p_full_name,
+      p_role,
+      crypt(p_password, gen_salt('bf', 10))
+    where exists (
+      select 1 from admin_profiles
+      where admin_profiles.id = p_creator_id and admin_profiles.role = 'admin'
+    )
+    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role
+  )
+  select to_jsonb(t.*)
+  from (select c.id, c.email, c.full_name, c.role from created c) t;
+$$;
+
 -- Update admin, only admins and managers can edit
 drop function if exists update_admin(uuid, uuid, text, text, text, text);
 create or replace function update_admin(
