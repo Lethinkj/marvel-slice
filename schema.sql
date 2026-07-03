@@ -255,6 +255,41 @@ create table if not exists admin_profiles (
   created_at timestamptz default now()
 );
 
+-- 23. Career submissions form
+create table if not exists career_submissions (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text not null,
+  department text,
+  category text,
+  description text,
+  file_url text,
+  created_at timestamptz default now()
+);
+
+-- 24. Create career-uploads storage bucket with public upload access
+insert into storage.buckets (id, name, public)
+values ('career-uploads', 'career-uploads', true)
+on conflict (id) do nothing;
+
+-- Allow public uploads to career-uploads bucket
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public upload career-uploads') then
+    create policy "Allow public upload career-uploads"
+    on storage.objects for insert
+    with check (bucket_id = 'career-uploads');
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public read career-uploads') then
+    create policy "Allow public read career-uploads"
+    on storage.objects for select
+    using (bucket_id = 'career-uploads');
+  end if;
+end $$;
+
 -- For existing databases, run:
 -- alter table admin_profiles drop constraint if exists admin_profiles_id_fkey;
 -- alter table admin_profiles alter column id set default gen_random_uuid();
@@ -311,6 +346,11 @@ exception when others then null; end $$;
 do $$ begin
   alter table nav_pages add constraint nav_pages_nav_item_id_fkey
     foreign key (nav_item_id) references nav_items(id) on delete cascade;
+exception when others then null; end $$;
+
+-- Add form_config column to nav_pages for career page form customization
+do $$ begin
+  alter table nav_pages add column form_config jsonb default '{}';
 exception when others then null; end $$;
 
 -- Ensure RLS is disabled on all tables

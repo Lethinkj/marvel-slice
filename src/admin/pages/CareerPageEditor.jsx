@@ -2,7 +2,99 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/ui/Button';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiToggleRight, FiChevronDown, FiChevronUp, FiEdit3 } from 'react-icons/fi';
+
+const FORM_FIELD_DEFAULTS = {
+  full_name: { key: 'full_name', label: 'Full Name', enabled: true, required: true, placeholder: 'John Doe', type: 'text' },
+  email: { key: 'email', label: 'Email Address', enabled: true, required: true, placeholder: 'john@example.com', type: 'email' },
+  phone: { key: 'phone', label: 'Phone Number', enabled: true, required: true, placeholder: '+1 234 567 890', type: 'tel' },
+  department: { key: 'department', label: 'Department', enabled: true, required: false, placeholder: 'Select department', type: 'select', options: ['Engineering', 'Marketing', 'Sales', 'Human Resources', 'Finance', 'Operations', 'Design', 'Content', 'Other'] },
+  category: { key: 'category', label: 'Category', enabled: true, required: false, placeholder: 'Select category', type: 'select', options: ['Full-time', 'Part-time', 'Internship', 'Contract', 'Freelance'] },
+  description: { key: 'description', label: 'Description', enabled: true, required: false, placeholder: 'Tell us about yourself...', type: 'textarea' },
+  file_upload: { key: 'file_upload', label: 'Upload Resume / Documents', enabled: true, required: false, type: 'file' },
+};
+
+function buildDefaultFormConfig() {
+  return {
+    enabled: true,
+    position: 'after',
+    headline: 'Apply Now',
+    description: "Fill out the form below and we'll get back to you.",
+    cta: { text: 'Submit Application', variant: 'accent' },
+    fields: Object.fromEntries(
+      Object.entries(FORM_FIELD_DEFAULTS).map(([k, v]) => [k, { label: v.label, enabled: v.enabled, required: v.required, placeholder: v.placeholder, options: v.options || null }])
+    ),
+  };
+}
+
+function FormFieldsEditor({ fields, onChange }) {
+  const [expanded, setExpanded] = useState({});
+  const fieldKeys = Object.keys(FORM_FIELD_DEFAULTS);
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-gray-700 mb-3 uppercase tracking-wider flex items-center gap-1.5">
+        <FiEdit3 className="w-3.5 h-3.5" />
+        Form Fields
+      </label>
+      <div className="space-y-2">
+        {fieldKeys.map((key) => {
+          const def = FORM_FIELD_DEFAULTS[key];
+          const cfg = fields?.[key] || {};
+          const isOpen = expanded[key] || false;
+          return (
+            <div key={key} className="border border-gray-200 rounded-xl overflow-hidden">
+              <button type="button" onClick={() => setExpanded({ ...expanded, [key]: !isOpen })}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors">
+                <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.enabled !== false ? 'bg-green-400' : 'bg-gray-300'}`} />
+                <span className="flex-1 text-sm font-medium text-dark-navy">{cfg.label || def.label}</span>
+                <span className="text-xs text-gray-400 capitalize">{def.type}</span>
+                {isOpen ? <FiChevronUp className="w-4 h-4 text-gray-400" /> : <FiChevronDown className="w-4 h-4 text-gray-400" />}
+              </button>
+              {isOpen && (
+                <div className="px-4 pb-4 space-y-3 border-t border-gray-100 pt-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Enabled</label>
+                    <button type="button" onClick={() => onChange({ ...fields, [key]: { ...cfg, enabled: cfg.enabled === false ? true : false } })}
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${cfg.enabled !== false ? 'bg-brand-accent' : 'bg-gray-300'}`}>
+                      <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${cfg.enabled !== false ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                    </button>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Label</label>
+                    <input type="text" value={cfg.label || def.label} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, label: e.target.value } })}
+                      className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                  </div>
+                  {def.type !== 'file' && (
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                        <input type="checkbox" checked={cfg.required !== false} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, required: e.target.checked } })} className="rounded border-gray-300 text-brand-accent focus:ring-brand-accent" />
+                        Required
+                      </label>
+                    </div>
+                  )}
+                  {def.placeholder !== undefined && (
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1">Placeholder</label>
+                      <input type="text" value={cfg.placeholder || def.placeholder || ''} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, placeholder: e.target.value } })}
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                    </div>
+                  )}
+                  {def.options && (
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1">Options (one per line)</label>
+                      <textarea value={(cfg.options || def.options).join('\n')} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, options: e.target.value.split('\n').filter(Boolean) } })}
+                        rows={4} className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-mono" />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function ImageUploader({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);
@@ -52,6 +144,7 @@ export default function CareerPageEditor() {
   const [culture, setCulture] = useState('');
   const [benefits, setBenefits] = useState([]);
   const [positions, setPositions] = useState([]);
+  const [formConfig, setFormConfig] = useState(buildDefaultFormConfig());
 
   useEffect(() => {
     async function resolve() {
@@ -86,6 +179,9 @@ export default function CareerPageEditor() {
           if (ben?.items) setBenefits(ben.items);
           const pos = secs.find(s => s.section_type === 'positions');
           if (pos?.items) setPositions(pos.items);
+          if (page.form_config && typeof page.form_config === 'object' && Object.keys(page.form_config).length > 0) {
+            setFormConfig({ ...buildDefaultFormConfig(), ...page.form_config });
+          }
         }
       }
       setLoading(false);
@@ -107,7 +203,7 @@ export default function CareerPageEditor() {
 
     if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); savingRef.current = false; return; }
 
-    const payload = { nav_item_id: navItemId || navItemIdRef.current, heading: hero.heading, subheading: hero.subheading, hero_image: hero.hero_image || null, sections, is_published: true };
+    const payload = { nav_item_id: navItemId || navItemIdRef.current, heading: hero.heading, subheading: hero.subheading, hero_image: hero.hero_image || null, sections, is_published: true, form_config: formConfig };
     let res;
     if (pageId) {
       res = await supabase.from('nav_pages').update(payload).eq('id', pageId);
@@ -193,6 +289,58 @@ export default function CareerPageEditor() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-dark-navy flex items-center gap-2">
+              <FiToggleRight className="w-5 h-5 text-brand-accent" />
+              Application Form Configuration
+            </h2>
+            <button type="button" onClick={() => setFormConfig({ ...formConfig, enabled: !formConfig.enabled })}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formConfig.enabled ? 'bg-brand-accent' : 'bg-gray-300'}`}>
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formConfig.enabled ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+          </div>
+          {formConfig.enabled && (
+            <div className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Form Position</label>
+                  <select value={formConfig.position} onChange={(e) => setFormConfig({ ...formConfig, position: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                    <option value="after">After page content</option>
+                    <option value="before">Before page content</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Button Variant</label>
+                  <select value={formConfig.cta?.variant || 'accent'} onChange={(e) => setFormConfig({ ...formConfig, cta: { ...formConfig.cta, variant: e.target.value } })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                    <option value="accent">Accent</option>
+                    <option value="primary">Primary</option>
+                    <option value="outline">Outline</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Headline</label>
+                <input type="text" value={formConfig.headline || ''} onChange={(e) => setFormConfig({ ...formConfig, headline: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Apply Now" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Description</label>
+                <input type="text" value={formConfig.description || ''} onChange={(e) => setFormConfig({ ...formConfig, description: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Fill out the form below..." />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
+                <input type="text" value={formConfig.cta?.text || ''} onChange={(e) => setFormConfig({ ...formConfig, cta: { ...(formConfig.cta || {}), text: e.target.value } })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Submit Application" />
+              </div>
+              <FormFieldsEditor fields={formConfig.fields} onChange={(fields) => setFormConfig({ ...formConfig, fields })} />
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end">

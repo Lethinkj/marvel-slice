@@ -9,6 +9,7 @@ import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
 import Blog from './pages/Blog';
 import NavPage from './pages/NavPage';
+import Career from './pages/Career';
 import Admin from './admin/Admin';
 import { pageTransition } from './lib/motion';
 
@@ -31,6 +32,7 @@ function AnimatedRoutes() {
       <Route path="/courses" element={<Courses />} />
       <Route path="/courses/category/:categorySlug" element={<Courses />} />
       <Route path="/courses/:slug" element={<CourseDetail />} />
+      <Route path="/career" element={<Career />} />
       <Route path="/:slug" element={<NavPage />} />
     </Routes>
   );
