@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavPage } from '../../hooks/useSupabase';
 import Button from '../../components/ui/Button';
@@ -68,6 +68,7 @@ function ImageUploader({ value, onChange, label }) {
 
 export default function NavPageEditor() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: page, isLoading } = useNavPage(id);
   const [navItem, setNavItem] = useState(null);
   const [heading, setHeading] = useState('');
@@ -75,8 +76,8 @@ export default function NavPageEditor() {
   const [heroImage, setHeroImage] = useState('');
   const [sections, setSections] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [generatedPath, setGeneratedPath] = useState('');
+  const savingRef = useRef(false);
   const [linkedCourseIds, setLinkedCourseIds] = useState(new Set());
   const [allCourses, setAllCourses] = useState([]);
   const [courseSearch, setCourseSearch] = useState('');
@@ -152,6 +153,8 @@ export default function NavPageEditor() {
 
   async function handleSave(e) {
     e.preventDefault();
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
 
     const path = navItem?.path || generatedPath;
@@ -185,9 +188,7 @@ export default function NavPageEditor() {
       setCourseChanges(false);
     }
 
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    navigate('/admin/nav-menu');
   }
 
   if (isLoading) {
@@ -227,12 +228,6 @@ export default function NavPageEditor() {
           </div>
         </div>
       </div>
-
-      {saved && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm">
-          <FiCheck className="w-4 h-4" /> Page saved!
-        </div>
-      )}
 
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">

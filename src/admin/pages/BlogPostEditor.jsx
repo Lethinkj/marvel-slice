@@ -79,12 +79,13 @@ export default function BlogPostEditor() {
 
   useEffect(() => {
     if (!form.slug || !isNew) { setSlugStatus('idle'); return; }
+    let active = true;
+    setSlugStatus('checking');
     const timer = setTimeout(async () => {
-      setSlugStatus('checking');
       const { data } = await supabase.from('blog_posts').select('id').eq('slug', form.slug).maybeSingle();
+      if (!active) return;
       if (data) {
         setSlugStatus('taken');
-        let candidate = form.slug;
         let attempt = 1;
         while (attempt < 20) {
           const testSlug = `${form.slug}-${attempt}`;
@@ -97,7 +98,7 @@ export default function BlogPostEditor() {
         setSlugSuggestion('');
       }
     }, 500);
-    return () => clearTimeout(timer);
+    return () => { active = false; clearTimeout(timer); };
   }, [form.slug, isNew]);
 
   useEffect(() => {

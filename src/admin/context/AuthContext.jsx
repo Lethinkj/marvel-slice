@@ -1,12 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 
-async function hashPassword(password) {
-  const enc = new TextEncoder();
-  const hash = await crypto.subtle.digest('SHA-256', enc.encode(password));
-  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -26,13 +20,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback(async (email, password) => {
-    const passwordHash = await hashPassword(password);
     const { data, error } = await supabase
-      .from('admin_profiles')
-      .select('id, email, full_name, role')
-      .eq('email', email)
-      .eq('password_hash', passwordHash)
-      .maybeSingle();
+      .rpc('verify_admin', { p_email: email, p_password: password });
 
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Invalid email or password');

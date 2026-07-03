@@ -1,20 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/ui/Button';
-import { FiPlus, FiTrash2, FiUsers, FiCheck, FiEye, FiEyeOff } from 'react-icons/fi';
-
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-  });
-}
-
-async function hashPassword(password) {
-  const enc = new TextEncoder();
-  const hash = await crypto.subtle.digest('SHA-256', enc.encode(password));
-  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
+import { useAuth } from '../context/AuthContext';
+import { FiPlus, FiTrash2, FiUsers, FiCheck, FiEye, FiEyeOff, FiEdit2, FiX } from 'react-icons/fi';
 
 const roles = [
   { value: 'admin', label: 'Admin', desc: 'Full access' },
@@ -23,6 +11,7 @@ const roles = [
 ];
 
 export default function AdminUsersManager() {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -33,17 +22,22 @@ export default function AdminUsersManager() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
+    if (!currentUser) return;
     supabase
-      .from('admin_profiles')
-      .select('*')
-      .order('created_at', { ascending: false, nullsFirst: false })
-      .then(({ data }) => {
-        setUsers(data || []);
+      .rpc('list_admins', { p_viewer_id: currentUser.id })
+      .then(({ data, error }) => {
+        if (error) {
+          setError(error.message);
+          setUsers([]);
+        } else {
+          setUsers(data || []);
+        }
         setLoading(false);
       });
-  }, []);
+  }, [currentUser]);
 
   function resetForm() {
     setEmail('');
@@ -51,48 +45,80 @@ export default function AdminUsersManager() {
     setRole('editor');
     setPassword('');
     setShowPw(false);
+    setEditingId(null);
   }
 
-  async function addUser(e) {
+  function startEdit(u) {
+    setEditingId(u.id);
+    setEmail(u.email);
+    setName(u.full_name);
+    setRole(u.role);
+    setPassword('');
+    setError('');
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setError('');
 
-    if (!email.trim() || !name.trim() || !password.trim()) {
-      setError('All fields are required');
+    if (!email.trim() || !name.trim()) {
+      setError('Name and email are required');
       return;
     }
-    if (password.length < 6) {
+    if (!editingId && password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
     }
 
     setSaving(true);
-    const passwordHash = await hashPassword(password);
+    try {
+      if (editingId) {
+        const { data, error: updateError } = await supabase
+          .rpc('update_admin', {
+            p_editor_id: currentUser.id,
+            p_target_id: editingId,
+            p_email: email.trim(),
+            p_full_name: name.trim(),
+            p_role,
+            p_password: password || null,
+          });
 
-    const { data, error: insertError } = await supabase
-      .from('admin_profiles')
-      .insert({ id: uuidv4(), email: email.trim(), full_name: name.trim(), role, password_hash: passwordHash })
-      .select()
-      .single();
-
-    if (insertError) {
-      if (insertError.code === '23505') {
-        setError('An admin with this email already exists');
+        if (updateError) {
+          setError(updateError.message);
+        } else {
+          setUsers(users.map((u) => (u.id === editingId ? { ...u, email: data.email, full_name: data.full_name, role: data.role } : u)));
+          resetForm();
+          setSaved(true);
+          setTimeout(() => setSaved(false), 2000);
+        }
       } else {
-        setError(insertError.message);
+        const { data, error: insertError } = await supabase
+          .rpc('create_admin', {
+            p_creator_id: currentUser.id,
+            p_email: email.trim(),
+            p_full_name: name.trim(),
+            p_role,
+            p_password: password,
+          });
+
+        if (insertError) {
+          setError(insertError.message);
+        } else {
+          setUsers([data, ...users]);
+          resetForm();
+          setSaved(true);
+          setTimeout(() => setSaved(false), 2000);
+        }
       }
-    } else {
-      setUsers([data, ...users]);
-      resetForm();
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      setError(err.message);
     }
     setSaving(false);
   }
 
   async function deleteUser(id) {
     if (!window.confirm('Remove this admin?')) return;
-    await supabase.from('admin_profiles').delete().eq('id', id);
+    await supabase.rpc('delete_admin', { p_creator_id: currentUser.id, p_target_id: id });
     setUsers(users.filter((u) => u.id !== id));
   }
 
@@ -113,7 +139,7 @@ export default function AdminUsersManager() {
 
       {saved && (
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm">
-          <FiCheck className="w-4 h-4" /> Admin added successfully!
+          <FiCheck className="w-4 h-4" /> {editingId ? 'Admin updated!' : 'Admin added successfully!'}
         </div>
       )}
 
@@ -121,8 +147,10 @@ export default function AdminUsersManager() {
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">{error}</div>
       )}
 
-      <form onSubmit={addUser} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h3 className="text-sm font-semibold text-gray-700 mb-4">Add New Admin</h3>
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <h3 className="text-sm font-semibold text-gray-700 mb-4">
+          {editingId ? 'Edit Admin' : 'Add New Admin'}
+        </h3>
         <div className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
@@ -149,11 +177,14 @@ export default function AdminUsersManager() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">Password</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+                Password {editingId && <span className="text-gray-400 font-normal normal-case">(leave blank to keep)</span>}
+              </label>
               <div className="relative">
-                <input type={showPw ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6}
+                <input type={showPw ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
+                  minLength={editingId ? 0 : 6} required={!editingId}
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                  placeholder="Min 6 characters" />
+                  placeholder={editingId ? 'Leave blank to keep' : 'Min 6 characters'} />
                 <button type="button" onClick={() => setShowPw(!showPw)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-dark-navy transition-colors">
                   {showPw ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
@@ -163,9 +194,14 @@ export default function AdminUsersManager() {
           </div>
           <div className="flex gap-3 pt-2">
             <Button type="submit" variant="accent" size="md" disabled={saving}>
-              <FiPlus className="w-4 h-4" />
-              {saving ? 'Adding...' : 'Add Admin'}
+              {editingId ? <FiEdit2 className="w-4 h-4" /> : <FiPlus className="w-4 h-4" />}
+              {saving ? 'Saving...' : editingId ? 'Update Admin' : 'Add Admin'}
             </Button>
+            {editingId && (
+              <Button type="button" variant="ghost" size="md" onClick={resetForm}>
+                <FiX className="w-4 h-4" /> Cancel
+              </Button>
+            )}
             <Button type="button" variant="ghost" size="md" onClick={resetForm}>Clear</Button>
           </div>
         </div>
@@ -179,28 +215,35 @@ export default function AdminUsersManager() {
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="divide-y divide-gray-100">
-            {users.map((user) => (
-              <div key={user.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors group">
+            {users.map((u) => (
+              <div key={u.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors group">
                 <div className="w-9 h-9 bg-brand-accent/10 rounded-full flex items-center justify-center shrink-0">
                   <span className="text-sm font-semibold text-brand-accent">
-                    {(user.full_name || '?')[0].toUpperCase()}
+                    {(u.full_name || '?')[0].toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-dark-navy">{user.full_name}</p>
-                  <p className="text-xs text-gray-400">{user.email}</p>
+                  <p className="text-sm font-medium text-dark-navy">{u.full_name}</p>
+                  <p className="text-xs text-gray-400">{u.email}</p>
                 </div>
                 <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  user.role === 'admin'
+                  u.role === 'admin'
                     ? 'bg-brand-accent/10 text-brand-accent'
-                    : user.role === 'manager'
+                    : u.role === 'manager'
                     ? 'bg-purple-50 text-purple-600'
                     : 'bg-gray-100 text-gray-600'
-                }`}>{user.role}</span>
-                <button onClick={() => deleteUser(user.id)}
-                  className="p-2 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                  title="Remove">
-                  <FiTrash2 className="w-4 h-4" />
+                }`}>{u.role}</span>
+                {currentUser?.id !== u.id && (
+                  <button onClick={() => deleteUser(u.id)}
+                    className="p-2 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                    title="Remove">
+                    <FiTrash2 className="w-4 h-4" />
+                  </button>
+                )}
+                <button onClick={() => startEdit(u)}
+                  className="p-2 text-gray-300 hover:text-brand-accent hover:bg-brand-accent/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                  title="Edit">
+                  <FiEdit2 className="w-4 h-4" />
                 </button>
               </div>
             ))}

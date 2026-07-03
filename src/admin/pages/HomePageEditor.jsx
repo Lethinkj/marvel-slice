@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/ui/Button';
 import {
@@ -583,11 +583,12 @@ function Field({ label, children }) {
 }
 
 export default function HomePageEditor() {
+  const navigate = useNavigate();
   const [sections, setSections] = useState([]);
   const [openKey, setOpenKey] = useState('hero');
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const savingRef = useRef(false);
 
   useEffect(() => {
     async function load() {
@@ -618,6 +619,8 @@ export default function HomePageEditor() {
   }
 
   async function handleSave() {
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     for (const section of sections) {
       const payload = {
@@ -634,9 +637,7 @@ export default function HomePageEditor() {
         await supabase.from('home_sections').insert(payload);
       }
     }
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    navigate('/admin');
   }
 
   if (loading) {
@@ -664,13 +665,6 @@ export default function HomePageEditor() {
           {saving ? 'Saving...' : 'Save All Sections'}
         </Button>
       </div>
-
-      {saved && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm">
-          <FiCheck className="w-4 h-4" />
-          All sections saved successfully!
-        </div>
-      )}
 
       <div className="space-y-3">
         {sections.map((section) => {

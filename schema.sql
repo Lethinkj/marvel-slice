@@ -324,3 +324,173 @@ end $$;
 -- Unique active nav_item per path (prevents future duplicates)
 create unique index if not exists idx_nav_items_unique_active_path
   on nav_items (path) where is_active = true and path is not null;
+
+-- Enable pgcrypto for server-side bcrypt hashing
+create extension if not exists pgcrypto;
+
+-- Enable RLS on admin_profiles (only RPC functions can access it)
+alter table admin_profiles enable row level security;
+
+-- Verify admin credentials with auto-upgrade from SHA-256 to bcrypt
+drop function if exists verify_admin(text, text);
+create or replace function verify_admin(p_email text, p_password text)
+returns jsonb
+language sql
+security definer
+as $$
+  with matched as (
+    update admin_profiles
+    set password_hash = crypt(p_password, gen_salt('bf', 10))
+    where admin_profiles.email = p_email
+      and (
+        (admin_profiles.password_hash like '$2%' and admin_profiles.password_hash = crypt(p_password, admin_profiles.password_hash))
+        or admin_profiles.password_hash = encode(digest(p_password, 'sha256'), 'hex')
+      )
+    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role
+  )
+  select to_jsonb(t.*)
+  from (
+    select m.id, m.email, m.full_name, m.role
+    from matched m
+    limit 1
+  ) t;
+$$;
+
+-- Add created_by to admin_profiles for audit trail
+alter table admin_profiles add column if not exists created_by uuid references admin_profiles(id);
+
+-- Create admin with server-side bcrypt hash, only admins/managers can create
+drop function if exists create_admin(uuid, text, text, text, text);
+create or replace function create_admin(
+  p_creator_id uuid,
+  p_email text,
+  p_full_name text,
+  p_role text,
+  p_password text
+)
+returns jsonb
+language plpgsql
+security definer
+as $$
+declare
+  v_creator_role text;
+  v_id uuid;
+begin
+  select admin_profiles.role into v_creator_role
+  from admin_profiles
+  where admin_profiles.id = p_creator_id;
+
+  if v_creator_role is null then
+    raise exception 'Not authorized';
+  end if;
+
+  if v_creator_role not in ('admin', 'manager') then
+    raise exception 'Only admins and managers can create admin users';
+  end if;
+
+  if exists (select 1 from admin_profiles where admin_profiles.email = p_email) then
+    raise exception 'An admin with this email already exists';
+  end if;
+
+  v_id := gen_random_uuid();
+  insert into admin_profiles (id, email, full_name, role, password_hash, created_by)
+  values (v_id, p_email, p_full_name, p_role, crypt(p_password, gen_salt('bf', 10)), p_creator_id);
+
+  return jsonb_build_object(
+    'id', v_id,
+    'email', p_email,
+    'full_name', p_full_name,
+    'role', p_role
+  );
+end;
+$$;
+
+-- Delete admin, only admins and managers can delete
+drop function if exists delete_admin(uuid, uuid);
+create or replace function delete_admin(p_creator_id uuid, p_target_id uuid)
+returns void
+language plpgsql
+security definer
+as $$
+declare
+  v_creator_role text;
+begin
+  select admin_profiles.role into v_creator_role
+  from admin_profiles
+  where admin_profiles.id = p_creator_id;
+
+  if v_creator_role is null or v_creator_role not in ('admin', 'manager') then
+    raise exception 'Only admins and managers can delete admin users';
+  end if;
+
+  if p_creator_id = p_target_id then
+    raise exception 'You cannot delete yourself';
+  end if;
+
+  delete from admin_profiles where admin_profiles.id = p_target_id;
+end;
+$$;
+
+-- Update admin, only admins and managers can edit
+drop function if exists update_admin(uuid, uuid, text, text, text, text);
+create or replace function update_admin(
+  p_editor_id uuid,
+  p_target_id uuid,
+  p_email text default null,
+  p_full_name text default null,
+  p_role text default null,
+  p_password text default null
+)
+returns jsonb
+language sql
+security definer
+as $$
+  with updated as (
+    update admin_profiles
+    set
+      email = coalesce(p_email, admin_profiles.email),
+      full_name = coalesce(p_full_name, admin_profiles.full_name),
+      role = coalesce(p_role, admin_profiles.role),
+      password_hash = case
+        when p_password is not null then crypt(p_password, gen_salt('bf', 10))
+        else admin_profiles.password_hash
+      end
+    where admin_profiles.id = p_target_id
+      and exists (
+        select 1 from admin_profiles
+        where admin_profiles.id = p_editor_id and admin_profiles.role in ('admin', 'manager')
+      )
+    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role
+  )
+  select to_jsonb(t.*)
+  from (select u.id, u.email, u.full_name, u.role from updated u) t;
+$$;
+
+-- List admin users (any logged-in admin can list)
+drop function if exists list_admins(uuid);
+create or replace function list_admins(p_viewer_id uuid)
+returns jsonb
+language plpgsql
+security definer
+as $$
+begin
+  if not exists (select 1 from admin_profiles where admin_profiles.id = p_viewer_id) then
+    raise exception 'Not authorized';
+  end if;
+
+  return (
+    select jsonb_agg(
+      jsonb_build_object(
+        'id', a.id,
+        'email', a.email,
+        'full_name', a.full_name,
+        'role', a.role,
+        'created_at', a.created_at,
+        'created_by', a.created_by
+      )
+      order by a.created_at desc nulls last
+    )
+    from admin_profiles a
+  );
+end;
+$$;

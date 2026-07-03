@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/ui/Button';
-import { FiSave, FiCheck, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);
@@ -44,9 +44,9 @@ export default function AboutPageEditor() {
   const [navItemId, setNavItemId] = useState(null);
   const [pageId, setPageId] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
   const navItemIdRef = useRef(null);
+  const savingRef = useRef(false);
 
   const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '' });
   const [mission, setMission] = useState('');
@@ -109,8 +109,11 @@ export default function AboutPageEditor() {
 
   async function handleSave(e) {
     e.preventDefault();
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     setSaveError('');
+    if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); savingRef.current = false; return; }
     const sections = [
       mission ? { section_type: 'text', heading: 'Our Mission', content: mission } : null,
       vision ? { section_type: 'text', heading: 'Our Vision', content: vision } : null,
@@ -130,12 +133,12 @@ export default function AboutPageEditor() {
     }
     if (res.error) {
       setSaveError(res.error.message);
+      savingRef.current = false;
+      setSaving(false);
     } else {
       if (res.data?.id) setPageId(res.data.id);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      navigate('/admin');
     }
-    setSaving(false);
   }
 
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>;
@@ -149,7 +152,6 @@ export default function AboutPageEditor() {
           <Link to="/about" target="_blank" className="text-sm text-brand-accent hover:underline inline-flex items-center gap-1 mt-0.5"><FiExternalLink className="w-3.5 h-3.5" /> /about</Link>
         </div>
       </div>
-      {saved && <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm"><FiCheck className="w-4 h-4" /> Page saved!</div>}
       {saveError && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2 text-red-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
