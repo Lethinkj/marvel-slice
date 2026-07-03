@@ -7,6 +7,7 @@ import { FiMenu, FiExternalLink, FiLogOut } from 'react-icons/fi';
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -23,9 +24,11 @@ export default function AdminLayout() {
       <Sidebar
         mobileOpen={sidebarOpen}
         onMobileClose={() => setSidebarOpen(false)}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0" onClick={() => { if (!sidebarCollapsed) setSidebarCollapsed(true); }}>
         <header className="bg-white border-b border-gray-200 px-4 lg:px-6 flex items-center justify-between h-14 shrink-0">
           <div className="flex items-center gap-3">
             <button
@@ -55,7 +58,7 @@ export default function AdminLayout() {
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="flex items-center gap-2 ml-2 pl-3 pr-2 py-1.5 text-sm text-text-gray hover:text-dark-navy hover:bg-gray-50 rounded-lg transition-colors"
               >
-                <span className="w-6 h-6 rounded-full bg-brand-accent text-white flex items-center justify-center text-xs font-bold">
+                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-accent to-brand-blue text-white flex items-center justify-center text-xs font-bold">
                   {user?.name?.charAt(0)?.toUpperCase() || 'A'}
                 </span>
                 <span className="hidden sm:inline max-w-[120px] truncate">{user?.name || user?.email}</span>

@@ -24,4 +24,19 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Prevent long words/URLs from forcing horizontal overflow on small screens */
+h1, h2, h3, h4, p, span, a, li {
+  overflow-wrap: break-word;
+}
+
+/* Hide scrollbars for horizontally scrollable pills/tab rows while keeping scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

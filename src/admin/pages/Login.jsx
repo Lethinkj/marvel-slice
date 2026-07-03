@@ -34,7 +34,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-blue via-brand-blue to-dark-navy flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-blue to-[#071738] flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-white">Marvel Slice</h1>

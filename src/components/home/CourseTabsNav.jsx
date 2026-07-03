@@ -2,6 +2,7 @@ import {
   FiCheck, FiStar, FiAward, FiArrowRight, FiCircle, FiZap, FiHeart, FiThumbsUp,
 } from 'react-icons/fi';
 import Tabs from '../ui/Tabs';
+import Reveal from '../ui/Reveal';
 
 const iconMap = {
   FiCheck, FiStar, FiAward, FiArrowRight, FiCircle, FiZap, FiHeart, FiThumbsUp,
@@ -18,7 +19,7 @@ function TabPanel({ tab }) {
   }
 
   return (
-    <div className={`flex flex-col ${hasImage ? 'lg:flex-row' : ''} gap-8 items-center`}>
+    <div className={`flex flex-col ${hasImage ? 'lg:flex-row' : ''} gap-6 lg:gap-8 items-center`}>
       <div className={hasImage ? 'lg:w-[65%]' : 'w-full'}>
         {text && (
           <div className="text-text-gray text-base leading-relaxed whitespace-pre-line">
@@ -61,26 +62,28 @@ export default function CourseTabsNav({ section }) {
   if (tabs.length === 0) return null;
 
   return (
-    <section className="py-16">
+    <section className="py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {content.heading && (
-          <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark-navy text-center mb-2">
+          <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark-navy text-center mb-2">
             {content.heading}
-          </h2>
+          </Reveal>
         )}
         {content.subheading && (
-          <p className="text-text-gray text-center text-base mb-8 max-w-2xl mx-auto">
+          <Reveal as="p" className="text-text-gray text-center text-sm sm:text-base mb-6 sm:mb-8 max-w-2xl mx-auto">
             {content.subheading}
-          </p>
+          </Reveal>
         )}
-        <Tabs
-          tabs={tabs.map((t) => t.label)}
-          panels={tabs.map((tab, i) => (
-            <div key={i} className="pt-6">
-              <TabPanel tab={tab} />
-            </div>
-          ))}
-        />
+        <Reveal>
+          <Tabs
+            tabs={tabs.map((t) => t.label)}
+            panels={tabs.map((tab, i) => (
+              <div key={i} className="pt-6">
+                <TabPanel tab={tab} />
+              </div>
+            ))}
+          />
+        </Reveal>
       </div>
     </section>
   );

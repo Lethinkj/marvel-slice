@@ -17,9 +17,14 @@ import MediaLibrary from './pages/MediaLibrary';
 import AdminUsersManager from './pages/AdminUsersManager';
 import NavPageEditor from './pages/NavPageEditor';
 import HomePageEditor from './pages/HomePageEditor';
+import AboutPageEditor from './pages/AboutPageEditor';
+import ContactPageEditor from './pages/ContactPageEditor';
+import CareerPageEditor from './pages/CareerPageEditor';
 import BlogManager from './pages/BlogManager';
 import BlogPostEditor from './pages/BlogPostEditor';
 import BlogCategoriesManager from './pages/BlogCategoriesManager';
+
+const pageSlugToEditor = { about: 'about', contact: 'contact', career: 'career' };
 
 function PageEditorRedirect() {
   const { slug } = useParams();
@@ -28,11 +33,42 @@ function PageEditorRedirect() {
   useEffect(() => {
     if (!slug) return;
     if (slug === 'home') { navigate('/admin/home-page', { replace: true }); return; }
-    supabase.from('nav_items').select('id').eq('path', `/${slug}`).eq('is_active', true).maybeSingle()
-      .then(({ data }) => {
-        if (data?.id) navigate(`/admin/nav-pages/${data.id}`, { replace: true });
-        else navigate('/admin', { replace: true });
-      });
+    if (pageSlugToEditor[slug]) {
+      navigate(`/admin/${slug}-page`, { replace: true });
+      return;
+    }
+
+    async function resolve() {
+      const { data: existingItems } = await supabase
+        .from('nav_items')
+        .select('id')
+        .eq('path', `/${slug}`)
+        .eq('is_active', true)
+        .order('id')
+        .limit(1);
+      const existing = existingItems?.[0] || null;
+
+      if (existing?.id) {
+        await supabase.from('nav_items').update({ is_active: false }).eq('path', `/${slug}`).neq('id', existing.id);
+        navigate(`/admin/nav-pages/${existing.id}`, { replace: true });
+        return;
+      }
+
+      const label = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      const { data: created } = await supabase
+        .from('nav_items')
+        .insert({ label, path: `/${slug}`, is_active: true, sort_order: 99 })
+        .select('id')
+        .single();
+
+      if (created?.id) {
+        navigate(`/admin/nav-pages/${created.id}`, { replace: true });
+      } else {
+        navigate('/admin', { replace: true });
+      }
+    }
+
+    resolve();
   }, [slug, navigate]);
 
   return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>;
@@ -68,6 +104,9 @@ export default function Admin() {
           <Route path="admin-users" element={<AdminUsersManager />} />
           <Route path="nav-pages/:id" element={<NavPageEditor />} />
           <Route path="home-page" element={<HomePageEditor />} />
+          <Route path="about-page" element={<AboutPageEditor />} />
+          <Route path="contact-page" element={<ContactPageEditor />} />
+          <Route path="career-page" element={<CareerPageEditor />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
           <Route path="blog" element={<BlogManager />} />
           <Route path="blog/:id" element={<BlogPostEditor />} />

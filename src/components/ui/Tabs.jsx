@@ -8,13 +8,13 @@ export default function Tabs({ tabs, panels, className = '' }) {
   return (
     <div className={className}>
       <Tab.Group>
-        <Tab.List className="flex flex-wrap items-center gap-3 border-b border-gray-200 pb-px">
+        <Tab.List className="flex sm:flex-wrap items-center gap-2 sm:gap-3 border-b border-gray-200 pb-px overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
           {tabs.map((tab) => (
             <Tab
               key={tab}
               className={({ selected }) =>
                 classNames(
-                  'px-6 py-3 text-base font-medium rounded-t-lg transition-colors outline-none',
+                  'px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-medium rounded-t-lg transition-colors outline-none whitespace-nowrap shrink-0',
                   selected
                     ? 'bg-brand-purple text-white shadow-sm'
                     : 'text-text-gray hover:text-brand-blue hover:bg-gray-100'
@@ -25,7 +25,7 @@ export default function Tabs({ tabs, panels, className = '' }) {
             </Tab>
           ))}
         </Tab.List>
-        <Tab.Panels className="mt-8">
+        <Tab.Panels className="mt-6 sm:mt-8">
           {panels.map((panel, idx) => (
             <Tab.Panel key={idx}>{panel}</Tab.Panel>
           ))}

@@ -1,4 +1,5 @@
 import AccordionItem from '../ui/AccordionItem';
+import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 
 export default function CourseOverview({ section }) {
   if (!section) return null;
@@ -11,40 +12,42 @@ export default function CourseOverview({ section }) {
   if (items.length === 0 && !description) return null;
 
   return (
-    <section className="py-16 bg-bg-light">
+    <section className="py-12 sm:py-16 bg-bg-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-3 gap-10 lg:gap-12">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
           <div className="lg:col-span-2">
-            <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark-navy mb-4">
+            <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark-navy mb-4">
               {heading}
-            </h2>
+            </Reveal>
             {description && (
-              <p className="text-text-gray text-base lg:text-lg leading-relaxed mb-8">
+              <Reveal as="p" className="text-text-gray text-base lg:text-lg leading-relaxed mb-8">
                 {description}
-              </p>
+              </Reveal>
             )}
 
             {items.length > 0 && (
-              <div className="space-y-4">
+              <Stagger className="space-y-4">
                 {items.map((item, i) => (
-                  <AccordionItem key={i} title={item.question} defaultOpen={i === 0}>
-                    <p className="text-text-gray text-base leading-relaxed mb-3">{item.answer}</p>
-                    {item.list_items && item.list_items.length > 0 && (
-                      <ol className="list-decimal pl-6 space-y-1.5 text-base text-text-gray">
-                        {item.list_items.map((li, j) => (
-                          <li key={j}>{li}</li>
-                        ))}
-                      </ol>
-                    )}
-                  </AccordionItem>
+                  <StaggerItem key={i}>
+                    <AccordionItem title={item.question} defaultOpen={i === 0}>
+                      <p className="text-text-gray text-base leading-relaxed mb-3">{item.answer}</p>
+                      {item.list_items && item.list_items.length > 0 && (
+                        <ol className="list-decimal pl-6 space-y-1.5 text-base text-text-gray">
+                          {item.list_items.map((li, j) => (
+                            <li key={j}>{li}</li>
+                          ))}
+                        </ol>
+                      )}
+                    </AccordionItem>
+                  </StaggerItem>
                 ))}
-              </div>
+              </Stagger>
             )}
           </div>
 
-          <div className="bg-gradient-to-br from-brand-purple to-brand-blue rounded-xl p-8 text-white">
-            <h4 className="font-semibold text-xl mb-3">Talk To Us</h4>
-            <a href="tel:+916380957390" className="text-brand-orange font-bold text-2xl block mb-6 hover:underline">
+          <Reveal variant="left" className="bg-gradient-to-br from-brand-purple to-brand-blue rounded-xl p-6 sm:p-8 text-white">
+            <h4 className="font-semibold text-lg sm:text-xl mb-3">Talk To Us</h4>
+            <a href="tel:+916380957390" className="text-brand-orange font-bold text-xl sm:text-2xl block mb-6 hover:underline">
               +91 6380957390
             </a>
             <div className="space-y-4">
@@ -61,7 +64,7 @@ export default function CourseOverview({ section }) {
                 </p>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

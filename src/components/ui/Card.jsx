@@ -1,12 +1,12 @@
 export default function Card({
   children,
-  borderAccent = true,
+  accent = false,
   className = '',
   ...props
 }) {
   return (
     <div
-      className={`bg-white rounded-lg shadow-sm ${borderAccent ? 'border-l-4 border-brand-accent' : ''} ${className}`}
+      className={`bg-white rounded-xl shadow-sm border border-gray-100 ${accent ? 'border-l-4 border-brand-accent' : ''} ${className}`}
       {...props}
     >
       {children}

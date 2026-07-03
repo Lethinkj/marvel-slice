@@ -1,3 +1,5 @@
+import Reveal from '../ui/Reveal';
+
 export default function CertificationSection({ section }) {
   if (!section) return null;
 
@@ -10,13 +12,13 @@ export default function CertificationSection({ section }) {
   if (!description && !imageUrl) return null;
 
   return (
-    <section className="py-16 bg-bg-light">
+    <section className="py-12 sm:py-16 bg-bg-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-10">
+        <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-8 sm:mb-10">
           {heading}
-        </h2>
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
+        </Reveal>
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <Reveal variant="right">
             {description && (
               <p className="text-text-gray text-base leading-relaxed">{description}</p>
             )}
@@ -32,11 +34,11 @@ export default function CertificationSection({ section }) {
                 </div>
               </div>
             )}
-          </div>
+          </Reveal>
           {imageUrl && (
-            <div className="flex justify-center">
+            <Reveal variant="left" className="flex justify-center">
               <img src={imageUrl} alt="Certification" className="max-w-sm rounded-xl shadow-sm" />
-            </div>
+            </Reveal>
           )}
         </div>
       </div>

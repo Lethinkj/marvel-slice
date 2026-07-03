@@ -1,4 +1,5 @@
 import { FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle } from 'react-icons/fi';
+import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 
 const iconMap = {
   FiClock: FiClock,
@@ -21,14 +22,14 @@ export default function KeyHighlights({ section }) {
   return (
     <section className="py-16 bg-bg-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-10">
+        <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-10">
           {heading}
-        </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        </Reveal>
+        <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {items.map((item, i) => {
             const Icon = iconMap[item.icon] || FiClock;
             return (
-              <div
+              <StaggerItem
                 key={i}
                 className="bg-white border-l-4 border-brand-accent rounded-lg shadow-sm p-5 flex items-center gap-4"
               >
@@ -38,10 +39,10 @@ export default function KeyHighlights({ section }) {
                 <span className="font-medium text-dark-navy text-base lg:text-lg">
                   {item.label}
                 </span>
-              </div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </Stagger>
       </div>
     </section>
   );

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import ImageUploader from '../components/ImageUploader';
 import Button from '../../components/ui/Button';
-import { FiPlus, FiTrash2, FiMove } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiMove, FiArrowLeft } from 'react-icons/fi';
 
 function ListEditor({ items, onChange, fields, labelKey = 'label' }) {
   const addItem = () => onChange([...items, Object.fromEntries(fields.map((f) => [f.key, f.default || '']))]);
@@ -121,7 +121,12 @@ export default function CourseEditor() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-dark-navy">{isNew ? 'New Course' : `Edit: ${course.title || 'Untitled'}`}</h1>
+        <div className="flex items-center gap-4">
+          <Link to="/admin/courses" className="p-2 text-gray-400 hover:text-dark-navy rounded-lg hover:bg-gray-100 transition-colors">
+            <FiArrowLeft className="w-5 h-5" />
+          </Link>
+          <h1 className="text-2xl font-bold text-dark-navy">{isNew ? 'New Course' : `Edit: ${course.title || 'Untitled'}`}</h1>
+        </div>
         <div className="flex gap-2">
           <Button onClick={() => navigate('/admin/courses')} variant="ghost" size="md">Cancel</Button>
           <Button onClick={handleSave} disabled={saving} variant="accent" size="md">

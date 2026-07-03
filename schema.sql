@@ -2,6 +2,7 @@
 -- MARVEL SLICE — SCHEMA (optimised)
 -- ============================================================
 -- Run in Supabase SQL Editor. No auth / RLS required.
+-- Run the RLS disable block at the bottom if tables were created with RLS enabled.
 -- Uncomment to reset:
 -- drop schema public cascade; create schema public;
 -- ============================================================
@@ -292,3 +293,34 @@ do $$ begin
     create trigger blog_posts_updated_at before update on blog_posts for each row execute function update_updated_at();
   end if;
 end $$;
+
+-- ============================================================
+-- Ensure constraints exist on EXISTING tables (safe to re-run)
+-- CREATE TABLE IF NOT EXISTS skips tables that already exist,
+-- so constraints defined inline won't be applied. These ALTER
+-- statements fix that for existing databases.
+-- ============================================================
+
+-- nav_pages: ensure NOT NULL + UNIQUE on nav_item_id
+do $$ begin
+  alter table nav_pages alter column nav_item_id set not null;
+exception when others then null; end $$;
+do $$ begin
+  alter table nav_pages add constraint nav_pages_nav_item_id_key unique (nav_item_id);
+exception when others then null; end $$;
+do $$ begin
+  alter table nav_pages add constraint nav_pages_nav_item_id_fkey
+    foreign key (nav_item_id) references nav_items(id) on delete cascade;
+exception when others then null; end $$;
+
+-- Ensure RLS is disabled on all tables
+do $$ declare tbl text;
+begin
+  for tbl in select tablename from pg_tables where schemaname = 'public' loop
+    execute format('alter table %I disable row level security;', tbl);
+  end loop;
+end $$;
+
+-- Unique active nav_item per path (prevents future duplicates)
+create unique index if not exists idx_nav_items_unique_active_path
+  on nav_items (path) where is_active = true and path is not null;

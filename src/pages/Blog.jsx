@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { FiSearch, FiArrowRight, FiChevronLeft, FiChevronRight, FiCalendar, FiUser, FiArrowUp, FiArrowLeft, FiTag } from 'react-icons/fi';
 import Button from '../components/ui/Button';
+import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useBlogPosts, useBlogCategories, useRecentPosts, usePopularTags, useBlogPost } from '../hooks/useBlog';
 
 function Hero() {
@@ -11,17 +12,19 @@ function Hero() {
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
       }} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 text-center relative">
-        <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-tight">Latest Articles & News</h1>
-        <p className="mt-4 text-lg text-white/70 max-w-2xl mx-auto">Insights, tutorials, and stories from the Marvel Slice team</p>
-        <div className="mt-8 max-w-xl mx-auto flex">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28 text-center relative">
+        <Reveal>
+          <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-extrabold leading-tight">Latest Articles & News</h1>
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/70 max-w-2xl mx-auto">Insights, tutorials, and stories from the Marvel Slice team</p>
+        </Reveal>
+        <div className="mt-6 sm:mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-2 sm:gap-0">
           <div className="relative flex-1">
             <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
               placeholder="Search articles..."
-              className="w-full pl-12 pr-4 py-3.5 rounded-l-xl text-dark-navy text-base focus:outline-none focus:ring-2 focus:ring-brand-orange" />
+              className="w-full pl-11 sm:pl-12 pr-4 py-3.5 rounded-xl sm:rounded-l-xl sm:rounded-r-none text-dark-navy text-base focus:outline-none focus:ring-2 focus:ring-brand-orange" />
           </div>
-          <button className="bg-brand-orange text-white px-8 py-3.5 rounded-r-xl font-semibold hover:bg-orange-600 transition-colors flex items-center gap-2">
+          <button className="bg-brand-orange text-white px-8 py-3.5 rounded-xl sm:rounded-l-none sm:rounded-r-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
             Search <FiArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -45,12 +48,13 @@ function CategoryPills({ categories, active, onChange }) {
 
 function FeaturedPost({ post }) {
   return (
+    <Reveal>
     <Link to={`/blog/${post.slug}`} className="block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
       <div className="grid md:grid-cols-2">
         <div className="h-64 md:h-full bg-gradient-to-br from-brand-blue to-dark-navy flex items-center justify-center">
           {post.image_url ? <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" /> : <span className="text-white/20 text-6xl font-bold">B</span>}
         </div>
-        <div className="p-8 lg:p-10 flex flex-col justify-center">
+        <div className="p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
           {post.blog_categories && (
             <span className="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-semibold rounded-full mb-4 w-fit">{post.blog_categories.name}</span>
           )}
@@ -66,6 +70,7 @@ function FeaturedPost({ post }) {
         </div>
       </div>
     </Link>
+    </Reveal>
   );
 }
 
@@ -95,16 +100,31 @@ function PostCard({ post }) {
 function Pagination({ page, total, perPage, onChange }) {
   const totalPages = Math.ceil(total / perPage);
   if (totalPages <= 1) return null;
+
+  // Windowed page list so it never overflows on mobile: first, last, current +/- 1, with ellipses.
+  const pages = [];
+  for (let p = 1; p <= totalPages; p++) {
+    if (p === 1 || p === totalPages || Math.abs(p - page) <= 1) {
+      pages.push(p);
+    } else if (pages[pages.length - 1] !== '...') {
+      pages.push('...');
+    }
+  }
+
   return (
-    <div className="flex items-center justify-center gap-2 mt-12">
+    <div className="flex items-center justify-center gap-1.5 sm:gap-2 mt-12 flex-wrap">
       <button onClick={() => onChange(page - 1)} disabled={page <= 1}
         className="p-2 rounded-lg border border-gray-200 text-text-gray hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
         <FiChevronLeft className="w-5 h-5" /></button>
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-        <button key={p} onClick={() => onChange(p)}
-          className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
-            p === page ? 'bg-brand-orange text-white shadow-md' : 'border border-gray-200 text-text-gray hover:bg-gray-50'
-          }`}>{p}</button>
+      {pages.map((p, i) => (
+        p === '...' ? (
+          <span key={`ellipsis-${i}`} className="w-8 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-text-gray text-sm">…</span>
+        ) : (
+          <button key={p} onClick={() => onChange(p)}
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-sm font-medium transition-colors ${
+              p === page ? 'bg-brand-orange text-white shadow-md' : 'border border-gray-200 text-text-gray hover:bg-gray-50'
+            }`}>{p}</button>
+        )
       ))}
       <button onClick={() => onChange(page + 1)} disabled={page >= totalPages}
         className="p-2 rounded-lg border border-gray-200 text-text-gray hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
@@ -195,18 +215,22 @@ function SinglePost({ slug }) {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-text-gray hover:text-brand-accent mb-8 transition-colors">
         <FiArrowLeft className="w-4 h-4" /> Back to Blog</Link>
-      {post.blog_categories && (
-        <span className="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-semibold rounded-full mb-4">{post.blog_categories.name}</span>
-      )}
-      <h1 className="text-3xl lg:text-4xl font-extrabold text-dark-navy leading-tight">{post.title}</h1>
-      <div className="flex items-center gap-4 mt-4 text-sm text-gray-400">
-        <span className="flex items-center gap-1.5"><FiUser className="w-4 h-4" />{post.author || 'Admin'}</span>
-        <span className="flex items-center gap-1.5"><FiCalendar className="w-4 h-4" />
-          {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''}</span>
-      </div>
-      {post.image_url && <img src={post.image_url} alt={post.title} className="w-full rounded-2xl mt-8 shadow-sm border border-gray-100" />}
-      {post.excerpt && <p className="text-lg text-text-gray mt-8 leading-relaxed">{post.excerpt}</p>}
-      <div className="mt-8 text-text-gray text-base leading-relaxed whitespace-pre-line">{post.content}</div>
+      <Reveal>
+        {post.blog_categories && (
+          <span className="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-semibold rounded-full mb-4">{post.blog_categories.name}</span>
+        )}
+        <h1 className="text-3xl lg:text-4xl font-extrabold text-dark-navy leading-tight">{post.title}</h1>
+        <div className="flex items-center gap-4 mt-4 text-sm text-gray-400">
+          <span className="flex items-center gap-1.5"><FiUser className="w-4 h-4" />{post.author || 'Admin'}</span>
+          <span className="flex items-center gap-1.5"><FiCalendar className="w-4 h-4" />
+            {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''}</span>
+        </div>
+      </Reveal>
+      <Reveal>
+        {post.image_url && <img src={post.image_url} alt={post.title} className="w-full rounded-2xl mt-8 shadow-sm border border-gray-100" />}
+        {post.excerpt && <p className="text-lg text-text-gray mt-8 leading-relaxed">{post.excerpt}</p>}
+        <div className="mt-8 text-text-gray text-base leading-relaxed whitespace-pre-line">{post.content}</div>
+      </Reveal>
 
       {post.tags && post.tags.length > 0 && (
         <div className="mt-10 pt-8 border-t border-gray-100">
@@ -265,24 +289,28 @@ export default function Blog() {
         ) : posts.length === 0 ? (
           <div className="text-center py-20 text-text-gray"><p className="text-lg">No articles found.</p></div>
         ) : (
-          <div className="flex flex-col lg:flex-row gap-10">
-            <div className="lg:w-[70%] space-y-8">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+            <div className="lg:w-[70%] space-y-6 sm:space-y-8">
               {!category && !tag && page === 1 && featured && <FeaturedPost post={featured} />}
-              <div className="grid md:grid-cols-2 gap-6">
-                {gridPosts.map((post) => <PostCard key={post.id} post={post} />)}
-              </div>
+              <Stagger className="grid md:grid-cols-2 gap-6">
+                {gridPosts.map((post) => (
+                  <StaggerItem key={post.id} className="h-full">
+                    <PostCard post={post} />
+                  </StaggerItem>
+                ))}
+              </Stagger>
               <Pagination page={page} total={total} perPage={9} onChange={setPage} />
             </div>
-            <aside className="lg:w-[30%] space-y-6">
+            <Reveal variant="left" as="aside" className="lg:w-[30%] space-y-6">
               <RecentPostsWidget posts={recentPosts || []} />
               <NewsletterForm />
               <PopularTags tags={popularTags || []} activeTag={tag} onTagClick={(t) => { const next = t === tag ? null : t; setTag(next); setCategory(null); setPage(1); setSearchParams(next ? { tag: next } : {}); }} />
-            </aside>
+            </Reveal>
           </div>
         )}
       </section>
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-8 right-8 w-12 h-12 bg-brand-orange text-white rounded-full shadow-lg flex items-center justify-center hover:bg-orange-600 transition-colors z-50">
+        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 w-11 h-11 sm:w-12 sm:h-12 bg-brand-orange text-white rounded-full shadow-lg flex items-center justify-center hover:bg-orange-600 transition-colors z-50">
         <FiArrowUp className="w-5 h-5" /></button>
     </div>
   );

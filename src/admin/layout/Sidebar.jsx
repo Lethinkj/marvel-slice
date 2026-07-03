@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { FiHome, FiSettings, FiMenu, FiBookOpen, FiStar, FiGrid, FiX, FiChevronDown, FiFileText, FiFile } from 'react-icons/fi';
+import { FiHome, FiSettings, FiBookOpen, FiStar, FiGrid, FiX, FiChevronDown, FiFileText, FiFile, FiLayers, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { supabase } from '../../lib/supabaseClient';
 
 const sections = [
@@ -24,11 +24,11 @@ const sections = [
     label: 'Pages',
     icon: FiFile,
     items: [
-      { to: '/admin/pages/home', label: 'Home' },
-      { to: '/admin/pages/about', label: 'About' },
-      { to: '/admin/pages/career', label: 'Career' },
-      { to: '/admin/pages/contact', label: 'Contact' },
-      { to: '/admin/pages/blog', label: 'Blog' },
+      { to: '/admin/home-page', label: 'Home' },
+      { to: '/admin/about-page', label: 'About' },
+      { to: '/admin/career-page', label: 'Career' },
+      { to: '/admin/contact-page', label: 'Contact' },
+      { to: '/admin/blog', label: 'Blog' },
     ],
   },
   {
@@ -49,7 +49,7 @@ const sections = [
   },
   {
     label: 'Appearance',
-    icon: FiMenu,
+    icon: FiLayers,
     items: [
       { to: '/admin/nav-menu', label: 'Navigation Menu' },
       { to: '/admin/footer', label: 'Footer' },
@@ -66,7 +66,7 @@ const sections = [
   },
 ];
 
-export default function Sidebar({ mobileOpen, onMobileClose }) {
+export default function Sidebar({ mobileOpen, onMobileClose, collapsed, onToggleCollapse }) {
   const { pathname } = useLocation();
   const [openSection, setOpenSection] = useState(null);
   const [logoUrl, setLogoUrl] = useState('');
@@ -77,40 +77,43 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
     });
   }, []);
 
-  useEffect(() => {
-    const idx = sections.findIndex((s) =>
-      s.items.some((item) =>
-        item.to === '/admin' ? pathname === '/admin' : pathname.startsWith(item.to)
-      )
-    );
-    if (idx >= 0) setOpenSection(idx);
-  }, [pathname]);
-
   function toggleSection(idx) {
     setOpenSection(openSection === idx ? null : idx);
   }
 
   const content = (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-4 h-14 shrink-0 border-b border-white/10">
-        <NavLink to="/admin" className="flex items-center gap-2 min-w-0" onClick={onMobileClose}>
-          {logoUrl ? (
-            <img src={logoUrl} alt="Marvel Slice" className="h-7 w-auto object-contain" />
-          ) : (
-            <div className="w-7 h-7 rounded-md bg-brand-orange flex items-center justify-center shrink-0">
-              <FiGrid className="w-3.5 h-3.5 text-white" />
+    <div className="flex flex-col h-full relative">
+
+      {/* Toggle collapse button */}
+      <button
+        onClick={onToggleCollapse}
+        className="absolute -right-3 top-1/2 z-10 w-6 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm hover:shadow-md hover:bg-gray-50 transition-all text-gray-400 hover:text-brand-accent"
+      >
+        {collapsed ? <FiChevronRight className="w-3.5 h-3.5" /> : <FiChevronLeft className="w-3.5 h-3.5" />}
+      </button>
+
+      {/* Logo */}
+      <div className={`flex items-center shrink-0 border-b border-white/5 ${collapsed ? 'justify-center h-16 px-0' : 'justify-between h-16 px-4'}`}>
+        <NavLink to="/admin" className={`flex items-center gap-2.5 min-w-0 group ${collapsed ? 'justify-center' : ''}`} onClick={() => { if (!collapsed) onToggleCollapse(); }}>
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-accent to-brand-blue flex items-center justify-center shrink-0 shadow-sm group-hover:shadow-md transition-shadow">
+            <FiGrid className="w-4 h-4 text-white" />
+          </div>
+          {!collapsed && (
+            <div className="min-w-0">
+              <span className="text-sm font-bold text-white block leading-tight">Marvel Slice</span>
+              <span className="text-[10px] text-white/40 font-medium">Admin Panel</span>
             </div>
           )}
-          <span className="text-sm font-bold text-white truncate">Marvel Slice</span>
         </NavLink>
         {mobileOpen && (
-          <button onClick={onMobileClose} className="p-1 text-gray-400 hover:text-white">
+          <button onClick={onMobileClose} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
             <FiX className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
+      {/* Navigation */}
+      <nav className={`flex-1 overflow-y-auto py-4 space-y-1 scrollbar-thin scrollbar-thumb-white/10 ${collapsed ? 'px-2' : 'px-3'}`}>
         {sections.map((section, idx) => {
           const isOpen = openSection === idx;
           const isActive = section.items.some((item) =>
@@ -120,64 +123,101 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
           return (
             <div key={section.label}>
               <button
-                onClick={() => toggleSection(idx)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                onClick={() => { if (collapsed) { onToggleCollapse(); } else { toggleSection(idx); } }}
+                className={`w-full flex items-center gap-2.5 rounded-xl text-sm transition-all duration-200 group ${
+                  collapsed ? 'justify-center py-2.5' : 'px-3 py-2.5'
+                } ${
                   isActive
-                    ? 'bg-brand-accent/15 text-white font-medium'
-                    : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                    ? 'bg-gradient-to-r from-brand-accent/15 to-transparent text-white font-medium'
+                    : 'text-gray-400 hover:bg-white/[0.06] hover:text-white'
                 }`}
+                title={collapsed ? section.label : undefined}
               >
-                <section.icon className="w-4 h-4 shrink-0" />
-                <span className="flex-1 text-left">{section.label}</span>
-                <FiChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    isOpen ? 'rotate-0' : '-rotate-90'
-                  }`}
-                />
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 ${
+                  isActive
+                    ? 'bg-brand-accent/20 text-brand-accent'
+                    : 'bg-white/5 text-gray-400 group-hover:bg-white/10 group-hover:text-white'
+                }`}>
+                  <section.icon className="w-4 h-4" />
+                </div>
+                {!collapsed && (
+                  <>
+                    <span className="flex-1 text-left text-sm">{section.label}</span>
+                    <FiChevronDown
+                      className={`w-3.5 h-3.5 transition-all duration-300 ${
+                        isOpen ? 'rotate-0 text-white/60' : '-rotate-90 text-white/20'
+                      }`}
+                    />
+                  </>
+                )}
               </button>
 
-              <div
-                className={`overflow-hidden transition-all duration-200 ${
+              {!collapsed && (
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
                   isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                }`}
-              >
-                <div className="ml-3 pl-3 border-l border-white/10 mt-0.5 space-y-0.5 pb-0.5">
-                  {section.items.map((link) => (
-                    <NavLink
-                      key={link.to}
-                      to={link.to}
-                      end={link.to === '/admin'}
-                      onClick={onMobileClose}
-                      className={({ isActive }) =>
-                        `block px-3 py-1.5 rounded-md text-sm transition-colors ${
-                          isActive
-                            ? 'bg-brand-accent text-white font-medium shadow-sm'
-                            : 'text-gray-400 hover:bg-white/10 hover:text-white'
-                        }`
-                      }
-                    >
-                      {link.label}
-                    </NavLink>
-                  ))}
+                }`}>
+                  <div className="ml-2 pl-4 mt-0.5 space-y-0.5 pb-1 border-l border-white/5">
+                    {section.items.map((link) => (
+                      <NavLink
+                        key={link.to}
+                        to={link.to}
+                        end={link.to === '/admin'}
+                        onClick={() => { if (onMobileClose) onMobileClose(); if (!collapsed) onToggleCollapse(); }}
+                        className={({ isActive }) =>
+                          `relative block px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                            isActive
+                              ? 'text-white font-medium'
+                              : 'text-gray-400 hover:bg-white/[0.06] hover:text-white'
+                          }`
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            {isActive && (
+                              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-gradient-to-b from-brand-accent to-brand-blue rounded-full shadow-sm" />
+                            )}
+                            <span className="pl-2">{link.label}</span>
+                          </>
+                        )}
+                      </NavLink>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           );
         })}
       </nav>
+
+      {/* Bottom branding */}
+      {!collapsed && (
+        <div className="px-4 py-3 shrink-0 border-t border-white/5">
+          <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg bg-white/[0.03]">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-accent to-brand-orange flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+              M
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs text-white/60 font-medium">Marvel Slice v2.0</p>
+              <p className="text-[10px] text-white/30">Management Portal</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
   return (
     <>
-      <aside className="hidden lg:flex lg:flex-col w-56 bg-dark-navy text-white shrink-0 h-screen">
+      <aside className={`hidden lg:flex lg:flex-col bg-gradient-to-b from-brand-blue via-brand-blue to-[#071738] text-white shrink-0 h-screen border-r border-white/10 transition-all duration-300 ${
+        collapsed ? 'w-[72px]' : 'w-60'
+      }`}>
         {content}
       </aside>
 
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={onMobileClose} />
-          <aside className="fixed left-0 top-0 h-full w-64 bg-dark-navy text-white z-50 shadow-2xl">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onMobileClose} />
+          <aside className="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-brand-blue via-brand-blue to-[#071738] text-white z-50 shadow-2xl border-r border-white/10">
             {content}
           </aside>
         </div>

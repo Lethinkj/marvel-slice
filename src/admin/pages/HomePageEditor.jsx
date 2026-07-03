@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/ui/Button';
 import {
   FiPlus, FiTrash2, FiChevronDown, FiChevronRight, FiSave, FiUpload,
-  FiHome, FiStar, FiFolder, FiAward, FiBook, FiLayout, FiHelpCircle, FiEye, FiMove, FiCheck, FiX,
+  FiHome, FiStar, FiFolder, FiAward, FiBook, FiLayout, FiHelpCircle, FiEye, FiMove, FiCheck, FiX, FiArrowLeft,
 } from 'react-icons/fi';
 
 const sectionDefs = [
@@ -649,9 +650,14 @@ export default function HomePageEditor() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8">
-        <div>
+        <div className="flex items-center gap-4">
+          <Link to="/admin" className="p-2 text-gray-400 hover:text-dark-navy rounded-lg hover:bg-gray-100 transition-colors">
+            <FiArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
           <h1 className="text-2xl font-bold text-dark-navy">Home Page Editor</h1>
           <p className="text-sm text-gray-500 mt-1">Manage all sections displayed on the home page</p>
+        </div>
         </div>
         <Button onClick={handleSave} disabled={saving} variant="accent" size="md">
           <FiSave className="w-4 h-4" />

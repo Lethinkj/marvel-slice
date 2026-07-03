@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FiStar, FiArrowLeft, FiCheckCircle, FiUsers, FiBarChart2, FiClock } from 'react-icons/fi';
 import Button from '../components/ui/Button';
+import CourseCard from '../components/ui/CourseCard';
+import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
 import KeyHighlights from '../components/home/KeyHighlights';
 import CourseOverview from '../components/home/CourseOverview';
@@ -78,15 +80,15 @@ export default function CourseDetail() {
             <FiArrowLeft className="w-4 h-4" />
             Back to Courses
           </Link>
-          <div className="grid lg:grid-cols-5 gap-10 lg:gap-14">
-            <div className="lg:col-span-3">
+          <div className="grid lg:grid-cols-5 gap-8 lg:gap-14">
+            <Reveal className="lg:col-span-3">
               <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold leading-[1.15]">
                 {course.title}
               </h1>
               <p className="mt-4 text-base text-white/70 leading-relaxed max-w-xl">
                 {course.description}
               </p>
-              <div className="flex flex-wrap items-center gap-5 mt-6 text-sm">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 text-sm">
                 <span className="flex items-center gap-1.5 text-white/80">
                   <FiStar className="w-4 h-4 text-yellow-400 fill-current" />
                   <span className="font-semibold text-white">{course.rating || 4.5}</span>
@@ -97,12 +99,12 @@ export default function CourseDetail() {
                   {(course.learner_count || 0).toLocaleString()} learners
                 </span>
               </div>
-              <div className="flex flex-wrap gap-3 mt-8">
-                <Button variant="primary-lg" size="xl" to="#enroll">Enroll Now</Button>
-                <Button variant="secondary" size="xl" to="#brochure">Download Brochure</Button>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
+                <Button variant="primary-lg" size="xl" to="#enroll" className="w-full sm:w-auto">Enroll Now</Button>
+                <Button variant="secondary" size="xl" to="#brochure" className="w-full sm:w-auto">Download Brochure</Button>
               </div>
-            </div>
-            <div className="lg:col-span-2">
+            </Reveal>
+            <Reveal variant="left" className="lg:col-span-2">
               {embedUrl ? (
                 <div className="relative rounded-xl overflow-hidden shadow-2xl group">
                   <iframe
@@ -135,14 +137,14 @@ export default function CourseDetail() {
                   <p className="text-sm text-white/60 mt-0.5">{course.course_fees[0].plan_name || 'Full Course'}</p>
                 </div>
               )}
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       <section className="border-b border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 sm:gap-x-10 gap-y-3 text-sm">
             <div className="flex items-center gap-2.5 text-dark-navy">
               <FiBarChart2 className="w-5 h-5 text-brand-accent" />
               <div>
@@ -176,19 +178,19 @@ export default function CourseDetail() {
       </section>
 
       {course.checklist_items && course.checklist_items.length > 0 && (
-        <section className="py-16 bg-gray-50/50">
+        <section className="py-12 sm:py-16 bg-gray-50/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-dark-navy mb-8">What You'll Learn</h2>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 sm:mb-8">What You'll Learn</Reveal>
+            <Stagger className="grid sm:grid-cols-2 gap-4">
               {course.checklist_items.map((item, i) => (
-                <div key={i} className="flex items-start gap-3 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <StaggerItem key={i} className="flex items-start gap-3 bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                   <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center shrink-0 mt-0.5">
                     <FiCheckCircle className="w-3.5 h-3.5 text-green-600" />
                   </div>
                   <span className="text-sm text-gray-700">{item}</span>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </div>
         </section>
       )}
@@ -196,11 +198,11 @@ export default function CourseDetail() {
       <KeyHighlights section={highlightsSection} />
       <CourseOverview section={overviewSection} />
 
-      <section className="py-16">
+      <section className="py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-dark-navy mb-8">
+          <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 sm:mb-8">
             More Courses You Might Like
-          </h2>
+          </Reveal>
           <RelatedCoursesWithId courseId={course.id} />
         </div>
       </section>
@@ -214,26 +216,12 @@ function RelatedCoursesWithId({ courseId }) {
   if (!related || related.length === 0) return null;
 
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <Stagger className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {related.map((rc) => (
-        <Link key={rc.id} to={`/courses/${rc.slug}`}
-          className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group">
-          <div className="h-40 bg-gradient-to-br from-brand-blue/90 to-dark-navy flex items-center justify-center">
-            <span className="text-white/15 text-5xl font-bold">{rc.title?.charAt(0)}</span>
-          </div>
-          <div className="p-5">
-            <h3 className="font-bold text-dark-navy group-hover:text-brand-accent transition-colors">{rc.title}</h3>
-            <p className="text-sm text-text-gray mt-1.5 line-clamp-2">{rc.description}</p>
-            <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400">
-              <span className="flex items-center gap-1">
-                <FiStar className="w-3.5 h-3.5 text-yellow-500 fill-current" />
-                {rc.rating || 4.5}
-              </span>
-              <span>{(rc.learner_count || 0).toLocaleString()} learners</span>
-            </div>
-          </div>
-        </Link>
+        <StaggerItem key={rc.id} className="h-full">
+          <CourseCard course={rc} bannerSize="sm" variant="initial" />
+        </StaggerItem>
       ))}
-    </div>
+    </Stagger>
   );
 }
