@@ -74,6 +74,31 @@ export default function BlogPostEditor() {
   const [selectedTags, setSelectedTags] = useState([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(!isNew);
+  const [slugStatus, setSlugStatus] = useState('idle'); // idle | checking | available | taken
+  const [slugSuggestion, setSlugSuggestion] = useState('');
+
+  useEffect(() => {
+    if (!form.slug || !isNew) { setSlugStatus('idle'); return; }
+    const timer = setTimeout(async () => {
+      setSlugStatus('checking');
+      const { data } = await supabase.from('blog_posts').select('id').eq('slug', form.slug).maybeSingle();
+      if (data) {
+        setSlugStatus('taken');
+        let candidate = form.slug;
+        let attempt = 1;
+        while (attempt < 20) {
+          const testSlug = `${form.slug}-${attempt}`;
+          const { data: existing } = await supabase.from('blog_posts').select('id').eq('slug', testSlug).maybeSingle();
+          if (!existing) { setSlugSuggestion(testSlug); break; }
+          attempt++;
+        }
+      } else {
+        setSlugStatus('available');
+        setSlugSuggestion('');
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [form.slug, isNew]);
 
   useEffect(() => {
     supabase.from('blog_categories').select('*').order('sort_order').then(({ data }) => {
@@ -194,9 +219,22 @@ export default function BlogPostEditor() {
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Slug</label>
-            <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all font-mono text-xs"
-              placeholder="post-slug" />
+            <div className="relative">
+              <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all font-mono text-xs ${
+                  slugStatus === 'taken' ? 'border-red-300 focus:ring-red-400 bg-red-50' :
+                  slugStatus === 'available' ? 'border-green-300 focus:ring-green-400 bg-green-50' :
+                  'border-gray-300 focus:ring-brand-accent'
+                }`}
+                placeholder="post-slug" />
+              {slugStatus === 'checking' && <span className="absolute right-3 top-1/2 -translate-y-1/2"><span className="w-4 h-4 border-2 border-brand-accent border-t-transparent rounded-full animate-spin block" /></span>}
+            </div>
+            {slugStatus === 'taken' && (
+              <p className="text-xs text-red-600 mt-1">
+                Slug taken. Suggested: <button type="button" onClick={() => { setForm({ ...form, slug: slugSuggestion }); setSlugStatus('checking'); }} className="text-brand-accent hover:underline font-medium">{slugSuggestion}</button>
+              </p>
+            )}
+            {slugStatus === 'available' && <p className="text-xs text-green-600 mt-1">Available</p>}
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Author</label>
