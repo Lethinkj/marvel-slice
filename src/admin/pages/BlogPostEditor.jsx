@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/ui/Button';
-import { FiSave, FiCheck, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag } from 'react-icons/fi';
+import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
   const inputRef = useRef(null);
@@ -55,7 +55,9 @@ function ImageUploader({ value, onChange, label }) {
 
 export default function BlogPostEditor() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const isNew = id === 'new';
+  const savingRef = useRef(false);
   const [form, setForm] = useState({
     title: '',
     slug: '',
@@ -71,7 +73,6 @@ export default function BlogPostEditor() {
   const [allTags, setAllTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(!isNew);
 
   useEffect(() => {
@@ -114,6 +115,8 @@ export default function BlogPostEditor() {
 
   async function handleSave(e) {
     e.preventDefault();
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     const payload = {
       ...form,
@@ -136,7 +139,10 @@ export default function BlogPostEditor() {
       }
       if (error) {
         insertError = true;
+        savingRef.current = false;
+        setSaving(false);
         alert('Failed to save post: ' + error.message);
+        return;
       } else if (data) {
         postId = data.id;
         window.history.replaceState(null, '', `/admin/blog/${data.id}`);
@@ -155,8 +161,7 @@ export default function BlogPostEditor() {
     }
 
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    navigate('/admin/blog');
   }
 
   if (loading) {
@@ -178,12 +183,6 @@ export default function BlogPostEditor() {
           <h1 className="text-2xl font-bold text-dark-navy">{isNew ? 'New Post' : 'Edit Post'}</h1>
         </div>
       </div>
-
-      {saved && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm">
-          <FiCheck className="w-4 h-4" /> Post saved!
-        </div>
-      )}
 
       <form onSubmit={handleSave} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
         <div className="grid sm:grid-cols-2 gap-4">
