@@ -5,15 +5,24 @@ export function useBlogPosts({ category, tag, search, page = 1, perPage = 9 } = 
   return useQuery({
     queryKey: ['blogPosts', { category, tag, search, page, perPage }],
     queryFn: async () => {
+      let catId = null;
+      if (category) {
+        const { data: found } = await supabase.from('blog_categories').select('id').eq('slug', category).maybeSingle();
+        if (found) {
+          catId = found.id;
+        } else {
+          return { posts: [], total: 0 };
+        }
+      }
+
       let query = supabase
         .from('blog_posts')
         .select('*, blog_categories(name, slug)', { count: 'exact' })
-        .eq('is_published', true)
-        .order('published_at', { ascending: false });
+        .eq('is_published', true);
 
-      if (category) {
-        query = query.eq('blog_categories.slug', category);
-      }
+      if (catId) query = query.eq('category_id', catId);
+
+      query = query.order('published_at', { ascending: false });
       if (search) {
         query = query.ilike('title', `%${search}%`);
       }

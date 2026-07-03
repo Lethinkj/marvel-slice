@@ -5,8 +5,7 @@ import Button from '../components/ui/Button';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useBlogPosts, useBlogCategories, useRecentPosts, usePopularTags, useBlogPost } from '../hooks/useBlog';
 
-function Hero() {
-  const [search, setSearch] = useState('');
+function Hero({ search, onSearchChange, onSearch }) {
   return (
     <section className="relative bg-gradient-to-br from-dark-navy via-brand-blue to-dark-navy text-white overflow-hidden">
       <div className="absolute inset-0 opacity-10" style={{
@@ -20,11 +19,12 @@ function Hero() {
         <div className="mt-6 sm:mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-2 sm:gap-0">
           <div className="relative flex-1">
             <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+            <input type="text" value={search} onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search articles..."
+              onKeyDown={(e) => e.key === 'Enter' && onSearch?.()}
               className="w-full pl-11 sm:pl-12 pr-4 py-3.5 rounded-xl sm:rounded-l-xl sm:rounded-r-none text-dark-navy text-base focus:outline-none focus:ring-2 focus:ring-brand-orange" />
           </div>
-          <button className="bg-brand-orange text-white px-8 py-3.5 rounded-xl sm:rounded-l-none sm:rounded-r-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
+          <button onClick={onSearch} className="bg-brand-orange text-white px-8 py-3.5 rounded-xl sm:rounded-l-none sm:rounded-r-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
             Search <FiArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -76,9 +76,9 @@ function FeaturedPost({ post }) {
 
 function PostCard({ post }) {
   return (
-    <Link to={`/blog/${post.slug}`} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 group flex flex-col">
-      <div className="h-52 bg-gradient-to-br from-brand-blue to-dark-navy flex items-center justify-center">
-        {post.image_url ? <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" /> : <FiCalendar className="w-12 h-12 text-white/20" />}
+    <Link to={`/blog/${post.slug}`} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full">
+      <div className="aspect-[16/10] bg-gradient-to-br from-brand-blue to-dark-navy flex items-center justify-center overflow-hidden">
+        {post.image_url ? <img src={post.image_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /> : <FiCalendar className="w-12 h-12 text-white/20" />}
       </div>
       <div className="p-6 flex flex-col flex-1">
         {post.blog_categories && (
@@ -136,16 +136,28 @@ function Pagination({ page, total, perPage, onChange }) {
 function RecentPostsWidget({ posts }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h3 className="font-bold text-dark-navy text-lg mb-4">Recent Posts</h3>
-      <div className="space-y-3">
-        {posts.map((post) => (
-          <Link key={post.id} to={`/blog/${post.slug}`} className="block group">
-            <p className="text-sm text-text-gray group-hover:text-brand-accent transition-colors line-clamp-2">{post.title}</p>
-            {post.published_at && <p className="text-xs text-gray-400 mt-0.5">{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>}
-          </Link>
+      <h3 className="font-bold text-dark-navy text-lg mb-4 flex items-center gap-2">
+        <FiCalendar className="w-4 h-4 text-brand-accent" />
+        Recent Posts
+      </h3>
+      <Stagger className="space-y-3">
+        {posts.map((post, i) => (
+          <StaggerItem key={post.id}>
+            <Link to={`/blog/${post.slug}`} className="block group p-3 -mx-3 rounded-xl hover:bg-gray-50 transition-all duration-200">
+              <div className="flex items-start gap-3">
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-accent/10 to-brand-blue/10 flex items-center justify-center text-xs font-bold text-brand-accent shrink-0 mt-0.5">
+                  {i + 1}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-dark-navy group-hover:text-brand-accent transition-colors line-clamp-2">{post.title}</p>
+                  {post.published_at && <p className="text-xs text-gray-400 mt-1 flex items-center gap-1"><FiCalendar className="w-3 h-3" />{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>}
+                </div>
+              </div>
+            </Link>
+          </StaggerItem>
         ))}
         {posts.length === 0 && <p className="text-sm text-gray-400">No recent posts.</p>}
-      </div>
+      </Stagger>
     </div>
   );
 }
@@ -255,6 +267,7 @@ export default function Blog() {
   const [category, setCategory] = useState(null);
   const [tag, setTag] = useState(searchParams.get('tag') || null);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const urlTag = searchParams.get('tag');
@@ -265,7 +278,7 @@ export default function Blog() {
     }
   }, [searchParams]);
 
-  const { data: postsData, isLoading } = useBlogPosts({ category, tag, page });
+  const { data: postsData, isLoading } = useBlogPosts({ category, tag, search, page });
   const { data: categories } = useBlogCategories();
   const { data: recentPosts } = useRecentPosts(3);
   const { data: popularTags } = usePopularTags();
@@ -276,12 +289,21 @@ export default function Blog() {
 
   const posts = postsData?.posts || [];
   const total = postsData?.total || 0;
-  const featured = posts.find((p) => p.is_featured) || posts[0];
+
+  const isAllPage = !category && !tag && page === 1;
+  const featured = isAllPage ? (posts.find((p) => p.is_featured) || posts[0]) : null;
   const gridPosts = featured ? posts.filter((p) => p.id !== featured.id) : posts;
+
+  function handleSearch() {
+    setCategory(null);
+    setTag(null);
+    setPage(1);
+    setSearchParams({});
+  }
 
   return (
     <div>
-      <Hero />
+      <Hero search={search} onSearchChange={setSearch} onSearch={handleSearch} />
               <CategoryPills categories={categories || []} active={category} onChange={(slug) => { setCategory(slug); setTag(null); setPage(1); setSearchParams({}); }} />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {isLoading ? (
@@ -291,7 +313,7 @@ export default function Blog() {
         ) : (
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
             <div className="lg:w-[70%] space-y-6 sm:space-y-8">
-              {!category && !tag && page === 1 && featured && <FeaturedPost post={featured} />}
+              {isAllPage && featured && <FeaturedPost post={featured} />}
               <Stagger className="grid md:grid-cols-2 gap-6">
                 {gridPosts.map((post) => (
                   <StaggerItem key={post.id} className="h-full">
