@@ -4,85 +4,69 @@ import { supabase } from '../../lib/supabaseClient';
 import Button from '../../components/ui/Button';
 import {
   FiPlus, FiTrash2, FiChevronDown, FiChevronRight, FiSave, FiUpload,
-  FiHome, FiStar, FiFolder, FiAward, FiBook, FiLayout, FiHelpCircle, FiEye, FiMove, FiCheck, FiX, FiArrowLeft,
+  FiHome, FiStar, FiAward, FiHelpCircle, FiArrowLeft, FiImage,
+  FiLayout, FiMail, FiMessageSquare,
 } from 'react-icons/fi';
 
 const sectionDefs = [
   {
-    key: 'hero', label: 'Hero', icon: FiHome, color: 'from-blue-500 to-blue-600',
+    key: 'hero', label: 'Hero Banner', icon: FiHome, color: 'from-orange-500 to-orange-600',
     fields: [
-      { name: 'heading', label: 'Heading', type: 'text' },
-      { name: 'subheading', label: 'Subheading', type: 'text' },
+      { name: 'banner_image', label: 'Full-Width Banner Image (replaces everything)', type: 'image' },
+      { name: 'headline', label: 'Headline', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
-      { name: 'cta_left', label: 'Left CTA Label', type: 'text' },
-      { name: 'cta_right', label: 'Right CTA Label', type: 'text' },
-      { name: 'hero_image', label: 'Hero Image', type: 'image' },
-      { name: 'video_url', label: 'Course Introduction Video URL (YouTube)', type: 'text' },
-      { name: 'checklist', label: 'Checklist Items (one per line)', type: 'multiline' },
+      { name: 'feature_bullets', label: 'Feature Bullets (one per line)', type: 'multiline' },
+      { name: 'cta_text', label: 'CTA Button Text', type: 'text' },
+      { name: 'student_image_url', label: 'Student Image', type: 'image' },
     ],
-  },
-  {
-    key: 'highlights', label: 'Highlights', icon: FiStar, color: 'from-amber-400 to-orange-500',
-    isList: true,
-    itemFields: [
-      { name: 'icon', label: 'Icon', type: 'icon' },
+    hasList: true, listLabel: 'Stats', listItemFields: [
+      { name: 'value', label: 'Value', type: 'text' },
       { name: 'label', label: 'Label', type: 'text' },
     ],
   },
   {
-    key: 'projects', label: 'Projects', icon: FiFolder, color: 'from-emerald-400 to-emerald-600',
-    isList: true,
-    itemFields: [
-      { name: 'title', label: 'Title', type: 'text' },
+    key: 'intro_form', label: 'Intro + Form', icon: FiMail, color: 'from-emerald-400 to-emerald-600',
+    fields: [
+      { name: 'intro_text', label: 'Intro Paragraph', type: 'textarea' },
+      { name: 'pill_buttons', label: 'Pill Buttons (one per line)', type: 'multiline' },
+      { name: 'form_title', label: 'Form Title', type: 'text' },
+    ],
+    hasList: true, listLabel: 'Stats', listItemFields: [
+      { name: 'value', label: 'Value', type: 'text' },
+      { name: 'label', label: 'Label', type: 'text' },
+    ],
+  },
+  {
+    key: 'empowering', label: 'Empowering Careers', icon: FiStar, color: 'from-blue-500 to-blue-600',
+    fields: [
       { name: 'description', label: 'Description', type: 'textarea' },
     ],
   },
   {
-    key: 'certification', label: 'Certification', icon: FiAward, color: 'from-purple-400 to-purple-600',
+    key: 'featured_courses', label: 'Feature Cards', icon: FiLayout, color: 'from-green-500 to-green-600',
+    isFeatureCards: true,
+  },
+  {
+    key: 'services', label: 'Featured Services', icon: FiAward, color: 'from-purple-500 to-purple-600',
+    isServices: true,
+  },
+  {
+    key: 'cta_banner', label: 'CTA Banner', icon: FiMessageSquare, color: 'from-teal-500 to-teal-600',
     fields: [
       { name: 'heading', label: 'Heading', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
-      { name: 'image_url', label: 'Certification Image', type: 'image' },
-      { name: 'companies', label: 'Recognized Companies (one per line)', type: 'multiline' },
+      { name: 'cta_text', label: 'CTA Button Text', type: 'text' },
+      { name: 'cta_link', label: 'CTA Button Link', type: 'text' },
     ],
   },
   {
-    key: 'overview', label: 'Course Overview', icon: FiBook, color: 'from-cyan-400 to-cyan-600',
-    isAccordion: true,
-    fields: [
-      { name: 'description', label: 'Description', type: 'textarea' },
-    ],
-  },
-  {
-    key: 'tabs', label: 'Tabbed Content', icon: FiLayout, color: 'from-rose-400 to-rose-600',
-    isTabs: true,
-  },
-  {
-    key: 'faqs', label: 'FAQs', icon: FiHelpCircle, color: 'from-teal-400 to-teal-600',
+    key: 'faqs', label: 'FAQs', icon: FiHelpCircle, color: 'from-orange-400 to-orange-500',
     isList: true,
     itemFields: [
       { name: 'question', label: 'Question', type: 'text' },
       { name: 'answer', label: 'Answer', type: 'textarea' },
     ],
   },
-];
-
-const iconOptions = [
-  { value: 'FiClock', label: 'Clock' },
-  { value: 'FiVideo', label: 'Video' },
-  { value: 'FiCode', label: 'Code' },
-  { value: 'FiAward', label: 'Award' },
-  { value: 'FiCalendar', label: 'Calendar' },
-  { value: 'FiRefreshCw', label: 'Refresh' },
-  { value: 'FiMessageCircle', label: 'Message' },
-  { value: 'FiUsers', label: 'Users' },
-  { value: 'FiBook', label: 'Book' },
-  { value: 'FiGlobe', label: 'Globe' },
-  { value: 'FiServer', label: 'Server' },
-  { value: 'FiMonitor', label: 'Monitor' },
-  { value: 'FiSmartphone', label: 'Mobile' },
-  { value: 'FiLayers', label: 'Layers' },
-  { value: 'FiGrid', label: 'Grid' },
 ];
 
 function ImageUploader({ value, onChange, label }) {
@@ -134,247 +118,322 @@ function ImageUploader({ value, onChange, label }) {
   );
 }
 
-function AccordionItemsEditor({ items = [], onChange }) {
+function ListEditor({ def, data, onChange }) {
+  const items = data?.content?.[def.listKey || 'stats'] || [];
   function addItem() {
-    onChange([...items, { question: '', answer: '', list_items: [] }]);
+    const newItem = {};
+    def.listItemFields.forEach((f) => { newItem[f.name] = ''; });
+    onChange({ ...data, content: { ...(data?.content || {}), [def.listKey || 'stats']: [...items, newItem] } });
   }
-
   function updateItem(idx, field, value) {
     const updated = items.map((item, i) => i === idx ? { ...item, [field]: value } : item);
-    onChange(updated);
+    onChange({ ...data, content: { ...(data?.content || {}), [def.listKey || 'stats']: updated } });
   }
-
   function removeItem(idx) {
-    onChange(items.filter((_, i) => i !== idx));
+    onChange({ ...data, content: { ...(data?.content || {}), [def.listKey || 'stats']: items.filter((_, i) => i !== idx) } });
   }
-
-  function addListItem(idx) {
-    const item = items[idx];
-    updateItem(idx, 'list_items', [...(item.list_items || []), '']);
-  }
-
-  function updateListItem(itemIdx, listIdx, value) {
-    const item = items[itemIdx];
-    const list = [...(item.list_items || [])];
-    list[listIdx] = value;
-    updateItem(itemIdx, 'list_items', list);
-  }
-
-  function removeListItem(itemIdx, listIdx) {
-    const item = items[itemIdx];
-    updateItem(itemIdx, 'list_items', (item.list_items || []).filter((_, i) => i !== listIdx));
-  }
-
   return (
     <div className="space-y-3">
-      {items.length === 0 && (
-        <p className="text-sm text-gray-400 italic">No accordion items yet.</p>
-      )}
       {items.map((item, i) => (
         <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Item {i + 1}</span>
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{def.listLabel || 'Item'} {i + 1}</span>
             <button type="button" onClick={() => removeItem(i)}
               className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
               <FiTrash2 className="w-4 h-4" />
             </button>
           </div>
           <div className="space-y-3">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Question</label>
-              <input type="text" value={item.question || ''} onChange={(e) => updateItem(i, 'question', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                placeholder="e.g. What will you learn?" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Answer</label>
-              <textarea value={item.answer || ''} onChange={(e) => updateItem(i, 'answer', e.target.value)} rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                placeholder="Answer text..." />
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-medium text-gray-600">Bullet Points</label>
-                <button type="button" onClick={() => addListItem(i)}
-                  className="text-xs text-brand-accent hover:text-brand-blue font-medium flex items-center gap-0.5">
-                  <FiPlus className="w-3 h-3" /> Add point
-                </button>
+            {def.listItemFields.map((f) => (
+              <div key={f.name}>
+                <label className="block text-xs font-medium text-gray-600 mb-1">{f.label}</label>
+                {f.type === 'textarea' ? (
+                  <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+                ) : (
+                  <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+                )}
               </div>
-              <div className="space-y-1.5">
-                {(item.list_items || []).map((li, j) => (
-                  <div key={j} className="flex items-center gap-1.5">
-                    <span className="text-gray-400">•</span>
-                    <input type="text" value={li} onChange={(e) => updateListItem(i, j, e.target.value)}
-                      className="flex-1 px-2.5 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent"
-                      placeholder="Bullet point" />
-                    <button type="button" onClick={() => removeListItem(i, j)}
-                      className="p-1 text-red-400 hover:text-red-600">
-                      <FiX className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       ))}
       <Button type="button" onClick={addItem} variant="link-add" size="sm">
-        <FiPlus className="w-4 h-4" /> Add Accordion Item
+        <FiPlus className="w-4 h-4" /> Add {def.listLabel || 'Item'}
       </Button>
     </div>
   );
 }
 
-function BulletEditor({ bullets = [], onChange }) {
-  function addBullet() {
-    onChange([...bullets, { text: '', icon: 'FiCheck' }]);
-  }
-  function updateBullet(idx, field, value) {
-    const updated = bullets.map((b, i) => i === idx ? { ...b, [field]: value } : b);
-    onChange(updated);
-  }
-  function removeBullet(idx) {
-    onChange(bullets.filter((_, i) => i !== idx));
-  }
-  return (
-    <div className="space-y-2">
-      {(bullets || []).map((b, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <select value={b.icon || 'FiCheck'} onChange={(e) => updateBullet(i, 'icon', e.target.value)}
-            className="w-28 px-2 py-1.5 border border-gray-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
-            <option value="FiCheck">Check</option>
-            <option value="FiStar">Star</option>
-            <option value="FiAward">Award</option>
-            <option value="FiArrowRight">Arrow</option>
-            <option value="FiCircle">Circle</option>
-            <option value="FiZap">Zap</option>
-            <option value="FiHeart">Heart</option>
-            <option value="FiThumbsUp">Thumbs Up</option>
-          </select>
-          <input type="text" value={b.text || ''} onChange={(e) => updateBullet(i, 'text', e.target.value)}
-            className="flex-1 px-2.5 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent"
-            placeholder="Bullet point text" />
-          <button type="button" onClick={() => removeBullet(i)}
-            className="p-1 text-red-400 hover:text-red-600">
-            <FiX className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      ))}
-      <button type="button" onClick={addBullet}
-        className="flex items-center gap-1 text-xs font-medium text-brand-accent hover:text-brand-blue transition-colors">
-        <FiPlus className="w-3 h-3" /> Add bullet point
-      </button>
-    </div>
-  );
-}
+function FeatureCardsEditor({ data, onChange }) {
+  const content = data?.content || {};
+  const cards = content.cards || [];
 
-function TabsEditor({ tabs = [], onChange }) {
-  function addTab() {
-    onChange([...tabs, { label: '', text: '', image_url: '', bullets: [], layout: 'left' }]);
+  function addCard() {
+    onChange({ ...data, content: { ...content, cards: [...cards, { heading: '', description: '', image_url: '', bullets: [''], button_text: 'View More', button_link: '#' }] } });
   }
-
-  function updateTab(idx, field, value) {
-    const updated = tabs.map((t, i) => i === idx ? { ...t, [field]: value } : t);
-    onChange(updated);
+  function updateCard(idx, field, value) {
+    const updated = cards.map((c, i) => i === idx ? { ...c, [field]: value } : c);
+    onChange({ ...data, content: { ...content, cards: updated } });
   }
-
-  function removeTab(idx) {
-    onChange(tabs.filter((_, i) => i !== idx));
+  function removeCard(idx) {
+    onChange({ ...data, content: { ...content, cards: cards.filter((_, i) => i !== idx) } });
+  }
+  function addBullet(cardIdx) {
+    const c = cards[cardIdx];
+    updateCard(cardIdx, 'bullets', [...(c.bullets || []), '']);
+  }
+  function updateBullet(cardIdx, bIdx, value) {
+    const c = cards[cardIdx];
+    const b = [...(c.bullets || [])];
+    b[bIdx] = value;
+    updateCard(cardIdx, 'bullets', b);
+  }
+  function removeBullet(cardIdx, bIdx) {
+    const c = cards[cardIdx];
+    updateCard(cardIdx, 'bullets', (c.bullets || []).filter((_, i) => i !== bIdx));
   }
 
   return (
     <div className="space-y-4">
-      {tabs.length === 0 && (
-        <p className="text-sm text-gray-400 italic">No tabs yet.</p>
-      )}
-      {tabs.map((tab, i) => (
-        <div key={i} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="flex items-center gap-3 px-5 py-3.5 bg-gray-50/80 border-b border-gray-100">
-            <FiMove className="w-4 h-4 text-gray-300 shrink-0" />
-            <input type="text" value={tab.label || ''} onChange={(e) => updateTab(i, 'label', e.target.value)}
-              className="flex-1 font-semibold text-dark-navy bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 text-sm"
-              placeholder="Tab label" />
-            <button type="button" onClick={() => removeTab(i)}
-              className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-              <FiTrash2 className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="p-5 space-y-5">
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${tab.layout !== 'right' ? 'border-brand-accent' : 'border-gray-300'}`}>
-                  {tab.layout !== 'right' && <div className="w-2 h-2 rounded-full bg-brand-accent" />}
-                </div>
-                <input type="radio" name={`layout-${i}`} checked={tab.layout !== 'right'} onChange={() => updateTab(i, 'layout', 'left')} className="sr-only" />
-                <span className="text-xs text-gray-600">Text left, image right</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${tab.layout === 'right' ? 'border-brand-accent' : 'border-gray-300'}`}>
-                  {tab.layout === 'right' && <div className="w-2 h-2 rounded-full bg-brand-accent" />}
-                </div>
-                <input type="radio" name={`layout-${i}`} checked={tab.layout === 'right'} onChange={() => updateTab(i, 'layout', 'right')} className="sr-only" />
-                <span className="text-xs text-gray-600">Image left, text right</span>
-              </label>
-            </div>
-
-            <div className="grid grid-cols-5 gap-5">
-              <div className="col-span-3 space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Text Content</label>
-                  <textarea value={tab.text || tab.content || ''} onChange={(e) => updateTab(i, 'text', e.target.value)} rows={5}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                    placeholder="Main text content for this tab (~65% width)" />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider">Bullet Points</label>
-                  </div>
-                  <BulletEditor bullets={tab.bullets || []} onChange={(v) => updateTab(i, 'bullets', v)} />
-                </div>
-              </div>
-              <div className="col-span-2">
-                <ImageUploader value={tab.image_url} onChange={(v) => updateTab(i, 'image_url', v)} label="Image" />
-                <p className="text-xs text-gray-400 mt-1">~35% width, appears on the {tab.layout === 'right' ? 'left' : 'right'}</p>
-              </div>
-            </div>
-          </div>
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <input type="text" value={data?.heading || ''} onChange={(e) => onChange({ ...data, heading: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section heading" />
         </div>
-      ))}
-      <Button type="button" onClick={addTab} variant="link-add" size="sm">
-        <FiPlus className="w-4 h-4" /> Add Tab
-      </Button>
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <input type="text" value={data?.subheading || ''} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section subheading" />
+        </div>
+      </div>
+      <div className="border-t border-gray-200 pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-gray-700">Cards</h4>
+          <Button type="button" onClick={addCard} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Card</Button>
+        </div>
+        {cards.length === 0 && <p className="text-sm text-gray-400 italic">No cards yet.</p>}
+        <div className="space-y-3">
+          {cards.map((card, i) => (
+            <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Card {i + 1}</span>
+                <button type="button" onClick={() => removeCard(i)}
+                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                  <FiTrash2 className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-3">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Heading</label>
+                    <input type="text" value={card.heading || ''} onChange={(e) => updateCard(i, 'heading', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Button Text</label>
+                    <input type="text" value={card.button_text || 'View More'} onChange={(e) => updateCard(i, 'button_text', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                  <textarea value={card.description || ''} onChange={(e) => updateCard(i, 'description', e.target.value)} rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                </div>
+                <ImageUploader value={card.image_url} onChange={(v) => updateCard(i, 'image_url', v)} label="Image" />
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-medium text-gray-600">Bullet Points</label>
+                    <button type="button" onClick={() => addBullet(i)}
+                      className="text-xs text-brand-accent hover:text-brand-blue font-medium flex items-center gap-0.5">
+                      <FiPlus className="w-3 h-3" /> Add
+                    </button>
+                  </div>
+                  <div className="space-y-1.5">
+                    {(card.bullets || []).map((b, j) => (
+                      <div key={j} className="flex items-center gap-1.5">
+                        <span className="text-gray-400">•</span>
+                        <input type="text" value={b} onChange={(e) => updateBullet(i, j, e.target.value)}
+                          className="flex-1 px-2.5 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                          placeholder="Bullet point" />
+                        <button type="button" onClick={() => removeBullet(i, j)}
+                          className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Button Link</label>
+                    <input type="text" value={card.button_link || '#'} onChange={(e) => updateCard(i, 'button_link', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
-function IconSelect({ value, onChange }) {
+function ServicesEditor({ data, onChange }) {
+  const content = data?.content || {};
+  function updateContent(name, value) {
+    onChange({ ...data, content: { ...content, [name]: value } });
+  }
+
+  const services = content.services_list || [];
+  const cards = content.service_cards || [];
+
+  function addService() { updateContent('services_list', [...services, { icon_name: 'FiBriefcase', title: '', description: '' }]); }
+  function updateService(idx, field, value) {
+    const u = services.map((s, i) => i === idx ? { ...s, [field]: value } : s);
+    updateContent('services_list', u);
+  }
+  function removeService(idx) { updateContent('services_list', services.filter((_, i) => i !== idx)); }
+
+  function addCard() { updateContent('service_cards', [...cards, { image_url: '', title: '', description: '' }]); }
+  function updateCard(idx, field, value) {
+    const u = cards.map((c, i) => i === idx ? { ...c, [field]: value } : c);
+    updateContent('service_cards', u);
+  }
+  function removeCard(idx) { updateContent('service_cards', cards.filter((_, i) => i !== idx)); }
+
   return (
-    <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1.5">Icon</label>
-      <select value={value || ''} onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all bg-white">
-        <option value="">Select icon...</option>
-        {iconOptions.map((opt) => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
-        ))}
-      </select>
+    <div className="space-y-4">
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <input type="text" value={data?.heading || ''} onChange={(e) => onChange({ ...data, heading: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <input type="text" value={data?.subheading || ''} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Intro Paragraph</label>
+        <textarea value={content.intro || ''} onChange={(e) => updateContent('intro', e.target.value)} rows={3}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Left Column Heading</label>
+          <input type="text" value={content.left_heading || ''} onChange={(e) => updateContent('left_heading', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
+          <input type="text" value={content.cta_text || ''} onChange={(e) => updateContent('cta_text', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Left Column Description</label>
+        <textarea value={content.left_description || ''} onChange={(e) => updateContent('left_description', e.target.value)} rows={3}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4">
+        <ImageUploader value={content.left_image_url} onChange={(v) => updateContent('left_image_url', v)} label="Left Column Image" />
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Link</label>
+          <input type="text" value={content.cta_link || '#'} onChange={(e) => updateContent('cta_link', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+        </div>
+      </div>
+
+      <div className="border-t border-gray-200 pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-gray-700">Services List (3 items)</h4>
+          <Button type="button" onClick={addService} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Service</Button>
+        </div>
+        <div className="space-y-3">
+          {services.map((s, i) => (
+            <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Service {i + 1}</span>
+                <button type="button" onClick={() => removeService(i)}
+                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
+                  <input type="text" value={s.title || ''} onChange={(e) => updateService(i, 'title', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Icon (Fi* name)</label>
+                  <input type="text" value={s.icon_name || 'FiBriefcase'} onChange={(e) => updateService(i, 'icon_name', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="FiBriefcase" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                  <input type="text" value={s.description || ''} onChange={(e) => updateService(i, 'description', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="border-t border-gray-200 pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-gray-700">Service Cards (4 items)</h4>
+          <Button type="button" onClick={addCard} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Card</Button>
+        </div>
+        <div className="space-y-3">
+          {cards.map((c, i) => (
+            <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Card {i + 1}</span>
+                <button type="button" onClick={() => removeCard(i)}
+                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
+              </div>
+              <div className="space-y-3">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
+                    <input type="text" value={c.title || ''} onChange={(e) => updateCard(i, 'title', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                    <input type="text" value={c.description || ''} onChange={(e) => updateCard(i, 'description', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                  </div>
+                </div>
+                <ImageUploader value={c.image_url} onChange={(v) => updateCard(i, 'image_url', v)} label="Image" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
 function SectionEditor({ def, data, onChange }) {
-  if (def.isAccordion) {
-    return <AccordionEditor def={def} data={data} onChange={onChange} />;
+  if (def.isFeatureCards) {
+    return <FeatureCardsEditor data={data} onChange={onChange} />;
   }
-
-  if (def.isTabs) {
-    return <TabsSectionEditor data={data} onChange={onChange} />;
+  if (def.isServices) {
+    return <ServicesEditor data={data} onChange={onChange} />;
   }
-
   if (def.isList) {
-    return <ListEditor def={def} data={data} onChange={onChange} />;
+    return <SimpleListEditor def={def} data={data} onChange={onChange} />;
   }
-
   return <FieldEditor def={def} data={data} onChange={onChange} />;
 }
 
@@ -390,25 +449,31 @@ function FieldEditor({ def, data, onChange }) {
   return (
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Heading">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-            placeholder="Section heading" />
-        </Field>
-        <Field label="Subheading">
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section heading" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-            placeholder="Section subheading (optional)" />
-        </Field>
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section subheading" />
+        </div>
       </div>
       {def.fields.map((f) => (
         <RenderField key={f.name} field={f} value={content[f.name]} onChange={(v) => updateContent(f.name, v)} />
       ))}
+      {def.hasList && (
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3">{def.listLabel || 'List Items'}</h4>
+          <ListEditor def={{ ...def, listKey: def.listKey || 'stats' }} data={data} onChange={onChange} />
+        </div>
+      )}
     </div>
   );
 }
 
-function ListEditor({ def, data, onChange }) {
+function SimpleListEditor({ def, data, onChange }) {
   const items = data?.content?.items || [];
   const heading = data?.heading || '';
   const subheading = data?.subheading || '';
@@ -418,12 +483,10 @@ function ListEditor({ def, data, onChange }) {
     def.itemFields.forEach((f) => { newItem[f.name] = ''; });
     onChange({ ...data, content: { ...(data?.content || {}), items: [...items, newItem] } });
   }
-
   function updateItem(idx, field, value) {
     const updated = items.map((item, i) => i === idx ? { ...item, [field]: value } : item);
     onChange({ ...data, content: { ...(data?.content || {}), items: updated } });
   }
-
   function removeItem(idx) {
     onChange({ ...data, content: { ...(data?.content || {}), items: items.filter((_, i) => i !== idx) } });
   }
@@ -431,20 +494,22 @@ function ListEditor({ def, data, onChange }) {
   return (
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Heading">
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-        </Field>
-        <Field label="Subheading">
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-        </Field>
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+        </div>
       </div>
       <div className="space-y-3">
         {items.map((item, i) => (
           <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{def.label.slice(0, -1)} {i + 1}</span>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{(def.label || 'Item').slice(0, -1)} {i + 1}</span>
               <button type="button" onClick={() => removeItem(i)}
                 className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                 <FiTrash2 className="w-4 h-4" />
@@ -453,18 +518,13 @@ function ListEditor({ def, data, onChange }) {
             <div className="space-y-3">
               {def.itemFields.map((f) => (
                 <div key={f.name}>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">{f.label}</label>
                   {f.type === 'textarea' ? (
-                    <Field label={f.label}>
-                      <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-                    </Field>
-                  ) : f.type === 'icon' ? (
-                    <IconSelect value={item[f.name]} onChange={(v) => updateItem(i, f.name, v)} />
+                    <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
                   ) : (
-                    <Field label={f.label}>
-                      <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-                    </Field>
+                    <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
                   )}
                 </div>
               ))}
@@ -472,71 +532,8 @@ function ListEditor({ def, data, onChange }) {
           </div>
         ))}
         <Button type="button" onClick={addItem} variant="link-add" size="sm">
-          <FiPlus className="w-4 h-4" /> Add {def.label.slice(0, -1)}
+          <FiPlus className="w-4 h-4" /> Add {def.label ? def.label.slice(0, -1) : 'Item'}
         </Button>
-      </div>
-    </div>
-  );
-}
-
-function AccordionEditor({ def, data, onChange }) {
-  const heading = data?.heading || '';
-  const subheading = data?.subheading || '';
-  const content = data?.content || {};
-  const items = content.items || [];
-
-  function updateContent(name, value) {
-    onChange({ ...data, content: { ...content, [name]: value } });
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Heading">
-          <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-        </Field>
-        <Field label="Subheading">
-          <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-        </Field>
-      </div>
-      {def.fields.map((f) => (
-        <RenderField key={f.name} field={f} value={content[f.name]} onChange={(v) => updateContent(f.name, v)} />
-      ))}
-      <div className="border-t border-gray-200 pt-4">
-        <h4 className="text-sm font-semibold text-gray-700 mb-3">Accordion Items</h4>
-        <AccordionItemsEditor items={items} onChange={(v) => updateContent('items', v)} />
-      </div>
-    </div>
-  );
-}
-
-function TabsSectionEditor({ data, onChange }) {
-  const heading = data?.heading || '';
-  const subheading = data?.subheading || '';
-  const content = data?.content || {};
-  const tabs = content.tabs || [];
-
-  function updateContent(name, value) {
-    onChange({ ...data, content: { ...content, [name]: value } });
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Heading">
-          <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-        </Field>
-        <Field label="Subheading">
-          <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
-        </Field>
-      </div>
-      <div className="border-t border-gray-200 pt-4">
-        <h4 className="text-sm font-semibold text-gray-700 mb-3">Tabs</h4>
-        <TabsEditor tabs={tabs} onChange={(v) => updateContent('tabs', v)} />
       </div>
     </div>
   );
@@ -548,36 +545,28 @@ function RenderField({ field, value, onChange }) {
   }
   if (field.type === 'textarea') {
     return (
-      <Field label={field.label}>
+      <div>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
         <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-          placeholder={field.label} />
-      </Field>
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+      </div>
     );
   }
   if (field.type === 'multiline') {
     return (
-      <Field label={field.label}>
+      <div>
+        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
         <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={4}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all font-mono text-xs"
-          placeholder={`Enter one ${field.label.toLowerCase()} per line`} />
-      </Field>
+          placeholder={`Enter one per line`} />
+      </div>
     );
   }
   return (
-    <Field label={field.label}>
-      <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-        placeholder={`Enter ${field.label.toLowerCase()}`} />
-    </Field>
-  );
-}
-
-function Field({ label, children }) {
-  return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+      <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
     </div>
   );
 }
@@ -656,9 +645,9 @@ export default function HomePageEditor() {
             <FiArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-          <h1 className="text-2xl font-bold text-dark-navy">Home Page Editor</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage all sections displayed on the home page</p>
-        </div>
+            <h1 className="text-2xl font-bold text-dark-navy">Home Page Editor</h1>
+            <p className="text-sm text-gray-500 mt-1">Manage all sections displayed on the home page</p>
+          </div>
         </div>
         <Button onClick={handleSave} disabled={saving} variant="accent" size="md">
           <FiSave className="w-4 h-4" />
