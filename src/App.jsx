@@ -107,6 +107,8 @@ function AnimatedRoutes() {
       <Route path="/blog/:slug" element={<Blog />} />
       <Route path="/courses" element={<Courses />} />
       <Route path="/courses/category/:categorySlug" element={<Courses />} />
+      <Route path="/software-learning" element={<Courses />} />
+      <Route path="/competitive-exam" element={<Courses />} />
       <Route path="/courses/:slug" element={<CourseDetail />} />
       <Route path="/career" element={<Career />} />
       <Route path="/:slug/*" element={<NavPage />} />

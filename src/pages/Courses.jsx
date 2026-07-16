@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, useParams } from "react-router-dom";
+import { useSearchParams, useParams, useLocation } from "react-router-dom";
 import { FiFilter, FiBookOpen, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { supabase } from "../lib/supabaseClient";
 import Button from "../components/ui/Button";
@@ -48,7 +48,9 @@ function Pagination({ page, total, onPage }) {
 export default function Courses() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { categorySlug } = useParams();
-  const activeCategory = searchParams.get("category") || categorySlug || null;
+  const { pathname } = useLocation();
+  const pathCategory = pathname.match(/^\/(software-learning|competitive-exam)$/)?.[1] || null;
+  const activeCategory = searchParams.get("category") || categorySlug || pathCategory || null;
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   function setPage(p) {

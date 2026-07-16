@@ -8,6 +8,7 @@ import { useSiteSettings } from '../../hooks/useSupabase';
 export const topNav = [
   { label: 'Home', path: '/' },
   { label: 'About', path: '/about' },
+  { label: 'Courses', path: '/courses' },
   { label: 'Software Learning' },
   { label: 'Competitive Exam' },
   { label: 'Services' },

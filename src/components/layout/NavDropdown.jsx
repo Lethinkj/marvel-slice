@@ -30,7 +30,17 @@ function DesktopNavItem({
   );
 
   const resolvedChildren = item.children || item._navChildren || navChildren || [];
-  const hasSub = resolvedChildren.length > 0;
+
+  const defaultViewAll = depth === 0 && !item.path
+    ? (item.label === 'Software Learning'
+        ? [...resolvedChildren, { label: 'View All', path: '/software-learning' }]
+        : item.label === 'Competitive Exam'
+          ? [...resolvedChildren, { label: 'View All', path: '/competitive-exam' }]
+          : null)
+    : null;
+
+  const allChildren = defaultViewAll || resolvedChildren;
+  const hasSub = allChildren.length > 0;
 
   const scheduleClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -137,7 +147,7 @@ function DesktopNavItem({
               data-submenu
             >
               <SubmenuItems
-                items={resolvedChildren}
+                items={allChildren}
                 depth={1}
                 currentPath={currentPath}
                 onItemClick={onItemClick}
@@ -186,7 +196,7 @@ function DesktopNavItem({
             data-submenu
           >
             <SubmenuItems
-              items={resolvedChildren}
+              items={allChildren}
               depth={depth + 1}
               currentPath={currentPath}
               onItemClick={onItemClick}

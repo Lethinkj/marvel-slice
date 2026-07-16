@@ -2,6 +2,16 @@ import Reveal from '../ui/Reveal';
 import { FiCheckCircle } from 'react-icons/fi';
 import Button from '../ui/Button';
 
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 export default function FeatureCardsSection({ section }) {
   if (!section) return null;
 
@@ -51,7 +61,7 @@ export default function FeatureCardsSection({ section }) {
                   <Button
                     variant="orange"
                     shape="xl"
-                    href={card.button_link || '#'}
+                    href={card.button_link || `/courses/category/${slugify(card.heading || '')}`}
                     className="mt-6"
                   >
                     {card.button_text || 'View More'}

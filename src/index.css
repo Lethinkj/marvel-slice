@@ -95,13 +95,13 @@ h3 {
    All content containers span full browser width with a small
    consistent side gap (~1–2 cm / 16–32px).
    ============================================================ */
-
+.max-w-12xl,
 .max-w-7xl,
 .max-w-6xl,
 .max-w-5xl,
 .max-w-4xl,
 .max-w-3xl {
-  max-width: 100%;
+  max-width: 1600px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
