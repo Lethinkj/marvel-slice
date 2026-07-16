@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import Button from "../../components/ui/Button";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 function ListEditor({ items, onChange, fields, labelKey = "label" }) {
@@ -91,7 +91,7 @@ export default function CourseEditor() {
   const navigate = useNavigate();
 
   // Redirect or show error if user is not an editor or admin
-  if (currentUser?.role !== "admin" && currentUser?.role !== "editor") {
+  if (currentUser?.role !== "admin" && currentUser?.role !== "editor" && currentUser?.role !== "master_admin") {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
@@ -123,6 +123,9 @@ export default function CourseEditor() {
     video_url: "",
     nav_item_id: "",
     is_published: true,
+    duration: "3 months",
+    mode: "Both",
+    status: "Active",
     checklist_items: [],
     highlights: [],
     overview_faqs: [],
@@ -131,6 +134,7 @@ export default function CourseEditor() {
     certifications: [],
     faqs: [],
     tabs: [],
+    curriculum: [],
   });
 
   useEffect(() => {
@@ -183,16 +187,15 @@ export default function CourseEditor() {
   }
 
   async function saveRelated(table, records) {
-    await supabase.from(table).delete().eq("course_id", id);
+    const { error: delErr } = await supabase.from(table).delete().eq("course_id", id);
+    if (delErr) throw new Error(delErr.message);
     if (records.length > 0) {
-      await supabase.from(table).insert(
-        records.map((r, i) => ({
-          ...r,
-          course_id: id,
-          sort_order: i,
-          id: undefined,
-        })),
-      );
+      const clean = records.map((r, i) => {
+        const { id: _, ...rest } = r;
+        return { ...rest, course_id: id, sort_order: i };
+      });
+      const { error: insErr } = await supabase.from(table).insert(clean);
+      if (insErr) throw new Error(insErr.message);
     }
   }
 
@@ -210,7 +213,11 @@ export default function CourseEditor() {
         video_url: course.video_url,
         nav_item_id: course.nav_item_id || null,
         is_published: course.is_published,
+        duration: course.duration,
+        mode: course.mode,
+        status: course.status,
         checklist_items: course.checklist_items,
+        curriculum: course.curriculum,
       };
       if (isNew) {
         const { data, error } = await supabase
@@ -230,6 +237,7 @@ export default function CourseEditor() {
         await saveRelated("overview_faqs", course.overview_faqs);
         await saveRelated("course_fees", course.course_fees);
         await saveRelated("projects", course.projects);
+        await saveRelated("course_tabs", course.tabs);
         await supabase.from("certifications").delete().eq("course_id", id);
         if (course.certifications.length > 0) {
           await supabase.from("certifications").insert(
@@ -269,6 +277,7 @@ export default function CourseEditor() {
 
   const editorTabs = [
     "basic",
+    "curriculum",
     "hero",
     "tabs",
     "highlights",
@@ -399,6 +408,35 @@ export default function CourseEditor() {
                   ))}
               </select>
             </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                <select value={course.duration} onChange={(e) => update("duration", e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                  {["1 month","2 months","3 months","4 months","6 months","8 months","12 months"].map(d => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Mode</label>
+                <select value={course.mode} onChange={(e) => update("mode", e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                  {["Online","Offline","Both"].map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select value={course.status} onChange={(e) => update("status", e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                  <option value="Active">Active</option>
+                  <option value="Coming Soon">Coming Soon</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -408,6 +446,57 @@ export default function CourseEditor() {
               />
               Published
             </label>
+          </div>
+        )}
+
+        {tab === "curriculum" && (
+          <div className="space-y-6 max-w-3xl">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-dark-navy">Curriculum / Modules</h2>
+              <Button onClick={() => update("curriculum", [...course.curriculum, { title: "", topics: [] }])} variant="link-add" size="sm">
+                <FiPlus className="w-4 h-4" /> Add Module
+              </Button>
+            </div>
+            {course.curriculum.length === 0 && (
+              <div className="text-center py-12 text-gray-400 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                <FiLayers className="w-10 h-10 mx-auto mb-2 opacity-40" />
+                <p className="text-sm">No modules yet. Click "Add Module" to build your curriculum.</p>
+              </div>
+            )}
+            <div className="space-y-3">
+              {course.curriculum.map((mod, i) => (
+                <div key={i} className="border border-gray-200 rounded-xl p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Module {i + 1}</span>
+                    <button onClick={() => update("curriculum", course.curriculum.filter((_, j) => j !== i))}
+                      className="p-1 text-red-400 hover:text-red-600 rounded hover:bg-red-50 transition-colors">
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <input value={mod.title || ""}
+                    onChange={(e) => { const n = [...course.curriculum]; n[i] = { ...n[i], title: e.target.value }; update("curriculum", n); }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-accent mb-3"
+                    placeholder="Module title (e.g. Introduction to HTML)" />
+                  <div className="space-y-2">
+                    {(mod.topics || []).map((topic, j) => (
+                      <div key={j} className="flex items-center gap-2">
+                        <span className="text-xs text-gray-400 w-5 text-right shrink-0">{j + 1}.</span>
+                        <input value={topic}
+                          onChange={(e) => { const n = [...course.curriculum]; const topics = [...(n[i].topics || [])]; topics[j] = e.target.value; n[i] = { ...n[i], topics }; update("curriculum", n); }}
+                          className="flex-1 px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                          placeholder="Topic" />
+                        <button onClick={() => { const n = [...course.curriculum]; n[i] = { ...n[i], topics: n[i].topics.filter((_, k) => k !== j) }; update("curriculum", n); }}
+                          className="p-1 text-red-300 hover:text-red-500 transition-colors">
+                          <FiTrash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                    <Button onClick={() => { const n = [...course.curriculum]; n[i] = { ...n[i], topics: [...(n[i].topics || []), ""] }; update("curriculum", n); }}
+                      variant="link-add" size="xs"><FiPlus className="w-3 h-3" /> Add Topic</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -548,48 +637,143 @@ export default function CourseEditor() {
                 </div>
                 {(t.content_type === "overview" ||
                   t.content_type === "syllabus") && (
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      Content Text
-                    </label>
-                    <textarea
-                      value={t.content?.text || ""}
-                      onChange={(e) => {
-                        const n = [...course.tabs];
-                        n[i] = {
-                          ...n[i],
-                          content: { ...n[i].content, text: e.target.value },
-                        };
-                        update("tabs", n);
-                      }}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                    />
-                  </div>
-                )}
-                {t.content_type === "overview" && (
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      List Items (one per line)
-                    </label>
-                    <textarea
-                      value={(t.content?.list_items || []).join("\n")}
-                      onChange={(e) => {
-                        const n = [...course.tabs];
-                        n[i] = {
-                          ...n[i],
-                          content: {
-                            ...n[i].content,
-                            list_items: e.target.value
-                              .split("\n")
-                              .filter(Boolean),
-                          },
-                        };
-                        update("tabs", n);
-                      }}
-                      rows={5}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                    />
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Heading (centered)</label>
+                      <input
+                        value={t.content?.heading || ""}
+                        onChange={(e) => {
+                          const n = [...course.tabs];
+                          n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } };
+                          update("tabs", n);
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                        placeholder="Main heading"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Paragraph</label>
+                      <textarea
+                        value={t.content?.paragraph || ""}
+                        onChange={(e) => {
+                          const n = [...course.tabs];
+                          n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } };
+                          update("tabs", n);
+                        }}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                        placeholder="Paragraph text"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Sub Heading</label>
+                      <input
+                        value={t.content?.subheading || ""}
+                        onChange={(e) => {
+                          const n = [...course.tabs];
+                          n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } };
+                          update("tabs", n);
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                        placeholder="Sub heading"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-xs font-medium text-gray-600">Q&A Items</label>
+                        <button
+                          onClick={() => {
+                            const n = [...course.tabs];
+                            const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }];
+                            n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                            update("tabs", n);
+                          }}
+                          className="text-xs text-brand-accent font-semibold hover:underline"
+                        >
+                          + Add Question
+                        </button>
+                      </div>
+                      <div className="space-y-3">
+                        {(t.content?.qa || []).map((qa, qi) => (
+                          <div key={qi} className="border border-gray-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-semibold text-gray-500">Question {qi + 1}</span>
+                              <button
+                                onClick={() => {
+                                  const n = [...course.tabs];
+                                  const qa = n[i].content.qa.filter((_, j) => j !== qi);
+                                  n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                  update("tabs", n);
+                                }}
+                                className="text-xs text-red-500 hover:underline"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                            <input
+                              value={qa.question}
+                              onChange={(e) => {
+                                const n = [...course.tabs];
+                                const qa = [...n[i].content.qa];
+                                qa[qi] = { ...qa[qi], question: e.target.value };
+                                n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                update("tabs", n);
+                              }}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-2"
+                              placeholder="Question"
+                            />
+                            <div>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs text-gray-500">Answers (one per line)</span>
+                                <button
+                                  onClick={() => {
+                                    const n = [...course.tabs];
+                                    const qa = [...n[i].content.qa];
+                                    qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] };
+                                    n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                    update("tabs", n);
+                                  }}
+                                  className="text-xs text-brand-accent hover:underline"
+                                >
+                                  + Add bullet
+                                </button>
+                              </div>
+                              {qa.answers.map((ans, ai) => (
+                                <div key={ai} className="flex items-center gap-2 mb-1">
+                                  <span className="text-xs text-gray-400">•</span>
+                                  <input
+                                    value={ans}
+                                    onChange={(e) => {
+                                      const n = [...course.tabs];
+                                      const qa = [...n[i].content.qa];
+                                      const answers = [...qa[qi].answers];
+                                      answers[ai] = e.target.value;
+                                      qa[qi] = { ...qa[qi], answers };
+                                      n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                      update("tabs", n);
+                                    }}
+                                    className="flex-1 px-2 py-1 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                                    placeholder="Answer bullet"
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      const n = [...course.tabs];
+                                      const qa = [...n[i].content.qa];
+                                      qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) };
+                                      n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                      update("tabs", n);
+                                    }}
+                                    className="text-xs text-red-400 hover:text-red-600"
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

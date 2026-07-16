@@ -7,7 +7,6 @@ import { FiMenu, FiExternalLink, FiLogOut } from 'react-icons/fi';
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -20,15 +19,13 @@ export default function AdminLayout() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar
         mobileOpen={sidebarOpen}
         onMobileClose={() => setSidebarOpen(false)}
-        collapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0" onClick={() => { if (!sidebarCollapsed) setSidebarCollapsed(true); }}>
+      <div className="flex-1 flex flex-col min-w-0" onClick={() => { if (sidebarOpen) setSidebarOpen(false); }}>
         <header className="bg-white border-b border-gray-200 px-4 lg:px-6 flex items-center justify-between h-14 shrink-0">
           <div className="flex items-center gap-3">
             <button

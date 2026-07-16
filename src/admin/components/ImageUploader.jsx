@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import { FiUpload, FiX, FiCopy } from 'react-icons/fi';
+import { FiUpload, FiX, FiCopy, FiLink } from 'react-icons/fi';
 
 export default function ImageUploader({
   bucket = 'course-thumbnails',
@@ -9,6 +9,8 @@ export default function ImageUploader({
 }) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(value);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   const inputRef = useRef(null);
 
   async function handleFile(e) {
@@ -16,6 +18,7 @@ export default function ImageUploader({
     if (!file) return;
 
     setUploading(true);
+    setUploadError('');
     const filePath = `${Date.now()}-${file.name}`;
 
     const { error } = await supabase.storage
@@ -23,7 +26,8 @@ export default function ImageUploader({
       .upload(filePath, file);
 
     if (error) {
-      alert('Upload failed: ' + error.message);
+      setUploadError(`Upload failed. Use URL option below instead.`);
+      setShowUrlInput(true);
       setUploading(false);
       return;
     }
@@ -38,6 +42,11 @@ export default function ImageUploader({
     setUploading(false);
   }
 
+  function handleUrlChange(url) {
+    setPreview(url);
+    onChange(url);
+  }
+
   function copyUrl() {
     navigator.clipboard.writeText(value);
   }
@@ -45,6 +54,7 @@ export default function ImageUploader({
   function remove() {
     setPreview('');
     onChange('');
+    setShowUrlInput(false);
     if (inputRef.current) inputRef.current.value = '';
   }
 
@@ -53,7 +63,7 @@ export default function ImageUploader({
       <div className="flex items-center gap-3">
         <label className="cursor-pointer flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-sm px-4 py-2 rounded-md transition-colors">
           <FiUpload className="w-4 h-4" />
-          {uploading ? 'Uploading...' : 'Upload Image'}
+          {uploading ? 'Uploading...' : 'Upload'}
           <input
             ref={inputRef}
             type="file"
@@ -63,6 +73,16 @@ export default function ImageUploader({
             disabled={uploading}
           />
         </label>
+        <button
+          onClick={() => setShowUrlInput(!showUrlInput)}
+          className={`flex items-center gap-1 text-sm px-3 py-2 rounded-md transition-colors ${
+            showUrlInput ? 'bg-brand-accent/10 text-brand-accent' : 'text-gray-500 hover:text-brand-accent'
+          }`}
+          title="Paste image URL"
+        >
+          <FiLink className="w-3.5 h-3.5" />
+          URL
+        </button>
         {value && (
           <>
             <button
@@ -84,6 +104,24 @@ export default function ImageUploader({
           </>
         )}
       </div>
+
+      {showUrlInput && (
+        <div className="space-y-2">
+          {uploadError && (
+            <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+              {uploadError}
+            </p>
+          )}
+          <input
+            type="text"
+            value={value || ''}
+            onChange={(e) => handleUrlChange(e.target.value)}
+            placeholder="Paste image URL here..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+          />
+        </div>
+      )}
+
       {preview && (
         <img
           src={preview}

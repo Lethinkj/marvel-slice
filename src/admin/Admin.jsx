@@ -9,6 +9,8 @@ import SiteSettings from './pages/SiteSettings';
 import NavMenuManager from './pages/NavMenuManager';
 import CoursesList from './pages/CoursesList';
 import CourseEditor from './pages/CourseEditor';
+import CourseWizard from './pages/CourseWizard';
+import CourseReports from './pages/CourseReports';
 import PromoBannerManager from './pages/PromoBannerManager';
 import AlumniCompaniesManager from './pages/AlumniCompaniesManager';
 import TagsManager from './pages/TagsManager';
@@ -20,11 +22,14 @@ import HomePageEditor from './pages/HomePageEditor';
 import AboutPageEditor from './pages/AboutPageEditor';
 import ContactPageEditor from './pages/ContactPageEditor';
 import CareerPageEditor from './pages/CareerPageEditor';
+import ServicesPageEditor from './pages/ServicesPageEditor';
+import TrainingPageEditor from './pages/TrainingPageEditor';
+import CareerSubmissions from './pages/CareerSubmissions';
 import BlogManager from './pages/BlogManager';
 import BlogPostEditor from './pages/BlogPostEditor';
 import BlogCategoriesManager from './pages/BlogCategoriesManager';
 
-const pageSlugToEditor = { about: 'about', contact: 'contact', career: 'career' };
+const pageSlugToEditor = { about: 'about', contact: 'contact', career: 'career', services: 'services', training: 'training' };
 
 function PageEditorRedirect() {
   const { slug } = useParams();
@@ -95,6 +100,8 @@ export default function Admin() {
           <Route path="site-settings" element={<SiteSettings />} />
           <Route path="nav-menu" element={<NavMenuManager />} />
           <Route path="courses" element={<CoursesList />} />
+          <Route path="courses/wizard" element={<CourseWizard />} />
+          <Route path="courses/reports" element={<CourseReports />} />
           <Route path="courses/:id" element={<CourseEditor />} />
           <Route path="promo-banner" element={<PromoBannerManager />} />
           <Route path="alumni" element={<AlumniCompaniesManager />} />
@@ -103,10 +110,15 @@ export default function Admin() {
           <Route path="media" element={<MediaLibrary />} />
           <Route path="admin-users" element={<AdminUsersManager />} />
           <Route path="nav-pages/:id" element={<NavPageEditor />} />
-          <Route path="home-page" element={<HomePageEditor />} />
+          <Route path="home-page" element={<Navigate to="/admin/home/hero" replace />} />
+          <Route path="home" element={<HomePageEditor />} />
+          <Route path="home/:section" element={<HomePageEditor />} />
           <Route path="about-page" element={<AboutPageEditor />} />
           <Route path="contact-page" element={<ContactPageEditor />} />
           <Route path="career-page" element={<CareerPageEditor />} />
+          <Route path="services-page" element={<ServicesPageEditor />} />
+          <Route path="training-page" element={<TrainingPageEditor />} />
+          <Route path="career-submissions" element={<CareerSubmissions />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
           <Route path="blog" element={<BlogManager />} />
           <Route path="blog/:id" element={<BlogPostEditor />} />

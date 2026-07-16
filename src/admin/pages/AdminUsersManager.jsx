@@ -13,18 +13,23 @@ import {
   FiX,
 } from "react-icons/fi";
 
-const roles = [
-  { value: "admin", label: "Admin", desc: "Full access" },
-  { value: "editor", label: "Editor", desc: "Manage content" },
-  { value: "manager", label: "Manager", desc: "Manage content & users" },
+const ALL_ROLES = [
+  { value: "master_admin", label: "Master Admin", desc: "Full access — can create all roles", rank: 4 },
+  { value: "admin", label: "Admin", desc: "Full access", rank: 3 },
+  { value: "manager", label: "Manager", desc: "Manage content & users", rank: 2 },
+  { value: "editor", label: "Editor", desc: "Manage content", rank: 1 },
 ];
+
+const ROLE_RANK = Object.fromEntries(ALL_ROLES.map((r) => [r.value, r.rank]));
 
 export default function AdminUsersManager() {
   const { user: currentUser } = useAuth();
-  const [role, setRole] = useState("editor");
+  const userRank = ROLE_RANK[currentUser?.role] || 0;
+  const availableRoles = currentUser?.role === 'master_admin' ? ALL_ROLES : ALL_ROLES.filter((r) => r.rank < userRank);
+  const [role, setRole] = useState(availableRoles[0]?.value || "editor");
 
-  // Redirect or show error if user is not an admin
-  if (currentUser?.role !== "admin") {
+  // Redirect or show error if user has no create permission
+  if (userRank < 2) {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
@@ -77,7 +82,7 @@ export default function AdminUsersManager() {
     setEditingId(u.id);
     setEmail(u.email);
     setName(u.full_name);
-    setRole(u.role || "editor"); // Ensure role is set to a valid default
+    setRole(availableRoles.some((r) => r.value === u.role) ? u.role : availableRoles[0]?.value || "editor");
     setPassword("");
     setError("");
   }
@@ -241,7 +246,7 @@ export default function AdminUsersManager() {
                 onChange={(e) => setRole(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all bg-white appearance-none cursor-pointer"
               >
-                {roles.map((r) => (
+                {availableRoles.map((r) => (
                   <option key={r.value} value={r.value}>
                     {r.label} — {r.desc}
                   </option>
@@ -335,31 +340,35 @@ export default function AdminUsersManager() {
                 </div>
                 <span
                   className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    u.role === "admin"
-                      ? "bg-brand-accent/10 text-brand-accent"
-                      : u.role === "manager"
-                        ? "bg-purple-50 text-purple-600"
-                        : "bg-gray-100 text-gray-600"
+                    u.role === "master_admin"
+                      ? "bg-red-50 text-red-600"
+                      : u.role === "admin"
+                        ? "bg-brand-accent/10 text-brand-accent"
+                        : u.role === "manager"
+                          ? "bg-purple-50 text-purple-600"
+                          : "bg-gray-100 text-gray-600"
                   }`}
                 >
-                  {u.role}
+                  {u.role.replace('_', ' ')}
                 </span>
-                {currentUser?.id !== u.id && (
-                  <button
-                    onClick={() => deleteUser(u.id)}
-                    className="p-2 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                    title="Remove"
-                  >
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
+                {((ROLE_RANK[u.role] || 0) < userRank || currentUser?.role === 'master_admin') && currentUser?.id !== u.id && (
+                  <>
+                    <button
+                      onClick={() => deleteUser(u.id)}
+                      className="p-2 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      title="Remove"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => startEdit(u)}
+                      className="p-2 text-gray-300 hover:text-brand-accent hover:bg-brand-accent/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                      title="Edit"
+                    >
+                      <FiEdit2 className="w-4 h-4" />
+                    </button>
+                  </>
                 )}
-                <button
-                  onClick={() => startEdit(u)}
-                  className="p-2 text-gray-300 hover:text-brand-accent hover:bg-brand-accent/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                  title="Edit"
-                >
-                  <FiEdit2 className="w-4 h-4" />
-                </button>
               </div>
             ))}
           </div>

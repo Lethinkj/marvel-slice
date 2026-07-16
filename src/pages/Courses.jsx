@@ -1,16 +1,61 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useParams } from "react-router-dom";
-import { FiFilter, FiBookOpen } from "react-icons/fi";
+import { FiFilter, FiBookOpen, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { supabase } from "../lib/supabaseClient";
 import Button from "../components/ui/Button";
 import CourseCard from "../components/ui/CourseCard";
 import Reveal, { Stagger, StaggerItem } from "../components/ui/Reveal";
 
+const PER_PAGE = 5;
+
+function Pagination({ page, total, onPage }) {
+  const last = Math.ceil(total / PER_PAGE);
+  if (last <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-2 mt-10">
+      <button
+        onClick={() => onPage(page - 1)}
+        disabled={page <= 1}
+        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-brand-accent hover:border-brand-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+      >
+        <FiChevronLeft className="w-4 h-4" />
+      </button>
+      {Array.from({ length: last }, (_, i) => i + 1).map((p) => (
+        <button
+          key={p}
+          onClick={() => onPage(p)}
+          className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${
+            p === page
+              ? "bg-brand-accent text-white shadow-sm"
+              : "border border-gray-200 text-gray-600 hover:border-brand-accent hover:text-brand-accent"
+          }`}
+        >
+          {p}
+        </button>
+      ))}
+      <button
+        onClick={() => onPage(page + 1)}
+        disabled={page >= last}
+        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-brand-accent hover:border-brand-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+      >
+        <FiChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
 export default function Courses() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { categorySlug } = useParams();
   const activeCategory = searchParams.get("category") || categorySlug || null;
+  const page = parseInt(searchParams.get("page") || "1", 10);
+
+  function setPage(p) {
+    const next = new URLSearchParams(searchParams);
+    if (p <= 1) next.delete("page"); else next.set("page", String(p));
+    setSearchParams(next);
+  }
 
   const { data: courses, isLoading } = useQuery({
     queryKey: ["allCourses"],
@@ -31,7 +76,6 @@ export default function Courses() {
       const { data } = await supabase
         .from("nav_items")
         .select("id, label, path, parent_label, parent_id")
-        .not("parent_label", "is", null)
         .eq("is_active", true)
         .order("sort_order");
       return data || [];
@@ -49,9 +93,11 @@ export default function Courses() {
         courseIds.has(ni.id) ||
         courses.some((c) => c.nav_item_id === ni.id)
       ) {
-        const slug =
-          ni.path?.replace(/^\/courses\/?/, "") ||
-          ni.label.toLowerCase().replace(/\s+/g, "-");
+        let slug = ni.label.toLowerCase().replace(/\s+/g, "-");
+        if (ni.path) {
+          const m = ni.path.match(/\/courses\/category\/(.+)/) || ni.path.match(/\/(.+)/);
+          if (m) slug = m[1];
+        }
         if (!map[ni.id]) {
           map[ni.id] = { id: ni.id, label: ni.label, slug, courses: [] };
         }
@@ -71,6 +117,14 @@ export default function Courses() {
     const cat = categories.find((c) => c.slug === activeCategory);
     return cat ? cat.courses : [];
   }, [courses, categories, activeCategory]);
+
+  const paginatedCourses = useMemo(() => {
+    const source = activeCategory ? filteredCourses : (courses || []);
+    const start = (page - 1) * PER_PAGE;
+    return source.slice(start, start + PER_PAGE);
+  }, [courses, filteredCourses, activeCategory, page]);
+
+  const totalItems = activeCategory ? filteredCourses.length : (courses?.length || 0);
 
   const activeLabel = activeCategory
     ? categories.find((c) => c.slug === activeCategory)?.label || activeCategory
@@ -133,17 +187,16 @@ export default function Courses() {
           <p className="text-text-gray">No courses found in this category.</p>
         </div>
       ) : activeCategory ? (
-        <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredCourses.map((course) => (
-            <StaggerItem key={course.id} className="h-full">
-              <CourseCard
-                course={course}
-                bannerSize="lg"
-                showViewLink
-              />
-            </StaggerItem>
-          ))}
-        </Stagger>
+        <>
+          <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {paginatedCourses.map((course) => (
+              <StaggerItem key={course.id} className="h-full">
+                <CourseCard course={course} bannerSize="lg" showViewLink />
+              </StaggerItem>
+            ))}
+          </Stagger>
+          <Pagination page={page} total={totalItems} onPage={setPage} />
+        </>
       ) : (
         <div className="space-y-12 sm:space-y-16">
           {categories.map((cat) => (

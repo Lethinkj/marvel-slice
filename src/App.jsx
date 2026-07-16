@@ -19,6 +19,82 @@ function ScrollToTop() {
   return null;
 }
 
+function DataPrefetcher() {
+
+  useQuery({
+    queryKey: ['siteSettings'],
+    queryFn: () => supabase.from('site_settings').select('*').maybeSingle(),
+  });
+
+  useQuery({
+    queryKey: ['topNavItems'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('nav_items')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
+      if (error) throw error;
+      return (data || []).filter((item) => !item.parent_id && !item.parent_label);
+    },
+  });
+
+  useQuery({
+    queryKey: ['homeSections'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('home_sections')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
+      if (error) {
+        if (error.code === '42P01') return [];
+        throw error;
+      }
+      return data || [];
+    },
+  });
+
+  useQuery({
+    queryKey: ['promoBanner'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('promo_banners')
+        .select('*')
+        .eq('is_active', true)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useQuery({
+    queryKey: ['alumniCompanies'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('alumni_companies')
+        .select('*')
+        .order('sort_order');
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useQuery({
+    queryKey: ['footer'],
+    queryFn: async () => {
+      const { data: columns, error } = await supabase
+        .from('footer_columns')
+        .select('*, footer_links(*)')
+        .order('sort_order');
+      if (error) throw error;
+      return columns;
+    },
+  });
+
+  return null;
+}
+
 // Fades/slides each page in and out on route changes.
 function AnimatedRoutes() {
   const location = useLocation();
@@ -33,7 +109,7 @@ function AnimatedRoutes() {
       <Route path="/courses/category/:categorySlug" element={<Courses />} />
       <Route path="/courses/:slug" element={<CourseDetail />} />
       <Route path="/career" element={<Career />} />
-      <Route path="/:slug" element={<NavPage />} />
+      <Route path="/:slug/*" element={<NavPage />} />
     </Routes>
   );
 

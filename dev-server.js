@@ -1,3 +1,4 @@
+import http from 'node:http';
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
@@ -8,16 +9,22 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+const PORT = process.env.DEV_API_PORT || 3001;
 
-  const { full_name, email, phone, department, category, description, file_url } = req.body;
+function row(label, value) {
+  return `<tr>
+    <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #5F6B7A; font-size: 13px; width: 120px; vertical-align: top;">${label}</td>
+    <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #1B2333; font-size: 14px;">${value}</td>
+  </tr>`;
+}
+
+async function handler(body) {
+  const { full_name, email, phone, department, category, description, file_url } = body;
 
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!adminEmail || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
-    return res.status(200).json({ success: true });
+    console.log('[dev-server] Skipping email — SMTP not configured');
+    return { success: true };
   }
 
   const submittedAt = new Date().toLocaleString('en-US', {
@@ -48,7 +55,7 @@ export default async function handler(req, res) {
         </table>
       </div>
       <div style="padding: 16px 32px; background: #F5F6F8; font-size: 12px; color: #5F6B7A; text-align: center; border-top: 1px solid #e5e7eb;">
-        Marvel Slice \u2014 Career Page
+        Marvel Slice — Career Page
       </div>
     </div>`;
 
@@ -84,16 +91,47 @@ export default async function handler(req, res) {
       subject: 'Application Received — Marvel Slice',
       html: autoReplyHtml,
     });
-  } catch (emailError) {
-    console.error('Email send failed:', emailError);
+    console.log('[dev-server] Emails sent successfully');
+  } catch (err) {
+    console.error('[dev-server] Email send failed:', err);
   }
 
-  return res.status(200).json({ success: true });
+  return { success: true };
 }
 
-function row(label, value) {
-  return `<tr>
-    <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #5F6B7A; font-size: 13px; width: 120px; vertical-align: top;">${label}</td>
-    <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #1B2333; font-size: 14px;">${value}</td>
-  </tr>`;
-}
+const server = http.createServer(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
+  if (req.method !== 'POST' || !req.url?.startsWith('/api/')) {
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Not found' }));
+    return;
+  }
+
+  let body = '';
+  req.on('data', (chunk) => { body += chunk; });
+  req.on('end', async () => {
+    try {
+      const parsed = JSON.parse(body);
+      const result = await handler(parsed);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(result));
+    } catch (err) {
+      console.error('[dev-server] Error:', err);
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Bad request' }));
+    }
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`[dev-server] API server running on http://localhost:${PORT}`);
+});

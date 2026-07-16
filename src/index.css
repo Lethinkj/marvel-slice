@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Inter', sans-serif;
-  --color-brand-blue: #0B2D6B;
-  --color-brand-accent: #1E56C7;
-  --color-brand-orange: #F5821F;
-  --color-brand-purple: #5B3FD9;
-  --color-dark-navy: #1B2333;
-  --color-text-gray: #5F6B7A;
-  --color-bg-light: #F5F6F8;
-  --color-brand-green: #10B981;
+  --font-sans: 'Montserrat', sans-serif;
+  --color-brand-orange: #ff8415;
+  --color-brand-blue: #1B3A6B;
+  --color-brand-bright-blue: #175cdd;
+  --color-brand-green: #74a916;
+  --color-brand-accent: #ff8415;
+  --color-dark-navy: #1B3A6B;
+  --color-text-gray: #333333;
+  --color-bg-light: #F5F5F5;
+  --color-brand-navy-dark: #0F2440;
+  --color-top-blue: #175cdd;
 }
 
 html {
@@ -18,8 +20,8 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--color-dark-navy);
   text-rendering: optimizeLegibility;
@@ -40,4 +42,93 @@ h1, h2, h3, h4, p, span, a, li {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Global card shadow enhancement */
+.bg-white.rounded-xl,
+.bg-white.rounded-2xl,
+.bg-white.rounded-lg,
+.bg-white.rounded-3xl,
+.bg-white.rounded-sm {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+}
+
+.bg-white.rounded-\[18px\] {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+}
+
+/* Section containers with white background */
+section.bg-white {
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Navbar */
+nav {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Footer */
+footer {
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Heading size defaults */
+h1 { font-size: 44px; }
+h2 { font-size: 32px; }
+h3 { font-size: 18px; }
+
+/* ============================================================
+   FULL-WIDTH LAYOUT SYSTEM
+   All content containers span full browser width with a small
+   consistent side gap (~1–2 cm / 16–32px).
+   ============================================================ */
+
+.max-w-7xl,
+.max-w-6xl,
+.max-w-5xl,
+.max-w-4xl,
+.max-w-3xl {
+  max-width: 100%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .max-w-7xl,
+  .max-w-6xl,
+  .max-w-5xl,
+  .max-w-4xl,
+  .max-w-3xl {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .max-w-7xl,
+  .max-w-6xl,
+  .max-w-5xl,
+  .max-w-4xl,
+  .max-w-3xl {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Keep max-w-2xl at its natural width for text readability */
+.max-w-2xl {
+  max-width: 42rem;
+}
+
+@keyframes pulse-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale 0.4s ease-in-out;
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import NavDropdown, { MobileNav } from './NavDropdown';
@@ -19,10 +19,11 @@ export const topNav = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { pathname } = useLocation();
   const { data: settings } = useSiteSettings();
 
   return (
-    <header className="bg-white sticky top-0 z-50 shadow-sm">
+    <header className="bg-white sticky top-0 z-50" style={{ boxShadow: '0 15px 35px rgba(0, 0, 0, 0.15)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[60px] lg:h-[68px]">
         <Link to="/" className="flex items-center gap-3 shrink-0">
           {settings?.logo_url && (
@@ -34,7 +35,7 @@ export default function Header() {
         </Link>
 
         <div className="hidden lg:flex items-center">
-          <NavDropdown items={topNav} />
+          <NavDropdown items={topNav} currentPath={pathname} />
         </div>
 
         <button
@@ -61,6 +62,7 @@ export default function Header() {
           >
             <MobileNav
               items={topNav}
+              currentPath={pathname}
               onItemClick={() => setMobileOpen(false)}
             />
           </motion.div>

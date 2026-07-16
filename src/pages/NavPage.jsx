@@ -46,7 +46,7 @@ function SectionRenderer({ section }) {
       return (
         <Reveal className="max-w-4xl mx-auto text-center">
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-4">{section.heading}</h2>}
-          {section.image_url && <img src={section.image_url} alt={section.heading || ''} className="w-full rounded-xl shadow-sm" />}
+          {section.image_url && <img src={section.image_url} alt={section.heading || ''} className="w-full max-h-96 object-cover rounded-xl shadow-sm" />}
           {section.content && <p className="text-text-gray text-base mt-4">{section.content}</p>}
         </Reveal>
       );
@@ -124,20 +124,35 @@ function SectionRenderer({ section }) {
           </div>
         </Reveal>
       );
-    case 'map_embed':
+    case 'map_embed': {
+      const raw = section.content || '';
+      const match = raw.match(/src=["']([^"']+)["']/);
+      const mapSrc = (match ? match[1] : raw).trim();
+      if (!mapSrc) return null;
       return (
         <Reveal>
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
-          <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-sm border border-gray-200">
-            <iframe src={section.content} width="100%" height="400" style={{ border: 0 }} allowFullScreen loading="lazy" title="Map" />
+          <div className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-sm border border-gray-200">
+            <div className="relative w-full aspect-[16/9] max-h-[450px]">
+              <iframe
+                src={mapSrc}
+                className="absolute inset-0 w-full h-full"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Map"
+              />
+            </div>
           </div>
         </Reveal>
       );
+    }
     case 'faq_list':
       return (
-        <Reveal className="max-w-3xl mx-auto">
+        <Reveal className="w-full max-w-[70%] mx-auto">
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
-          <div className="space-y-3">
+          <div className="space-y-2">
             {(section.items || []).map((faq, i) => (
               <AccordionItem key={i} title={faq.question}>{faq.answer}</AccordionItem>
             ))}
@@ -186,7 +201,8 @@ function SectionRenderer({ section }) {
 
 export default function NavPage() {
   const { slug } = useParams();
-  const path = `/${slug}`;
+  const splat = useParams()['*'];
+  const path = splat ? `/${slug}/${splat}` : `/${slug}`;
 
   const { data, isLoading } = useQuery({
     queryKey: ['navPageData', path],

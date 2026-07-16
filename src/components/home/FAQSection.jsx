@@ -10,12 +10,12 @@ export default function FAQSection({ section }) {
   if (items.length === 0) return null;
 
   return (
-    <section className="py-16">
-      <div className="max-w-4xl mx-auto px-4">
-        <Reveal as="h2" className="text-2xl sm:text-3xl font-bold text-dark-navy mb-10 text-center">
+    <section className="py-10">
+      <div className="w-full max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
+        <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">
           {heading}
         </Reveal>
-        <Stagger className="space-y-3">
+        <Stagger className="space-y-2">
           {items.map((item, i) => (
             <StaggerItem key={i}>
               <AccordionItem title={item.question}>

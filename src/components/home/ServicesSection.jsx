@@ -1,5 +1,6 @@
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 import { FiChevronRight, FiBriefcase, FiBookOpen, FiTarget } from 'react-icons/fi';
+import Button from '../ui/Button';
 
 const serviceIcons = [FiBriefcase, FiBookOpen, FiTarget];
 
@@ -20,7 +21,7 @@ export default function ServicesSection({ section }) {
   return (
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-4">
+        <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-6">
           {heading}
         </Reveal>
         {intro && (
@@ -30,38 +31,40 @@ export default function ServicesSection({ section }) {
         )}
 
         <div className="grid lg:grid-cols-2 gap-8">
-          <Reveal variant="right">
+          <Reveal variant="right" className="flex flex-col">
             {leftImageUrl ? (
               <img
                 src={leftImageUrl}
                 alt={leftHeading}
-                className="w-full h-80 object-cover rounded-2xl"
+                className="w-full h-72 object-cover rounded-2xl"
               />
             ) : (
-              <div className="w-full h-80 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-accent" />
+              <div className="w-full h-72 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-accent" />
             )}
             <h3 className="font-bold text-xl mt-6 text-dark-navy">{leftHeading}</h3>
             {leftDescription && (
               <p className="text-text-gray mt-3">{leftDescription}</p>
             )}
-            <a
+            <Button
+              variant="accent"
+              shape="xl"
               href={ctaLink}
-              className="inline-flex items-center gap-2 bg-brand-orange text-white rounded-xl px-8 py-3 mt-4 hover:bg-brand-orange/90"
+              className="mt-4 self-start"
             >
               {ctaText} <FiChevronRight />
-            </a>
+            </Button>
           </Reveal>
 
-          <Reveal variant="left">
+          <Reveal variant="left" className="flex flex-col justify-center">
             {servicesList.map((service, i) => {
               const Icon = serviceIcons[i] || FiBriefcase;
               return (
                 <div key={i}>
                   <div className="flex gap-4 py-5">
-                    <div className="w-10 h-10 rounded-full bg-brand-orange/10 flex items-center justify-center shrink-0 mt-1">
-                      <Icon className="w-5 h-5 text-brand-orange" />
+                    <div className="w-12 h-12 rounded-full bg-brand-orange/10 flex items-center justify-center shrink-0 mt-1">
+                      <Icon className="w-6 h-6 text-brand-orange" />
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-dark-navy">{service.title}</h4>
                       <p className="text-text-gray text-sm mt-1">{service.description}</p>
                     </div>
@@ -77,21 +80,21 @@ export default function ServicesSection({ section }) {
           <Stagger className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
             {serviceCards.map((card, i) => (
               <StaggerItem key={i}>
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
                   {card.image_url ? (
                     <img
                       src={card.image_url}
                       alt={card.title}
-                      className="w-full h-40 object-cover"
+                      className="w-full h-48 object-cover"
                     />
                   ) : (
-                    <div className="w-full h-40 bg-gradient-to-br from-brand-blue to-brand-accent flex items-center justify-center">
+                    <div className="w-full h-48 bg-gradient-to-br from-brand-blue to-brand-accent flex items-center justify-center">
                       <FiTarget className="w-8 h-8 text-white/70" />
                     </div>
                   )}
-                  <div className="p-5">
+                  <div className="p-6 flex flex-col flex-1">
                     <h4 className="font-semibold text-dark-navy">{card.title}</h4>
-                    <p className="text-text-gray text-sm mt-1">{card.description}</p>
+                    <p className="text-text-gray text-sm mt-2">{card.description}</p>
                   </div>
                 </div>
               </StaggerItem>

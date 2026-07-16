@@ -51,10 +51,20 @@ create table if not exists courses (
   learner_count int default 0,
   cta_left text default 'Talk to Advisor',
   cta_right text default 'Download Brochure',
+  duration text,
+  mode text,
+  status text default 'Active',
+  curriculum jsonb default '[]',
   is_published boolean default true,
   created_at timestamptz default now()
 );
 create index if not exists idx_courses_nav_item on courses(nav_item_id);
+
+-- Add new columns for existing databases
+alter table courses add column if not exists duration text;
+alter table courses add column if not exists mode text;
+alter table courses add column if not exists status text default 'Active';
+alter table courses add column if not exists curriculum jsonb default '[]';
 
 -- 4. Key highlights per course
 create table if not exists highlights (
@@ -251,7 +261,7 @@ create table if not exists admin_profiles (
   email text unique not null,
   full_name text not null,
   password_hash text not null,
-  role text default 'editor' check (role in ('admin', 'editor', 'manager')),
+  role text default 'editor' check (role in ('master_admin', 'admin', 'manager', 'editor')),
   created_at timestamptz default now()
 );
 
@@ -290,6 +300,33 @@ do $$ begin
   end if;
 end $$;
 
+-- 25. Create all storage buckets used by the app
+do $$
+declare
+  b text;
+  buckets text[] := array['hero-images', 'course-thumbnails', 'certificates', 'company-logos', 'nav-icons', 'pages'];
+begin
+  foreach b in array buckets loop
+    insert into storage.buckets (id, name, public)
+    values (b, b, true)
+    on conflict (id) do nothing;
+
+    if not exists (select 1 from pg_policies where policyname = 'Allow public upload ' || b) then
+      execute format(
+        'create policy %I on storage.objects for insert with check (bucket_id = %L)',
+        'Allow public upload ' || b, b
+      );
+    end if;
+
+    if not exists (select 1 from pg_policies where policyname = 'Allow public read ' || b) then
+      execute format(
+        'create policy %I on storage.objects for select using (bucket_id = %L)',
+        'Allow public read ' || b, b
+      );
+    end if;
+  end loop;
+end $$;
+
 -- For existing databases, run:
 -- alter table admin_profiles drop constraint if exists admin_profiles_id_fkey;
 -- alter table admin_profiles alter column id set default gen_random_uuid();
@@ -300,7 +337,7 @@ end $$;
 -- alter table admin_profiles alter column password_hash set not null;
 -- alter table admin_profiles alter column full_name set not null;
 -- alter table admin_profiles drop constraint if exists admin_profiles_role_check;
--- alter table admin_profiles add constraint admin_profiles_role_check check (role in ('admin', 'editor', 'manager'));
+-- alter table admin_profiles add constraint admin_profiles_role_check check (role in ('master_admin', 'admin', 'editor', 'manager'));
 -- alter table admin_profiles add constraint admin_profiles_email_key unique (email);
 
 -- ============================================================
@@ -399,7 +436,23 @@ $$;
 -- Add created_by to admin_profiles for audit trail
 alter table admin_profiles add column if not exists created_by uuid references admin_profiles(id);
 
--- Create admin with server-side bcrypt hash, only admins/managers can create
+-- Role hierarchy helper: higher rank = more privileges
+drop function if exists role_rank(text);
+create or replace function role_rank(p_role text)
+returns integer
+language sql
+immutable
+as $$
+  select case p_role
+    when 'master_admin' then 4
+    when 'admin' then 3
+    when 'manager' then 2
+    when 'editor' then 1
+    else 0
+  end;
+$$;
+
+-- Create admin with server-side bcrypt hash, enforces role hierarchy
 drop function if exists create_admin(uuid, text, text, text, text);
 create or replace function create_admin(
   p_creator_id uuid,
@@ -414,7 +467,8 @@ security definer
 as $$
 declare
   v_creator_role text;
-  v_id uuid;
+  v_creator_rank integer;
+  v_target_rank integer;
 begin
   select admin_profiles.role into v_creator_role
   from admin_profiles
@@ -424,28 +478,36 @@ begin
     raise exception 'Not authorized';
   end if;
 
-  if v_creator_role not in ('admin', 'manager') then
-    raise exception 'Only admins and managers can create admin users';
+  v_creator_rank := role_rank(v_creator_role);
+  v_target_rank := role_rank(p_role);
+
+  -- Creator cannot assign a role above their own level (master_admin is exempt)
+  if v_target_rank >= v_creator_rank and v_creator_role != 'master_admin' then
+    raise exception 'You can only assign roles below your own level';
   end if;
 
   if exists (select 1 from admin_profiles where admin_profiles.email = p_email) then
     raise exception 'An admin with this email already exists';
   end if;
 
-  v_id := gen_random_uuid();
-  insert into admin_profiles (id, email, full_name, role, password_hash, created_by)
-  values (v_id, p_email, p_full_name, p_role, crypt(p_password, gen_salt('bf', 10)), p_creator_id);
-
-  return jsonb_build_object(
-    'id', v_id,
-    'email', p_email,
-    'full_name', p_full_name,
-    'role', p_role
-  );
+  with inserted as (
+    insert into admin_profiles (id, email, full_name, role, password_hash, created_by)
+    values (
+      gen_random_uuid(),
+      p_email,
+      p_full_name,
+      p_role,
+      crypt(p_password, gen_salt('bf', 10)),
+      p_creator_id
+    )
+    returning id, email, full_name, role
+  )
+  select jsonb_build_object('id', i.id, 'email', i.email, 'full_name', i.full_name, 'role', i.role)
+  from inserted i;
 end;
 $$;
 
--- Delete admin, only admins and managers can delete
+-- Delete admin, enforces role hierarchy
 drop function if exists delete_admin(uuid, uuid);
 create or replace function delete_admin(p_creator_id uuid, p_target_id uuid)
 returns void
@@ -454,61 +516,37 @@ security definer
 as $$
 declare
   v_creator_role text;
+  v_creator_rank integer;
+  v_target_rank integer;
 begin
   select admin_profiles.role into v_creator_role
   from admin_profiles
   where admin_profiles.id = p_creator_id;
 
-  if v_creator_role is null or v_creator_role not in ('admin', 'manager') then
-    raise exception 'Only admins and managers can delete admin users';
+  if v_creator_role is null then
+    raise exception 'Not authorized';
   end if;
 
   if p_creator_id = p_target_id then
     raise exception 'You cannot delete yourself';
   end if;
 
+  v_creator_rank := role_rank(v_creator_role);
+
+  select role_rank(admin_profiles.role) into v_target_rank
+  from admin_profiles
+  where admin_profiles.id = p_target_id;
+
+  -- Creator cannot delete someone at or above their own level (master_admin is exempt)
+  if v_target_rank >= v_creator_rank and v_creator_role != 'master_admin' then
+    raise exception 'You cannot delete users with an equal or higher role';
+  end if;
+
   delete from admin_profiles where admin_profiles.id = p_target_id;
 end;
 $$;
 
--- Create admin, only admins can create
-drop function if exists create_admin(uuid, text, text, text, text);
-create or replace function create_admin(
-  p_creator_id uuid,
-  p_email text,
-  p_full_name text,
-  p_role text,
-  p_password text
-)
-returns jsonb
-language sql
-security definer
-as $$
-  with created as (
-    insert into admin_profiles (
-      id,
-      email,
-      full_name,
-      role,
-      password_hash
-    )
-    select
-      gen_random_uuid(),
-      p_email,
-      p_full_name,
-      p_role,
-      crypt(p_password, gen_salt('bf', 10))
-    where exists (
-      select 1 from admin_profiles
-      where admin_profiles.id = p_creator_id and admin_profiles.role = 'admin'
-    )
-    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role
-  )
-  select to_jsonb(t.*)
-  from (select c.id, c.email, c.full_name, c.role from created c) t;
-$$;
-
--- Update admin, only admins and managers can edit
+-- Update admin, enforces role hierarchy
 drop function if exists update_admin(uuid, uuid, text, text, text, text);
 create or replace function update_admin(
   p_editor_id uuid,
@@ -519,28 +557,51 @@ create or replace function update_admin(
   p_password text default null
 )
 returns jsonb
-language sql
+language plpgsql
 security definer
 as $$
-  with updated as (
-    update admin_profiles
-    set
-      email = coalesce(p_email, admin_profiles.email),
-      full_name = coalesce(p_full_name, admin_profiles.full_name),
-      role = coalesce(p_role, admin_profiles.role),
-      password_hash = case
-        when p_password is not null then crypt(p_password, gen_salt('bf', 10))
-        else admin_profiles.password_hash
-      end
-    where admin_profiles.id = p_target_id
-      and exists (
-        select 1 from admin_profiles
-        where admin_profiles.id = p_editor_id and admin_profiles.role in ('admin', 'manager')
-      )
-    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role
-  )
-  select to_jsonb(t.*)
-  from (select u.id, u.email, u.full_name, u.role from updated u) t;
+declare
+  v_editor_role text;
+  v_editor_rank integer;
+  v_target_rank integer;
+begin
+  select admin_profiles.role into v_editor_role
+  from admin_profiles
+  where admin_profiles.id = p_editor_id;
+
+  if v_editor_role is null then
+    raise exception 'Not authorized';
+  end if;
+
+  v_editor_rank := role_rank(v_editor_role);
+
+  select role_rank(admin_profiles.role) into v_target_rank
+  from admin_profiles
+  where admin_profiles.id = p_target_id;
+
+  -- Editor cannot modify someone at or above their own level (master_admin is exempt)
+  if v_target_rank >= v_editor_rank and v_editor_role != 'master_admin' then
+    raise exception 'You cannot edit users with an equal or higher role';
+  end if;
+
+  update admin_profiles
+  set
+    email = coalesce(p_email, admin_profiles.email),
+    full_name = coalesce(p_full_name, admin_profiles.full_name),
+    role = coalesce(p_role, admin_profiles.role),
+    password_hash = case
+      when p_password is not null then crypt(p_password, gen_salt('bf', 10))
+      else admin_profiles.password_hash
+    end
+  where admin_profiles.id = p_target_id;
+
+  return jsonb_build_object(
+    'id', p_target_id,
+    'email', coalesce(p_email, (select email from admin_profiles where id = p_target_id)),
+    'full_name', coalesce(p_full_name, (select full_name from admin_profiles where id = p_target_id)),
+    'role', coalesce(p_role, (select role from admin_profiles where id = p_target_id))
+  );
+end;
 $$;
 
 -- List admin users (any logged-in admin can list)

@@ -37,7 +37,7 @@ export default function CertificationSection({ section }) {
           </Reveal>
           {imageUrl && (
             <Reveal variant="left" className="flex justify-center">
-              <img src={imageUrl} alt="Certification" className="max-w-sm rounded-xl shadow-sm" />
+              <img src={imageUrl} alt="Certification" className="w-full h-64 object-cover rounded-xl shadow-sm" />
             </Reveal>
           )}
         </div>

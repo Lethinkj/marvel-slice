@@ -11,7 +11,7 @@ function ImageUploader({ value, onChange, label }) {
     if (!file) return;
     setUploading(true);
     const ext = file.name.split('.').pop();
-    const path = `about/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const path = `services/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await supabase.storage.from('pages').upload(path, file);
     if (!error) {
       const { data } = supabase.storage.from('pages').getPublicUrl(path);
@@ -35,9 +35,9 @@ function ImageUploader({ value, onChange, label }) {
   );
 }
 
-const PAGE_PATH = '/about';
+const PAGE_PATH = '/services';
 
-export default function AboutPageEditor() {
+export default function ServicesPageEditor() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [navItem, setNavItem] = useState(null);
@@ -50,36 +50,26 @@ export default function AboutPageEditor() {
   const savingRef = useRef(false);
 
   const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '' });
-  const [mission, setMission] = useState('');
-  const [vision, setVision] = useState('');
-  const [stats, setStats] = useState([]);
-  const [team, setTeam] = useState([]);
+  const [services, setServices] = useState([]);
   const [cta, setCta] = useState({ heading: '', content: '', link: '' });
+  const [faqs, setFaqs] = useState([]);
 
   useEffect(() => {
     async function resolve() {
-      // 1. Find active nav_item for this path
-      let { data: items, error: findErr } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).eq('is_active', true).order('id').limit(1);
+      let { data: items } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).eq('is_active', true).order('id').limit(1);
       let item = items?.[0] || null;
-
-      // 2. If no active nav_item, try finding any nav_item (even inactive) and reactivate it
       if (!item) {
         const { data: inactiveItems } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).order('id').limit(1);
         item = inactiveItems?.[0] || null;
         if (item) {
           await supabase.from('nav_items').update({ is_active: true }).eq('id', item.id);
-          // deactivate any others
           await supabase.from('nav_items').update({ is_active: false }).eq('path', PAGE_PATH).neq('id', item.id);
         }
       }
-
-      // 3. Still nothing? Create new one
       if (!item) {
-        const { data: newItem, error: createErr } = await supabase.from('nav_items').insert({ label: 'About', path: PAGE_PATH, is_active: true, sort_order: 99 }).select('*').single();
-        if (createErr) { console.error('create nav_item failed:', createErr); }
+        const { data: newItem } = await supabase.from('nav_items').insert({ label: 'Services', path: PAGE_PATH, is_active: true, sort_order: 99 }).select('*').single();
         item = newItem || null;
       }
-
       setNavItem(item);
       setNavItemId(item?.id);
       navItemIdRef.current = item?.id;
@@ -90,17 +80,12 @@ export default function AboutPageEditor() {
           setPageId(page.id);
           setHero({ heading: page.heading || '', subheading: page.subheading || '', hero_image: page.hero_image || '' });
           const secs = page.sections || [];
-          const find = (type) => secs.find(s => s.section_type === type);
-          const f = find('text');
-          if (f) { setMission(f.content || ''); }
-          const v = secs.filter(s => s.section_type === 'text');
-          if (v.length > 1) setVision(v[1].content || '');
-          const s = find('stats_row');
-          if (s?.items) setStats(s.items);
-          const t = find('team_grid');
-          if (t?.items) setTeam(t.items);
-          const c = find('cta');
-          if (c) setCta({ heading: c.heading || '', content: c.content || '', link: c.image_url || '' });
+          const cardsSec = secs.find(s => s.section_type === 'cards');
+          if (cardsSec?.items) setServices(cardsSec.items.map(i => typeof i === 'string' ? { title: i, description: '' } : i));
+          const ctaSec = secs.find(s => s.section_type === 'cta');
+          if (ctaSec) setCta({ heading: ctaSec.heading || '', content: ctaSec.content || '', link: ctaSec.image_url || '' });
+          const faqSec = secs.find(s => s.section_type === 'faq_list');
+          if (faqSec?.items) setFaqs(faqSec.items);
         }
       }
       setLoading(false);
@@ -114,17 +99,12 @@ export default function AboutPageEditor() {
     savingRef.current = true;
     setSaving(true);
     setSaveError('');
-    if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); savingRef.current = false; return; }
     const sections = [
-      mission ? { section_type: 'text', heading: 'Our Mission', content: mission } : null,
-      vision ? { section_type: 'text', heading: 'Our Vision', content: vision } : null,
-      stats.length > 0 ? { section_type: 'stats_row', heading: '', items: stats } : null,
-      team.length > 0 ? { section_type: 'team_grid', heading: 'Our Team', items: team } : null,
+      services.length > 0 ? { section_type: 'cards', heading: 'Our Services', items: services } : null,
       cta.heading || cta.content ? { section_type: 'cta', heading: cta.heading, content: cta.content, image_url: cta.link || null } : null,
+      faqs.length > 0 ? { section_type: 'faq_list', heading: 'Frequently Asked Questions', items: faqs } : null,
     ].filter(Boolean);
-
-    if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); return; }
-
+    if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked'); setSaving(false); savingRef.current = false; return; }
     const payload = { nav_item_id: navItemId || navItemIdRef.current, heading: hero.heading, subheading: hero.subheading, hero_image: hero.hero_image || null, sections, is_published: true };
     let res;
     if (pageId) {
@@ -152,8 +132,8 @@ export default function AboutPageEditor() {
       <div className="flex items-center gap-4 mb-8">
         <button onClick={() => navigate('/admin')} className="p-2 text-gray-400 hover:text-dark-navy rounded-lg hover:bg-gray-100 transition-colors"><FiArrowLeft className="w-5 h-5" /></button>
         <div>
-          <h1 className="text-2xl font-bold text-dark-navy">{navItem?.label || 'About'} Page</h1>
-          <Link to="/about" target="_blank" className="text-sm text-brand-accent hover:underline inline-flex items-center gap-1 mt-0.5"><FiExternalLink className="w-3.5 h-3.5" /> /about</Link>
+          <h1 className="text-2xl font-bold text-dark-navy">{navItem?.label || 'Services'} Page</h1>
+          <Link to="/services" target="_blank" className="text-sm text-brand-accent hover:underline inline-flex items-center gap-1 mt-0.5"><FiExternalLink className="w-3.5 h-3.5" /> /services</Link>
         </div>
       </div>
       {saveError && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2 text-red-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
@@ -168,49 +148,19 @@ export default function AboutPageEditor() {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="font-semibold text-dark-navy mb-4">Mission</h2>
-          <textarea value={mission} onChange={(e) => setMission(e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Our mission statement..." />
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="font-semibold text-dark-navy mb-4">Vision</h2>
-          <textarea value={vision} onChange={(e) => setVision(e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Our vision statement..." />
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-dark-navy">Stats</h2>
-            <Button type="button" onClick={() => setStats([...stats, { number: '', label: '' }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Stat</Button>
-          </div>
-          <div className="space-y-3">
-            {stats.map((s, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <input type="text" value={s.number} onChange={(e) => { const u = [...stats]; u[i] = { ...u[i], number: e.target.value }; setStats(u); }} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                <input type="text" value={s.label} onChange={(e) => { const u = [...stats]; u[i] = { ...u[i], label: e.target.value }; setStats(u); }} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                <button type="button" onClick={() => setStats(stats.filter((_, j) => j !== i))} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-dark-navy">Team Members</h2>
-            <Button type="button" onClick={() => setTeam([...team, { name: '', role: '', bio: '', image_url: '' }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Member</Button>
+            <h2 className="font-semibold text-dark-navy">Services</h2>
+            <Button type="button" onClick={() => setServices([...services, { title: '', description: '' }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Service</Button>
           </div>
           <div className="space-y-4">
-            {team.map((m, i) => (
+            {services.map((s, i) => (
               <div key={i} className="border border-gray-200 rounded-xl p-4">
-                <div className="flex justify-between mb-3">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Member {i + 1}</span>
-                  <button type="button" onClick={() => setTeam(team.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+                <div className="flex justify-between mb-2">
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Service {i + 1}</span>
+                  <button type="button" onClick={() => setServices(services.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <input type="text" value={m.name} onChange={(e) => { const u = [...team]; u[i] = { ...u[i], name: e.target.value }; setTeam(u); }} placeholder="Name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                  <input type="text" value={m.role} onChange={(e) => { const u = [...team]; u[i] = { ...u[i], role: e.target.value }; setTeam(u); }} placeholder="Role" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                </div>
-                <textarea value={m.bio} onChange={(e) => { const u = [...team]; u[i] = { ...u[i], bio: e.target.value }; setTeam(u); }} rows={2} placeholder="Short bio..." className="w-full mt-3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                <div className="mt-3"><ImageUploader value={m.image_url} onChange={(v) => { const u = [...team]; u[i] = { ...u[i], image_url: v }; setTeam(u); }} label="Photo" /></div>
+                <input type="text" value={s.title} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], title: e.target.value }; setServices(u); }} placeholder="Service title" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                <textarea value={s.description} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], description: e.target.value }; setServices(u); }} rows={2} placeholder="Brief description..." className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
               </div>
             ))}
           </div>
@@ -222,6 +172,25 @@ export default function AboutPageEditor() {
             <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
             <input type="text" value={cta.content} onChange={(e) => setCta({ ...cta, content: e.target.value })} placeholder="Subtext" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
             <input type="text" value={cta.link} onChange={(e) => setCta({ ...cta, link: e.target.value })} placeholder="Button link URL" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-dark-navy">FAQs</h2>
+            <Button type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add FAQ</Button>
+          </div>
+          <div className="space-y-3">
+            {faqs.map((f, i) => (
+              <div key={i} className="border border-gray-200 rounded-xl p-4">
+                <div className="flex justify-between mb-2">
+                  <span className="text-xs font-semibold text-gray-500 uppercase">FAQ {i + 1}</span>
+                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+                </div>
+                <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+              </div>
+            ))}
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import Reveal from '../ui/Reveal';
 import { FiCheckCircle } from 'react-icons/fi';
+import Button from '../ui/Button';
 
 export default function FeatureCardsSection({ section }) {
   if (!section) return null;
@@ -14,7 +15,7 @@ export default function FeatureCardsSection({ section }) {
         <div className="grid lg:grid-cols-2 gap-8">
           {cards.map((card, i) => (
             <Reveal key={i} variant={i === 0 ? 'right' : 'left'}>
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
                 {card.image_url ? (
                   <img
                     src={card.image_url}
@@ -28,7 +29,7 @@ export default function FeatureCardsSection({ section }) {
                     </h3>
                   </div>
                 )}
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-1">
                   <h3 className="font-bold text-xl text-dark-navy">
                     {card.heading}
                   </h3>
@@ -38,7 +39,7 @@ export default function FeatureCardsSection({ section }) {
                     </p>
                   )}
                   {card.bullets && card.bullets.length > 0 && (
-                    <ul className="mt-4 space-y-2">
+                    <ul className="mt-4 space-y-2 flex-1">
                       {card.bullets.map((bullet, j) => (
                         <li key={j} className="flex items-start gap-2">
                           <FiCheckCircle className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
@@ -47,12 +48,14 @@ export default function FeatureCardsSection({ section }) {
                       ))}
                     </ul>
                   )}
-                  <a
+                  <Button
+                    variant="orange"
+                    shape="xl"
                     href={card.button_link || '#'}
-                    className="bg-brand-green text-white rounded-lg px-6 py-2.5 inline-block mt-6 hover:bg-brand-green/90 transition-colors"
+                    className="mt-6"
                   >
                     {card.button_text || 'View More'}
-                  </a>
+                  </Button>
                 </div>
               </div>
             </Reveal>

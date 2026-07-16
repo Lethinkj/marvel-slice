@@ -291,7 +291,7 @@ export default function Career() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`mb-6 p-4 rounded-xl flex items-start gap-3 text-sm ${
                   status.type === 'success'
-                    ? 'bg-green-50 border border-green-200 text-green-800'
+                    ? 'bg-brand-bright-blue/10 border border-brand-bright-blue/20 text-brand-bright-blue'
                     : 'bg-red-50 border border-red-200 text-red-700'
                 }`}
               >

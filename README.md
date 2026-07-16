@@ -308,7 +308,7 @@ alter table admin_profiles alter column email set not null;
 alter table admin_profiles alter column password_hash set not null;
 alter table admin_profiles alter column full_name set not null;
 alter table admin_profiles drop constraint if exists admin_profiles_role_check;
-alter table admin_profiles add constraint admin_profiles_role_check check (role in ('admin', 'editor', 'manager'));
+alter table admin_profiles add constraint admin_profiles_role_check check (role in ('master_admin', 'admin', 'editor', 'manager'));
 alter table admin_profiles add constraint admin_profiles_email_key unique (email);
 ```
 

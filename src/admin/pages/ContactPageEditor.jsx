@@ -44,6 +44,7 @@ export default function ContactPageEditor() {
   const [navItemId, setNavItemId] = useState(null);
   const [pageId, setPageId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
   const navItemIdRef = useRef(null);
   const savingRef = useRef(false);
@@ -131,7 +132,10 @@ export default function ContactPageEditor() {
       setSaving(false);
     } else {
       if (res.data?.id) setPageId(res.data.id);
-      navigate('/admin');
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      savingRef.current = false;
+      setSaving(false);
     }
   }
 
@@ -204,8 +208,8 @@ export default function ContactPageEditor() {
           </div>
         </div>
 
-        <div className="flex justify-end">
-          <Button type="submit" disabled={saving} variant="accent" size="md"><FiSave className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Page'}</Button>
+        <div className="flex justify-end pt-4 border-t border-gray-100 mt-6">
+          <Button type="submit" disabled={saving} variant="accent" size="md"><FiSave className="w-4 h-4" /> {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Page'}</Button>
         </div>
       </form>
     </div>

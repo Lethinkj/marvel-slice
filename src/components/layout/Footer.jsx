@@ -50,7 +50,7 @@ export default function Footer() {
   const columnItems = topNav.filter((item) => !item.path);
 
   return (
-    <footer className="bg-dark-navy text-white">
+    <footer className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-12">
           <div className="lg:col-span-1">

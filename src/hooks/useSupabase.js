@@ -10,12 +10,15 @@ export function useTopNavItems() {
       const { data, error } = await supabase
         .from('nav_items')
         .select('*')
-        .is('parent_id', null)
-        .is('parent_label', null)
         .eq('is_active', true)
         .order('sort_order');
       if (error) throw error;
-      return data || [];
+      const filtered = (data || []).filter((item) => {
+        console.log('topNav item:', item.label, '| parent_id:', JSON.stringify(item.parent_id), '| parent_label:', JSON.stringify(item.parent_label));
+        return !item.parent_id && !item.parent_label;
+      });
+      console.log('topNav filtered:', filtered.map((i) => i.label));
+      return filtered;
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -76,7 +79,14 @@ export function useCourse(slug) {
         .eq('is_published', true)
         .maybeSingle();
       if (error) throw error;
-      return course;
+      if (!course) return null;
+
+      const [tabsRes, faqsRes] = await Promise.all([
+        supabase.from('course_tabs').select('*').eq('course_id', course.id).order('sort_order'),
+        supabase.from('faqs').select('*').eq('course_id', course.id).order('sort_order'),
+      ]);
+
+      return { ...course, course_tabs: tabsRes.data || [], faqs: faqsRes.data || [] };
     },
     enabled: !!slug,
   });
@@ -98,6 +108,7 @@ export function useRelatedCourses(courseId) {
   return useQuery({
     queryKey: ['relatedCourses', courseId],
     queryFn: async () => {
+      // 1. Curated related courses (admin-picked)
       const { data: curated } = await supabase
         .from('related_courses')
         .select(
@@ -114,6 +125,25 @@ export function useRelatedCourses(courseId) {
         }));
       }
 
+      // 2. Same nav_item category
+      const { data: currentCourse } = await supabase
+        .from('courses')
+        .select('nav_item_id')
+        .eq('id', courseId)
+        .maybeSingle();
+
+      if (currentCourse?.nav_item_id) {
+        const { data: sameCategory } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('nav_item_id', currentCourse.nav_item_id)
+          .neq('id', courseId)
+          .eq('is_published', true)
+          .limit(4);
+        if (sameCategory && sameCategory.length > 0) return sameCategory;
+      }
+
+      // 3. Same tags
       const { data: tagsData } = await supabase
         .from('course_tags')
         .select('tag_id')

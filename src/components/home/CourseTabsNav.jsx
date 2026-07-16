@@ -45,7 +45,7 @@ function TabPanel({ tab }) {
           <img
             src={tab.image_url}
             alt=""
-            className="w-full rounded-xl shadow-sm border border-gray-100"
+            className="w-full h-64 object-cover rounded-xl shadow-sm border border-gray-100"
           />
         </div>
       )}

@@ -356,7 +356,7 @@ export default function NavPageEditor() {
           )}
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-4 border-t border-gray-100 mt-6">
           <Button type="submit" disabled={saving} variant="accent" size="md">
             <FiSave className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Page'}

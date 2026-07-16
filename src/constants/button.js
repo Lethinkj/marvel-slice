@@ -7,10 +7,11 @@ export const BUTTON_SIZES = {
 };
 
 export const BUTTON_VARIANTS = {
-  primary: 'bg-brand-orange text-white font-semibold hover:bg-orange-600 shadow-sm transition-all',
-  'primary-lg': 'bg-brand-orange text-white font-semibold hover:bg-orange-600 shadow-lg shadow-orange-500/25 transition-all',
+  primary: 'bg-brand-orange text-white font-semibold hover:brightness-90 shadow-sm transition-all',
+  'primary-lg': 'bg-brand-orange text-white font-semibold hover:brightness-90 shadow-lg shadow-orange-500/25 transition-all',
   secondary: 'bg-white/10 text-white font-semibold hover:bg-white/20 border border-white/20 transition-all',
   accent: 'bg-brand-accent text-white font-semibold hover:bg-brand-blue shadow-sm transition-all',
+  success: 'bg-brand-orange text-white font-semibold hover:brightness-90 shadow-sm transition-all',
   outline: 'border-2 border-brand-blue text-brand-blue font-semibold hover:bg-brand-blue hover:text-white transition-all',
   'outline-white': 'border-2 border-white text-white font-semibold hover:bg-white hover:text-brand-blue transition-all',
   ghost: 'text-text-gray font-medium hover:text-brand-accent hover:bg-gray-50 transition-all',

@@ -28,14 +28,6 @@ export default function HeroSection({ section }) {
   const content = section.content || {};
   const bannerImage = content.banner_image || '';
 
-  if (bannerImage) {
-    return (
-      <section className="relative w-full overflow-hidden">
-        <img src={bannerImage} alt="" className="w-full h-auto object-cover" />
-      </section>
-    );
-  }
-
   const headline = content.headline || 'Transform Your Career with Expert-Led Learning';
   const description = content.description || '';
   const rawBullets = content.feature_bullets;
@@ -46,82 +38,101 @@ export default function HeroSection({ section }) {
 
   return (
     <section className="relative overflow-hidden">
-      <div style={{ background: 'linear-gradient(135deg, #F5821F 50%, #0B2D6B 50%)' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
-          <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 items-stretch">
-            <motion.div variants={container} {...mount} className="flex flex-col justify-center">
-              <Reveal as="div" className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-semibold text-white w-fit mb-6">
-                <span className="w-2 h-2 rounded-full bg-green-400" />
-                Marvel Slice
-              </Reveal>
-
-              <motion.h1
-                variants={item}
-                className="text-[clamp(1.75rem,4vw,3.25rem)] font-extrabold text-white leading-[1.15] text-pretty"
-              >
-                {headline}
-              </motion.h1>
-
-              {description && (
-                <motion.p variants={item} className="mt-4 sm:mt-5 text-base sm:text-lg text-white/85 leading-relaxed max-w-xl">
-                  {description}
-                </motion.p>
-              )}
-
-              {featureBullets.length > 0 && (
-                <motion.ul variants={item} className="mt-8 space-y-3">
-                  {featureBullets.map((bullet, i) => (
-                    <li key={i} className="flex items-start gap-3 text-base text-white">
-                      <FiCheckCircle className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </motion.ul>
-              )}
-
-              <motion.div variants={item} className="mt-8 sm:mt-10">
-                <Button className="bg-white text-brand-orange hover:bg-gray-100 border-0">
-                  {ctaText}
-                </Button>
-              </motion.div>
-            </motion.div>
-
-            <Reveal variant="right" className="flex items-stretch">
-              <div className="w-full rounded-2xl overflow-hidden bg-white/10 flex items-center justify-center min-h-[280px]">
-                {studentImageUrl ? (
-                  <img
-                    src={studentImageUrl}
-                    alt="Students"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center gap-3 text-white/70">
-                    <FiUsers className="w-16 h-16" />
-                    <span className="text-lg font-medium">Students</span>
-                  </div>
-                )}
-              </div>
-            </Reveal>
+      {bannerImage ? (
+        <>
+          <div className="w-full overflow-hidden">
+            <img src={bannerImage} alt="" className="w-full h-72 sm:h-96 object-cover" />
           </div>
-        </div>
-      </div>
+          {headline && (
+            <div className="bg-white">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+                <h1 className="text-[clamp(1.75rem,4vw,3.25rem)] font-extrabold text-dark-navy leading-[1.15] text-pretty">
+                  {headline}
+                </h1>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <div style={{ background: 'linear-gradient(135deg, #F7941D 50%, #1B3A6B 50%)' }}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
+              <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16">
+                <motion.div variants={container} {...mount} className="flex flex-col justify-center">
+                  <Reveal as="div" className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-semibold text-white w-fit mb-6">
+                    <span className="w-2 h-2 rounded-full bg-brand-bright-blue" />
+                    Marvel Slice
+                  </Reveal>
 
-      <div className="bg-[#0A2557]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Stagger className="grid grid-cols-3 gap-4">
-            {stats.map((stat, i) => (
-              <StaggerItem key={i} className="text-center">
-                <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
-                  {stat.value}
-                </p>
-                <p className="text-sm sm:text-base text-white/70 mt-1">
-                  {stat.label}
-                </p>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </div>
+                  <motion.h1
+                    variants={item}
+                    className="text-[clamp(1.75rem,4vw,3.25rem)] font-extrabold text-white leading-[1.15] text-pretty"
+                  >
+                    {headline}
+                  </motion.h1>
+
+                  {description && (
+                    <motion.p variants={item} className="mt-4 sm:mt-5 text-base sm:text-lg text-white/85 leading-relaxed max-w-xl">
+                      {description}
+                    </motion.p>
+                  )}
+
+                  {featureBullets.length > 0 && (
+                    <motion.ul variants={item} className="mt-8 space-y-3">
+                      {featureBullets.map((bullet, i) => (
+                        <li key={i} className="flex items-start gap-3 text-base text-white">
+                          <FiCheckCircle className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </motion.ul>
+                  )}
+
+                  <motion.div variants={item} className="mt-8 sm:mt-10">
+                    <Button variant="orange">
+                      {ctaText}
+                    </Button>
+                  </motion.div>
+                </motion.div>
+
+                <Reveal variant="right" className="flex self-center">
+                  <div className="w-full h-96 rounded-2xl overflow-hidden bg-white/10">
+                    {studentImageUrl ? (
+                      <img
+                        src={studentImageUrl}
+                        alt="Students"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-white/70">
+                        <FiUsers className="w-16 h-16" />
+                        <span className="text-lg font-medium">Students</span>
+                      </div>
+                    )}
+                  </div>
+                </Reveal>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-brand-navy-dark">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <Stagger className="grid grid-cols-3 gap-4">
+                {stats.map((stat, i) => (
+                  <StaggerItem key={i} className="text-center">
+                    <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+                      {stat.value}
+                    </p>
+                    <p className="text-sm sm:text-base text-white/70 mt-1">
+                      {stat.label}
+                    </p>
+                  </StaggerItem>
+                ))}
+              </Stagger>
+            </div>
+          </div>
+        </>
+      )}
     </section>
   );
 }

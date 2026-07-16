@@ -26,7 +26,7 @@ export default function CourseOverview({ section }) {
             )}
 
             {items.length > 0 && (
-              <Stagger className="space-y-4">
+              <Stagger className="space-y-2 w-full max-w-[70%]">
                 {items.map((item, i) => (
                   <StaggerItem key={i}>
                     <AccordionItem title={item.question} defaultOpen={i === 0}>

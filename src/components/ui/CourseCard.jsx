@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FiStar, FiBookOpen } from 'react-icons/fi';
+import { FiStar, FiBookOpen, FiClock, FiMonitor } from 'react-icons/fi';
 
 const bannerHeights = { sm: 'h-40', md: 'h-44', lg: 'h-48' };
 const contentPaddings = { sm: 'p-5', md: 'p-5', lg: 'p-6' };
@@ -39,6 +39,25 @@ export default function CourseCard({
           {course.title}
         </h3>
         <p className="text-sm text-text-gray mt-2 line-clamp-2 flex-1">{course.description}</p>
+        <div className="flex flex-wrap gap-2 mt-3 mb-3">
+          {course.duration && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              <FiClock className="w-3 h-3" /> {course.duration}
+            </span>
+          )}
+          {course.mode && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              <FiMonitor className="w-3 h-3" /> {course.mode}
+            </span>
+          )}
+          {course.status && course.status !== 'Active' && (
+            <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${
+              course.status === 'Coming Soon' ? 'text-amber-600 bg-amber-50' : 'text-gray-400 bg-gray-100'
+            }`}>
+              {course.status}
+            </span>
+          )}
+        </div>
         <div className={`flex items-center ${showViewLink ? 'justify-between' : 'gap-4'} pt-4 border-t border-gray-100 text-sm text-text-gray mt-auto`}>
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">

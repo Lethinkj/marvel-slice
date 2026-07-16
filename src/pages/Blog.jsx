@@ -178,7 +178,7 @@ function NewsletterForm() {
       <h3 className="font-bold text-lg mb-2">Newsletter</h3>
       <p className="text-sm text-white/70 mb-4">Get the latest posts delivered to your inbox.</p>
       {subscribed ? (
-        <p className="text-green-400 text-sm font-medium">Thanks for subscribing!</p>
+        <p className="text-brand-green text-sm font-medium">Thanks for subscribing!</p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email address" required
@@ -239,7 +239,7 @@ function SinglePost({ slug }) {
         </div>
       </Reveal>
       <Reveal>
-        {post.image_url && <img src={post.image_url} alt={post.title} className="w-full rounded-2xl mt-8 shadow-sm border border-gray-100" />}
+        {post.image_url && <img src={post.image_url} alt={post.title} className="w-full max-h-[500px] object-cover rounded-2xl mt-8 shadow-sm border border-gray-100" />}
         {post.excerpt && <p className="text-lg text-text-gray mt-8 leading-relaxed">{post.excerpt}</p>}
         <div className="mt-8 text-text-gray text-base leading-relaxed whitespace-pre-line">{post.content}</div>
       </Reveal>

@@ -6,7 +6,8 @@ export default function Card({
 }) {
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm border border-gray-100 ${accent ? 'border-l-4 border-brand-accent' : ''} ${className}`}
+      className={`bg-white rounded-xl border border-gray-100 ${accent ? 'border-l-4 border-brand-accent' : ''} ${className}`}
+      style={{ boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)' }}
       {...props}
     >
       {children}
