@@ -1,15 +1,91 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import Button from '../../components/ui/Button';
+import AdminButton from '../components/AdminButton';
 import {
   FiPlus, FiTrash2, FiSave, FiUpload,
   FiHome, FiStar, FiAward, FiHelpCircle,
   FiLayout, FiMail, FiMessageSquare, FiBell, FiUsers,
   FiClock, FiVideo, FiCode, FiCalendar, FiRefreshCw,
   FiBarChart2, FiBookOpen, FiBriefcase, FiGlobe, FiCpu,
-  FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiChevronDown,
+  FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiChevronUp,
 } from 'react-icons/fi';
+
+const ICON_LIST = [
+  { key: "briefcase", label: "Briefcase", Icon: FiBriefcase },
+  { key: "code", label: "Code", Icon: FiCode },
+  { key: "star", label: "Star", Icon: FiStar },
+  { key: "award", label: "Award", Icon: FiAward },
+  { key: "users", label: "Users", Icon: FiUsers },
+  { key: "clock", label: "Clock", Icon: FiClock },
+  { key: "target", label: "Target", Icon: FiBarChart2 },
+  { key: "book", label: "Book", Icon: FiBookOpen },
+  { key: "video", label: "Video", Icon: FiVideo },
+  { key: "calendar", label: "Calendar", Icon: FiCalendar },
+  { key: "refresh", label: "Refresh", Icon: FiRefreshCw },
+  { key: "message", label: "Message", Icon: FiMessageSquare },
+  { key: "globe", label: "Globe", Icon: FiGlobe },
+  { key: "cpu", label: "CPU", Icon: FiCpu },
+  { key: "database", label: "Database", Icon: FiDatabase },
+  { key: "layers", label: "Layers", Icon: FiLayers },
+  { key: "zap", label: "Zap", Icon: FiZap },
+  { key: "shield", label: "Shield", Icon: FiShield },
+  { key: "trending", label: "Trending", Icon: FiTrendingUp },
+  { key: "mail", label: "Mail", Icon: FiMail },
+  { key: "bell", label: "Bell", Icon: FiBell },
+  { key: "help", label: "Help", Icon: FiHelpCircle },
+];
+
+function IconPicker({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+  const selected = ICON_LIST.find((o) => o.key === value);
+  return (
+    <div ref={ref} className="relative">
+      <label className="block text-xs font-medium text-neutral-600 mb-1">Icon</label>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 bg-white text-left"
+      >
+        {selected ? (
+          <>
+            <selected.Icon className="w-4 h-4 text-accent-600 shrink-0" />
+            <span>{selected.label}</span>
+          </>
+        ) : (
+          <span className="text-neutral-400">Select icon</span>
+        )}
+        <FiChevronUp className={`w-4 h-4 ml-auto text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute bottom-full left-0 right-0 mb-1 z-50 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          {ICON_LIST.map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => { onChange(opt.key); setOpen(false); }}
+              className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
+                value === opt.key
+                  ? "bg-accent-50 text-accent-600"
+                  : "hover:bg-neutral-50 text-neutral-700"
+              }`}
+            >
+              <opt.Icon className="w-4 h-4 shrink-0" />
+              <span>{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const sectionDefs = [
   {
@@ -84,14 +160,14 @@ function ImageUploader({ value, onChange, label }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
+          className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
           placeholder="Paste image URL or upload..." />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-brand-accent hover:text-brand-accent transition-colors">
+        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-neutral-300 rounded-lg text-sm text-neutral-500 hover:border-accent-500 hover:text-accent-600 transition-colors">
           {uploading ? (
-            <span className="w-4 h-4 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
           ) : (
             <FiUpload className="w-4 h-4" />
           )}
@@ -99,10 +175,10 @@ function ImageUploader({ value, onChange, label }) {
         </label>
       </div>
       {value && (
-        <div className="mt-2 relative group rounded-lg overflow-hidden border border-gray-200">
+        <div className="mt-2 relative group rounded-lg overflow-hidden border border-neutral-200">
           <img src={value} alt="" className="h-32 w-full object-cover" />
           <button type="button" onClick={() => onChange('')}
-            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+            className="absolute top-2 right-2 p-1.5 bg-destructive-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
             <FiTrash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -128,33 +204,33 @@ function ListEditor({ def, data, onChange }) {
   return (
     <div className="space-y-3">
       {items.map((item, i) => (
-        <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+        <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{def.listLabel || 'Item'} {i + 1}</span>
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">{def.listLabel || 'Item'} {i + 1}</span>
             <button type="button" onClick={() => removeItem(i)}
-              className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+              className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors">
               <FiTrash2 className="w-4 h-4" />
             </button>
           </div>
           <div className="space-y-3">
             {def.listItemFields.map((f) => (
               <div key={f.name}>
-                <label className="block text-xs font-medium text-gray-600 mb-1">{f.label}</label>
+                <label className="block text-xs font-medium text-neutral-600 mb-1">{f.label}</label>
                 {f.type === 'textarea' ? (
                   <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
                 ) : (
                   <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
                 )}
               </div>
             ))}
           </div>
         </div>
       ))}
-      <Button type="button" onClick={addItem} variant="link-add" size="sm">
+      <AdminButton type="button" onClick={addItem} variant="ghost" size="sm">
         <FiPlus className="w-4 h-4" /> Add {def.listLabel || 'Item'}
-      </Button>
+      </AdminButton>
     </div>
   );
 }
@@ -190,75 +266,75 @@ function FeatureCardsEditor({ data, onChange }) {
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={data?.heading || ''} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section heading" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section heading" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={data?.subheading || ''} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section subheading" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section subheading" />
         </div>
       </div>
-      <div className="border-t border-gray-200 pt-4">
+      <div className="border-t border-neutral-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold text-gray-700">Cards</h4>
-          <Button type="button" onClick={addCard} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Card</Button>
+          <h4 className="text-sm font-semibold text-neutral-700">Cards</h4>
+          <AdminButton type="button" onClick={addCard} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Card</AdminButton>
         </div>
-        {cards.length === 0 && <p className="text-sm text-gray-400 italic">No cards yet.</p>}
+        {cards.length === 0 && <p className="text-sm text-neutral-400 italic">No cards yet.</p>}
         <div className="space-y-3">
           {cards.map((card, i) => (
-            <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+            <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Card {i + 1}</span>
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Card {i + 1}</span>
                 <button type="button" onClick={() => removeCard(i)}
-                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
+                  className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Heading</label>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Heading</label>
                     <input type="text" value={card.heading || ''} onChange={(e) => updateCard(i, 'heading', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Button Text</label>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Button Text</label>
                     <input type="text" value={card.button_text || 'View More'} onChange={(e) => updateCard(i, 'button_text', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                  <label className="block text-xs font-medium text-neutral-600 mb-1">Description</label>
                   <textarea value={card.description || ''} onChange={(e) => updateCard(i, 'description', e.target.value)} rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                 </div>
                 <ImageUploader value={card.image_url} onChange={(v) => updateCard(i, 'image_url', v)} label="Image" />
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-medium text-gray-600">Bullet Points</label>
+                    <label className="block text-xs font-medium text-neutral-600">Bullet Points</label>
                     <button type="button" onClick={() => addBullet(i)}
-                      className="text-xs text-brand-accent hover:text-brand-blue font-medium flex items-center gap-0.5">
+                      className="text-xs text-accent-600 hover:text-accent-700 font-medium flex items-center gap-0.5">
                       <FiPlus className="w-3 h-3" /> Add
                     </button>
                   </div>
                   <div className="space-y-1.5">
                     {(card.bullets || []).map((b, j) => (
                       <div key={j} className="flex items-center gap-1.5">
-                        <span className="text-gray-400">•</span>
+                        <span className="text-neutral-400">•</span>
                         <input type="text" value={b} onChange={(e) => updateBullet(i, j, e.target.value)}
-                          className="flex-1 px-2.5 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                          className="flex-1 px-2.5 py-1.5 border border-neutral-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
                           placeholder="Bullet point" />
                         <button type="button" onClick={() => removeBullet(i, j)}
-                          className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
+                          className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Button Link</label>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Button Link</label>
                     <input type="text" value={card.button_link || '#'} onChange={(e) => updateCard(i, 'button_link', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                   </div>
                 </div>
               </div>
@@ -277,7 +353,7 @@ function ServicesEditor({ data, onChange }) {
   }
   const services = content.services_list || [];
   const cards = content.service_cards || [];
-  function addService() { updateContent('services_list', [...services, { icon_name: 'FiBriefcase', title: '', description: '' }]); }
+  function addService() { updateContent('services_list', [...services, { icon_name: 'briefcase', title: '', description: '' }]); }
   function updateService(idx, field, value) {
     const u = services.map((s, i) => i === idx ? { ...s, [field]: value } : s);
     updateContent('services_list', u);
@@ -293,104 +369,105 @@ function ServicesEditor({ data, onChange }) {
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={data?.heading || ''} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={data?.subheading || ''} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Intro Paragraph</label>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Intro Paragraph</label>
         <textarea value={content.intro || ''} onChange={(e) => updateContent('intro', e.target.value)} rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Left Column Heading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Left Column Heading</label>
           <input type="text" value={content.left_heading || ''} onChange={(e) => updateContent('left_heading', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
           <input type="text" value={content.cta_text || ''} onChange={(e) => updateContent('cta_text', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Left Column Description</label>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Left Column Description</label>
         <textarea value={content.left_description || ''} onChange={(e) => updateContent('left_description', e.target.value)} rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <ImageUploader value={content.left_image_url} onChange={(v) => updateContent('left_image_url', v)} label="Left Column Image" />
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Link</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Link</label>
           <input type="text" value={content.cta_link || '#'} onChange={(e) => updateContent('cta_link', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
         </div>
       </div>
-      <div className="border-t border-gray-200 pt-4">
+      <div className="border-t border-neutral-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold text-gray-700">Services List (3 items)</h4>
-          <Button type="button" onClick={addService} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Service</Button>
+          <h4 className="text-sm font-semibold text-neutral-700">Services List (3 items)</h4>
+          <AdminButton type="button" onClick={addService} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Service</AdminButton>
         </div>
         <div className="space-y-3">
           {services.map((s, i) => (
-            <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+            <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Service {i + 1}</span>
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Service {i + 1}</span>
                 <button type="button" onClick={() => removeService(i)}
-                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
+                  className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="grid sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
+                  <label className="block text-xs font-medium text-neutral-600 mb-1">Title</label>
                   <input type="text" value={s.title || ''} onChange={(e) => updateService(i, 'title', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Icon (Fi* name)</label>
-                  <input type="text" value={s.icon_name || 'FiBriefcase'} onChange={(e) => updateService(i, 'icon_name', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="FiBriefcase" />
+                  <IconPicker
+                    value={s.icon_name || "briefcase"}
+                    onChange={(val) => updateService(i, 'icon_name', val)}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                  <label className="block text-xs font-medium text-neutral-600 mb-1">Description</label>
                   <input type="text" value={s.description || ''} onChange={(e) => updateService(i, 'description', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="border-t border-gray-200 pt-4">
+      <div className="border-t border-neutral-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold text-gray-700">Service Cards (4 items)</h4>
-          <Button type="button" onClick={addCard} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Card</Button>
+          <h4 className="text-sm font-semibold text-neutral-700">Service Cards (4 items)</h4>
+          <AdminButton type="button" onClick={addCard} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Card</AdminButton>
         </div>
         <div className="space-y-3">
           {cards.map((c, i) => (
-            <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+            <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Card {i + 1}</span>
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Card {i + 1}</span>
                 <button type="button" onClick={() => removeCard(i)}
-                  className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
+                  className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Title</label>
                     <input type="text" value={c.title || ''} onChange={(e) => updateCard(i, 'title', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Description</label>
                     <input type="text" value={c.description || ''} onChange={(e) => updateCard(i, 'description', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
                   </div>
                 </div>
                 <ImageUploader value={c.image_url} onChange={(v) => updateCard(i, 'image_url', v)} label="Image" />
@@ -421,22 +498,22 @@ function FieldEditor({ def, data, onChange }) {
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section heading" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section heading" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Section subheading" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section subheading" />
         </div>
       </div>
       {def.fields.map((f) => (
         <RenderField key={f.name} field={f} value={content[f.name]} onChange={(v) => updateContent(f.name, v)} />
       ))}
       {def.hasList && (
-        <div className="border-t border-gray-200 pt-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-3">{def.listLabel || 'List Items'}</h4>
+        <div className="border-t border-neutral-200 pt-4">
+          <h4 className="text-sm font-semibold text-neutral-700 mb-3">{def.listLabel || 'List Items'}</h4>
           <ListEditor def={{ ...def, listKey: def.listKey || 'stats' }} data={data} onChange={onChange} />
         </div>
       )}
@@ -464,43 +541,43 @@ function SimpleListEditor({ def, data, onChange }) {
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
         </div>
       </div>
       <div className="space-y-3">
         {items.map((item, i) => (
-          <div key={i} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+          <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{(def.label || 'Item').slice(0, -1)} {i + 1}</span>
+              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">{(def.label || 'Item').slice(0, -1)} {i + 1}</span>
               <button type="button" onClick={() => removeItem(i)}
-                className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
+                className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
             </div>
             <div className="space-y-3">
               {def.itemFields.map((f) => (
                 <div key={f.name}>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">{f.label}</label>
+                  <label className="block text-xs font-medium text-neutral-600 mb-1">{f.label}</label>
                   {f.type === 'textarea' ? (
                     <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
                   ) : (
                     <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
                   )}
                 </div>
               ))}
             </div>
           </div>
         ))}
-        <Button type="button" onClick={addItem} variant="link-add" size="sm">
+        <AdminButton type="button" onClick={addItem} variant="ghost" size="sm">
           <FiPlus className="w-4 h-4" /> Add {def.label ? def.label.slice(0, -1) : 'Item'}
-        </Button>
+        </AdminButton>
       </div>
     </div>
   );
@@ -511,26 +588,26 @@ function RenderField({ field, value, onChange }) {
   if (field.type === 'textarea') {
     return (
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
         <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
       </div>
     );
   }
   if (field.type === 'multiline') {
     return (
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
         <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all font-mono text-xs" placeholder="Enter one per line" />
+          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all font-mono text-xs" placeholder="Enter one per line" />
       </div>
     );
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
       <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" />
+        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
     </div>
   );
 }
@@ -541,38 +618,38 @@ function PromoEditor({ data, onChange }) {
   return (
     <div className="space-y-5">
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Heading</label>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
         <input type="text" value={form.heading} onChange={(e) => update('heading', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Main banner heading" />
+          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Main banner heading" />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Highlighted Text</label>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Highlighted Text</label>
         <input type="text" value={form.highlighted_text} onChange={(e) => update('highlighted_text', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Text that appears highlighted in orange" />
+          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Text that appears highlighted in orange" />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Subtext</label>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtext</label>
         <textarea value={form.subtext} onChange={(e) => update('subtext', e.target.value)} rows={2}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Label</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Label</label>
           <input type="text" value={form.cta_label} onChange={(e) => update('cta_label', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Know More" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Know More" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Link</label>
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Link</label>
           <input type="text" value={form.cta_link} onChange={(e) => update('cta_link', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="/courses" />
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="/courses" />
         </div>
       </div>
-      <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100/50 transition-colors">
-        <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? 'bg-brand-accent' : 'bg-gray-300'}`}>
+      <label className="flex items-center gap-3 p-4 bg-neutral-50 rounded-lg border border-neutral-200 cursor-pointer hover:bg-neutral-100/50 transition-colors">
+        <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? 'bg-accent-600' : 'bg-neutral-300'}`}>
           <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_active ? 'translate-x-4' : ''}`} />
           <input type="checkbox" checked={form.is_active} onChange={(e) => update('is_active', e.target.checked)} className="sr-only" />
         </div>
-        <span className="text-sm font-medium text-dark-navy">Active</span>
+        <span className="text-sm font-medium text-neutral-900">Active</span>
       </label>
     </div>
   );
@@ -593,16 +670,16 @@ function AlumniEditor({ data, onChange }) {
     <div className="space-y-4">
       <div className="flex gap-2">
         <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-          placeholder="Company name" className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+          placeholder="Company name" className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
           onKeyDown={(e) => e.key === 'Enter' && addCompany()} />
-        <Button onClick={addCompany} variant="accent" size="md"><FiPlus className="w-4 h-4" /> Add</Button>
+        <AdminButton onClick={addCompany} variant="primary" size="md"><FiPlus className="w-4 h-4" /> Add</AdminButton>
       </div>
-      {companies.length === 0 && <p className="text-sm text-gray-400 italic">No companies added yet.</p>}
+      {companies.length === 0 && <p className="text-sm text-neutral-400 italic">No companies added yet.</p>}
       <div className="flex flex-wrap gap-2">
         {companies.map((c, i) => (
-          <div key={i} className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg">
+          <div key={i} className="flex items-center gap-2 bg-neutral-50 border border-neutral-200 px-3 py-2 rounded-lg">
             <span className="text-sm font-medium">{c.name}</span>
-            <button onClick={() => removeCompany(i)} className="text-red-400 hover:text-red-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
+            <button onClick={() => removeCompany(i)} className="text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
           </div>
         ))}
       </div>
@@ -730,7 +807,7 @@ export default function HomePageEditor() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -738,24 +815,45 @@ export default function HomePageEditor() {
   const selectedNav = allNavItems.find(n => n.key === section) || allNavItems[0];
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-xl font-bold text-dark-navy">{selectedNav.label}</h2>
-        <p className="text-sm text-gray-400 mt-0.5">Edit the {selectedNav.label.toLowerCase()} section</p>
-      </div>
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        {selectedNav.type === 'promo' && <PromoEditor data={promoData} onChange={setPromoData} />}
-        {selectedNav.type === 'alumni' && <AlumniEditor data={alumniData} onChange={setAlumniData} />}
-        {selectedNav.type === 'home_section' && (() => {
-          const def = sectionDefs.find(d => d.key === section);
-          const sec = sections.find(s => s.section_key === section);
-          if (!def || !sec) return null;
-          return <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />;
-        })()}
-        <div className="flex justify-end mt-6 pt-4 border-t border-gray-100">
-          <Button onClick={handleSave} disabled={saving} variant="accent" size="md">
-            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save All'}
-          </Button>
+    <div className="flex gap-6">
+      <nav className="w-56 shrink-0">
+        <div className="rounded-lg border border-neutral-200 overflow-hidden">
+          {allNavItems.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              onClick={() => navigate(`/admin/home/${item.key}`)}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                selectedNav.key === item.key
+                  ? 'bg-accent-50 text-accent-600 border-l-2 border-accent-600 font-medium'
+                  : 'text-neutral-600 hover:bg-neutral-50 border-l-2 border-transparent'
+              }`}
+            >
+              <item.icon className="w-4 h-4 shrink-0" />
+              <span className="text-sm">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+      <div className="flex-1 min-w-0">
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-neutral-900">{selectedNav.label}</h2>
+          <p className="text-sm text-neutral-500 mt-0.5">Edit the {selectedNav.label.toLowerCase()} section</p>
+        </div>
+        <div className="rounded-lg border border-neutral-200 p-6">
+          {selectedNav.type === 'promo' && <PromoEditor data={promoData} onChange={setPromoData} />}
+          {selectedNav.type === 'alumni' && <AlumniEditor data={alumniData} onChange={setAlumniData} />}
+          {selectedNav.type === 'home_section' && (() => {
+            const def = sectionDefs.find(d => d.key === section);
+            const sec = sections.find(s => s.section_key === section);
+            if (!def || !sec) return null;
+            return <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />;
+          })()}
+          <div className="flex justify-end mt-6 pt-4 border-t border-neutral-100">
+            <AdminButton onClick={handleSave} disabled={saving} variant="primary" size="md">
+              {saving ? 'Saving...' : saved ? 'Saved!' : 'Save All'}
+            </AdminButton>
+          </div>
         </div>
       </div>
     </div>

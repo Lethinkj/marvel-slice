@@ -1,14 +1,18 @@
-import { FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle } from 'react-icons/fi';
+import {
+  FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw,
+  FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen,
+  FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap,
+  FiShield, FiTrendingUp,
+} from 'react-icons/fi';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 
 const iconMap = {
-  FiClock: FiClock,
-  FiVideo: FiVideo,
-  FiCode: FiCode,
-  FiAward: FiAward,
-  FiCalendar: FiCalendar,
-  FiRefreshCw: FiRefreshCw,
-  FiMessageCircle: FiMessageCircle,
+  code: FiCode, star: FiStar, award: FiAward, users: FiUsers,
+  clock: FiClock, target: FiBarChart2, book: FiBookOpen,
+  video: FiVideo, calendar: FiCalendar, refresh: FiRefreshCw,
+  message: FiMessageCircle, briefcase: FiBriefcase, globe: FiGlobe,
+  cpu: FiCpu, database: FiDatabase, layers: FiLayers,
+  zap: FiZap, shield: FiShield, trending: FiTrendingUp,
 };
 
 export default function KeyHighlights({ section }) {

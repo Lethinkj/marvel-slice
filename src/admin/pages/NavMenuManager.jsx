@@ -1,18 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
-import Button from "../../components/ui/Button";
+import AdminButton from "../components/AdminButton";
 import {
   FiPlus,
-  FiEdit2,
-  FiTrash2,
-  FiLink,
   FiFileText,
   FiCheck,
   FiX,
   FiFolder,
   FiFile,
-  FiExternalLink,
   FiBookOpen,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
@@ -27,22 +23,6 @@ const sections = [
 export default function NavMenuManager() {
   const { user: currentUser } = useAuth();
 
-  // Redirect or show error if user is not a manager or admin
-  if (currentUser?.role !== "admin" && currentUser?.role !== "manager" && currentUser?.role !== "master_admin") {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-          <h1 className="text-2xl font-bold text-dark-navy mb-4">
-            Access Denied
-          </h1>
-          <p className="text-gray-600">
-            You do not have permission to access this page.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   const [dbItems, setDbItems] = useState([]);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ label: "", path: "", is_active: true, parent_id: null });
@@ -52,6 +32,52 @@ export default function NavMenuManager() {
   const [loading, setLoading] = useState(true);
   const [allCourses, setAllCourses] = useState([]);
   const pathAuto = useRef(true);
+
+  useEffect(() => {
+    if (selectedSection && sections.some((s) => s.label === selectedSection)) {
+      openAdd(selectedSection);
+    }
+  }, [searchParams]);
+
+  const fetchItems = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from("nav_items")
+      .select("*")
+      .order("sort_order");
+    if (data) setDbItems(data);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
+
+  useEffect(() => {
+    supabase
+      .from("courses")
+      .select("id, title, slug, nav_item_id")
+      .order("title")
+      .then(({ data }) => {
+        if (data) setAllCourses(data);
+      });
+  }, []);
+
+  if (currentUser?.role !== "admin" && currentUser?.role !== "manager" && currentUser?.role !== "master_admin") {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="rounded-lg border border-neutral-200 bg-white p-6 text-center">
+          <h1 className="text-2xl font-bold text-neutral-900 mb-4">
+            Access Denied
+          </h1>
+          <p className="text-neutral-500">
+            You do not have permission to access this page.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const selectedSection = searchParams.get("section");
   const filteredSections = selectedSection
     ? sections.filter((s) => s.label === selectedSection)
@@ -121,36 +147,6 @@ export default function NavMenuManager() {
     pathAuto.current = false;
     setForm((prev) => ({ ...prev, path: value }));
   }
-
-  useEffect(() => {
-    if (selectedSection && sections.some((s) => s.label === selectedSection)) {
-      openAdd(selectedSection);
-    }
-  }, [searchParams]);
-
-  const fetchItems = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from("nav_items")
-      .select("*")
-      .order("sort_order");
-    if (data) setDbItems(data);
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
-
-  useEffect(() => {
-    supabase
-      .from("courses")
-      .select("id, title, slug, nav_item_id")
-      .order("title")
-      .then(({ data }) => {
-        if (data) setAllCourses(data);
-      });
-  }, []);
 
   function getSectionItems(label) {
     return dbItems.filter((item) => item.parent_label === label);
@@ -245,7 +241,7 @@ export default function NavMenuManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -253,8 +249,8 @@ export default function NavMenuManager() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-dark-navy">Navigation Menu</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-bold text-neutral-900">Navigation Menu</h1>
+        <p className="text-sm text-neutral-500 mt-1">
           Manage dropdown items for container sections.
         </p>
       </div>
@@ -269,24 +265,24 @@ export default function NavMenuManager() {
           return (
             <div
               key={section.label}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+              className="rounded-lg border border-neutral-200 bg-white overflow-hidden"
             >
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-neutral-100 bg-neutral-50">
                 <span
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${isContainer ? "bg-brand-orange/10" : "bg-gray-100"}`}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${isContainer ? "bg-accent-50" : "bg-neutral-100"}`}
                 >
                   {isContainer ? (
-                    <FiFolder className="w-4 h-4 text-brand-orange" />
+                    <FiFolder className="w-4 h-4 text-accent-500" />
                   ) : (
-                    <FiFile className="w-4 h-4 text-gray-400" />
+                    <FiFile className="w-4 h-4 text-neutral-400" />
                   )}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-dark-navy truncate">
+                  <p className="text-sm font-semibold text-neutral-900 truncate">
                     {section.label}
                   </p>
                   {section.path && (
-                    <p className="text-xs text-gray-400 truncate">
+                    <p className="text-xs text-neutral-400 truncate">
                       /{section.label.toLowerCase().replace(/\s+/g, "-")}
                     </p>
                   )}
@@ -294,7 +290,7 @@ export default function NavMenuManager() {
                 {isContainer ? (
                   <button
                     onClick={() => openAdd(section.label)}
-                    className="p-1.5 text-brand-accent hover:bg-brand-accent/5 rounded-lg transition-colors"
+                    className="p-1.5 text-accent-600 hover:bg-accent-50 rounded-lg transition-colors"
                     title={`Add item under ${section.label}`}
                   >
                     <FiPlus className="w-4 h-4" />
@@ -302,7 +298,7 @@ export default function NavMenuManager() {
                 ) : (
                   <Link
                     to={`/admin/pages/${section.label.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="p-1.5 text-gray-400 hover:text-brand-accent hover:bg-brand-accent/5 rounded-lg transition-colors"
+                    className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-colors"
                     title="Edit Page"
                   >
                     <FiFileText className="w-4 h-4" />
@@ -310,20 +306,20 @@ export default function NavMenuManager() {
                 )}
               </div>
 
-              <div className="divide-y divide-gray-50">
+              <div className="divide-y divide-neutral-50">
                 {items.length === 0 ? (
                   <div className="px-4 py-6 text-center">
                     {isContainer ? (
                       <button
                         onClick={() => openAdd(section.label)}
-                        className="text-sm text-brand-accent hover:text-brand-blue font-medium flex items-center justify-center gap-1.5 mx-auto transition-colors"
+                        className="text-sm text-accent-600 hover:text-accent-700 font-medium flex items-center justify-center gap-1.5 mx-auto transition-colors"
                       >
                         <FiPlus className="w-4 h-4" /> Add item
                       </button>
                     ) : (
                       <Link
                         to={`/admin/pages/${section.label.toLowerCase().replace(/\s+/g, "-")}`}
-                        className="text-sm text-brand-accent hover:text-brand-blue font-medium inline-flex items-center gap-1.5 transition-colors"
+                        className="text-sm text-accent-600 hover:text-accent-700 font-medium inline-flex items-center gap-1.5 transition-colors"
                       >
                         <FiFileText className="w-4 h-4" /> Edit Page
                       </Link>
@@ -335,47 +331,47 @@ export default function NavMenuManager() {
                     return (
                       <div
                         key={item.id}
-                        className="px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                        className="px-4 py-2.5 hover:bg-neutral-50 transition-colors group"
                       >
                         <div className="flex items-center gap-2">
                           {subItems.length > 0 && (
-                            <FiFolder className="w-3.5 h-3.5 text-brand-orange shrink-0" />
+                            <FiFolder className="w-3.5 h-3.5 text-accent-500 shrink-0" />
                           )}
-                          <span className="text-sm text-dark-navy flex-1 truncate">
+                          <span className="text-sm text-neutral-900 flex-1 truncate">
                             {item.label}
                           </span>
                           {item.path && (
-                            <span className="text-[11px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full truncate max-w-[120px]">
+                            <span className="text-[11px] text-neutral-400 bg-neutral-50 px-2 py-0.5 rounded-full truncate max-w-[120px]">
                               {item.path}
                             </span>
                           )}
                           <span
                             className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
                               item.is_active !== false
-                                ? "bg-emerald-50 text-emerald-600"
-                                : "bg-red-50 text-red-600"
+                                ? "bg-success-50 text-success-700"
+                                : "bg-destructive-50 text-destructive-700"
                             }`}
                           >
                             {item.is_active !== false ? "On" : "Off"}
                           </span>
-                          <div className="flex items-center gap-0.5 shrink-0">
+                          <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
                               onClick={() => openEdit(item)}
-                              className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                              className="px-2 py-0.5 text-[11px] font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded transition-colors"
                             >
-                              <FiEdit2 className="w-3.5 h-3.5" />
+                              Edit
                             </button>
                             <button
                               onClick={() => handleDelete(item)}
-                              className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                              className="px-2 py-0.5 text-[11px] font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded transition-colors"
                             >
-                              <FiTrash2 className="w-3.5 h-3.5" />
+                              Delete
                             </button>
                             <Link
                               to={`/admin/nav-pages/${item.id}`}
-                              className="p-1 text-gray-400 hover:text-brand-accent hover:bg-brand-accent/5 rounded transition-colors"
+                              className="px-2 py-0.5 text-[11px] font-medium text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded transition-colors"
                             >
-                              <FiFileText className="w-3.5 h-3.5" />
+                              Page
                             </Link>
                           </div>
                         </div>
@@ -395,9 +391,9 @@ export default function NavMenuManager() {
             <>
               <form
                 onSubmit={handleSave}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 p-5"
+                className="rounded-lg border border-neutral-200 bg-white p-5"
               >
-                <p className="text-sm font-semibold text-dark-navy mb-3">
+                <p className="text-sm font-semibold text-neutral-900 mb-3">
                   {editing
                     ? `Edit: ${editing.label}`
                     : form.parent_id
@@ -406,18 +402,18 @@ export default function NavMenuManager() {
                 </p>
                 <div className="flex flex-wrap items-end gap-3">
                   <div className="flex-1 min-w-[180px]">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
                       Label
                     </label>
                     <input
                       value={form.label}
                       onChange={(e) => handleLabelChange(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-colors"
                       placeholder="e.g. Angular Course"
                     />
                   </div>
                   <div className="flex-1 min-w-[180px] relative">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
                       Parent (optional)
                     </label>
                     {(() => {
@@ -428,26 +424,26 @@ export default function NavMenuManager() {
                           <button
                             type="button"
                             onClick={() => setParentOpen(!parentOpen)}
-                            className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white cursor-pointer hover:border-gray-400 transition-colors"
+                            className="w-full flex items-center justify-between px-3 py-2 border border-neutral-300 rounded-lg text-sm bg-white cursor-pointer hover:border-neutral-400 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500"
                           >
-                            <span className={form.parent_id ? 'text-dark-navy' : 'text-gray-400'}>
+                            <span className={form.parent_id ? 'text-neutral-900' : 'text-neutral-400'}>
                               {parentItem
                                 ? parentItem.label
                                 : `— Top level in ${activeSection || selectedSection} —`}
                             </span>
-                            <svg className={`w-4 h-4 text-gray-400 transition-transform ${parentOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className={`w-4 h-4 text-neutral-400 transition-transform ${parentOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           </button>
                           {parentOpen && (
-                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[240px] overflow-y-auto">
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 max-h-[240px] overflow-y-auto">
                               <button
                                 type="button"
                                 onClick={() => { handleParentChange(null); setParentOpen(false); }}
                                 className={`w-full text-left px-3 py-2 text-sm transition-colors ${
                                   !form.parent_id
-                                    ? 'bg-brand-orange/10 text-brand-orange font-medium'
-                                    : 'text-gray-500 hover:bg-gray-50'
+                                    ? 'bg-accent-50 text-accent-700 font-medium'
+                                    : 'text-neutral-500 hover:bg-neutral-50'
                                 }`}
                               >
                                 — Top level in {activeSection || selectedSection} —
@@ -459,12 +455,12 @@ export default function NavMenuManager() {
                                   onClick={() => { handleParentChange(p.id); setParentOpen(false); }}
                                   className={`w-full text-left px-3 py-2 text-sm transition-colors ${
                                     form.parent_id === p.id
-                                      ? 'bg-brand-orange/10 text-brand-orange font-medium'
-                                      : 'text-gray-700 hover:bg-gray-50'
+                                      ? 'bg-accent-50 text-accent-700 font-medium'
+                                      : 'text-neutral-700 hover:bg-neutral-50'
                                   }`}
                                   style={{ paddingLeft: `${12 + p._depth * 20}px` }}
                                 >
-                                  {p._depth > 0 && <span className="text-gray-400 mr-1">&#8627;</span>}
+                                  {p._depth > 0 && <span className="text-neutral-400 mr-1">&#8627;</span>}
                                   {p.label}
                                 </button>
                               ))}
@@ -475,19 +471,19 @@ export default function NavMenuManager() {
                     })()}
                   </div>
                   <div className="flex-1 min-w-[180px]">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
                       Path (optional)
                     </label>
                     <input
                       value={form.path}
                       onChange={(e) => handlePathChange(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-mono text-xs"
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-colors font-mono text-xs"
                       placeholder="/auto-generated-from-label"
                     />
                   </div>
                   {allCourses.length > 0 && (
                     <div className="flex-1 min-w-[180px]">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+                      <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
                         Link to Course
                       </label>
                       <select
@@ -504,7 +500,7 @@ export default function NavMenuManager() {
                             path: course ? `/courses/${course.slug}` : "",
                           });
                         }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white appearance-none cursor-pointer"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-colors bg-white appearance-none cursor-pointer"
                       >
                         <option value="">— None —</option>
                         {allCourses.map((c) => (
@@ -515,9 +511,9 @@ export default function NavMenuManager() {
                       </select>
                     </div>
                   )}
-                  <label className="flex items-center gap-2.5 p-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100/50 transition-colors">
+                  <label className="flex items-center gap-2.5 p-3 bg-neutral-50 rounded-lg border border-neutral-200 cursor-pointer hover:bg-neutral-100 transition-colors">
                     <div
-                      className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? "bg-brand-accent" : "bg-gray-300"}`}
+                      className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? "bg-accent-500" : "bg-neutral-300"}`}
                     >
                       <div
                         className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_active ? "translate-x-4" : ""}`}
@@ -531,26 +527,26 @@ export default function NavMenuManager() {
                         className="sr-only"
                       />
                     </div>
-                    <span className="text-sm font-medium text-dark-navy">Active</span>
+                    <span className="text-sm font-medium text-neutral-900">Active</span>
                   </label>
                   <div className="flex gap-2">
-                    <Button type="submit" variant="accent" size="md">
+                    <AdminButton type="submit" variant="primary" size="md">
                       <FiCheck className="w-4 h-4" /> {editing ? "Update" : "Add"}
-                    </Button>
-                    <Button type="button" onClick={cancel} variant="ghost" size="md">
+                    </AdminButton>
+                    <AdminButton type="button" onClick={cancel} variant="ghost" size="md">
                       <FiX className="w-4 h-4" /> Cancel
-                    </Button>
+                    </AdminButton>
                   </div>
                 </div>
               </form>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50">
-                  <p className="text-sm font-semibold text-dark-navy">Items in {activeSection || selectedSection}</p>
+              <div className="rounded-lg border border-neutral-200 bg-white overflow-hidden">
+                <div className="px-5 py-3 border-b border-neutral-100 bg-neutral-50">
+                  <p className="text-sm font-semibold text-neutral-900">Items in {activeSection || selectedSection}</p>
                 </div>
-                <div className="divide-y divide-gray-50">
+                <div className="divide-y divide-neutral-50">
                   {getSectionItems(activeSection || selectedSection).length === 0 ? (
-                    <p className="px-5 py-6 text-sm text-gray-400 text-center">No items yet.</p>
+                    <p className="px-5 py-6 text-sm text-neutral-400 text-center">No items yet.</p>
                   ) : (
                     (function renderItems(parentItems, depth = 0) {
                       return parentItems.map((item) => {
@@ -558,15 +554,15 @@ export default function NavMenuManager() {
                         return (
                           <div key={item.id}>
                             <div
-                              className={`flex items-center gap-3 px-5 py-2.5 hover:bg-gray-50 transition-colors ${depth > 0 ? 'border-l-2 border-brand-orange/20 ml-3' : ''}`}
+                              className={`flex items-center gap-3 px-5 py-2.5 hover:bg-neutral-50 transition-colors group ${depth > 0 ? 'border-l-2 border-accent-200 ml-3' : ''}`}
                               style={{ paddingLeft: `${20 + depth * 24}px` }}
                             >
                               {subItems.length > 0 ? (
-                                <FiFolder className="w-4 h-4 text-brand-orange shrink-0" />
+                                <FiFolder className="w-4 h-4 text-accent-500 shrink-0" />
                               ) : (
-                                <FiFile className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                                <FiFile className="w-3.5 h-3.5 text-neutral-300 shrink-0" />
                               )}
-                              <span className="text-sm text-dark-navy font-medium flex-1 truncate">
+                              <span className="text-sm text-neutral-900 font-medium flex-1 truncate">
                                 {item.label}
                               </span>
                               {(() => {
@@ -574,7 +570,7 @@ export default function NavMenuManager() {
                                 return course ? (
                                   <Link
                                     to={`/admin/courses/${course.id}`}
-                                    className="text-[11px] text-brand-accent bg-brand-accent/5 px-2 py-0.5 rounded-full truncate max-w-[140px] hover:bg-brand-accent/10 transition-colors flex items-center gap-1"
+                                    className="text-[11px] text-accent-700 bg-accent-50 px-2 py-0.5 rounded-full truncate max-w-[140px] hover:bg-accent-100 transition-colors flex items-center gap-1"
                                   >
                                     <FiBookOpen className="w-3 h-3" />
                                     {course.title}
@@ -582,32 +578,30 @@ export default function NavMenuManager() {
                                 ) : null;
                               })()}
                               {item.path && (
-                                <span className="text-[11px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full truncate max-w-[100px] hidden sm:inline">
+                                <span className="text-[11px] text-neutral-400 bg-neutral-50 px-2 py-0.5 rounded-full truncate max-w-[100px] hidden sm:inline">
                                   {item.path}
                                 </span>
                               )}
                               <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
                                 item.is_active !== false
-                                  ? "bg-emerald-50 text-emerald-600"
-                                  : "bg-red-50 text-red-600"
+                                  ? "bg-success-50 text-success-700"
+                                  : "bg-destructive-50 text-destructive-700"
                               }`}>
                                 {item.is_active !== false ? "On" : "Off"}
                               </span>
-                              <div className="flex items-center gap-1 shrink-0">
+                              <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button onClick={() => { setActiveSection(activeSection || selectedSection); setForm({ label: "", path: "", is_active: true, parent_id: item.id }); setEditing(null); }}
-                                  className="p-1 text-gray-400 hover:text-brand-accent hover:bg-brand-accent/5 rounded transition-colors"
+                                  className="p-1 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded transition-colors"
                                   title="Add sub-item">
                                   <FiPlus className="w-3.5 h-3.5" />
                                 </button>
                                 <button onClick={() => openEdit(item)}
-                                  className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                                  title="Edit">
-                                  <FiEdit2 className="w-3.5 h-3.5" />
+                                  className="px-2 py-0.5 text-[11px] font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded transition-colors">
+                                  Edit
                                 </button>
                                 <button onClick={() => handleDelete(item)}
-                                  className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                  title="Delete">
-                                  <FiTrash2 className="w-3.5 h-3.5" />
+                                  className="px-2 py-0.5 text-[11px] font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded transition-colors">
+                                  Delete
                                 </button>
                               </div>
                             </div>
@@ -623,8 +617,8 @@ export default function NavMenuManager() {
           )}
 
           {!activeSection && !editing && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-              <p className="text-gray-400">Select a section to add or edit items.</p>
+            <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center">
+              <p className="text-neutral-400">Select a section to add or edit items.</p>
             </div>
           )}
         </div>

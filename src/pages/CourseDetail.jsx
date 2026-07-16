@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiPlus, FiMinus } from 'react-icons/fi';
+import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import CourseCard from '../components/ui/CourseCard';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
@@ -22,6 +22,10 @@ function getYoutubeEmbedUrl(url) {
 const HIGHLIGHT_ICONS = {
   code: FiCode, star: FiStar, award: FiAward, users: FiUsers,
   clock: FiClock, target: FiBarChart2, book: FiBookOpen,
+  video: FiVideo, calendar: FiCalendar, refresh: FiRefreshCw,
+  message: FiMessageCircle, briefcase: FiBriefcase, globe: FiGlobe,
+  cpu: FiCpu, database: FiDatabase, layers: FiLayers,
+  zap: FiZap, shield: FiShield, trending: FiTrendingUp,
 };
 
 function CourseTabs({ tabs, curriculum }) {

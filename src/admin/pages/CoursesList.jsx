@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
-import Button from "../../components/ui/Button";
-import { FiPlus, FiEdit2, FiTrash2, FiBookOpen, FiSearch } from "react-icons/fi";
+import AdminButton from "../components/AdminButton";
+import Badge from "../components/Badge";
+import EmptyState from "../components/EmptyState";
+import { FiPlus, FiBookOpen, FiSearch } from "react-icons/fi";
 
 export default function CoursesList() {
   const [courses, setCourses] = useState([]);
+  const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
@@ -14,12 +17,25 @@ export default function CoursesList() {
   }, []);
 
   async function loadCourses() {
-    const { data, error } = await supabase
-      .from("courses")
-      .select(`*, nav_item_id, nav_items!left(parent_label)`)
-      .order("created_at", { ascending: false });
-    if (!error) setCourses(data || []);
+    const [coursesRes, navRes] = await Promise.all([
+      supabase.from("courses").select("*").order("created_at", { ascending: false }),
+      supabase.from("nav_items").select("id, parent_id, parent_label, label"),
+    ]);
+    if (!coursesRes.error) setCourses(coursesRes.data || []);
+    if (!navRes.error) setNavItems(navRes.data || []);
     setLoading(false);
+  }
+
+  function getRootSection(navItemId) {
+    if (!navItemId || navItems.length === 0) return "Uncategorized";
+    let current = navItems.find((n) => n.id === navItemId);
+    if (!current) return "Uncategorized";
+    while (current.parent_id) {
+      const parent = navItems.find((n) => n.id === current.parent_id);
+      if (!parent) break;
+      current = parent;
+    }
+    return current.parent_label || "Uncategorized";
   }
 
   async function togglePublish(id, current) {
@@ -35,10 +51,6 @@ export default function CoursesList() {
     setCourses((prev) => prev.filter((c) => c.id !== id));
   }
 
-  function getCategory(course) {
-    return course.nav_items?.parent_label || "Uncategorized";
-  }
-
   const filtered = courses.filter((c) => {
     if (!search) return true;
     const q = search.toLowerCase();
@@ -49,7 +61,7 @@ export default function CoursesList() {
   });
 
   const grouped = filtered.reduce((acc, course) => {
-    const cat = getCategory(course);
+    const cat = getRootSection(course.nav_item_id);
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(course);
     return acc;
@@ -67,7 +79,7 @@ export default function CoursesList() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -76,72 +88,78 @@ export default function CoursesList() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-dark-navy">All Courses</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-lg font-semibold text-neutral-900">All Courses</h1>
+          <p className="text-sm text-neutral-500">
             {courses.length} course{courses.length !== 1 ? "s" : ""} total
           </p>
         </div>
-        <Button to="/admin/courses/wizard" variant="accent" size="sm">
+        <AdminButton to="/admin/courses/wizard" variant="primary" size="sm">
           <FiPlus className="w-4 h-4" />
           Add Course
-        </Button>
+        </AdminButton>
       </div>
 
       {courses.length > 0 && (
         <div className="mb-6">
           <div className="relative max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
+              type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search courses..."
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white"
+              className="w-full pl-10 pr-4 h-9 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 bg-white"
             />
           </div>
         </div>
       )}
 
       {courses.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <FiBookOpen className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-          <p className="text-sm text-gray-400 mb-4">No courses yet.</p>
-          <Button to="/admin/courses/wizard" variant="accent" size="sm">
-            <FiPlus className="w-4 h-4" />
-            Create your first course
-          </Button>
+        <div className="border border-neutral-200 rounded-lg">
+          <EmptyState
+            icon={FiBookOpen}
+            title="No courses yet"
+            description="Get started by creating your first course."
+            action={{ to: "/admin/courses/wizard", icon: <FiPlus className="w-4 h-4" />, label: "Create your first course" }}
+          />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <FiSearch className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-          <p className="text-sm text-gray-400">No courses match "{search}"</p>
+        <div className="border border-neutral-200 rounded-lg">
+          <EmptyState
+            icon={FiSearch}
+            title={`No courses match "${search}"`}
+            description="Try a different search term."
+          />
         </div>
       ) : (
         <div className="space-y-8">
           {sortedCategories.map((cat) => (
             <div key={cat}>
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                {cat}
-                <span className="ml-2 text-xs font-normal text-gray-300">
+              <div className="flex items-center gap-2 mb-3">
+                <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                  {cat}
+                </h2>
+                <span className="text-xs text-neutral-400">
                   ({grouped[cat].length})
                 </span>
-              </h2>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              </div>
+              <div className="border border-neutral-200 rounded-lg overflow-hidden">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-100 bg-gray-50/50">
-                      <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3 w-20">
+                    <tr className="border-b border-neutral-200">
+                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 w-20">
                         ID
                       </th>
-                      <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3">
+                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">
                         Title
                       </th>
-                      <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3 hidden sm:table-cell">
+                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 hidden sm:table-cell">
                         Slug
                       </th>
-                      <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3 w-28">
+                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">
                         Status
                       </th>
-                      <th className="text-right text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3 w-24">
+                      <th className="sticky top-0 bg-neutral-50 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 w-24">
                         Actions
                       </th>
                     </tr>
@@ -150,60 +168,51 @@ export default function CoursesList() {
                     {grouped[cat].map((course) => (
                       <tr
                         key={course.id}
-                        className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors"
+                        className="group border-b border-neutral-100 last:border-0 hover:bg-neutral-50 transition-colors"
                       >
-                        <td className="px-4 py-3 text-sm text-gray-400 font-mono">
+                        <td className="px-4 py-3 text-sm text-neutral-400 font-mono">
                           {course.id.slice(0, 8)}...
                         </td>
                         <td className="px-4 py-3">
                           <Link
                             to={`/admin/courses/${course.id}`}
-                            className="font-medium text-dark-navy hover:text-brand-accent transition-colors"
+                            className="text-sm font-medium text-neutral-900 hover:text-accent-600 transition-colors"
                           >
                             {course.title || "Untitled"}
                           </Link>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-400 hidden sm:table-cell">
+                        <td className="px-4 py-3 text-sm text-neutral-400 hidden sm:table-cell">
                           /{course.slug}
                         </td>
                         <td className="px-4 py-3">
-                          <button
-                            onClick={() =>
-                              togglePublish(course.id, course.is_published)
-                            }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                              course.is_published
-                                ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                            }`}
-                          >
-                            <span
-                              className={`w-1.5 h-1.5 rounded-full ${
-                                course.is_published
-                                  ? "bg-emerald-500"
-                                  : "bg-gray-400"
-                              }`}
-                            />
-                            {course.is_published ? "Published" : "Draft"}
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={course.is_published}
+                                onChange={() => togglePublish(course.id, course.is_published)}
+                                className="sr-only peer"
+                              />
+                              <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+                            </label>
+                            <Badge variant={course.is_published ? "published" : "draft"}>
+                              {course.is_published ? "Published" : "Draft"}
+                            </Badge>
+                          </div>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <div className="flex items-center justify-end gap-1">
+                          <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Link
                               to={`/admin/courses/${course.id}`}
-                              className="p-1.5 text-gray-400 hover:text-brand-accent hover:bg-brand-accent/10 rounded-lg transition-colors"
-                              title="Edit"
+                              className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors"
                             >
-                              <FiEdit2 className="w-4 h-4" />
+                              Edit
                             </Link>
                             <button
-                              onClick={() =>
-                                handleDelete(course.id, course.title)
-                              }
-                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Delete"
+                              onClick={() => handleDelete(course.id, course.title)}
+                              className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors"
                             >
-                              <FiTrash2 className="w-4 h-4" />
+                              Delete
                             </button>
                           </div>
                         </td>

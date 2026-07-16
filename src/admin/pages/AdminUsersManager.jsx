@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import Button from "../../components/ui/Button";
+import AdminButton from "../components/AdminButton";
+import Badge from "../components/Badge";
+import EmptyState from "../components/EmptyState";
 import { useAuth } from "../context/AuthContext";
 import {
   FiPlus,
-  FiTrash2,
   FiUsers,
   FiCheck,
   FiEye,
   FiEyeOff,
-  FiEdit2,
   FiX,
 } from "react-icons/fi";
 
@@ -28,21 +28,6 @@ export default function AdminUsersManager() {
   const availableRoles = currentUser?.role === 'master_admin' ? ALL_ROLES : ALL_ROLES.filter((r) => r.rank < userRank);
   const [role, setRole] = useState(availableRoles[0]?.value || "editor");
 
-  // Redirect or show error if user has no create permission
-  if (userRank < 2) {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-          <h1 className="text-2xl font-bold text-dark-navy mb-4">
-            Access Denied
-          </h1>
-          <p className="text-gray-600">
-            You do not have permission to access this page.
-          </p>
-        </div>
-      </div>
-    );
-  }
   const [users, setUsers] = useState([]);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -68,6 +53,17 @@ export default function AdminUsersManager() {
         setLoading(false);
       });
   }, [currentUser]);
+
+  if (userRank < 2) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center">
+          <h1 className="text-lg font-semibold text-neutral-900 mb-2">Access Denied</h1>
+          <p className="text-sm text-neutral-500">You do not have permission to access this page.</p>
+        </div>
+      </div>
+    );
+  }
 
   function resetForm() {
     setEmail("");
@@ -110,7 +106,7 @@ export default function AdminUsersManager() {
             p_target_id: editingId,
             p_email: email.trim(),
             p_full_name: name.trim(),
-            p_role: role, // Ensure the role state is passed
+            p_role: role,
             p_password: password || null,
           },
         );
@@ -121,12 +117,7 @@ export default function AdminUsersManager() {
           setUsers(
             users.map((u) =>
               u.id === editingId
-                ? {
-                    ...u,
-                    email: data.email,
-                    full_name: data.full_name,
-                    role: data.role,
-                  }
+                ? { ...u, email: data.email, full_name: data.full_name, role: data.role }
                 : u,
             ),
           );
@@ -137,13 +128,7 @@ export default function AdminUsersManager() {
       } else {
         const { data, error: insertError } = await supabase.rpc(
           "create_admin",
-          {
-            p_creator_id: currentUser.id,
-            p_email: email.trim(),
-            p_full_name: name.trim(),
-            p_role,
-            p_password: password,
-          },
+          { p_creator_id: currentUser.id, p_email: email.trim(), p_full_name: name.trim(), p_role, p_password: password },
         );
 
         if (insertError) {
@@ -173,199 +158,119 @@ export default function AdminUsersManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-dark-navy">Admin Users</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Create and manage admin accounts with credentials
-        </p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-lg font-semibold text-neutral-900">Admin Users</h1>
+          <p className="text-sm text-neutral-500">Create and manage admin accounts with credentials</p>
+        </div>
       </div>
 
       {saved && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm">
-          <FiCheck className="w-4 h-4" />{" "}
-          {editingId ? "Admin updated!" : "Admin added successfully!"}
+        <div className="mb-6 p-4 bg-success-50 border border-success-200 rounded-lg flex items-center gap-2 text-success-700 text-sm">
+          <FiCheck className="w-4 h-4" /> {editingId ? "Admin updated!" : "Admin added successfully!"}
         </div>
       )}
 
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+        <div className="mb-6 p-4 bg-destructive-50 border border-destructive-200 rounded-lg text-destructive-700 text-sm">
           {error}
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6"
-      >
-        <h3 className="text-sm font-semibold text-gray-700 mb-4">
+      <form onSubmit={handleSubmit} className="rounded-lg border border-neutral-200 bg-white p-5 mb-6">
+        <h3 className="text-sm font-semibold text-neutral-900 mb-4">
           {editingId ? "Edit Admin" : "Add New Admin"}
         </h3>
         <div className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                placeholder="admin@example.com"
-              />
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                placeholder="admin@example.com" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                placeholder="John Doe"
-              />
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Full Name</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                placeholder="John Doe" />
             </div>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
-                Role
-              </label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all bg-white appearance-none cursor-pointer"
-              >
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Role</label>
+              <select value={role} onChange={(e) => setRole(e.target.value)}
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all bg-white appearance-none cursor-pointer">
                 {availableRoles.map((r) => (
-                  <option key={r.value} value={r.value}>
-                    {r.label} — {r.desc}
-                  </option>
+                  <option key={r.value} value={r.value}>{r.label} — {r.desc}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
                 Password{" "}
-                {editingId && (
-                  <span className="text-gray-400 font-normal normal-case">
-                    (leave blank to keep)
-                  </span>
-                )}
+                {editingId && <span className="text-neutral-400 font-normal normal-case">(leave blank to keep)</span>}
               </label>
               <div className="relative">
-                <input
-                  type={showPw ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  minLength={editingId ? 0 : 6}
-                  required={!editingId}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                  placeholder={
-                    editingId ? "Leave blank to keep" : "Min 6 characters"
-                  }
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-dark-navy transition-colors"
-                >
-                  {showPw ? (
-                    <FiEyeOff className="w-4 h-4" />
-                  ) : (
-                    <FiEye className="w-4 h-4" />
-                  )}
+                <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
+                  minLength={editingId ? 0 : 6} required={!editingId}
+                  className="w-full px-3 py-2 pr-10 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                  placeholder={editingId ? "Leave blank to keep" : "Min 6 characters"} />
+                <button type="button" onClick={() => setShowPw(!showPw)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-neutral-400 hover:text-neutral-700 transition-colors">
+                  {showPw ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
           </div>
           <div className="flex gap-3 pt-2">
-            <Button type="submit" variant="accent" size="md" disabled={saving}>
-              {editingId ? (
-                <FiEdit2 className="w-4 h-4" />
-              ) : (
-                <FiPlus className="w-4 h-4" />
-              )}
+            <AdminButton type="submit" variant="primary" size="md" disabled={saving}>
+              <FiPlus className="w-4 h-4" />
               {saving ? "Saving..." : editingId ? "Update Admin" : "Add Admin"}
-            </Button>
+            </AdminButton>
             {editingId && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="md"
-                onClick={resetForm}
-              >
+              <AdminButton type="button" variant="secondary" size="md" onClick={resetForm}>
                 <FiX className="w-4 h-4" /> Cancel
-              </Button>
+              </AdminButton>
             )}
-            <Button type="button" variant="ghost" size="md" onClick={resetForm}>
-              Clear
-            </Button>
+            <AdminButton type="button" variant="ghost" size="md" onClick={resetForm}>Clear</AdminButton>
           </div>
         </div>
       </form>
 
       {users.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <FiUsers className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-          <p className="text-sm text-gray-400">No admin users yet.</p>
-        </div>
+        <EmptyState icon={FiUsers} title="No admin users yet" description="Add your first admin above" />
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="divide-y divide-gray-100">
+        <div className="rounded-lg border border-neutral-200 bg-white overflow-hidden">
+          <div className="divide-y divide-neutral-100">
             {users.map((u) => (
-              <div
-                key={u.id}
-                className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors group"
-              >
-                <div className="w-9 h-9 bg-brand-accent/10 rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-sm font-semibold text-brand-accent">
+              <div key={u.id} className="flex items-center gap-4 px-5 py-4 hover:bg-neutral-50 transition-colors group">
+                <div className="w-9 h-9 bg-accent-100 rounded-full flex items-center justify-center shrink-0">
+                  <span className="text-sm font-semibold text-accent-700">
                     {(u.full_name || "?")[0].toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-dark-navy">
-                    {u.full_name}
-                  </p>
-                  <p className="text-xs text-gray-400">{u.email}</p>
+                  <p className="text-sm font-medium text-neutral-900">{u.full_name}</p>
+                  <p className="text-xs text-neutral-400">{u.email}</p>
                 </div>
-                <span
-                  className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    u.role === "master_admin"
-                      ? "bg-red-50 text-red-600"
-                      : u.role === "admin"
-                        ? "bg-brand-accent/10 text-brand-accent"
-                        : u.role === "manager"
-                          ? "bg-purple-50 text-purple-600"
-                          : "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {u.role.replace('_', ' ')}
-                </span>
+                <Badge variant={u.role}>{u.role.replace('_', ' ')}</Badge>
                 {((ROLE_RANK[u.role] || 0) < userRank || currentUser?.role === 'master_admin') && currentUser?.id !== u.id && (
                   <>
-                    <button
-                      onClick={() => deleteUser(u.id)}
-                      className="p-2 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                      title="Remove"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
+                    <button onClick={() => startEdit(u)}
+                      className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors opacity-0 group-hover:opacity-100">
+                      Edit
                     </button>
-                    <button
-                      onClick={() => startEdit(u)}
-                      className="p-2 text-gray-300 hover:text-brand-accent hover:bg-brand-accent/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                      title="Edit"
-                    >
-                      <FiEdit2 className="w-4 h-4" />
+                    <button onClick={() => deleteUser(u.id)}
+                      className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors opacity-0 group-hover:opacity-100">
+                      Delete
                     </button>
                   </>
                 )}

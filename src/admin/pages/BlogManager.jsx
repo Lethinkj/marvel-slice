@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import Button from '../../components/ui/Button';
-import { FiPlus, FiEdit2, FiTrash2, FiFileText, FiChevronRight, FiCalendar, FiEye } from 'react-icons/fi';
+import AdminButton from '../components/AdminButton';
+import Badge from '../components/Badge';
+import EmptyState from '../components/EmptyState';
+import { FiPlus, FiFileText, FiSearch, FiChevronRight, FiCalendar } from 'react-icons/fi';
 
 export default function BlogManager() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     supabase
@@ -33,51 +36,82 @@ export default function BlogManager() {
     setPosts(posts.filter((p) => p.id !== id));
   }
 
+  const filteredPosts = posts.filter(post =>
+    post.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-dark-navy">Blog Posts</h1>
-          <p className="text-sm text-gray-500 mt-1">{posts.length} post{posts.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl font-bold text-neutral-900">Blog Posts</h1>
+          <p className="text-sm text-neutral-500 mt-1">
+            {search
+              ? `${filteredPosts.length} of ${posts.length} post${posts.length !== 1 ? 's' : ''}`
+              : `${posts.length} post${posts.length !== 1 ? 's' : ''}`}
+          </p>
         </div>
-        <Button to="/admin/blog/new" variant="accent" size="md">
+        <AdminButton to="/admin/blog/new" variant="primary" size="md">
           <FiPlus className="w-4 h-4" />
           New Post
-        </Button>
+        </AdminButton>
       </div>
 
-      {posts.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <FiFileText className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-          <p className="text-sm text-gray-400 mb-4">No blog posts yet.</p>
-          <Button to="/admin/blog/new" variant="accent" size="sm">
-            <FiPlus className="w-4 h-4" />
-            Create your first post
-          </Button>
+      {posts.length > 0 && (
+        <div className="relative mb-4">
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search posts by title..."
+            className="w-full pl-9 pr-4 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all bg-white"
+          />
         </div>
+      )}
+
+      {filteredPosts.length === 0 ? (
+        posts.length === 0 ? (
+          <EmptyState
+            icon={FiFileText}
+            title="No blog posts yet"
+            description="Get started by creating your first blog post."
+            action={{ to: '/admin/blog/new', icon: <FiPlus className="w-4 h-4" />, label: 'Create your first post' }}
+          />
+        ) : (
+          <EmptyState
+            icon={FiFileText}
+            title="No results found"
+            description={`No posts match "${search}". Try a different search term.`}
+          />
+        )
       ) : (
         <div className="grid gap-3">
-          {posts.map((post) => (
-            <div key={post.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md hover:border-gray-300 transition-all group">
+          {filteredPosts.map((post) => (
+            <div
+              key={post.id}
+              className="bg-white rounded-lg border border-neutral-200 p-4 hover:border-accent-200 transition-all group"
+            >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-brand-accent/10 rounded-xl flex items-center justify-center shrink-0">
-                  <FiFileText className="w-5 h-5 text-brand-accent" />
+                <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center shrink-0">
+                  <FiFileText className="w-5 h-5 text-accent-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <Link to={`/admin/blog/${post.id}`}
-                    className="font-semibold text-dark-navy hover:text-brand-accent transition-colors">
+                  <Link
+                    to={`/admin/blog/${post.id}`}
+                    className="font-semibold text-neutral-900 hover:text-accent-600 transition-colors"
+                  >
                     {post.title}
                   </Link>
-                  <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-400">
+                  <div className="flex items-center gap-3 mt-0.5 text-xs text-neutral-400">
                     <span className="flex items-center gap-1">
                       <FiCalendar className="w-3 h-3" />
                       {post.published_at
@@ -85,40 +119,44 @@ export default function BlogManager() {
                         : 'Not published'}
                     </span>
                     {post.blog_categories && (
-                      <span className="px-2 py-0.5 bg-brand-orange/10 text-brand-orange rounded-full">
+                      <span className="px-2 py-0.5 bg-accent-50 text-accent-600 rounded-full">
                         {post.blog_categories.name}
                       </span>
                     )}
                     {post.is_featured && (
-                      <span className="px-2 py-0.5 bg-amber-50 text-amber-600 rounded-full text-xs">
-                        Featured
-                      </span>
+                      <Badge variant="featured">Featured</Badge>
                     )}
                   </div>
                 </div>
-                <button
-                  onClick={() => togglePublish(post.id, post.is_published)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    post.is_published
-                      ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${post.is_published ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-                  {post.is_published ? 'Published' : 'Draft'}
-                </button>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Link to={`/admin/blog/${post.id}`}
-                    className="p-2 text-gray-400 hover:text-brand-accent hover:bg-brand-accent/10 rounded-lg transition-colors"
-                    title="Edit">
-                    <FiEdit2 className="w-4 h-4" />
+                <div className="flex items-center gap-2">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={post.is_published}
+                      onChange={() => togglePublish(post.id, post.is_published)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-9 h-5 bg-neutral-200 rounded-full peer-checked:bg-accent-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4" />
+                  </label>
+                  <Badge variant={post.is_published ? 'published' : 'draft'}>
+                    {post.is_published ? 'Published' : 'Draft'}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Link
+                    to={`/admin/blog/${post.id}`}
+                    className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors"
+                  >
+                    Edit
                   </Link>
-                  <button onClick={() => handleDelete(post.id, post.title)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete">
-                    <FiTrash2 className="w-4 h-4" />
+                  <button
+                    onClick={() => handleDelete(post.id, post.title)}
+                    className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors"
+                  >
+                    Delete
                   </button>
                 </div>
-                <FiChevronRight className="w-4 h-4 text-gray-200 group-hover:text-brand-accent transition-colors shrink-0" />
+                <FiChevronRight className="w-4 h-4 text-neutral-200 group-hover:text-accent-600 transition-colors shrink-0" />
               </div>
             </div>
           ))}

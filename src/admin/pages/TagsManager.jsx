@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import Button from '../../components/ui/Button';
-import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import AdminButton from '../components/AdminButton';
+import Badge from '../components/Badge';
+import EmptyState from '../components/EmptyState';
+import { FiPlus, FiTag } from 'react-icons/fi';
 
 export default function TagsManager() {
   const [tags, setTags] = useState([]);
@@ -36,41 +38,50 @@ export default function TagsManager() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-dark-navy mb-6">Tags</h1>
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-lg font-semibold text-neutral-900">Tags</h1>
+          <p className="text-sm text-neutral-500">Manage content tags</p>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-neutral-200 bg-white p-5">
         <div className="flex gap-2 mb-4">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Tag name"
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-brand-accent"
+            className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
             onKeyDown={(e) => e.key === 'Enter' && addTag()}
           />
-          <Button onClick={addTag} variant="accent" size="md">
+          <AdminButton onClick={addTag} size="md">
             <FiPlus className="w-4 h-4" />
             Add Tag
-          </Button>
+          </AdminButton>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <div
-              key={tag.id}
-              className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full text-sm"
-            >
-              <span>{tag.name}</span>
-              <button
-                onClick={() => deleteTag(tag.id)}
-                className="text-gray-400 hover:text-red-600"
-              >
-                <FiTrash2 className="w-3 h-3" />
-              </button>
-            </div>
-          ))}
-          {tags.length === 0 && (
-            <p className="text-sm text-text-gray">No tags yet.</p>
-          )}
-        </div>
+
+        {tags.length === 0 ? (
+          <EmptyState
+            icon={FiTag}
+            title="No tags yet"
+            description="Add your first tag above"
+          />
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Badge key={tag.id} variant="default" className="gap-2 pl-3 pr-1.5 py-1">
+                <span>{tag.name}</span>
+                <button
+                  onClick={() => deleteTag(tag.id)}
+                  className="text-[11px] font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded px-2 py-0.5 transition-colors ml-1"
+                >
+                  Delete
+                </button>
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

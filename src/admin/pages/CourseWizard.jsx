@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
-import Button from "../../components/ui/Button";
+import AdminButton from "../components/AdminButton";
 import ImageUploader from "../components/ImageUploader";
 import {
   FiPlus,
@@ -30,7 +30,7 @@ import {
   FiZap,
   FiShield,
   FiTrendingUp,
-  FiChevronDown,
+  FiChevronUp,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
@@ -65,41 +65,47 @@ const HIGHLIGHT_ICONS = [
 
 function IconPicker({ value, onChange }) {
   const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
   const selected = HIGHLIGHT_ICONS.find((o) => o.key === value);
   return (
-    <div className="relative">
-      <label className="block text-xs font-medium text-gray-600 mb-1">Icon</label>
+    <div ref={ref} className="relative">
+      <label className="block text-xs font-medium text-neutral-500 mb-1">Icon</label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white text-left"
+        className="w-full flex items-center gap-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white text-left"
       >
         {selected ? (
           <>
-            <selected.Icon className="w-4 h-4 text-brand-accent" />
+            <selected.Icon className="w-4 h-4 text-accent-600 shrink-0" />
             <span>{selected.label}</span>
           </>
         ) : (
-          <span className="text-gray-400">Select icon</span>
+          <span className="text-neutral-400">Select icon</span>
         )}
-        <FiChevronDown className={`w-4 h-4 ml-auto text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <FiChevronUp className={`w-4 h-4 ml-auto text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-2 grid grid-cols-5 gap-1">
+        <div className="absolute bottom-full left-0 right-0 mb-1 z-50 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {HIGHLIGHT_ICONS.map((opt) => (
             <button
               key={opt.key}
               type="button"
               onClick={() => { onChange(opt.key); setOpen(false); }}
-              className={`flex flex-col items-center gap-1 p-2 rounded-md text-xs transition-colors ${
+              className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
                 value === opt.key
-                  ? "bg-brand-accent/10 text-brand-accent ring-1 ring-brand-accent"
-                  : "hover:bg-gray-100 text-gray-600"
+                  ? "bg-accent-50 text-accent-600"
+                  : "hover:bg-neutral-50 text-neutral-700"
               }`}
-              title={opt.label}
             >
-              <opt.Icon className="w-5 h-5" />
-              <span className="truncate w-full text-center">{opt.label}</span>
+              <opt.Icon className="w-4 h-4 shrink-0" />
+              <span>{opt.label}</span>
             </button>
           ))}
         </div>
@@ -119,17 +125,6 @@ export default function CourseWizard() {
   const { user: currentUser } = useAuth();
   const navigate = useNavigate();
 
-  if (currentUser?.role !== "admin" && currentUser?.role !== "editor" && currentUser?.role !== "master_admin") {
-    return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-          <h1 className="text-2xl font-bold text-dark-navy mb-4">Access Denied</h1>
-          <p className="text-gray-600">You do not have permission to access this page.</p>
-        </div>
-      </div>
-    );
-  }
-
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -140,6 +135,7 @@ export default function CourseWizard() {
   const [catL1, setCatL1] = useState("");
   const [catL2, setCatL2] = useState("");
   const [catL3, setCatL3] = useState("");
+  const [filterSection, setFilterSection] = useState("");
   const [newTagName, setNewTagName] = useState("");
   const [creatingTag, setCreatingTag] = useState(false);
 
@@ -168,26 +164,13 @@ export default function CourseWizard() {
     curriculum: [],
   });
 
-  useEffect(() => {
-    supabase.from("tags").select("*").order("name").then(({ data }) => setAllTags(data || []));
-  }, []);
-
-  useEffect(() => {
-    if (!navItemId) return;
-    supabase.from("nav_items").select("id, label, path, parent_label").eq("id", navItemId).single().then(({ data }) => {
-      if (data?.parent_label) setFilterSection(data.parent_label);
-    });
-  }, [navItemId]);
-
-  const [filterSection, setFilterSection] = useState("");
-
   function resetCategoryPath() {
     setCatL1(""); setCatL2(""); setCatL3(""); setNavItemId("");
   }
 
   useEffect(() => {
-    resetCategoryPath();
-  }, [filterSection]);
+    supabase.from("tags").select("*").order("name").then(({ data }) => setAllTags(data || []));
+  }, []);
 
   useEffect(() => {
     if (!catL1) { setCatL2(""); setCatL3(""); setNavItemId(""); return; }
@@ -219,7 +202,33 @@ export default function CourseWizard() {
       });
   }, []);
 
-  const categories = [...new Set(availablePaths.map((p) => p.parent_label).filter(Boolean))];
+  const handleSaveRef = useRef();
+  handleSaveRef.current = handleSave;
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (step === STEPS.length - 1 && !saving) {
+          handleSaveRef.current();
+        }
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [step, saving]);
+
+  if (currentUser?.role !== "admin" && currentUser?.role !== "editor" && currentUser?.role !== "master_admin") {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg border border-neutral-200 p-6 text-center">
+          <h1 className="text-2xl font-bold text-neutral-900 mb-4">Access Denied</h1>
+          <p className="text-neutral-500">You do not have permission to access this page.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const categories = ["Software Learning", "Competitive Exam"];
 
   function u(field, val) {
     setC((prev) => ({ ...prev, [field]: val }));
@@ -296,7 +305,6 @@ export default function CourseWizard() {
     setSaving(true);
     setMessage("");
     try {
-      const pathItem = availablePaths.find((p) => p.id === navItemId);
       const payload = {
         title: c.title,
         slug: c.slug,
@@ -350,66 +358,82 @@ export default function CourseWizard() {
     setSaving(false);
   }
 
+  function handleStepClick(targetStep) {
+    if (targetStep < step) setStep(targetStep);
+  }
+
   return (
     <div className="max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link to="/admin/courses" className="p-2 text-gray-400 hover:text-dark-navy rounded-lg hover:bg-gray-100 transition-colors">
+          <Link to="/admin/courses" className="p-2 text-neutral-400 hover:text-neutral-700 rounded-lg hover:bg-neutral-100 transition-colors">
             <FiArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="text-2xl font-bold text-dark-navy">Create New Course</h1>
+          <h1 className="text-2xl font-bold text-neutral-900">Create New Course</h1>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate("/admin/courses")} variant="ghost" size="md">Cancel</Button>
-          <Button onClick={handleSave} disabled={saving || !c.title.trim() || !c.slug.trim() || !navItemId || courseTags.length === 0} variant="accent" size="md">
+          <AdminButton onClick={() => navigate("/admin/courses")} variant="ghost" size="md">Cancel</AdminButton>
+          <AdminButton
+            onClick={handleSave}
+            disabled={saving || !c.title.trim() || !c.slug.trim() || !navItemId || courseTags.length === 0}
+            variant="primary"
+            size="md"
+          >
             {saving ? "Saving..." : "Save Course"}
-          </Button>
+          </AdminButton>
         </div>
       </div>
 
       {message && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2 text-red-700 text-sm">
+        <div className="mb-6 p-4 bg-destructive-50 border border-destructive-200 rounded-lg flex items-center gap-2 text-destructive-700 text-sm">
           <span>{message}</span>
         </div>
       )}
 
-      {/* Progress Steps */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-4">
-          {STEPS.map((s, i) => (
-            <div key={s.label} className="flex items-center gap-2 flex-1">
-              <button
-                onClick={() => setStep(i)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  i === step
-                    ? "bg-brand-accent text-white shadow-lg shadow-brand-accent/25"
-                    : i < step
-                    ? "bg-brand-accent/10 text-brand-accent"
-                    : "bg-gray-100 text-gray-400 hover:text-gray-600"
-                }`}
-              >
-                {i < step ? (
-                  <FiCheck className="w-4 h-4" />
-                ) : (
-                  <s.icon className="w-4 h-4" />
+        <div className="relative flex items-center justify-between">
+          {STEPS.map((s, i) => {
+            const isCompleted = i < step;
+            const isCurrent = i === step;
+            return (
+              <div key={s.label} className="flex flex-col items-center flex-1 relative">
+                {i > 0 && (
+                  <div
+                    className={`absolute top-[14px] right-1/2 w-full h-0.5 ${i <= step ? "bg-accent-500" : "bg-neutral-200"}`}
+                    style={{ transform: "translateX(50%)" }}
+                  />
                 )}
-                <span className="hidden sm:inline">{s.label}</span>
-              </button>
-              {i < STEPS.length - 1 && (
-                <div className={`flex-1 h-0.5 rounded-full ${i < step ? "bg-brand-accent" : "bg-gray-200"}`} />
-              )}
-            </div>
-          ))}
+                <button
+                  type="button"
+                  disabled={!isCompleted}
+                  onClick={() => handleStepClick(i)}
+                  className={`relative z-10 w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold border-2 transition-colors ${
+                    isCurrent
+                      ? "bg-accent-500 border-accent-500 text-white"
+                      : isCompleted
+                      ? "bg-accent-500 border-accent-500 text-white cursor-pointer hover:bg-accent-600"
+                      : "bg-white border-neutral-300 text-neutral-400"
+                  }`}
+                >
+                  {isCompleted ? <FiCheck className="w-3.5 h-3.5" /> : <span>{i + 1}</span>}
+                </button>
+                <span className={`mt-2 text-xs font-medium text-center leading-tight ${
+                  isCurrent || isCompleted ? "text-accent-600" : "text-neutral-400"
+                }`}>
+                  {s.label}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
-        {/* Step 0: Basics */}
+      <div className="bg-white rounded-lg border border-neutral-200 p-6 sm:p-8">
         {step === 0 && (
           <div className="space-y-6">
             {categories.length > 0 && (
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-3">Category *</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-3">Category *</label>
                 <div className="flex flex-wrap gap-3">
                   {categories.map((cat) => (
                     <button
@@ -418,10 +442,10 @@ export default function CourseWizard() {
                         setFilterSection(cat);
                         resetCategoryPath();
                       }}
-                      className={`px-5 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                      className={`px-5 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
                         filterSection === cat
-                          ? "border-brand-accent bg-brand-accent/5 text-brand-accent shadow-sm"
-                          : "border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                          ? "border-accent-500 bg-accent-50 text-accent-600"
+                          : "border-neutral-200 text-neutral-500 hover:border-neutral-300 hover:bg-neutral-50"
                       }`}
                     >
                       {cat}
@@ -438,11 +462,11 @@ export default function CourseWizard() {
               function dd(label, items, val, setter) {
                 return (
                   <div>
-                    <label className="block text-sm font-semibold text-dark-navy mb-1">{label}</label>
+                    <label className="block text-sm font-semibold text-neutral-900 mb-1">{label}</label>
                     <select
                       value={val}
                       onChange={(e) => setter(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white"
+                      className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
                     >
                       <option value="">— Select —</option>
                       {items.map((item) => (
@@ -463,53 +487,53 @@ export default function CourseWizard() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">Course Title *</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">Course Title *</label>
                 <input
                   value={c.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"
+                  className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
                   placeholder="e.g. Full Stack Web Development"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">Slug *</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">Slug *</label>
                 <input
                   value={c.slug}
                   onChange={(e) => u("slug", slugify(e.target.value))}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent font-mono text-sm transition-all"
+                  className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono text-sm transition-all"
                   placeholder="full-stack-web-development"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-dark-navy mb-1">Subtitle</label>
+              <label className="block text-sm font-semibold text-neutral-900 mb-1">Subtitle</label>
               <input
                 value={c.subtitle || ""}
                 onChange={(e) => u("subtitle", e.target.value)}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"
+                className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
                 placeholder="A short tagline for the course"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-dark-navy mb-1">Description</label>
+              <label className="block text-sm font-semibold text-neutral-900 mb-1">Description</label>
               <textarea
                 value={c.description || ""}
                 onChange={(e) => u("description", e.target.value)}
                 rows={4}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"
+                className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
                 placeholder="Detailed course description..."
               />
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">Duration</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">Duration</label>
                 <select
                   value={c.duration}
                   onChange={(e) => u("duration", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white"
+                  className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
                 >
                   {DURATIONS.map((d) => (
                     <option key={d} value={d}>{d}</option>
@@ -517,11 +541,11 @@ export default function CourseWizard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">Mode</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">Mode</label>
                 <select
                   value={c.mode}
                   onChange={(e) => u("mode", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white"
+                  className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
                 >
                   {MODES.map((m) => (
                     <option key={m} value={m}>{m}</option>
@@ -529,11 +553,11 @@ export default function CourseWizard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">Status</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">Status</label>
                 <select
                   value={c.status}
                   onChange={(e) => u("status", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white"
+                  className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
                 >
                   <option value="Active">Active</option>
                   <option value="Coming Soon">Coming Soon</option>
@@ -542,83 +566,82 @@ export default function CourseWizard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <input type="checkbox" id="published" checked={c.is_published} onChange={(e) => u("is_published", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-brand-accent focus:ring-brand-accent" />
-              <label htmlFor="published" className="text-sm font-medium text-dark-navy cursor-pointer">Published (visible on site)</label>
+            <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+              <input type="checkbox" id="published" checked={c.is_published} onChange={(e) => u("is_published", e.target.checked)} className="w-4 h-4 rounded border-neutral-300 text-accent-600 focus:ring-accent-500" />
+              <label htmlFor="published" className="text-sm font-medium text-neutral-900 cursor-pointer">Published (visible on site)</label>
             </div>
           </div>
         )}
 
-        {/* Step 1: Media & Content */}
         {step === 1 && (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-dark-navy flex items-center gap-2"><FiMonitor className="w-5 h-5 text-brand-accent" /> Media</h2>
+            <h2 className="text-lg font-semibold text-neutral-900 flex items-center gap-2"><FiMonitor className="w-5 h-5 text-accent-600" /> Media</h2>
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">Hero / Banner Image</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">Hero / Banner Image</label>
                 <ImageUploader value={c.hero_image_url} onChange={(url) => u("hero_image_url", url)} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">Video Thumbnail</label>
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">Video Thumbnail</label>
                 <ImageUploader value={c.video_thumbnail_url} onChange={(url) => u("video_thumbnail_url", url)} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-dark-navy mb-1">Course Video (YouTube URL)</label>
+              <label className="block text-sm font-semibold text-neutral-900 mb-1">Course Video (YouTube URL)</label>
               <input
                 value={c.video_url || ""}
                 onChange={(e) => u("video_url", e.target.value)}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent text-sm transition-all"
+                className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all"
                 placeholder="https://www.youtube.com/watch?v=..."
               />
             </div>
 
-            <hr className="border-gray-200" />
+            <hr className="border-neutral-200" />
 
-            <h2 className="text-lg font-semibold text-dark-navy flex items-center gap-2"><FiBookOpen className="w-5 h-5 text-brand-accent" /> Content</h2>
+            <h2 className="text-lg font-semibold text-neutral-900 flex items-center gap-2"><FiBookOpen className="w-5 h-5 text-accent-600" /> Content</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">CTA Left</label>
-                <input value={c.cta_left || ""} onChange={(e) => u("cta_left", e.target.value)} className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent text-sm transition-all" placeholder="Enroll Now" />
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">CTA Left</label>
+                <input value={c.cta_left || ""} onChange={(e) => u("cta_left", e.target.value)} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="Enroll Now" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-dark-navy mb-1">CTA Right</label>
-                <input value={c.cta_right || ""} onChange={(e) => u("cta_right", e.target.value)} className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent text-sm transition-all" placeholder="Download Brochure" />
+                <label className="block text-sm font-semibold text-neutral-900 mb-1">CTA Right</label>
+                <input value={c.cta_right || ""} onChange={(e) => u("cta_right", e.target.value)} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="Download Brochure" />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-dark-navy mb-1">What You'll Learn (one per line)</label>
+              <label className="block text-sm font-semibold text-neutral-900 mb-1">What You'll Learn (one per line)</label>
               <textarea
                 value={(c.checklist_items || []).join("\n")}
                 onChange={(e) => u("checklist_items", e.target.value.split("\n"))}
                 rows={4}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"
+                className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all"
                 placeholder="Live classes&#10;Industry mentors&#10;Placement assistance"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-dark-navy">Course Tabs</h3>
-                <Button onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} variant="link-add" size="sm">
+                <h3 className="text-sm font-semibold text-neutral-900">Course Tabs</h3>
+                <AdminButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} variant="ghost" size="sm" className="text-accent-600 font-semibold">
                   <FiPlus className="w-4 h-4" /> Add Tab
-                </Button>
+                </AdminButton>
               </div>
               <div className="space-y-3">
                 {c.tabs.map((t, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-4 relative">
-                    <button onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-400 hover:text-red-600 rounded hover:bg-red-50 transition-colors">
+                  <div key={i} className="border border-neutral-200 rounded-lg p-4 relative">
+                    <button onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors">
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div className="grid sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Label</label>
-                        <input value={t.label || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Label</label>
+                        <input value={t.label || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Type</label>
-                        <select value={t.content_type || "overview"} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Type</label>
+                        <select value={t.content_type || "overview"} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
                           <option value="overview">Overview</option>
                           <option value="syllabus">Syllabus</option>
                           <option value="pricing">Pricing</option>
@@ -630,40 +653,40 @@ export default function CourseWizard() {
                       t.content_type === "syllabus") && (
                       <div className="mt-3 space-y-4">
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Heading (centered)</label>
-                          <input value={t.content?.heading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Main heading" />
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">Heading (centered)</label>
+                          <input value={t.content?.heading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Main heading" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Paragraph</label>
-                          <textarea value={t.content?.paragraph || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Paragraph text" />
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">Paragraph</label>
+                          <textarea value={t.content?.paragraph || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }} rows={2} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Paragraph text" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Sub Heading</label>
-                          <input value={t.content?.subheading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Sub heading" />
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">Sub Heading</label>
+                          <input value={t.content?.subheading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Sub heading" />
                         </div>
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <label className="text-xs font-medium text-gray-600">Q&A Items</label>
-                            <button onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-brand-accent font-semibold hover:underline">+ Add Question</button>
+                            <label className="text-xs font-medium text-neutral-500">Q&A Items</label>
+                            <button onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-accent-600 font-semibold hover:underline">+ Add Question</button>
                           </div>
                           <div className="space-y-3">
                             {(t.content?.qa || []).map((qa, qi) => (
-                              <div key={qi} className="border border-gray-200 rounded-lg p-3">
+                              <div key={qi} className="border border-neutral-200 rounded-lg p-3">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-xs font-semibold text-gray-500">Question {qi + 1}</span>
-                                  <button onClick={() => { const n = [...c.tabs]; const qa = n[i].content.qa.filter((_, j) => j !== qi); n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-red-500 hover:underline">Remove</button>
+                                  <span className="text-xs font-semibold text-neutral-400">Question {qi + 1}</span>
+                                  <button onClick={() => { const n = [...c.tabs]; const qa = n[i].content.qa.filter((_, j) => j !== qi); n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-destructive-500 hover:underline">Remove</button>
                                 </div>
-                                <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-2" placeholder="Question" />
+                                <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 mb-2" placeholder="Question" />
                                 <div>
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs text-gray-500">Answers (one per line)</span>
-                                    <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-brand-accent hover:underline">+ Add bullet</button>
+                                    <span className="text-xs text-neutral-400">Answers (one per line)</span>
+                                    <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-accent-600 hover:underline">+ Add bullet</button>
                                   </div>
                                   {qa.answers.map((ans, ai) => (
                                     <div key={ai} className="flex items-center gap-2 mb-1">
-                                      <span className="text-xs text-gray-400">•</span>
-                                      <input value={ans} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; const an = [...qa[qi].answers]; an[ai] = e.target.value; qa[qi] = { ...qa[qi], answers: an }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="flex-1 px-2 py-1 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Answer bullet" />
-                                      <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-red-400 hover:text-red-600">×</button>
+                                      <span className="text-xs text-neutral-300">•</span>
+                                      <input value={ans} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; const an = [...qa[qi].answers]; an[ai] = e.target.value; qa[qi] = { ...qa[qi], answers: an }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="flex-1 px-2 py-1 border border-neutral-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Answer bullet" />
+                                      <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-destructive-400 hover:text-destructive-600">×</button>
                                     </div>
                                   ))}
                                 </div>
@@ -680,51 +703,49 @@ export default function CourseWizard() {
           </div>
         )}
 
-        {/* Step 2: Curriculum & Pricing */}
         {step === 2 && (
           <div className="space-y-8">
-            {/* Curriculum */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-dark-navy flex items-center gap-2"><FiLayers className="w-5 h-5 text-brand-accent" /> Curriculum / Modules</h2>
-                <Button onClick={addModule} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Module</Button>
+                <h2 className="text-lg font-semibold text-neutral-900 flex items-center gap-2"><FiLayers className="w-5 h-5 text-accent-600" /> Curriculum / Modules</h2>
+                <AdminButton onClick={addModule} variant="ghost" size="sm" className="text-accent-600 font-semibold"><FiPlus className="w-4 h-4" /> Add Module</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.curriculum.map((mod, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-4">
+                  <div key={i} className="border border-neutral-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Module {i + 1}</span>
-                      <button onClick={() => removeModule(i)} className="p-1 text-red-400 hover:text-red-600 rounded hover:bg-red-50 transition-colors">
+                      <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
+                      <button onClick={() => removeModule(i)} className="p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors">
                         <FiTrash2 className="w-4 h-4" />
                       </button>
                     </div>
                     <input
                       value={mod.title}
                       onChange={(e) => updateModule(i, "title", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-accent mb-3"
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-500 mb-3"
                       placeholder="Module title (e.g. Introduction to HTML)"
                     />
                     <div className="space-y-2">
                       {mod.topics?.map((topic, j) => (
                         <div key={j} className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400 w-5 text-right">{j + 1}.</span>
+                          <span className="text-xs text-neutral-400 w-5 text-right">{j + 1}.</span>
                           <input
                             value={topic}
                             onChange={(e) => updateTopic(i, j, e.target.value)}
-                            className="flex-1 px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                            className="flex-1 px-3 py-1.5 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                             placeholder="Topic"
                           />
-                          <button onClick={() => removeTopic(i, j)} className="p-1 text-red-300 hover:text-red-500 transition-colors">
+                          <button onClick={() => removeTopic(i, j)} className="p-1 text-destructive-300 hover:text-destructive-500 transition-colors">
                             <FiTrash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       ))}
-                      <Button onClick={() => addTopic(i)} variant="link-add" size="xs"><FiPlus className="w-3 h-3" /> Add Topic</Button>
+                      <AdminButton onClick={() => addTopic(i)} variant="ghost" size="xs" className="text-accent-600 font-semibold"><FiPlus className="w-3 h-3" /> Add Topic</AdminButton>
                     </div>
                   </div>
                 ))}
                 {c.curriculum.length === 0 && (
-                  <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                  <div className="text-center py-8 text-neutral-400 bg-neutral-50 rounded-lg border-2 border-dashed border-neutral-200">
                     <FiLayers className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">No modules yet. Click "Add Module" to build your curriculum.</p>
                   </div>
@@ -732,56 +753,54 @@ export default function CourseWizard() {
               </div>
             </div>
 
-            <hr className="border-gray-200" />
+            <hr className="border-neutral-200" />
 
-            {/* Highlights */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-dark-navy">Key Highlights</h3>
-                <Button onClick={() => u("highlights", [...c.highlights, { icon: "", label: "" }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add</Button>
+                <h3 className="text-sm font-semibold text-neutral-900">Key Highlights</h3>
+                <AdminButton onClick={() => u("highlights", [...c.highlights, { icon: "", label: "" }])} variant="ghost" size="sm" className="text-accent-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.highlights.map((h, i) => (
-                  <div key={i} className="flex items-center gap-3 border border-gray-200 rounded-xl p-3">
+                  <div key={i} className="flex items-center gap-3 border border-neutral-200 rounded-lg p-3">
                     <div className="w-32">
                       <IconPicker
                         value={h.icon || ""}
                         onChange={(val) => { const n = [...c.highlights]; n[i] = { ...n[i], icon: val }; u("highlights", n); }}
                       />
                     </div>
-                    <input value={h.label || ""} onChange={(e) => { const n = [...c.highlights]; n[i] = { ...n[i], label: e.target.value }; u("highlights", n); }} className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Label" />
-                    <button onClick={() => u("highlights", c.highlights.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+                    <input value={h.label || ""} onChange={(e) => { const n = [...c.highlights]; n[i] = { ...n[i], label: e.target.value }; u("highlights", n); }} className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Label" />
+                    <button onClick={() => u("highlights", c.highlights.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Pricing */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-dark-navy">Pricing Plans</h3>
-                <Button onClick={() => u("course_fees", [...c.course_fees, { plan_name: "", price: null, currency: "INR", cta_label: "" }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add</Button>
+                <h3 className="text-sm font-semibold text-neutral-900">Pricing Plans</h3>
+                <AdminButton onClick={() => u("course_fees", [...c.course_fees, { plan_name: "", price: null, currency: "INR", cta_label: "" }])} variant="ghost" size="sm" className="text-accent-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.course_fees.map((f, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3 relative">
-                    <button onClick={() => u("course_fees", c.course_fees.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <div key={i} className="border border-neutral-200 rounded-lg p-4 space-y-3 relative">
+                    <button onClick={() => u("course_fees", c.course_fees.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                     <div className="grid sm:grid-cols-4 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Plan</label>
-                        <input value={f.plan_name || ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], plan_name: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Basic" />
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Plan</label>
+                        <input value={f.plan_name || ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], plan_name: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Basic" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Price</label>
-                        <input type="number" value={f.price ?? ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], price: e.target.value ? Number(e.target.value) : null }; u("course_fees", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="999" />
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Price</label>
+                        <input type="number" value={f.price ?? ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], price: e.target.value ? Number(e.target.value) : null }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="999" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Currency</label>
-                        <input value={f.currency || "INR"} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], currency: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Currency</label>
+                        <input value={f.currency || "INR"} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], currency: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">CTA</label>
-                        <input value={f.cta_label || ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], cta_label: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Enroll Now" />
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">CTA</label>
+                        <input value={f.cta_label || ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], cta_label: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Enroll Now" />
                       </div>
                     </div>
                   </div>
@@ -789,18 +808,17 @@ export default function CourseWizard() {
               </div>
             </div>
 
-            {/* Projects */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-dark-navy">Projects</h3>
-                <Button onClick={() => u("projects", [...c.projects, { title: "", description: "" }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add</Button>
+                <h3 className="text-sm font-semibold text-neutral-900">Projects</h3>
+                <AdminButton onClick={() => u("projects", [...c.projects, { title: "", description: "" }])} variant="ghost" size="sm" className="text-accent-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.projects.map((p, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-4 relative">
-                    <button onClick={() => u("projects", c.projects.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
-                    <input value={p.title || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], title: e.target.value }; u("projects", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-2" placeholder="Project title" />
-                    <textarea value={p.description || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], description: e.target.value }; u("projects", n); }} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Description..." />
+                  <div key={i} className="border border-neutral-200 rounded-lg p-4 relative">
+                    <button onClick={() => u("projects", c.projects.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                    <input value={p.title || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], title: e.target.value }; u("projects", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 mb-2" placeholder="Project title" />
+                    <textarea value={p.description || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], description: e.target.value }; u("projects", n); }} rows={2} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Description..." />
                   </div>
                 ))}
               </div>
@@ -808,31 +826,28 @@ export default function CourseWizard() {
           </div>
         )}
 
-        {/* Step 3: FAQs & Tags */}
         {step === 3 && (
           <div className="space-y-8">
-            {/* FAQs */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-dark-navy">General FAQs</h3>
-                <Button onClick={() => u("faqs", [...c.faqs, { question: "", answer: "" }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add FAQ</Button>
+                <h3 className="text-sm font-semibold text-neutral-900">General FAQs</h3>
+                <AdminButton onClick={() => u("faqs", [...c.faqs, { question: "", answer: "" }])} variant="ghost" size="sm" className="text-accent-600 font-semibold"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.faqs.map((f, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-4 relative">
-                    <button onClick={() => u("faqs", c.faqs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
-                    <input value={f.question || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], question: e.target.value }; u("faqs", n); }} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent mb-2" placeholder="Question" />
-                    <textarea value={f.answer || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], answer: e.target.value }; u("faqs", n); }} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Answer..." />
+                  <div key={i} className="border border-neutral-200 rounded-lg p-4 relative">
+                    <button onClick={() => u("faqs", c.faqs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                    <input value={f.question || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], question: e.target.value }; u("faqs", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 mb-2" placeholder="Question" />
+                    <textarea value={f.answer || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], answer: e.target.value }; u("faqs", n); }} rows={2} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Answer..." />
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Tags */}
             <div>
-              <h3 className="text-sm font-semibold text-dark-navy mb-3">Tags *</h3>
+              <h3 className="text-sm font-semibold text-neutral-900 mb-3">Tags *</h3>
               {courseTags.length === 0 && (
-                <p className="text-xs text-red-500 mb-2">Select at least one tag to enable saving</p>
+                <p className="text-xs text-destructive-500 mb-2">Select at least one tag to enable saving</p>
               )}
               <div className="flex flex-wrap gap-2">
                 {allTags.map((tag) => {
@@ -842,53 +857,52 @@ export default function CourseWizard() {
                       key={tag.id}
                       onClick={() => setCourseTags(sel ? courseTags.filter((t) => t !== tag.id) : [...courseTags, tag.id])}
                       className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                        sel ? "bg-brand-accent text-white border-brand-accent shadow-sm" : "bg-white text-gray-600 border-gray-200 hover:border-brand-accent hover:text-brand-accent"
+                        sel ? "bg-accent-600 text-white border-accent-600" : "bg-white text-neutral-500 border-neutral-200 hover:border-accent-500 hover:text-accent-600"
                       }`}
                     >
                       {tag.name}
                     </button>
                   );
                 })}
-                {allTags.length === 0 && <p className="text-sm text-gray-400">No tags yet. Create some in the Tags page.</p>}
+                {allTags.length === 0 && <p className="text-sm text-neutral-400">No tags yet. Create some in the Tags page.</p>}
               </div>
               <div className="flex items-center gap-2 mt-4">
                 <input
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleCreateTag()}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+                  className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                   placeholder="New tag name..."
                 />
-                <Button onClick={handleCreateTag} disabled={creatingTag || !newTagName.trim()} variant="accent" size="sm">
+                <AdminButton onClick={handleCreateTag} disabled={creatingTag || !newTagName.trim()} variant="primary" size="sm">
                   {creatingTag ? "..." : "Create"}
-                </Button>
+                </AdminButton>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between mt-6 bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
-        <Button onClick={() => setStep((s) => s - 1)} disabled={step === 0} variant="ghost" size="md">
+      <div className="flex items-center justify-between mt-6 bg-white rounded-lg border border-neutral-200 p-4">
+        <AdminButton onClick={() => setStep((s) => s - 1)} disabled={step === 0} variant="ghost" size="md">
           <FiChevronLeft className="w-4 h-4" /> Back
-        </Button>
+        </AdminButton>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-400">Step {step + 1} of {STEPS.length}</span>
+          <span className="text-sm text-neutral-400">Step {step + 1} of {STEPS.length}</span>
           <div className="hidden sm:flex gap-1">
             {STEPS.map((_, i) => (
-              <div key={i} className={`w-2 h-2 rounded-full ${i <= step ? 'bg-brand-accent' : 'bg-gray-200'}`} />
+              <div key={i} className={`w-2 h-2 rounded-full ${i <= step ? 'bg-accent-500' : 'bg-neutral-200'}`} />
             ))}
           </div>
         </div>
         {step < STEPS.length - 1 ? (
-          <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext()} variant="accent" size="md">
+          <AdminButton onClick={() => setStep((s) => s + 1)} disabled={!canNext()} variant="primary" size="md">
             Next <FiChevronRight className="w-4 h-4" />
-          </Button>
+          </AdminButton>
         ) : (
-          <Button onClick={handleSave} disabled={saving} variant="accent" size="md" className="min-w-[120px]">
+          <AdminButton onClick={handleSave} disabled={saving} variant="primary" size="md" className="min-w-[120px]">
             {saving ? "Saving..." : "Save Course"}
-          </Button>
+          </AdminButton>
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import Button from '../../components/ui/Button';
+import AdminButton from '../components/AdminButton';
 import { FiDownload, FiLoader, FiCheck, FiSearch, FiX } from 'react-icons/fi';
 
 const categories = [
@@ -42,12 +42,12 @@ export default function CourseReports() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex flex-col items-center justify-center text-center mb-8 pt-12">
-        <h1 className="text-2xl font-bold text-dark-navy">Course Reports</h1>
-        <p className="text-sm text-gray-500 mt-1 mb-5">Generate combined brochure PDFs</p>
-        <Button onClick={() => setOpen(true)} variant="accent" size="md">
+        <h1 className="text-2xl font-bold text-neutral-900">Course Reports</h1>
+        <p className="text-sm text-neutral-500 mt-1 mb-5">Generate combined brochure PDFs</p>
+        <AdminButton onClick={() => setOpen(true)} variant="primary" size="md">
           <FiDownload className="w-4 h-4" />
           Download
-        </Button>
+        </AdminButton>
       </div>
 
       {open && (
@@ -61,7 +61,7 @@ export default function CourseReports() {
 
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>
@@ -318,21 +318,20 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 shrink-0">
+      <div className="relative bg-white rounded-lg border border-neutral-200 w-full max-w-lg max-h-[85vh] flex flex-col">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-dark-navy">Generate Report</h2>
-            <p className="text-xs text-gray-400">Select courses to include in the PDF</p>
+            <h2 className="text-lg font-bold text-neutral-900">Generate Report</h2>
+            <p className="text-xs text-neutral-400">Select courses to include in the PDF</p>
           </div>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-            <FiX className="w-5 h-5 text-gray-400" />
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-lg transition-colors">
+            <FiX className="w-5 h-5 text-neutral-400" />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
-          {/* Categories */}
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">By Category</p>
+            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">By Category</p>
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => {
                 const active = selectedCategories.has(cat);
@@ -343,47 +342,45 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                     onClick={() => toggleCategory(cat)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all border ${
                       active
-                        ? 'bg-brand-accent text-white border-brand-accent'
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                        ? 'bg-accent-600 text-white border-accent-600'
+                        : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300'
                     }`}
                   >
                     {cat}
-                    <span className={`ml-1.5 text-xs ${active ? 'text-white/70' : 'text-gray-400'}`}>({count})</span>
+                    <span className={`ml-1.5 text-xs ${active ? 'text-white/70' : 'text-neutral-400'}`}>({count})</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Divider */}
           <div className="flex items-center gap-2">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-gray-400 font-medium">OR</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-neutral-200" />
+            <span className="text-xs text-neutral-400 font-medium">OR</span>
+            <div className="flex-1 h-px bg-neutral-200" />
           </div>
 
-          {/* Search palette */}
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Select Courses</p>
+              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Select Courses</p>
               <button
                 onClick={selectAll}
-                className="text-xs text-brand-accent font-medium hover:underline"
+                className="text-xs text-accent-600 font-medium hover:underline"
               >
                 {selectedCourses.size === courses.length ? 'Deselect All' : 'Select All'}
               </button>
             </div>
             <div className="relative mb-3">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
               <input
                 ref={searchRef}
                 value={search}
                 placeholder="Search courses..."
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none ring-0 focus:ring-2 focus:ring-brand-accent bg-white"
+                className="w-full pl-9 pr-4 py-2 border border-neutral-200 rounded-lg text-sm outline-none ring-0 focus:ring-2 focus:ring-accent-500 bg-white"
               />
             </div>
-            <div className="max-h-52 overflow-y-auto border border-gray-100 rounded-lg divide-y divide-gray-50">
+            <div className="max-h-52 overflow-y-auto border border-neutral-100 rounded-lg divide-y divide-neutral-50">
               {(() => {
                 const displayCourses = search.trim() ? searchedCourses : courses;
                 const totalPages = Math.ceil(displayCourses.length / 5);
@@ -391,23 +388,23 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                 const paginated = displayCourses.slice((safePage - 1) * 5, safePage * 5);
 
                 return paginated.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-4">No courses found.</p>
+                  <p className="text-sm text-neutral-400 text-center py-4">No courses found.</p>
                 ) : (
                   paginated.map((course) => (
                     <button
                       key={course.id}
                       onClick={() => toggleCourse(course.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-gray-50 transition-colors ${
-                        selectedCourses.has(course.id) ? 'bg-blue-50' : ''
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-neutral-50 transition-colors ${
+                        selectedCourses.has(course.id) ? 'bg-accent-50' : ''
                       }`}
                     >
                       <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${
-                        selectedCourses.has(course.id) ? 'bg-brand-accent border-brand-accent' : 'border-gray-300'
+                        selectedCourses.has(course.id) ? 'bg-accent-600 border-accent-600' : 'border-neutral-300'
                       }`}>
                         {selectedCourses.has(course.id) && <FiCheck className="w-2.5 h-2.5 text-white" />}
                       </div>
-                      <span className="text-sm text-dark-navy truncate">{course.title}</span>
-                      <span className="text-xs text-gray-400 ml-auto shrink-0">{getCourseCategory(course) || 'Uncategorized'}</span>
+                      <span className="text-sm text-neutral-900 truncate">{course.title}</span>
+                      <span className="text-xs text-neutral-400 ml-auto shrink-0">{getCourseCategory(course) || 'Uncategorized'}</span>
                     </button>
                   ))
                 );
@@ -422,7 +419,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page <= 1}
-                    className="px-2 py-1 text-xs font-medium text-gray-500 hover:text-dark-navy disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-2 py-1 text-xs font-medium text-neutral-500 hover:text-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Prev
                   </button>
@@ -431,7 +428,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                       key={p}
                       onClick={() => setPage(p)}
                       className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
-                        p === page ? 'bg-brand-accent text-white' : 'text-gray-500 hover:bg-gray-100'
+                        p === page ? 'bg-accent-600 text-white' : 'text-neutral-500 hover:bg-neutral-100'
                       }`}
                     >
                       {p}
@@ -440,7 +437,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                   <button
                     onClick={() => setPage((p) => Math.min(pages, p + 1))}
                     disabled={page >= pages}
-                    className="px-2 py-1 text-xs font-medium text-gray-500 hover:text-dark-navy disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-2 py-1 text-xs font-medium text-neutral-500 hover:text-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>
@@ -450,19 +447,19 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between shrink-0">
-          <span className="text-xs text-gray-400">
+        <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-between shrink-0">
+          <span className="text-xs text-neutral-400">
             {selectedCount > 0 ? `${selectedCount} course${selectedCount > 1 ? 's' : ''} selected` : 'No courses selected'}
           </span>
-          <Button
+          <AdminButton
             onClick={generate}
             disabled={!hasSelection || generating}
-            variant="accent"
+            variant="primary"
             size="md"
           >
             {generating ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiDownload className="w-4 h-4" />}
             {generating ? 'Generating...' : 'Generate PDF'}
-          </Button>
+          </AdminButton>
         </div>
       </div>
     </div>

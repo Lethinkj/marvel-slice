@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import Button from '../../components/ui/Button';
+import AdminButton from '../components/AdminButton';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiToggleRight, FiChevronDown, FiChevronUp, FiEdit3 } from 'react-icons/fi';
 
 const FORM_FIELD_DEFAULTS = {
@@ -32,7 +32,7 @@ function FormFieldsEditor({ fields, onChange }) {
   const fieldKeys = Object.keys(FORM_FIELD_DEFAULTS);
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-3 uppercase tracking-wider flex items-center gap-1.5">
+      <label className="block text-xs font-semibold text-neutral-700 mb-3 uppercase tracking-wider flex items-center gap-1.5">
         <FiEdit3 className="w-3.5 h-3.5" />
         Form Fields
       </label>
@@ -42,48 +42,48 @@ function FormFieldsEditor({ fields, onChange }) {
           const cfg = fields?.[key] || {};
           const isOpen = expanded[key] || false;
           return (
-            <div key={key} className="border border-gray-200 rounded-xl overflow-hidden">
+            <div key={key} className="border border-neutral-200 rounded-lg overflow-hidden">
               <button type="button" onClick={() => setExpanded({ ...expanded, [key]: !isOpen })}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors">
-                <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.enabled !== false ? 'bg-green-400' : 'bg-gray-300'}`} />
-                <span className="flex-1 text-sm font-medium text-dark-navy">{cfg.label || def.label}</span>
-                <span className="text-xs text-gray-400 capitalize">{def.type}</span>
-                {isOpen ? <FiChevronUp className="w-4 h-4 text-gray-400" /> : <FiChevronDown className="w-4 h-4 text-gray-400" />}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-neutral-50 transition-colors">
+                <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.enabled !== false ? 'bg-success-500' : 'bg-neutral-300'}`} />
+                <span className="flex-1 text-sm font-medium text-neutral-900">{cfg.label || def.label}</span>
+                <span className="text-xs text-neutral-400 capitalize">{def.type}</span>
+                {isOpen ? <FiChevronUp className="w-4 h-4 text-neutral-400" /> : <FiChevronDown className="w-4 h-4 text-neutral-400" />}
               </button>
               {isOpen && (
-                <div className="px-4 pb-4 space-y-3 border-t border-gray-100 pt-3">
+                <div className="px-4 pb-4 space-y-3 border-t border-neutral-100 pt-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Enabled</label>
+                    <label className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Enabled</label>
                     <button type="button" onClick={() => onChange({ ...fields, [key]: { ...cfg, enabled: cfg.enabled === false ? true : false } })}
-                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${cfg.enabled !== false ? 'bg-brand-accent' : 'bg-gray-300'}`}>
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${cfg.enabled !== false ? 'bg-accent-600' : 'bg-neutral-300'}`}>
                       <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${cfg.enabled !== false ? 'translate-x-4' : 'translate-x-0.5'}`} />
                     </button>
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Label</label>
+                    <label className="block text-xs text-neutral-500 mb-1">Label</label>
                     <input type="text" value={cfg.label || def.label} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, label: e.target.value } })}
-                      className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                      className="w-full px-3 py-1.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                   </div>
                   {def.type !== 'file' && (
                     <div className="flex items-center gap-3">
-                      <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                        <input type="checkbox" checked={cfg.required !== false} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, required: e.target.checked } })} className="rounded border-gray-300 text-brand-accent focus:ring-brand-accent" />
+                      <label className="flex items-center gap-2 text-sm text-neutral-600 cursor-pointer">
+                        <input type="checkbox" checked={cfg.required !== false} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, required: e.target.checked } })} className="rounded border-neutral-300 text-accent-600 focus:ring-accent-500" />
                         Required
                       </label>
                     </div>
                   )}
                   {def.placeholder !== undefined && (
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Placeholder</label>
+                      <label className="block text-xs text-neutral-500 mb-1">Placeholder</label>
                       <input type="text" value={cfg.placeholder || def.placeholder || ''} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, placeholder: e.target.value } })}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                        className="w-full px-3 py-1.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                     </div>
                   )}
                   {def.options && (
                     <div>
-                      <label className="block text-xs text-gray-500 mb-1">Options (one per line)</label>
+                      <label className="block text-xs text-neutral-500 mb-1">Options (one per line)</label>
                       <textarea value={(cfg.options || def.options).join('\n')} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, options: e.target.value.split('\n').filter(Boolean) } })}
-                        rows={4} className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent font-mono" />
+                        rows={4} className="w-full px-3 py-1.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono" />
                     </div>
                   )}
                 </div>
@@ -113,16 +113,16 @@ function ImageUploader({ value, onChange, label }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Paste URL or upload..." />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-brand-accent hover:text-brand-accent transition-colors">
-          {uploading ? <span className="w-4 h-4 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /> : <FiUpload className="w-4 h-4" />}
+          className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Paste URL or upload..." />
+        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-neutral-300 rounded-lg text-sm text-neutral-500 hover:border-accent-500 hover:text-accent-600 transition-colors">
+          {uploading ? <span className="w-4 h-4 border-2 border-accent-600 border-t-transparent rounded-full animate-spin" /> : <FiUpload className="w-4 h-4" />}
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
         </label>
       </div>
-      {value && <img src={value} alt="" className="mt-2 h-28 w-full object-cover rounded-lg border border-gray-200" />}
+      {value && <img src={value} alt="" className="mt-2 h-28 w-full object-cover rounded-lg border border-neutral-200" />}
     </div>
   );
 }
@@ -224,85 +224,85 @@ export default function CareerPageEditor() {
     }
   }
 
-  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-accent-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={() => navigate('/admin')} className="p-2 text-gray-400 hover:text-dark-navy rounded-lg hover:bg-gray-100 transition-colors"><FiArrowLeft className="w-5 h-5" /></button>
+        <button onClick={() => navigate('/admin')} className="p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100 transition-colors"><FiArrowLeft className="w-5 h-5" /></button>
         <div>
-          <h1 className="text-2xl font-bold text-dark-navy">{navItem?.label || 'Career'} Page</h1>
-          <Link to="/career" target="_blank" className="text-sm text-brand-accent hover:underline inline-flex items-center gap-1 mt-0.5"><FiExternalLink className="w-3.5 h-3.5" /> /career</Link>
+          <h1 className="text-2xl font-bold text-neutral-900">{navItem?.label || 'Career'} Page</h1>
+          <Link to="/career" target="_blank" className="text-sm text-accent-600 hover:underline inline-flex items-center gap-1 mt-0.5"><FiExternalLink className="w-3.5 h-3.5" /> /career</Link>
         </div>
       </div>
-      {saveError && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2 text-red-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
+      {saveError && <div className="mb-6 p-4 bg-destructive-50 border border-destructive-200 rounded-lg flex items-center gap-2 text-destructive-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="font-semibold text-dark-navy mb-4">Hero Section</h2>
+        <div className="bg-white rounded-lg border border-neutral-200 p-6">
+          <h2 className="font-semibold text-neutral-900 mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
           </div>
           <div className="mt-4"><ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" /></div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="font-semibold text-dark-navy mb-4">Company Culture</h2>
+        <div className="bg-white rounded-lg border border-neutral-200 p-6">
+          <h2 className="font-semibold text-neutral-900 mb-4">Company Culture</h2>
           <textarea value={culture} onChange={(e) => setCulture(e.target.value)} rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
             placeholder="Describe your company culture, values, and work environment..." />
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-dark-navy">Benefits & Perks</h2>
-            <Button type="button" onClick={() => setBenefits([...benefits, { title: '', description: '' }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Benefit</Button>
+            <h2 className="font-semibold text-neutral-900">Benefits & Perks</h2>
+            <AdminButton type="button" onClick={() => setBenefits([...benefits, { title: '', description: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Benefit</AdminButton>
           </div>
           <div className="space-y-3">
             {benefits.map((b, i) => (
-              <div key={i} className="border border-gray-200 rounded-xl p-4">
+              <div key={i} className="border border-neutral-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-gray-500 uppercase">Benefit {i + 1}</span>
-                  <button type="button" onClick={() => setBenefits(benefits.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <span className="text-xs font-semibold text-neutral-500 uppercase">Benefit {i + 1}</span>
+                  <button type="button" onClick={() => setBenefits(benefits.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
-                <input type="text" value={b.title} onChange={(e) => { const u = [...benefits]; u[i] = { ...u[i], title: e.target.value }; setBenefits(u); }} placeholder="Title (e.g. Flexible Hours)" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                <textarea value={b.description} onChange={(e) => { const u = [...benefits]; u[i] = { ...u[i], description: e.target.value }; setBenefits(u); }} rows={2} placeholder="Description..." className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                <input type="text" value={b.title} onChange={(e) => { const u = [...benefits]; u[i] = { ...u[i], title: e.target.value }; setBenefits(u); }} placeholder="Title (e.g. Flexible Hours)" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <textarea value={b.description} onChange={(e) => { const u = [...benefits]; u[i] = { ...u[i], description: e.target.value }; setBenefits(u); }} rows={2} placeholder="Description..." className="w-full mt-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-dark-navy">Open Positions</h2>
-            <Button type="button" onClick={() => setPositions([...positions, { title: '', location: '', type: '', description: '' }])} variant="link-add" size="sm"><FiPlus className="w-4 h-4" /> Add Position</Button>
+            <h2 className="font-semibold text-neutral-900">Open Positions</h2>
+            <AdminButton type="button" onClick={() => setPositions([...positions, { title: '', location: '', type: '', description: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Position</AdminButton>
           </div>
           <div className="space-y-3">
             {positions.map((p, i) => (
-              <div key={i} className="border border-gray-200 rounded-xl p-4">
+              <div key={i} className="border border-neutral-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-gray-500 uppercase">Position {i + 1}</span>
-                  <button type="button" onClick={() => setPositions(positions.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <span className="text-xs font-semibold text-neutral-500 uppercase">Position {i + 1}</span>
+                  <button type="button" onClick={() => setPositions(positions.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <div className="grid sm:grid-cols-3 gap-2 mb-2">
-                  <input type="text" value={p.title} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], title: e.target.value }; setPositions(u); }} placeholder="Job Title" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                  <input type="text" value={p.location} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], location: e.target.value }; setPositions(u); }} placeholder="Location" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
-                  <input type="text" value={p.type} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], type: e.target.value }; setPositions(u); }} placeholder="Type (e.g. Full-time)" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                  <input type="text" value={p.title} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], title: e.target.value }; setPositions(u); }} placeholder="Job Title" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <input type="text" value={p.location} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], location: e.target.value }; setPositions(u); }} placeholder="Location" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <input type="text" value={p.type} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], type: e.target.value }; setPositions(u); }} placeholder="Type (e.g. Full-time)" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 </div>
-                <textarea value={p.description} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], description: e.target.value }; setPositions(u); }} rows={2} placeholder="Job description..." className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                <textarea value={p.description} onChange={(e) => { const u = [...positions]; u[i] = { ...u[i], description: e.target.value }; setPositions(u); }} rows={2} placeholder="Job description..." className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-dark-navy flex items-center gap-2">
-              <FiToggleRight className="w-5 h-5 text-brand-accent" />
+            <h2 className="font-semibold text-neutral-900 flex items-center gap-2">
+              <FiToggleRight className="w-5 h-5 text-accent-600" />
               Application Form Configuration
             </h2>
             <button type="button" onClick={() => setFormConfig({ ...formConfig, enabled: !formConfig.enabled })}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formConfig.enabled ? 'bg-brand-accent' : 'bg-gray-300'}`}>
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formConfig.enabled ? 'bg-accent-600' : 'bg-neutral-300'}`}>
               <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formConfig.enabled ? 'translate-x-6' : 'translate-x-1'}`} />
             </button>
           </div>
@@ -310,17 +310,17 @@ export default function CareerPageEditor() {
             <div className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Form Position</label>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Form Position</label>
                   <select value={formConfig.position} onChange={(e) => setFormConfig({ ...formConfig, position: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
                     <option value="after">After page content</option>
                     <option value="before">Before page content</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Button Variant</label>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Button Variant</label>
                   <select value={formConfig.cta?.variant || 'accent'} onChange={(e) => setFormConfig({ ...formConfig, cta: { ...formConfig.cta, variant: e.target.value } })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
                     <option value="accent">Accent</option>
                     <option value="primary">Primary</option>
                     <option value="outline">Outline</option>
@@ -328,27 +328,27 @@ export default function CareerPageEditor() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Headline</label>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Headline</label>
                 <input type="text" value={formConfig.headline || ''} onChange={(e) => setFormConfig({ ...formConfig, headline: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Apply Now" />
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Apply Now" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Description</label>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
                 <input type="text" value={formConfig.description || ''} onChange={(e) => setFormConfig({ ...formConfig, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Fill out the form below..." />
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Fill out the form below..." />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
                 <input type="text" value={formConfig.cta?.text || ''} onChange={(e) => setFormConfig({ ...formConfig, cta: { ...(formConfig.cta || {}), text: e.target.value } })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Submit Application" />
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Submit Application" />
               </div>
               <FormFieldsEditor fields={formConfig.fields} onChange={(fields) => setFormConfig({ ...formConfig, fields })} />
             </div>
           )}
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-gray-100 mt-6">
-          <Button type="submit" disabled={saving} variant="accent" size="md"><FiSave className="w-4 h-4" /> {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Page'}</Button>
+        <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">
+          <AdminButton type="submit" disabled={saving} variant="primary" size="md"><FiSave className="w-4 h-4" /> {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Page'}</AdminButton>
         </div>
       </form>
     </div>

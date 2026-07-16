@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import Button from '../../components/ui/Button';
+import AdminButton from '../components/AdminButton';
 import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -26,14 +26,18 @@ function ImageUploader({ value, onChange, label }) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
-        <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-          placeholder="Paste image URL or upload..." />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-brand-accent hover:text-brand-accent transition-colors">
+        <input
+          type="text"
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+          placeholder="Paste image URL or upload..."
+        />
+        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-neutral-300 rounded-lg text-sm text-neutral-500 hover:border-accent-500 hover:text-accent-600 transition-colors">
           {uploading ? (
-            <span className="w-4 h-4 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
           ) : (
             <FiUpload className="w-4 h-4" />
           )}
@@ -41,10 +45,13 @@ function ImageUploader({ value, onChange, label }) {
         </label>
       </div>
       {value && (
-        <div className="mt-2 relative group rounded-lg overflow-hidden border border-gray-200">
+        <div className="mt-2 relative group rounded-lg overflow-hidden border border-neutral-200">
           <img src={value} alt="" className="h-40 w-full object-cover" />
-          <button type="button" onClick={() => onChange('')}
-            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="absolute top-2 right-2 p-1.5 bg-destructive-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+          >
             <FiTrash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -58,6 +65,7 @@ export default function BlogPostEditor() {
   const navigate = useNavigate();
   const isNew = id === 'new';
   const savingRef = useRef(false);
+  const formRef = useRef(null);
   const [form, setForm] = useState({
     title: '',
     slug: '',
@@ -74,7 +82,7 @@ export default function BlogPostEditor() {
   const [selectedTags, setSelectedTags] = useState([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(!isNew);
-  const [slugStatus, setSlugStatus] = useState('idle'); // idle | checking | available | taken
+  const [slugStatus, setSlugStatus] = useState('idle');
   const [slugSuggestion, setSlugSuggestion] = useState('');
 
   useEffect(() => {
@@ -130,6 +138,17 @@ export default function BlogPostEditor() {
       });
     }
   }, [id, isNew]);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        formRef.current?.requestSubmit();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   function slugify(text) {
     return text.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '');
@@ -193,7 +212,7 @@ export default function BlogPostEditor() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -201,126 +220,207 @@ export default function BlogPostEditor() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center gap-4 mb-8">
-        <Link to="/admin/blog"
-          className="p-2 text-gray-400 hover:text-dark-navy rounded-lg hover:bg-gray-100 transition-colors">
+        <Link
+          to="/admin/blog"
+          className="p-2 text-neutral-400 hover:text-neutral-900 rounded-lg hover:bg-neutral-100 transition-colors"
+        >
           <FiArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-dark-navy">{isNew ? 'New Post' : 'Edit Post'}</h1>
+          <h1 className="text-2xl font-bold text-neutral-900">{isNew ? 'New Post' : 'Edit Post'}</h1>
         </div>
       </div>
 
-      <form onSubmit={handleSave} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Title</label>
-            <input type="text" value={form.title} onChange={(e) => handleTitleChange(e.target.value)} required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-              placeholder="Post title" />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Slug</label>
-            <div className="relative">
-              <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all font-mono text-xs ${
-                  slugStatus === 'taken' ? 'border-red-300 focus:ring-red-400 bg-red-50' :
-                  slugStatus === 'available' ? 'border-green-300 focus:ring-green-400 bg-green-50' :
-                  'border-gray-300 focus:ring-brand-accent'
-                }`}
-                placeholder="post-slug" />
-              {slugStatus === 'checking' && <span className="absolute right-3 top-1/2 -translate-y-1/2"><span className="w-4 h-4 border-2 border-brand-accent border-t-transparent rounded-full animate-spin block" /></span>}
+      <form ref={formRef} onSubmit={handleSave} className="bg-white rounded-lg border border-neutral-200 p-6 space-y-8">
+        <div>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Basic Information</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Title</label>
+              <input
+                type="text"
+                value={form.title}
+                onChange={(e) => handleTitleChange(e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+                placeholder="Post title"
+              />
             </div>
-            {slugStatus === 'taken' && (
-              <p className="text-xs text-red-600 mt-1">
-                Slug taken. Suggested: <button type="button" onClick={() => { setForm({ ...form, slug: slugSuggestion }); setSlugStatus('checking'); }} className="text-brand-accent hover:underline font-medium">{slugSuggestion}</button>
-              </p>
-            )}
-            {slugStatus === 'available' && <p className="text-xs text-green-600 mt-1">Available</p>}
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Author</label>
-            <input type="text" value={form.author} onChange={(e) => setForm({ ...form, author: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-              placeholder="Author name" />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Excerpt</label>
-          <textarea value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} rows={2}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-            placeholder="Short description shown in cards" />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Content</label>
-          <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={12}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all font-mono text-xs"
-            placeholder="Full article content (HTML or markdown supported)" />
-        </div>
-
-        <ImageUploader value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} label="Featured Image" />
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Tags</label>
-          <div className="flex flex-wrap gap-2">
-            {allTags.map((tag) => {
-              const isSelected = selectedTags.includes(tag.id);
-              return (
-                <button key={tag.id} type="button" onClick={() =>
-                  setSelectedTags(isSelected ? selectedTags.filter(t => t !== tag.id) : [...selectedTags, tag.id])
-                }
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                    isSelected
-                      ? 'bg-brand-accent text-white shadow-sm ring-2 ring-brand-accent/30'
-                      : 'bg-gray-100 text-text-gray hover:bg-gray-200'
-                  }`}>
-                  <FiTag className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-gray-400'}`} />
-                  {tag.name}
-                </button>
-              );
-            })}
-            {allTags.length === 0 && <p className="text-sm text-gray-400">No tags available. Create them in <Link to="/admin/tags" className="text-brand-accent hover:underline">Tags Manager</Link>.</p>}
-          </div>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Category</label>
-            <select value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all bg-white">
-              <option value="">No category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex items-end gap-4">
-            <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100/50 transition-colors flex-1">
-              <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_published ? 'bg-brand-accent' : 'bg-gray-300'}`}>
-                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_published ? 'translate-x-4' : ''}`} />
-                <input type="checkbox" checked={form.is_published} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} className="sr-only" />
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Slug</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  className={`w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:border-transparent transition-all font-mono text-xs ${
+                    slugStatus === 'taken' ? 'border-destructive-500 focus:ring-destructive-500 bg-destructive-50' :
+                    slugStatus === 'available' ? 'border-success-500 focus:ring-success-500 bg-success-50' :
+                    'border-neutral-300 focus:ring-accent-500'
+                  }`}
+                  placeholder="post-slug"
+                />
+                {slugStatus === 'checking' && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <span className="w-4 h-4 border-2 border-accent-500 border-t-transparent rounded-full animate-spin block" />
+                  </span>
+                )}
               </div>
-              <span className="text-sm font-medium text-dark-navy">Published</span>
+              {slugStatus === 'taken' && (
+                <p className="text-xs text-destructive-500 mt-1">
+                  Slug taken. Suggested:{' '}
+                  <button
+                    type="button"
+                    onClick={() => { setForm({ ...form, slug: slugSuggestion }); setSlugStatus('checking'); }}
+                    className="text-accent-600 hover:underline font-medium"
+                  >
+                    {slugSuggestion}
+                  </button>
+                </p>
+              )}
+              {slugStatus === 'available' && (
+                <p className="text-xs text-success-500 mt-1">Available</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Author</label>
+              <input
+                type="text"
+                value={form.author}
+                onChange={(e) => setForm({ ...form, author: e.target.value })}
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+                placeholder="Author name"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-neutral-100" />
+
+        <div>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Content</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Excerpt</label>
+              <textarea
+                value={form.excerpt}
+                onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+                rows={2}
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500 transition-all"
+                placeholder="Short description shown in cards"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Content</label>
+              <textarea
+                value={form.content}
+                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                rows={12}
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500 transition-all font-mono text-xs"
+                placeholder="Full article content (HTML or markdown supported)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-neutral-100" />
+
+        <div>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Featured Image</h2>
+          <ImageUploader value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} label="Image URL" />
+        </div>
+
+        <div className="border-t border-neutral-100" />
+
+        <div>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Metadata</h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Category</label>
+              <select
+                value={form.category_id}
+                onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500 transition-all bg-white"
+              >
+                <option value="">No category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Tags</label>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {allTags.map((tag) => {
+                  const isSelected = selectedTags.includes(tag.id);
+                  return (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      onClick={() =>
+                        setSelectedTags(isSelected ? selectedTags.filter(t => t !== tag.id) : [...selectedTags, tag.id])
+                      }
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                        isSelected
+                          ? 'bg-accent-600 text-white ring-2 ring-accent-600/30'
+                          : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                      }`}
+                    >
+                      <FiTag className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-neutral-400'}`} />
+                      {tag.name}
+                    </button>
+                  );
+                })}
+                {allTags.length === 0 && (
+                  <p className="text-sm text-neutral-400">
+                    No tags available. Create them in{' '}
+                    <Link to="/admin/tags" className="text-accent-600 hover:underline">Tags Manager</Link>.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-neutral-100" />
+
+        <div>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Publishing</h2>
+          <div className="flex items-center gap-6">
+            <label className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-200 cursor-pointer hover:bg-neutral-100 transition-colors">
+              <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_published ? 'bg-accent-600' : 'bg-neutral-300'}`}>
+                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_published ? 'translate-x-4' : ''}`} />
+                <input
+                  type="checkbox"
+                  checked={form.is_published}
+                  onChange={(e) => setForm({ ...form, is_published: e.target.checked })}
+                  className="sr-only"
+                />
+              </div>
+              <span className="text-sm font-medium text-neutral-900">Published</span>
             </label>
-            <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100/50 transition-colors">
-              <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
-                className="w-4 h-4 rounded text-brand-accent focus:ring-brand-accent" />
-              <span className="text-sm font-medium text-dark-navy">Featured</span>
+            <label className="flex items-center gap-2 p-3 bg-neutral-50 rounded-lg border border-neutral-200 cursor-pointer hover:bg-neutral-100 transition-colors">
+              <input
+                type="checkbox"
+                checked={form.is_featured}
+                onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
+                className="w-4 h-4 rounded text-accent-600 focus:ring-accent-500"
+              />
+              <span className="text-sm font-medium text-neutral-900">Featured</span>
             </label>
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-5 flex justify-end gap-3">
+        <div className="border-t border-neutral-100 pt-6 flex justify-end gap-3">
           {!isNew && form.slug && (
-            <Button to={`/blog/${form.slug}`} target="_blank" variant="ghost" size="md">
+            <AdminButton to={`/blog/${form.slug}`} target="_blank" variant="secondary" size="md">
               <FiExternalLink className="w-4 h-4" /> View Post
-            </Button>
+            </AdminButton>
           )}
-          <Button type="submit" variant="accent" size="md" disabled={saving}>
+          <AdminButton type="submit" variant="primary" size="md" disabled={saving}>
             <FiSave className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Post'}
-          </Button>
+          </AdminButton>
         </div>
       </form>
     </div>

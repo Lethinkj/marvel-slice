@@ -1,8 +1,22 @@
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
-import { FiChevronRight, FiBriefcase, FiBookOpen, FiTarget } from 'react-icons/fi';
+import {
+  FiChevronRight, FiBriefcase, FiBookOpen, FiTarget,
+  FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw,
+  FiMessageSquare, FiUsers, FiStar, FiBarChart2, FiGlobe,
+  FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp,
+  FiMail, FiBell, FiHelpCircle,
+} from 'react-icons/fi';
 import Button from '../ui/Button';
 
-const serviceIcons = [FiBriefcase, FiBookOpen, FiTarget];
+const ICON_MAP = {
+  briefcase: FiBriefcase, book: FiBookOpen, target: FiBarChart2,
+  code: FiCode, star: FiStar, award: FiAward, users: FiUsers,
+  clock: FiClock, video: FiVideo, calendar: FiCalendar,
+  refresh: FiRefreshCw, message: FiMessageSquare, globe: FiGlobe,
+  cpu: FiCpu, database: FiDatabase, layers: FiLayers,
+  zap: FiZap, shield: FiShield, trending: FiTrendingUp,
+  mail: FiMail, bell: FiBell, help: FiHelpCircle,
+};
 
 export default function ServicesSection({ section }) {
   if (!section) return null;
@@ -57,7 +71,7 @@ export default function ServicesSection({ section }) {
 
           <Reveal variant="left" className="flex flex-col justify-center">
             {servicesList.map((service, i) => {
-              const Icon = serviceIcons[i] || FiBriefcase;
+              const Icon = ICON_MAP[service.icon_name] || FiBriefcase;
               return (
                 <div key={i}>
                   <div className="flex gap-4 py-5">

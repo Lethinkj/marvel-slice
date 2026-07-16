@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import Button from '../../components/ui/Button';
+import AdminButton from '../components/AdminButton';
 import { FiSave, FiUpload, FiTrash2, FiCheck, FiMail, FiPhone, FiGlobe } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -25,14 +25,14 @@ function ImageUploader({ value, onChange, label }) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
+          className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
           placeholder="Paste image URL or upload..." />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-brand-accent hover:text-brand-accent transition-colors">
+        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-neutral-300 rounded-lg text-sm text-neutral-500 hover:border-accent-500 hover:text-accent-600 transition-colors">
           {uploading ? (
-            <span className="w-4 h-4 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
           ) : (
             <FiUpload className="w-4 h-4" />
           )}
@@ -40,10 +40,10 @@ function ImageUploader({ value, onChange, label }) {
         </label>
       </div>
       {value && (
-        <div className="mt-2 relative group rounded-lg overflow-hidden border border-gray-200">
+        <div className="mt-2 relative group rounded-lg overflow-hidden border border-neutral-200">
           <img src={value} alt="" className="h-32 w-full object-cover" />
           <button type="button" onClick={() => onChange('')}
-            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+            className="absolute top-2 right-2 p-1.5 bg-destructive-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
             <FiTrash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -119,7 +119,7 @@ export default function SiteSettings() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -127,47 +127,47 @@ export default function SiteSettings() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-dark-navy">Site Settings</h1>
-        <p className="text-sm text-gray-500 mt-1">Contact info, social links, and logo</p>
+        <h1 className="text-2xl font-bold text-neutral-900">Site Settings</h1>
+        <p className="text-sm text-neutral-500 mt-1">Contact info, social links, and logo</p>
       </div>
 
       {saved && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm">
+        <div className="mb-6 p-4 bg-success-50 border border-success-200 rounded-lg flex items-center gap-2 text-success-700 text-sm">
           <FiCheck className="w-4 h-4" /> Settings saved successfully!
         </div>
       )}
 
-      <form onSubmit={handleSave} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
+      <form onSubmit={handleSave} className="bg-white rounded-lg border border-neutral-200 p-6 space-y-6">
         <div>
           <ImageUploader value={form.logo_url} onChange={(v) => setForm({ ...form, logo_url: v })} label="Site Logo" />
         </div>
 
-        <div className="border-t border-gray-100 pt-6">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <FiMail className="w-4 h-4 text-brand-accent" /> Contact Information
+        <div className="border-t border-neutral-100 pt-6">
+          <h3 className="text-sm font-semibold text-neutral-700 mb-4 flex items-center gap-2">
+            <FiMail className="w-4 h-4 text-accent-600" /> Contact Information
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Email</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Email</label>
               <input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
+                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
                 placeholder="sales@marvelslice.com" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Phone</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Phone</label>
               <div className="relative">
-                <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
                 <input type="text" value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
-                  className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
+                  className="w-full pl-9 pr-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
                   placeholder="+91 6380957390" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-6">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <FiGlobe className="w-4 h-4 text-brand-accent" /> Social Links
+        <div className="border-t border-neutral-100 pt-6">
+          <h3 className="text-sm font-semibold text-neutral-700 mb-4 flex items-center gap-2">
+            <FiGlobe className="w-4 h-4 text-accent-600" /> Social Links
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
@@ -177,20 +177,20 @@ export default function SiteSettings() {
               { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/...' },
             ].map((s) => (
               <div key={s.key}>
-                <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">{s.label}</label>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{s.label}</label>
                 <input type="url" value={form[s.key]} onChange={(e) => setForm({ ...form, [s.key]: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all"
                   placeholder={s.placeholder} />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-6 flex justify-end">
-          <Button type="submit" disabled={saving} variant="accent" size="md">
+        <div className="border-t border-neutral-100 pt-6 flex justify-end">
+          <AdminButton type="submit" disabled={saving} variant="primary" size="md">
             <FiSave className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Settings'}
-          </Button>
+          </AdminButton>
         </div>
       </form>
     </div>
