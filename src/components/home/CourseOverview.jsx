@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import AccordionItem from '../ui/AccordionItem';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 
@@ -8,6 +9,7 @@ export default function CourseOverview({ section }) {
   const content = section.content || {};
   const description = content.description || '';
   const items = content.items || [];
+  const [openIdx, setOpenIdx] = useState(0);
 
   if (items.length === 0 && !description) return null;
 
@@ -29,7 +31,11 @@ export default function CourseOverview({ section }) {
               <Stagger className="space-y-2 w-full max-w-[70%]">
                 {items.map((item, i) => (
                   <StaggerItem key={i}>
-                    <AccordionItem title={item.question} defaultOpen={i === 0}>
+                    <AccordionItem
+                      title={item.question}
+                      isOpen={openIdx === i}
+                      onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+                    >
                       <p className="text-text-gray text-base leading-relaxed mb-3">{item.answer}</p>
                       {item.list_items && item.list_items.length > 0 && (
                         <ol className="list-decimal pl-6 space-y-1.5 text-base text-text-gray">

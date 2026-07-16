@@ -308,13 +308,13 @@ export default function NavDropdown({ items, currentPath, onItemClick, closeDela
    MOBILE
    ================================================================== */
 
-function MobileNavItem({ item, depth = 0, currentPath, onItemClick }) {
-  const [open, setOpen] = useState(false);
+function MobileNavItem({ item, depth = 0, currentPath, onItemClick, isOpen, onToggle }) {
   const { data: navChildren } = useNavChildren(
     depth === 0 && !item.path ? item.label : null
   );
   const resolvedChildren = item.children || item._navChildren || navChildren || [];
   const hasSub = resolvedChildren.length > 0;
+  const [childOpenIdx, setChildOpenIdx] = useState(null);
 
   if (!hasSub) {
     const isActive = item.path && currentPath === item.path;
@@ -337,8 +337,8 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick }) {
   return (
     <div>
       <button
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
+        onClick={onToggle}
+        aria-expanded={isOpen}
         className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors ${
           depth === 0
             ? 'font-medium text-dark-navy hover:text-brand-orange'
@@ -346,10 +346,10 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick }) {
         }`}
       >
         <span>{item.label}</span>
-        <FiChevronDown className={`w-5 h-5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <FiChevronDown className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       <AnimatePresence initial={false}>
-        {open && (
+        {isOpen && (
           <motion.div
             key="mobile-sub"
             initial={{ height: 0, opacity: 0 }}
@@ -360,7 +360,15 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick }) {
           >
             <div className={`py-1 ${depth === 0 ? 'pl-6' : 'pl-4'} border-l-2 border-gray-100 ml-5`}>
               {resolvedChildren.map((child, idx) => (
-                <MobileNavItem key={idx} item={child} depth={depth + 1} currentPath={currentPath} onItemClick={onItemClick} />
+                <MobileNavItem
+                  key={idx}
+                  item={child}
+                  depth={depth + 1}
+                  currentPath={currentPath}
+                  onItemClick={onItemClick}
+                  isOpen={childOpenIdx === idx}
+                  onToggle={() => setChildOpenIdx(childOpenIdx === idx ? null : idx)}
+                />
               ))}
             </div>
           </motion.div>
@@ -371,10 +379,19 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick }) {
 }
 
 export function MobileNav({ items, currentPath, onItemClick }) {
+  const [openIdx, setOpenIdx] = useState(null);
   return (
     <div className="px-2 py-4 space-y-1">
       {items.map((item, idx) => (
-        <MobileNavItem key={idx} item={item} depth={0} currentPath={currentPath} onItemClick={onItemClick} />
+        <MobileNavItem
+          key={idx}
+          item={item}
+          depth={0}
+          currentPath={currentPath}
+          onItemClick={onItemClick}
+          isOpen={openIdx === idx}
+          onToggle={() => setOpenIdx(openIdx === idx ? null : idx)}
+        />
       ))}
     </div>
   );

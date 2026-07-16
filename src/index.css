@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Montserrat', sans-serif;
+  --font-sans: "Montserrat", sans-serif;
   --color-brand-orange: #ff8415;
-  --color-brand-blue: #1B3A6B;
+  --color-brand-blue: #175cdd;
   --color-brand-bright-blue: #175cdd;
   --color-brand-green: #74a916;
   --color-brand-accent: #ff8415;
-  --color-dark-navy: #1B3A6B;
+  --color-dark-navy: #1b3a6b;
   --color-text-gray: #333333;
-  --color-bg-light: #F5F5F5;
-  --color-brand-navy-dark: #0F2440;
+  --color-bg-light: #f5f5f5;
+  --color-brand-navy-dark: #0f2440;
   --color-top-blue: #175cdd;
 }
 
@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: var(--color-dark-navy);
@@ -31,7 +31,14 @@ body {
 }
 
 /* Prevent long words/URLs from forcing horizontal overflow on small screens */
-h1, h2, h3, h4, p, span, a, li {
+h1,
+h2,
+h3,
+h4,
+p,
+span,
+a,
+li {
   overflow-wrap: break-word;
 }
 
@@ -73,9 +80,15 @@ footer {
 }
 
 /* Heading size defaults */
-h1 { font-size: 44px; }
-h2 { font-size: 32px; }
-h3 { font-size: 18px; }
+h1 {
+  font-size: 44px;
+}
+h2 {
+  font-size: 32px;
+}
+h3 {
+  font-size: 18px;
+}
 
 /* ============================================================
    FULL-WIDTH LAYOUT SYSTEM
@@ -124,9 +137,15 @@ h3 { font-size: 18px; }
 }
 
 @keyframes pulse-scale {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .animate-pulse-scale {

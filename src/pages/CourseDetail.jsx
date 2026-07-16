@@ -23,6 +23,7 @@ function AdminTabsSection({ tabs }) {
   if (!tabs || tabs.length === 0) return null;
   const [active, setActive] = useState(0);
   const [pulsing, setPulsing] = useState(null);
+  const [qaOpen, setQaOpen] = useState(null);
   const tab = tabs[active];
   const { data: site } = useSiteSettings();
 
@@ -44,11 +45,14 @@ function AdminTabsSection({ tabs }) {
             <div className="space-y-4">
               {t.content.qa.map((item, qi) => (
                 <div key={qi} className="border border-gray-200 rounded-xl overflow-hidden">
-                  <details className="group">
-                    <summary className="flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-dark-navy hover:bg-gray-50 transition-colors list-none">
-                      <span>{item.question}</span>
-                      <FiChevronDown className="w-5 h-5 text-brand-accent transition-transform duration-200 group-open:rotate-180" />
-                    </summary>
+                  <button
+                    onClick={() => setQaOpen(qaOpen === qi ? null : qi)}
+                    className="w-full flex items-center justify-between px-6 py-4 cursor-pointer font-semibold text-dark-navy hover:bg-gray-50 transition-colors"
+                  >
+                    <span>{item.question}</span>
+                    <FiChevronDown className={`w-5 h-5 text-brand-accent transition-transform duration-200 ${qaOpen === qi ? 'rotate-180' : ''}`} />
+                  </button>
+                  {qaOpen === qi && (
                     <div className="px-6 pb-4">
                       {item.answers?.length > 0 && (
                         <ul className="space-y-2">
@@ -61,7 +65,7 @@ function AdminTabsSection({ tabs }) {
                         </ul>
                       )}
                     </div>
-                  </details>
+                  )}
                 </div>
               ))}
             </div>
@@ -90,40 +94,40 @@ function AdminTabsSection({ tabs }) {
   return (
     <section className="py-16 bg-gray-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Tab buttons - pentagon on active, rectangle inactive, same size */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+        {/* Tab buttons above card with V indicator */}
+        <div className="flex flex-wrap items-start gap-2 mb-0">
           {tabs.map((t, i) => (
-            <button
-              key={t.id || i}
-              onClick={() => handleTabClick(i)}
-              className={`relative transition-all duration-[400ms] px-6 text-sm font-semibold whitespace-nowrap flex items-center ${
-                pulsing === i ? 'animate-pulse-scale' : ''
-              }`}
-              style={{
-                clipPath: i === active ? 'polygon(0% 0%, 100% 0%, 100% 75%, 50% 100%, 0% 75%)' : 'none',
-                height: '44px',
-                borderRadius: i === active ? '0' : '10px',
-                background: i === active ? 'var(--color-brand-accent)' : 'transparent',
-                border: i === active ? 'none' : '2px solid var(--color-dark-navy)',
-                color: i === active ? '#fff' : 'var(--color-dark-navy)',
-              }}
-            >
-              {t.label}
-            </button>
+            <div key={t.id || i} className="flex flex-col items-center">
+              <button
+                onClick={() => handleTabClick(i)}
+                className={`relative transition-all duration-[400ms] px-5 py-2 text-sm font-semibold whitespace-nowrap rounded-lg ${
+                  pulsing === i ? 'animate-pulse-scale' : ''
+                } ${
+                  i === active
+                    ? 'bg-brand-accent text-white shadow-sm'
+                    : 'bg-transparent text-dark-navy border-2 border-dark-navy hover:bg-gray-50'
+                }`}
+              >
+                {t.label}
+              </button>
+              {i === active && (
+                <div className="w-0 h-0 border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-brand-accent relative z-10" />
+              )}
+            </div>
           ))}
         </div>
 
-        {/* Two-column layout */}
-        <div className="grid lg:grid-cols-3 gap-10 items-start">
-          {/* Left column — content */}
-          <div className="lg:col-span-2">
-            <Reveal>{renderContent(tab)}</Reveal>
-          </div>
+        {/* Card */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
+          {/* Two-column layout */}
+          <div className="grid lg:grid-cols-3 gap-10 items-start">
+            <div className="lg:col-span-2">
+              <Reveal>{renderContent(tab)}</Reveal>
+            </div>
 
-          {/* Right column — sticky sidebar */}
-          <div className="lg:col-span-1 lg:sticky lg:top-24">
-            <Reveal>
-              <div className="bg-gradient-to-br from-brand-accent to-brand-blue rounded-2xl p-6 sm:p-8 text-white shadow-lg">
+            <div className="lg:col-span-1 lg:sticky lg:top-24">
+              <Reveal>
+                <div className="bg-gradient-to-br from-brand-accent to-brand-blue rounded-2xl p-6 sm:p-8 text-white shadow-lg">
                 <h3 className="text-xl font-bold mb-1">Talk To Us</h3>
                 <p className="text-white/70 text-sm mb-5">Have questions? We're here to help.</p>
                 {site?.contact_phone && (
@@ -147,6 +151,7 @@ function AdminTabsSection({ tabs }) {
                 </div>
               </div>
             </Reveal>
+          </div>
           </div>
         </div>
       </div>
@@ -224,7 +229,7 @@ function OverviewSection({ course }) {
                   )}
                 </Reveal>
               ))}
-            </div>
+          </div>
           </div>
         )}
       </div>

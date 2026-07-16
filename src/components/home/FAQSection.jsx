@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import AccordionItem from '../ui/AccordionItem';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 
@@ -6,6 +7,7 @@ export default function FAQSection({ section }) {
 
   const heading = section.heading || 'Frequently Asked Questions';
   const items = section.content?.items || [];
+  const [openIdx, setOpenIdx] = useState(null);
 
   if (items.length === 0) return null;
 
@@ -18,7 +20,11 @@ export default function FAQSection({ section }) {
         <Stagger className="space-y-2">
           {items.map((item, i) => (
             <StaggerItem key={i}>
-              <AccordionItem title={item.question}>
+              <AccordionItem
+                title={item.question}
+                isOpen={openIdx === i}
+                onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+              >
                 <p className="text-text-gray text-base leading-relaxed">{item.answer}</p>
               </AccordionItem>
             </StaggerItem>

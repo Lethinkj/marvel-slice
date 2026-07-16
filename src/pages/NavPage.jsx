@@ -2,34 +2,29 @@ import { useParams, Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import CourseCard from '../components/ui/CourseCard';
+import AccordionItem from '../components/ui/AccordionItem';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { FiArrowLeft, FiCheckCircle, FiMapPin, FiPhone, FiMail, FiBriefcase } from 'react-icons/fi';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabaseClient';
 import { useState } from 'react';
-import { FiPlus, FiMinus } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
 
-function AccordionItem({ title, children, defaultOpen }) {
-  const [open, setOpen] = useState(defaultOpen || false);
+function FaqListSection({ section }) {
+  const [openIdx, setOpenIdx] = useState(null);
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden">
-      <button onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-4 text-left font-semibold text-dark-navy hover:bg-gray-50 transition-colors gap-4">
-        <span className="text-base lg:text-lg leading-snug flex-1">{title}</span>
-        <span className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange">
-          {open ? <FiMinus className="w-4 h-4" /> : <FiPlus className="w-4 h-4" />}
-        </span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div key="content" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: 'easeInOut' }} className="overflow-hidden">
-            <div className="px-6 pb-5 text-text-gray leading-relaxed">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <Reveal className="w-full max-w-[70%] mx-auto">
+      {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
+      <div className="space-y-2">
+        {(section.items || []).map((faq, i) => (
+          <AccordionItem
+            key={i}
+            title={faq.question}
+            isOpen={openIdx === i}
+            onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+          >{faq.answer}</AccordionItem>
+        ))}
+      </div>
+    </Reveal>
   );
 }
 
@@ -149,16 +144,7 @@ function SectionRenderer({ section }) {
       );
     }
     case 'faq_list':
-      return (
-        <Reveal className="w-full max-w-[70%] mx-auto">
-          {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
-          <div className="space-y-2">
-            {(section.items || []).map((faq, i) => (
-              <AccordionItem key={i} title={faq.question}>{faq.answer}</AccordionItem>
-            ))}
-          </div>
-        </Reveal>
-      );
+      return <FaqListSection section={section} />;
     case 'positions':
       return (
         <div>
