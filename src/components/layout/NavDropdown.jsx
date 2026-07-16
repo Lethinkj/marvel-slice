@@ -30,17 +30,7 @@ function DesktopNavItem({
   );
 
   const resolvedChildren = item.children || item._navChildren || navChildren || [];
-
-  const defaultViewAll = depth === 0 && !item.path
-    ? (item.label === 'Software Learning'
-        ? [...resolvedChildren, { label: 'View All', path: '/software-learning' }]
-        : item.label === 'Competitive Exam'
-          ? [...resolvedChildren, { label: 'View All', path: '/competitive-exam' }]
-          : null)
-    : null;
-
-  const allChildren = defaultViewAll || resolvedChildren;
-  const hasSub = allChildren.length > 0;
+  const hasSub = resolvedChildren.length > 0;
 
   const scheduleClose = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -147,7 +137,7 @@ function DesktopNavItem({
               data-submenu
             >
               <SubmenuItems
-                items={allChildren}
+                items={resolvedChildren}
                 depth={1}
                 currentPath={currentPath}
                 onItemClick={onItemClick}
@@ -191,12 +181,12 @@ function DesktopNavItem({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -4 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute left-full top-0 ml-1.5 bg-white shadow-2xl rounded-xl border border-gray-100 py-2 z-50 min-w-[240px] before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-gradient-to-r before:from-brand-orange/70 before:to-brand-accent/70 before:rounded-t-xl"
+            className="absolute left-full top-0 ml-1.5 bg-white shadow-2xl rounded-xl border border-gray-100 py-2 z-50 min-w-[240px] max-h-[60vh] overflow-y-auto before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-gradient-to-r before:from-brand-orange/70 before:to-brand-accent/70 before:rounded-t-xl"
             role="menu"
             data-submenu
           >
             <SubmenuItems
-              items={allChildren}
+              items={resolvedChildren}
               depth={depth + 1}
               currentPath={currentPath}
               onItemClick={onItemClick}
@@ -391,7 +381,7 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick, isOpen, onTo
 export function MobileNav({ items, currentPath, onItemClick }) {
   const [openIdx, setOpenIdx] = useState(null);
   return (
-    <div className="px-2 py-4 space-y-1">
+    <div className="px-2 py-4 space-y-1 max-h-[calc(100vh-6rem)] overflow-y-auto">
       {items.map((item, idx) => (
         <MobileNavItem
           key={idx}

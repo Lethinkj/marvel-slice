@@ -16,7 +16,7 @@ export default function CourseCard({
   const titleSize = bannerSize === 'lg' ? 'text-lg sm:text-xl' : 'text-base sm:text-lg';
 
   function renderBanner() {
-    if (variant === 'image' && course.hero_image_url) {
+    if (course.hero_image_url) {
       return <img src={course.hero_image_url} alt={course.title} className="w-full h-full object-cover" />;
     }
     if (variant === 'initial') {

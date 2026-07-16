@@ -278,7 +278,8 @@ export default function Blog() {
     }
   }, [searchParams]);
 
-  const { data: postsData, isLoading } = useBlogPosts({ category, tag, search, page });
+  const perPage = page === 1 ? 5 : 6;
+  const { data: postsData, isLoading } = useBlogPosts({ category, tag, search, page, perPage });
   const { data: categories } = useBlogCategories();
   const { data: recentPosts } = useRecentPosts(3);
   const { data: popularTags } = usePopularTags();
@@ -321,7 +322,7 @@ export default function Blog() {
                   </StaggerItem>
                 ))}
               </Stagger>
-              <Pagination page={page} total={total} perPage={9} onChange={setPage} />
+              <Pagination page={page} total={total} perPage={perPage} onChange={setPage} />
             </div>
             <Reveal variant="left" as="aside" className="lg:w-[30%] space-y-6">
               <RecentPostsWidget posts={recentPosts || []} />

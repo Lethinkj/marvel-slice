@@ -1,13 +1,17 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, useParams, useLocation } from "react-router-dom";
-import { FiFilter, FiBookOpen, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useSearchParams, useParams } from "react-router-dom";
+import { FiBookOpen, FiChevronLeft, FiChevronRight, FiSearch } from "react-icons/fi";
 import { supabase } from "../lib/supabaseClient";
-import Button from "../components/ui/Button";
 import CourseCard from "../components/ui/CourseCard";
 import Reveal, { Stagger, StaggerItem } from "../components/ui/Reveal";
 
 const PER_PAGE = 5;
+
+const PARENT_SLUGS = {
+  'Software Learning': 'software-learning',
+  'Competitive Exam': 'competitive-exam',
+};
 
 function Pagination({ page, total, onPage }) {
   const last = Math.ceil(total / PER_PAGE);
@@ -48,9 +52,10 @@ function Pagination({ page, total, onPage }) {
 export default function Courses() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { categorySlug } = useParams();
-  const { pathname } = useLocation();
-  const pathCategory = pathname.match(/^\/(software-learning|competitive-exam)$/)?.[1] || null;
-  const activeCategory = searchParams.get("category") || categorySlug || pathCategory || null;
+  const [search, setSearch] = useState("");
+  const parentParam = searchParams.get("parent") || null;
+  const activeCategory = searchParams.get("category") || categorySlug || null;
+  const showAll = !activeCategory && !parentParam;
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   function setPage(p) {
@@ -114,23 +119,111 @@ export default function Courses() {
     return Object.values(map).filter((c) => c.courses.length > 0);
   }, [navItems, courses]);
 
+  const isParentSlug = activeCategory && Object.values(PARENT_SLUGS).includes(activeCategory);
+  const parentPageSlug = (isParentSlug ? activeCategory : null) || parentParam || null;
+
+  const childIdsForParent = useMemo(() => {
+    if (!navItems || !parentPageSlug) return null;
+    const parentLabel = Object.keys(PARENT_SLUGS).find((k) => PARENT_SLUGS[k] === parentPageSlug);
+    if (!parentLabel) return null;
+    const byId = {};
+    navItems.forEach((ni) => { byId[ni.id] = ni; });
+    function belongsToParent(ni) {
+      if (ni.parent_label === parentLabel) return true;
+      let current = ni;
+      let visited = new Set();
+      while (current.parent_id) {
+        if (visited.has(current.id)) break;
+        visited.add(current.id);
+        current = byId[current.parent_id];
+        if (!current) break;
+        if (current.parent_label === parentLabel) return true;
+        if (current.label === parentLabel) return true;
+      }
+      if (current && current.label === parentLabel) return true;
+      return false;
+    }
+    const ids = new Set();
+    navItems.forEach((ni) => {
+      if (belongsToParent(ni)) ids.add(ni.id);
+    });
+    return ids;
+  }, [navItems, parentPageSlug]);
+
+  const visibleCategories = useMemo(() => {
+    if (!parentPageSlug || !childIdsForParent) return categories;
+    return categories.filter((cat) => childIdsForParent.has(cat.id));
+  }, [categories, parentPageSlug, childIdsForParent]);
+
   const filteredCourses = useMemo(() => {
     if (!activeCategory || !courses) return courses || [];
+
     const cat = categories.find((c) => c.slug === activeCategory);
-    return cat ? cat.courses : [];
-  }, [courses, categories, activeCategory]);
+    if (cat) return cat.courses;
+
+    if (parentPageSlug) {
+      const parentLabel = Object.keys(PARENT_SLUGS).find((k) => PARENT_SLUGS[k] === parentPageSlug);
+      if (parentLabel && navItems) {
+        const byId = {};
+        navItems.forEach((ni) => { byId[ni.id] = ni; });
+        function belongsToParent(ni) {
+          if (ni.parent_label === parentLabel) return true;
+          let current = ni;
+          let visited = new Set();
+          while (current.parent_id) {
+            if (visited.has(current.id)) break;
+            visited.add(current.id);
+            current = byId[current.parent_id];
+            if (!current) break;
+            if (current.parent_label === parentLabel) return true;
+            if (current.label === parentLabel) return true;
+          }
+          if (current && current.label === parentLabel) return true;
+          return false;
+        }
+        const childIds = new Set();
+        navItems.forEach((ni) => {
+          if (belongsToParent(ni)) childIds.add(ni.id);
+        });
+        return courses.filter((c) => c.nav_item_id && childIds.has(c.nav_item_id));
+      }
+    }
+
+    return [];
+  }, [courses, categories, activeCategory, navItems, parentPageSlug]);
+
+  const searchedCourses = useMemo(() => {
+    let source;
+    if (activeCategory) {
+      source = filteredCourses;
+    } else if (parentParam && childIdsForParent) {
+      source = (courses || []).filter((c) => c.nav_item_id && childIdsForParent.has(c.nav_item_id));
+    } else {
+      source = courses || [];
+    }
+    if (!search) return source;
+    const q = search.toLowerCase();
+    return source.filter(
+      (c) =>
+        (c.title || "").toLowerCase().includes(q) ||
+        (c.slug || "").toLowerCase().includes(q),
+    );
+  }, [filteredCourses, courses, activeCategory, parentParam, childIdsForParent, search]);
 
   const paginatedCourses = useMemo(() => {
-    const source = activeCategory ? filteredCourses : (courses || []);
     const start = (page - 1) * PER_PAGE;
-    return source.slice(start, start + PER_PAGE);
-  }, [courses, filteredCourses, activeCategory, page]);
+    return searchedCourses.slice(start, start + PER_PAGE);
+  }, [searchedCourses, page]);
 
-  const totalItems = activeCategory ? filteredCourses.length : (courses?.length || 0);
+  const totalItems = searchedCourses.length;
 
-  const activeLabel = activeCategory
-    ? categories.find((c) => c.slug === activeCategory)?.label || activeCategory
-    : null;
+  const foundCategory = activeCategory ? categories.find((c) => c.slug === activeCategory) : null;
+  const slugIsValid = !activeCategory || foundCategory || Object.values(PARENT_SLUGS).includes(activeCategory);
+  const effectiveCategory = slugIsValid ? activeCategory : null;
+  const parentLabel = parentParam ? Object.keys(PARENT_SLUGS).find((k) => PARENT_SLUGS[k] === parentParam) || null : null;
+  const activeLabel = effectiveCategory
+    ? foundCategory?.label || parentLabel || null
+    : parentLabel;
 
   if (isLoading) {
     return (
@@ -144,37 +237,45 @@ export default function Courses() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
       <Reveal className="text-center mb-8 sm:mb-12">
         <h1 className="text-[clamp(1.75rem,3vw,2.5rem)] font-extrabold text-dark-navy">
-          {activeLabel || "Our Courses"}
+          {showAll ? "Our Courses" : (activeLabel || parentLabel || "Our Courses")}
         </h1>
         <p className="text-text-gray text-base sm:text-lg mt-3 max-w-2xl mx-auto">
-          {activeLabel
-            ? `Explore all ${activeLabel} courses`
-            : "Explore our range of courses grouped by category"}
+          {showAll
+            ? "Choose a category to explore courses"
+            : activeLabel
+              ? `Explore all ${activeLabel} courses`
+              : parentLabel
+                ? `Explore all ${parentLabel} courses`
+                : "Explore our courses"}
         </p>
       </Reveal>
 
-      {categories.length > 0 && (
-        <div className="flex flex-wrap justify-center gap-2 mb-8 sm:mb-12">
-          <Button
-            onClick={() => setSearchParams({})}
-            variant={!activeCategory ? "pill-active" : "pill"}
-            size="sm"
-            shape="pill"
+      {parentParam && visibleCategories.length > 0 && (
+        <div className="flex justify-center mb-8">
+          <select
+            value={effectiveCategory || ''}
+            onChange={(e) => { setSearch(""); setSearchParams({ category: e.target.value || undefined, parent: parentParam }); }}
+            className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium text-dark-navy bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent cursor-pointer"
           >
-            <FiFilter className="w-4 h-4" />
-            All Courses
-          </Button>
-          {categories.map((cat) => (
-            <Button
-              key={cat.id}
-              onClick={() => setSearchParams({ category: cat.slug })}
-              variant={activeCategory === cat.slug ? "pill-active" : "pill"}
-              size="sm"
-              shape="pill"
-            >
-              {cat.label}
-            </Button>
-          ))}
+            <option value="">All</option>
+            {visibleCategories.map((cat) => (
+              <option key={cat.id} value={cat.slug}>{cat.label}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {!showAll && courses && courses.length > 0 && (
+        <div className="max-w-md mx-auto mb-8">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              placeholder="Search courses..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm text-dark-navy bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"
+            />
+          </div>
         </div>
       )}
 
@@ -183,12 +284,50 @@ export default function Courses() {
           <FiBookOpen className="w-16 h-16 text-gray-200 mx-auto mb-4" />
           <p className="text-text-gray">No courses available yet.</p>
         </div>
-      ) : activeCategory && filteredCourses.length === 0 ? (
-        <div className="text-center py-16">
-          <FiBookOpen className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-          <p className="text-text-gray">No courses found in this category.</p>
+      ) : showAll ? (
+        <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <button
+            onClick={() => setSearchParams({ parent: 'software-learning' })}
+            className="bg-white rounded-2xl border-2 border-gray-200 p-8 text-center hover:border-brand-accent hover:shadow-md transition-all group"
+          >
+            <div className="w-16 h-16 rounded-full bg-brand-accent/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-accent/20 transition-colors">
+              <FiBookOpen className="w-8 h-8 text-brand-accent" />
+            </div>
+            <h3 className="text-xl font-bold text-dark-navy">Software Learning</h3>
+            <p className="text-sm text-gray-500 mt-1">Development, data science & cloud courses</p>
+          </button>
+          <button
+            onClick={() => setSearchParams({ parent: 'competitive-exam' })}
+            className="bg-white rounded-2xl border-2 border-gray-200 p-8 text-center hover:border-brand-accent hover:shadow-md transition-all group"
+          >
+            <div className="w-16 h-16 rounded-full bg-brand-accent/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-accent/20 transition-colors">
+              <FiBookOpen className="w-8 h-8 text-brand-accent" />
+            </div>
+            <h3 className="text-xl font-bold text-dark-navy">Competitive Exam</h3>
+            <p className="text-sm text-gray-500 mt-1">UPSC, SSC, banking & railway exam prep</p>
+          </button>
         </div>
-      ) : activeCategory ? (
+      ) : parentParam && !effectiveCategory && !search ? (
+        <div className="grid sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
+          {visibleCategories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSearchParams({ category: cat.slug, parent: parentParam })}
+              className="bg-white rounded-xl border border-gray-200 p-6 text-left hover:border-brand-accent hover:shadow-md transition-all group"
+            >
+              <h3 className="text-lg font-bold text-dark-navy group-hover:text-brand-accent transition-colors">{cat.label}</h3>
+              <p className="text-sm text-gray-500 mt-1">{cat.courses.length} course{cat.courses.length !== 1 ? 's' : ''}</p>
+            </button>
+          ))}
+        </div>
+      ) : (effectiveCategory || parentParam) && searchedCourses.length === 0 ? (
+        <div className="text-center py-16">
+          <FiSearch className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+          <p className="text-text-gray">
+            {search ? `No courses match "${search}"` : "No courses found in this category."}
+          </p>
+        </div>
+      ) : (
         <>
           <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {paginatedCourses.map((course) => (
@@ -199,36 +338,6 @@ export default function Courses() {
           </Stagger>
           <Pagination page={page} total={totalItems} onPage={setPage} />
         </>
-      ) : (
-        <div className="space-y-12 sm:space-y-16">
-          {categories.map((cat) => (
-            <section key={cat.id}>
-              <Reveal className="flex items-center justify-between mb-6 sm:mb-8">
-                <h2 className="text-xl sm:text-2xl font-bold text-dark-navy">
-                  {cat.label}
-                </h2>
-                <Button
-                  onClick={() => setSearchParams({ category: cat.slug })}
-                  variant="link"
-                  size="sm"
-                >
-                  View All &rarr;
-                </Button>
-              </Reveal>
-              <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {cat.courses.slice(0, 3).map((course) => (
-                  <StaggerItem key={course.id} className="h-full">
-                    <CourseCard
-                      course={course}
-                      bannerSize="lg"
-                      showViewLink
-                    />
-                  </StaggerItem>
-                ))}
-              </Stagger>
-            </section>
-          ))}
-        </div>
       )}
     </div>
   );

@@ -6,22 +6,17 @@ import {
   FiPlus, FiTrash2, FiSave, FiUpload,
   FiHome, FiStar, FiAward, FiHelpCircle,
   FiLayout, FiMail, FiMessageSquare, FiBell, FiUsers,
+  FiClock, FiVideo, FiCode, FiCalendar, FiRefreshCw,
+  FiBarChart2, FiBookOpen, FiBriefcase, FiGlobe, FiCpu,
+  FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiChevronDown,
 } from 'react-icons/fi';
 
 const sectionDefs = [
   {
     key: 'hero', label: 'Hero Banner', icon: FiHome, color: 'from-orange-500 to-orange-600',
     fields: [
-      { name: 'banner_image', label: 'Full-Width Banner Image (replaces everything)', type: 'image' },
-      { name: 'headline', label: 'Headline', type: 'text' },
-      { name: 'description', label: 'Description', type: 'textarea' },
-      { name: 'feature_bullets', label: 'Feature Bullets (one per line)', type: 'multiline' },
-      { name: 'cta_text', label: 'CTA Button Text', type: 'text' },
-      { name: 'student_image_url', label: 'Student Image', type: 'image' },
-    ],
-    hasList: true, listLabel: 'Stats', listItemFields: [
-      { name: 'value', label: 'Value', type: 'text' },
-      { name: 'label', label: 'Label', type: 'text' },
+      { name: 'banner_image', label: 'Full-Width Banner Image', type: 'image' },
+      { name: 'headline', label: 'Heading Below Banner', type: 'text' },
     ],
   },
   {
@@ -30,7 +25,6 @@ const sectionDefs = [
       { name: 'intro_text', label: 'Intro Paragraph', type: 'textarea' },
       { name: 'pill_buttons', label: 'Pill Buttons (one per line)', type: 'multiline' },
       { name: 'form_title', label: 'Form Title', type: 'text' },
-      { name: 'cta_phone', label: 'Phone Number (for CTA button)', type: 'text' },
     ],
     hasList: true, listLabel: 'Stats', listItemFields: [
       { name: 'value', label: 'Value', type: 'text' },

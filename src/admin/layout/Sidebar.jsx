@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { FiHome, FiSettings, FiBookOpen, FiGrid, FiX, FiChevronDown, FiFileText, FiFile, FiLayers, FiInbox, FiMenu } from 'react-icons/fi';
+import { FiHome, FiSettings, FiBookOpen, FiGrid, FiX, FiChevronDown, FiFileText, FiFile, FiLayers, FiInbox, FiMenu, FiGlobe } from 'react-icons/fi';
 import { supabase } from '../../lib/supabaseClient';
 
 const navGroups = [
@@ -41,6 +41,7 @@ const navGroups = [
     icon: FiInbox,
     items: [
       { to: '/admin/career-submissions', label: 'Career Submissions' },
+      { to: '/admin/form-submissions', label: 'Form Submissions' },
     ],
   },
   {
@@ -77,6 +78,13 @@ const navGroups = [
     items: [
       { to: '/admin/footer', label: 'Footer' },
       { to: '/admin/media', label: 'Media Library' },
+    ],
+  },
+  {
+    label: 'Social Media',
+    icon: FiGlobe,
+    items: [
+      { to: '/admin/site-settings', label: 'Social Links' },
     ],
   },
   {

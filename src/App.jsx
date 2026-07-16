@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import TopBar from './components/layout/TopBar';
 import Header from './components/layout/Header';
@@ -107,10 +107,10 @@ function AnimatedRoutes() {
       <Route path="/blog/:slug" element={<Blog />} />
       <Route path="/courses" element={<Courses />} />
       <Route path="/courses/category/:categorySlug" element={<Courses />} />
-      <Route path="/software-learning" element={<Courses />} />
-      <Route path="/competitive-exam" element={<Courses />} />
       <Route path="/courses/:slug" element={<CourseDetail />} />
       <Route path="/career" element={<Career />} />
+      <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
+      <Route path="/competitive-exam" element={<Navigate to="/courses?parent=competitive-exam" replace />} />
       <Route path="/:slug/*" element={<NavPage />} />
     </Routes>
   );

@@ -32,12 +32,12 @@ export default function TopBar() {
           <a href="#" className="hover:underline">Login</a>
           <span className="text-white/40">|</span>
           <a href="#" className="hover:underline font-semibold">SIGN UP</a>
-          <span className="text-white/40 hidden sm:inline">|</span>
-          <div className="items-center gap-3 hidden sm:flex">
-            {social.twitter && <a href={social.twitter} aria-label="Twitter"><FaTwitter className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>}
-            {social.facebook && <a href={social.facebook} aria-label="Facebook"><FaFacebookF className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>}
-            {social.instagram && <a href={social.instagram} aria-label="Instagram"><FaInstagram className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>}
-            {social.linkedin && <a href={social.linkedin} aria-label="LinkedIn"><FaLinkedinIn className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>}
+          <span className="text-white/40">|</span>
+          <div className="flex items-center gap-3">
+            <a href={social.twitter || '#'} aria-label="Twitter"><FaTwitter className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
+            <a href={social.facebook || '#'} aria-label="Facebook"><FaFacebookF className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
+            <a href={social.instagram || '#'} aria-label="Instagram"><FaInstagram className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
+            <a href={social.linkedin || '#'} aria-label="LinkedIn"><FaLinkedinIn className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
           </div>
         </div>
       </div>

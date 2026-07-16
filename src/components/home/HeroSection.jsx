@@ -3,6 +3,7 @@ import { FiCheckCircle, FiUsers } from 'react-icons/fi';
 import Button from '../ui/Button';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 import { staggerContainer, staggerItem } from '../../lib/motion';
+import { Link } from 'react-router-dom';
 
 const DEFAULT_BULLETS = [
   'Industry-relevant curriculum designed by experts',
@@ -32,7 +33,6 @@ export default function HeroSection({ section }) {
   const description = content.description || '';
   const rawBullets = content.feature_bullets;
   const featureBullets = Array.isArray(rawBullets) ? rawBullets : (rawBullets ? rawBullets.split('\n').filter(Boolean) : DEFAULT_BULLETS);
-  const ctaText = content.cta_text || 'Start Your Journey Today';
   const studentImageUrl = content.student_image_url || '';
   const stats = content.stats || DEFAULT_STATS;
 
@@ -88,10 +88,19 @@ export default function HeroSection({ section }) {
                     </motion.ul>
                   )}
 
-                  <motion.div variants={item} className="mt-8 sm:mt-10">
-                    <Button variant="orange">
-                      {ctaText}
-                    </Button>
+                  <motion.div variants={item} className="mt-8 sm:mt-10 flex flex-wrap gap-4">
+                    <Link
+                      to="/courses?parent=software-learning"
+                      className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
+                    >
+                      Software Learning
+                    </Link>
+                    <Link
+                      to="/courses?parent=competitive-exam"
+                      className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
+                    >
+                      Competitive Exam
+                    </Link>
                   </motion.div>
                 </motion.div>
 

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import Button from "../../components/ui/Button";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronDown } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 function ListEditor({ items, onChange, fields, labelKey = "label" }) {
@@ -75,14 +75,71 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
   );
 }
 
+function IconPicker({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const selected = ICON_OPTIONS.find((o) => o.key === value);
+  return (
+    <div className="relative">
+      <label className="block text-xs font-medium text-gray-600 mb-1">Icon</label>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white text-left"
+      >
+        {selected ? (
+          <>
+            <selected.Icon className="w-4 h-4 text-brand-accent" />
+            <span>{selected.label}</span>
+          </>
+        ) : (
+          <span className="text-gray-400">Select icon</span>
+        )}
+        <FiChevronDown className={`w-4 h-4 ml-auto text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-2 grid grid-cols-5 gap-1">
+          {ICON_OPTIONS.map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => { onChange(opt.key); setOpen(false); }}
+              className={`flex flex-col items-center gap-1 p-2 rounded-md text-xs transition-colors ${
+                value === opt.key
+                  ? "bg-brand-accent/10 text-brand-accent ring-1 ring-brand-accent"
+                  : "hover:bg-gray-100 text-gray-600"
+              }`}
+              title={opt.label}
+            >
+              <opt.Icon className="w-5 h-5" />
+              <span className="truncate w-full text-center">{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const ICON_OPTIONS = [
-  "FiClock",
-  "FiVideo",
-  "FiCode",
-  "FiAward",
-  "FiCalendar",
-  "FiRefreshCw",
-  "FiMessageCircle",
+  { key: "code", label: "Code", Icon: FiCode },
+  { key: "star", label: "Star", Icon: FiStar },
+  { key: "award", label: "Award", Icon: FiAward },
+  { key: "users", label: "Users", Icon: FiUsers },
+  { key: "clock", label: "Clock", Icon: FiClock },
+  { key: "target", label: "Target", Icon: FiBarChart2 },
+  { key: "book", label: "Book", Icon: FiBookOpen },
+  { key: "video", label: "Video", Icon: FiVideo },
+  { key: "calendar", label: "Calendar", Icon: FiCalendar },
+  { key: "refresh", label: "Refresh", Icon: FiRefreshCw },
+  { key: "message", label: "Message", Icon: FiMessageCircle },
+  { key: "briefcase", label: "Briefcase", Icon: FiBriefcase },
+  { key: "globe", label: "Globe", Icon: FiGlobe },
+  { key: "cpu", label: "CPU", Icon: FiCpu },
+  { key: "database", label: "Database", Icon: FiDatabase },
+  { key: "layers", label: "Layers", Icon: FiLayers },
+  { key: "zap", label: "Zap", Icon: FiZap },
+  { key: "shield", label: "Shield", Icon: FiShield },
+  { key: "trending", label: "Trending", Icon: FiTrendingUp },
 ];
 
 export default function CourseEditor() {
@@ -113,6 +170,11 @@ export default function CourseEditor() {
   const [allTags, setAllTags] = useState([]);
   const [courseTags, setCourseTags] = useState([]);
   const [navItems, setNavItems] = useState([]);
+  const [availablePaths, setAvailablePaths] = useState([]);
+  const [catL1, setCatL1] = useState("");
+  const [catL2, setCatL2] = useState("");
+  const [catL3, setCatL3] = useState("");
+  const [filterSection, setFilterSection] = useState("");
   const [course, setCourse] = useState({
     title: "",
     slug: "",
@@ -124,7 +186,7 @@ export default function CourseEditor() {
     nav_item_id: "",
     is_published: true,
     duration: "3 months",
-    mode: "Both",
+    mode: "Online",
     status: "Active",
     checklist_items: [],
     highlights: [],
@@ -147,7 +209,10 @@ export default function CourseEditor() {
       .from("nav_items")
       .select("*")
       .order("sort_order")
-      .then(({ data }) => setNavItems(data || []));
+      .then(({ data }) => {
+        setNavItems(data || []);
+        setAvailablePaths(data || []);
+      });
     if (isNew) return;
     supabase
       .from("courses")
@@ -181,6 +246,92 @@ export default function CourseEditor() {
       .eq("course_id", id)
       .then(({ data }) => setCourseTags(data?.map((t) => t.tag_id) || []));
   }, [id]);
+
+  function getChildren(pid) {
+    return availablePaths.filter((p) => p.parent_id === pid);
+  }
+
+  function findItem(id) {
+    return availablePaths.find((p) => p.id === id);
+  }
+
+  function resetCategoryPath() {
+    setCatL1(""); setCatL2(""); setCatL3("");
+  }
+
+  useEffect(() => {
+    resetCategoryPath();
+  }, [filterSection]);
+
+  useEffect(() => {
+    if (!catL1) { setCatL2(""); setCatL3("");
+      if (course.nav_item_id && availablePaths.some(p => p.id === course.nav_item_id && !p.parent_id)) {
+        setNavItemIdFromPath(course.nav_item_id);
+      }
+      return;
+    }
+    const kids = getChildren(catL1);
+    if (kids.length === 0) { setCatL2(""); setCatL3("");
+      const item = findItem(catL1);
+      if (item) update("nav_item_id", catL1);
+      return;
+    }
+  }, [catL1]);
+
+  useEffect(() => {
+    if (!catL2) { setCatL3("");
+      if (course.nav_item_id) {
+        const item = findItem(course.nav_item_id);
+        if (item && item.parent_id === catL1) update("nav_item_id", catL2);
+      }
+      return;
+    }
+    const kids = getChildren(catL2);
+    if (kids.length === 0) { setCatL3("");
+      const item = findItem(catL2);
+      if (item) update("nav_item_id", catL2);
+      return;
+    }
+  }, [catL2]);
+
+  useEffect(() => {
+    if (catL3) {
+      const item = findItem(catL3);
+      if (item) update("nav_item_id", catL3);
+    }
+  }, [catL3]);
+
+  function setNavItemIdFromPath(navId) {
+    if (!navId || availablePaths.length === 0) return;
+    const item = findItem(navId);
+    if (!item) return;
+    if (!item.parent_id) {
+      setCatL1(navId);
+    } else {
+      const parent = findItem(item.parent_id);
+      if (parent) {
+        if (!parent.parent_id) {
+          setCatL1(parent.id);
+          setCatL2(navId);
+        } else {
+          const grandparent = findItem(parent.parent_id);
+          if (grandparent) {
+            setCatL1(grandparent.id);
+            setCatL2(parent.id);
+            setCatL3(navId);
+          }
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (course.nav_item_id && availablePaths.length > 0) {
+      setNavItemIdFromPath(course.nav_item_id);
+    }
+  }, [course.nav_item_id, availablePaths.length]);
+
+  const categories = [...new Set(availablePaths.map((p) => p.parent_label).filter(Boolean))];
 
   function update(field, value) {
     setCourse((prev) => ({ ...prev, [field]: value }));
@@ -216,7 +367,7 @@ export default function CourseEditor() {
         duration: course.duration,
         mode: course.mode,
         status: course.status,
-        checklist_items: course.checklist_items,
+        checklist_items: (course.checklist_items || []).filter(Boolean),
         curriculum: course.curriculum,
       };
       if (isNew) {
@@ -226,6 +377,14 @@ export default function CourseEditor() {
           .select()
           .single();
         if (error) throw error;
+        if (course.certifications.length > 0) {
+          const cleanCert = course.certifications.map((c) => {
+            const { id: _, ...rest } = c;
+            return { ...rest, course_id: data.id };
+          });
+          const { error: certErr } = await supabase.from("certifications").insert(cleanCert);
+          if (certErr) throw new Error(certErr.message);
+        }
         navigate(`/admin/courses/${data.id}`, { replace: true });
       } else {
         const { error } = await supabase
@@ -240,24 +399,21 @@ export default function CourseEditor() {
         await saveRelated("course_tabs", course.tabs);
         await supabase.from("certifications").delete().eq("course_id", id);
         if (course.certifications.length > 0) {
-          await supabase.from("certifications").insert(
-            course.certifications.map((c) => ({
-              ...c,
-              course_id: id,
-              id: undefined,
-            })),
-          );
+          const cleanCert = course.certifications.map((c) => {
+            const { id: _, ...rest } = c;
+            return { ...rest, recognized_companies: (rest.recognized_companies || []).filter(Boolean), course_id: id };
+          });
+          const { error: certErr } = await supabase.from("certifications").insert(cleanCert);
+          if (certErr) throw new Error(certErr.message);
         }
         await supabase.from("faqs").delete().eq("course_id", id);
         if (course.faqs.length > 0) {
-          await supabase.from("faqs").insert(
-            course.faqs.map((f, i) => ({
-              ...f,
-              course_id: id,
-              sort_order: i,
-              id: undefined,
-            })),
-          );
+          const cleanFaqs = course.faqs.map((f, i) => {
+            const { id: _, ...rest } = f;
+            return { ...rest, course_id: id, sort_order: i };
+          });
+          const { error: faqsErr } = await supabase.from("faqs").insert(cleanFaqs);
+          if (faqsErr) throw new Error(faqsErr.message);
         }
         await supabase.from("course_tags").delete().eq("course_id", id);
         if (courseTags.length > 0) {
@@ -281,8 +437,6 @@ export default function CourseEditor() {
     "hero",
     "tabs",
     "highlights",
-    "overview-faqs",
-    "fees",
     "projects",
     "certification",
     "faqs",
@@ -388,26 +542,56 @@ export default function CourseEditor() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category (Nav Item)
-              </label>
-              <select
-                value={course.nav_item_id || ""}
-                onChange={(e) => update("nav_item_id", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white"
-              >
-                <option value="">No category</option>
-                {navItems
-                  .filter((n) => !n.path || n.parent_id)
-                  .map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.parent_label ? `${item.parent_label} › ` : ""}
-                      {item.label}
-                    </option>
+            {categories.length > 0 && (
+              <div>
+                <label className="block text-sm font-semibold text-dark-navy mb-3">Category *</label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => { setFilterSection(cat); resetCategoryPath(); }}
+                      className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                        filterSection === cat
+                          ? "border-brand-accent bg-brand-accent/5 text-brand-accent shadow-sm"
+                          : "border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      {cat}
+                    </button>
                   ))}
-              </select>
-            </div>
+                </div>
+              </div>
+            )}
+            {filterSection && (() => {
+              const topLevel = availablePaths.filter((p) => p.parent_label === filterSection && !p.parent_id);
+              const kids1 = catL1 ? getChildren(catL1) : [];
+              const kids2 = catL2 ? getChildren(catL2) : [];
+              function dd(label, items, val, setter) {
+                return (
+                  <div>
+                    <label className="block text-sm font-semibold text-dark-navy mb-1">{label}</label>
+                    <select
+                      value={val}
+                      onChange={(e) => setter(e.target.value)}
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white"
+                    >
+                      <option value="">— Select —</option>
+                      {items.map((item) => (
+                        <option key={item.id} value={item.id}>{item.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              }
+              return (
+                <div className="space-y-3">
+                  {dd(`Topic under ${filterSection}`, topLevel, catL1, setCatL1)}
+                  {catL1 && kids1.length > 0 && dd(`Sub-topic under ${findItem(catL1)?.label || ''}`, kids1, catL2, setCatL2)}
+                  {catL2 && kids2.length > 0 && dd(`Sub-topic under ${findItem(catL2)?.label || ''}`, kids2, catL3, setCatL3)}
+                </div>
+              );
+            })()}
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
@@ -422,7 +606,7 @@ export default function CourseEditor() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Mode</label>
                 <select value={course.mode} onChange={(e) => update("mode", e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
-                  {["Online","Offline","Both"].map(m => (
+                  {["Online","Offline"].map(m => (
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
@@ -531,42 +715,6 @@ export default function CourseEditor() {
                 onChange={(e) => update("video_url", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent"
                 placeholder="https://www.youtube.com/watch?v=..."
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                CTA Left Button
-              </label>
-              <input
-                value={course.cta_left || ""}
-                onChange={(e) => update("cta_left", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                CTA Right Button
-              </label>
-              <input
-                value={course.cta_right || ""}
-                onChange={(e) => update("cta_right", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Checklist Items (one per line)
-              </label>
-              <textarea
-                value={(course.checklist_items || []).join("\n")}
-                onChange={(e) =>
-                  update(
-                    "checklist_items",
-                    e.target.value.split("\n").filter(Boolean),
-                  )
-                }
-                rows={7}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent"
               />
             </div>
           </div>
@@ -822,27 +970,14 @@ export default function CourseEditor() {
                   >
                     <FiTrash2 className="w-4 h-4" />
                   </button>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      Icon
-                    </label>
-                    <select
-                      value={h.icon || ""}
-                      onChange={(e) => {
-                        const n = [...course.highlights];
-                        n[i] = { ...n[i], icon: e.target.value };
-                        update("highlights", n);
-                      }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                    >
-                      <option value="">Select icon</option>
-                      {ICON_OPTIONS.map((ico) => (
-                        <option key={ico} value={ico}>
-                          {ico.replace("Fi", "")}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <IconPicker
+                    value={h.icon || ""}
+                    onChange={(val) => {
+                      const n = [...course.highlights];
+                      n[i] = { ...n[i], icon: val };
+                      update("highlights", n);
+                    }}
+                  />
                   <div>
                     <label className="block text-xs font-medium text-gray-600 mb-1">
                       Label
@@ -870,223 +1005,6 @@ export default function CourseEditor() {
                 size="sm"
               >
                 <FiPlus className="w-4 h-4" /> Add Highlight
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {tab === "overview-faqs" && !isNew && (
-          <div className="max-w-2xl">
-            <h3 className="font-semibold text-dark-navy mb-4">
-              Overview FAQs (Accordion)
-            </h3>
-            <div className="space-y-4">
-              {course.overview_faqs.map((faq, i) => (
-                <div
-                  key={i}
-                  className="border border-gray-200 rounded-lg p-4 space-y-3 relative"
-                >
-                  <button
-                    onClick={() =>
-                      update(
-                        "overview_faqs",
-                        course.overview_faqs.filter((_, j) => j !== i),
-                      )
-                    }
-                    className="absolute top-3 right-3 text-red-400 hover:text-red-600"
-                  >
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      Question
-                    </label>
-                    <input
-                      value={faq.question || ""}
-                      onChange={(e) => {
-                        const n = [...course.overview_faqs];
-                        n[i] = { ...n[i], question: e.target.value };
-                        update("overview_faqs", n);
-                      }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      Answer
-                    </label>
-                    <textarea
-                      value={faq.answer || ""}
-                      onChange={(e) => {
-                        const n = [...course.overview_faqs];
-                        n[i] = { ...n[i], answer: e.target.value };
-                        update("overview_faqs", n);
-                      }}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      List Items (one per line)
-                    </label>
-                    <textarea
-                      value={(faq.list_items || []).join("\n")}
-                      onChange={(e) => {
-                        const n = [...course.overview_faqs];
-                        n[i] = {
-                          ...n[i],
-                          list_items: e.target.value
-                            .split("\n")
-                            .filter(Boolean),
-                        };
-                        update("overview_faqs", n);
-                      }}
-                      rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                    />
-                  </div>
-                </div>
-              ))}
-              <Button
-                onClick={() =>
-                  update("overview_faqs", [
-                    ...course.overview_faqs,
-                    { question: "", answer: "", list_items: [] },
-                  ])
-                }
-                variant="link-add"
-                size="sm"
-              >
-                <FiPlus className="w-4 h-4" /> Add Overview FAQ
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {tab === "fees" && !isNew && (
-          <div className="max-w-2xl">
-            <h3 className="font-semibold text-dark-navy mb-4">
-              Course Fees / Pricing Plans
-            </h3>
-            <div className="space-y-4">
-              {course.course_fees.map((plan, i) => (
-                <div
-                  key={i}
-                  className="border border-gray-200 rounded-lg p-4 space-y-3 relative"
-                >
-                  <button
-                    onClick={() =>
-                      update(
-                        "course_fees",
-                        course.course_fees.filter((_, j) => j !== i),
-                      )
-                    }
-                    className="absolute top-3 right-3 text-red-400 hover:text-red-600"
-                  >
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Plan Name
-                      </label>
-                      <input
-                        value={plan.plan_name || ""}
-                        onChange={(e) => {
-                          const n = [...course.course_fees];
-                          n[i] = { ...n[i], plan_name: e.target.value };
-                          update("course_fees", n);
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Price
-                      </label>
-                      <input
-                        type="number"
-                        value={plan.price ?? ""}
-                        onChange={(e) => {
-                          const n = [...course.course_fees];
-                          n[i] = { ...n[i], price: e.target.valueAsNumber };
-                          update("course_fees", n);
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Currency
-                      </label>
-                      <select
-                        value={plan.currency || "INR"}
-                        onChange={(e) => {
-                          const n = [...course.course_fees];
-                          n[i] = { ...n[i], currency: e.target.value };
-                          update("course_fees", n);
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                      >
-                        <option value="INR">INR</option>
-                        <option value="USD">USD</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        CTA Label
-                      </label>
-                      <input
-                        value={plan.cta_label || ""}
-                        onChange={(e) => {
-                          const n = [...course.course_fees];
-                          n[i] = { ...n[i], cta_label: e.target.value };
-                          update("course_fees", n);
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      Features (one per line)
-                    </label>
-                    <textarea
-                      value={(plan.features || []).join("\n")}
-                      onChange={(e) => {
-                        const n = [...course.course_fees];
-                        n[i] = {
-                          ...n[i],
-                          features: e.target.value.split("\n").filter(Boolean),
-                        };
-                        update("course_fees", n);
-                      }}
-                      rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
-                    />
-                  </div>
-                </div>
-              ))}
-              <Button
-                onClick={() =>
-                  update("course_fees", [
-                    ...course.course_fees,
-                    {
-                      plan_name: "",
-                      price: null,
-                      currency: "INR",
-                      cta_label: "",
-                      features: [],
-                    },
-                  ])
-                }
-                variant="link-add"
-                size="sm"
-              >
-                <FiPlus className="w-4 h-4" /> Add Pricing Plan
               </Button>
             </div>
           </div>
@@ -1159,7 +1077,7 @@ export default function CourseEditor() {
           </div>
         )}
 
-        {tab === "certification" && !isNew && (
+        {tab === "certification" && (
           <div className="max-w-2xl space-y-4">
             <h3 className="font-semibold text-dark-navy mb-4">Certification</h3>
             {(course.certifications.length === 0
@@ -1244,8 +1162,7 @@ export default function CourseEditor() {
                       n[i] = {
                         ...n[i],
                         recognized_companies: e.target.value
-                          .split("\n")
-                          .filter(Boolean),
+                          .split("\n"),
                       };
                       update("certifications", n);
                     }}

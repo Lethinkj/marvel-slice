@@ -16,6 +16,21 @@ import {
   FiAward,
   FiBookOpen,
   FiLayers,
+  FiVideo,
+  FiCode,
+  FiCalendar,
+  FiRefreshCw,
+  FiMessageCircle,
+  FiStar,
+  FiBarChart2,
+  FiBriefcase,
+  FiGlobe,
+  FiCpu,
+  FiDatabase,
+  FiZap,
+  FiShield,
+  FiTrendingUp,
+  FiChevronDown,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
@@ -26,8 +41,75 @@ const STEPS = [
   { label: "FAQs & Tags", icon: FiAward },
 ];
 
+const HIGHLIGHT_ICONS = [
+  { key: "code", label: "Code", Icon: FiCode },
+  { key: "star", label: "Star", Icon: FiStar },
+  { key: "award", label: "Award", Icon: FiAward },
+  { key: "users", label: "Users", Icon: FiUsers },
+  { key: "clock", label: "Clock", Icon: FiClock },
+  { key: "target", label: "Target", Icon: FiBarChart2 },
+  { key: "book", label: "Book", Icon: FiBookOpen },
+  { key: "video", label: "Video", Icon: FiVideo },
+  { key: "calendar", label: "Calendar", Icon: FiCalendar },
+  { key: "refresh", label: "Refresh", Icon: FiRefreshCw },
+  { key: "message", label: "Message", Icon: FiMessageCircle },
+  { key: "briefcase", label: "Briefcase", Icon: FiBriefcase },
+  { key: "globe", label: "Globe", Icon: FiGlobe },
+  { key: "cpu", label: "CPU", Icon: FiCpu },
+  { key: "database", label: "Database", Icon: FiDatabase },
+  { key: "layers", label: "Layers", Icon: FiLayers },
+  { key: "zap", label: "Zap", Icon: FiZap },
+  { key: "shield", label: "Shield", Icon: FiShield },
+  { key: "trending", label: "Trending", Icon: FiTrendingUp },
+];
+
+function IconPicker({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const selected = HIGHLIGHT_ICONS.find((o) => o.key === value);
+  return (
+    <div className="relative">
+      <label className="block text-xs font-medium text-gray-600 mb-1">Icon</label>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white text-left"
+      >
+        {selected ? (
+          <>
+            <selected.Icon className="w-4 h-4 text-brand-accent" />
+            <span>{selected.label}</span>
+          </>
+        ) : (
+          <span className="text-gray-400">Select icon</span>
+        )}
+        <FiChevronDown className={`w-4 h-4 ml-auto text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-2 grid grid-cols-5 gap-1">
+          {HIGHLIGHT_ICONS.map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              onClick={() => { onChange(opt.key); setOpen(false); }}
+              className={`flex flex-col items-center gap-1 p-2 rounded-md text-xs transition-colors ${
+                value === opt.key
+                  ? "bg-brand-accent/10 text-brand-accent ring-1 ring-brand-accent"
+                  : "hover:bg-gray-100 text-gray-600"
+              }`}
+              title={opt.label}
+            >
+              <opt.Icon className="w-5 h-5" />
+              <span className="truncate w-full text-center">{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const DURATIONS = ["1 month", "2 months", "3 months", "4 months", "6 months", "8 months", "12 months"];
-const MODES = ["Online", "Offline", "Both"];
+const MODES = ["Online", "Offline"];
 
 function slugify(text) {
   return text.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
@@ -74,7 +156,7 @@ export default function CourseWizard() {
     is_published: true,
     status: "Active",
     duration: "3 months",
-    mode: "Both",
+    mode: "Online",
     checklist_items: [],
     tabs: [],
     highlights: [],
@@ -229,7 +311,7 @@ export default function CourseWizard() {
         status: c.status,
         duration: c.duration,
         mode: c.mode,
-        checklist_items: c.checklist_items,
+        checklist_items: (c.checklist_items || []).filter(Boolean),
         curriculum: c.curriculum,
         nav_item_id: navItemId || null,
       };
@@ -509,7 +591,7 @@ export default function CourseWizard() {
               <label className="block text-sm font-semibold text-dark-navy mb-1">What You'll Learn (one per line)</label>
               <textarea
                 value={(c.checklist_items || []).join("\n")}
-                onChange={(e) => u("checklist_items", e.target.value.split("\n").filter(Boolean))}
+                onChange={(e) => u("checklist_items", e.target.value.split("\n"))}
                 rows={4}
                 className="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all"
                 placeholder="Live classes&#10;Industry mentors&#10;Placement assistance"
@@ -661,7 +743,12 @@ export default function CourseWizard() {
               <div className="space-y-3">
                 {c.highlights.map((h, i) => (
                   <div key={i} className="flex items-center gap-3 border border-gray-200 rounded-xl p-3">
-                    <input value={h.icon || ""} onChange={(e) => { const n = [...c.highlights]; n[i] = { ...n[i], icon: e.target.value }; u("highlights", n); }} className="w-28 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Icon (FiClock)" />
+                    <div className="w-32">
+                      <IconPicker
+                        value={h.icon || ""}
+                        onChange={(val) => { const n = [...c.highlights]; n[i] = { ...n[i], icon: val }; u("highlights", n); }}
+                      />
+                    </div>
                     <input value={h.label || ""} onChange={(e) => { const n = [...c.highlights]; n[i] = { ...n[i], label: e.target.value }; u("highlights", n); }} className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" placeholder="Label" />
                     <button onClick={() => u("highlights", c.highlights.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                   </div>

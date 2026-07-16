@@ -632,3 +632,22 @@ begin
   );
 end;
 $$;
+
+-- 25. Form submissions table for home page demo form
+create table if not exists form_submissions (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text not null,
+  created_at timestamptz default now()
+);
+
+-- Enable public insert access
+alter table form_submissions enable row level security;
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public insert form_submissions') then
+    create policy "Allow public insert form_submissions"
+    on form_submissions for insert
+    with check (true);
+  end if;
+end $$;

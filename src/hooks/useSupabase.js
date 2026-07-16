@@ -28,7 +28,7 @@ export function useTopNavItems() {
 
 function buildIdSubtree(allItems, pid) {
   return allItems
-    .filter((item) => item.parent_id === pid && !item.parent_label)
+    .filter((item) => item.parent_id === pid)
     .sort((a, b) => a.sort_order - b.sort_order)
     .map((item) => ({
       ...item,
@@ -108,42 +108,6 @@ export function useRelatedCourses(courseId) {
   return useQuery({
     queryKey: ['relatedCourses', courseId],
     queryFn: async () => {
-      // 1. Curated related courses (admin-picked)
-      const { data: curated } = await supabase
-        .from('related_courses')
-        .select(
-          'related_course_id, rating, review_count, learner_count, courses!related_courses_related_course_id_fkey(*)'
-        )
-        .eq('course_id', courseId);
-
-      if (curated && curated.length > 0) {
-        return curated.map((rc) => ({
-          ...rc.courses,
-          rating: rc.rating,
-          review_count: rc.review_count,
-          learner_count: rc.learner_count,
-        }));
-      }
-
-      // 2. Same nav_item category
-      const { data: currentCourse } = await supabase
-        .from('courses')
-        .select('nav_item_id')
-        .eq('id', courseId)
-        .maybeSingle();
-
-      if (currentCourse?.nav_item_id) {
-        const { data: sameCategory } = await supabase
-          .from('courses')
-          .select('*')
-          .eq('nav_item_id', currentCourse.nav_item_id)
-          .neq('id', courseId)
-          .eq('is_published', true)
-          .limit(4);
-        if (sameCategory && sameCategory.length > 0) return sameCategory;
-      }
-
-      // 3. Same tags
       const { data: tagsData } = await supabase
         .from('course_tags')
         .select('tag_id')
@@ -158,7 +122,7 @@ export function useRelatedCourses(courseId) {
         .in('tag_id', tagIds)
         .neq('course_id', courseId);
 
-      if (!tagged || tagged.length === 0) return await fetchLatestCourses();
+      if (!tagged || tagged.length === 0) return [];
 
       const relatedIds = [...new Set(tagged.map((t) => t.course_id))];
       const { data: courses } = await supabase
@@ -167,9 +131,7 @@ export function useRelatedCourses(courseId) {
         .in('id', relatedIds)
         .eq('is_published', true);
 
-      if (courses && courses.length > 0) return courses;
-
-      return await fetchLatestCourses();
+      return courses || [];
     },
     enabled: !!courseId,
   });
