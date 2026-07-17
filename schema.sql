@@ -65,6 +65,10 @@ alter table courses add column if not exists duration text;
 alter table courses add column if not exists mode text;
 alter table courses add column if not exists status text default 'Active';
 alter table courses add column if not exists curriculum jsonb default '[]';
+alter table courses add column if not exists show_pricing boolean default false;
+alter table projects add column if not exists difficulty text;
+alter table projects add column if not exists technologies jsonb default '[]';
+alter table certifications add column if not exists skills_earned jsonb default '[]';
 
 -- 4. Key highlights per course
 create table if not exists highlights (

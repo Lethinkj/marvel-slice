@@ -108,14 +108,102 @@ export function useRelatedCourses(courseId) {
   return useQuery({
     queryKey: ['relatedCourses', courseId],
     queryFn: async () => {
-      const { data: tagsData } = await supabase
-        .from('course_tags')
-        .select('tag_id')
-        .eq('course_id', courseId);
+      const [courseRes, tagsData, allNav] = await Promise.all([
+        supabase.from('courses').select('nav_item_id').eq('id', courseId).single(),
+        supabase.from('course_tags').select('tag_id').eq('course_id', courseId),
+        supabase.from('nav_items').select('*'),
+      ]);
 
-      if (!tagsData || tagsData.length === 0) return [];
+      if (!courseRes.data || !allNav?.data) return [];
 
-      const tagIds = tagsData.map((t) => t.tag_id);
+      const navItemId = courseRes.data.nav_item_id;
+      const all = allNav.data;
+      const byId = Object.fromEntries(all.map((n) => [n.id, n]));
+
+      // Walk up to find the root learning section
+      function getRootSection(startId) {
+        const visited = new Set();
+        let cur = byId[startId];
+        while (cur) {
+          if (visited.has(cur.id)) return null;
+          visited.add(cur.id);
+          if (
+            cur.parent_label === 'Software Learning' ||
+            cur.parent_label === 'Competitive Exam'
+          ) {
+            return { rootLabel: cur.parent_label, rootId: cur.id };
+          }
+          cur = cur.parent_id ? byId[cur.parent_id] : null;
+        }
+        return null;
+      }
+
+      const root = getRootSection(navItemId);
+      if (!root) return [];
+
+      // Collect all nav_item IDs under this root
+      function collectDescendantIds(parentIds) {
+        const ids = new Set(parentIds);
+        const stack = [...parentIds];
+        while (stack.length) {
+          const pid = stack.pop();
+          for (const n of all) {
+            if (n.parent_id === pid && !ids.has(n.id)) {
+              ids.add(n.id);
+              stack.push(n.id);
+            }
+          }
+        }
+        return ids;
+      }
+
+      const rootChildrenIds = all
+        .filter((n) => n.parent_label === root.rootLabel)
+        .map((n) => n.id);
+      const allAllowedIds = collectDescendantIds(rootChildrenIds);
+
+      // Find immediate sibling level: items that share the same parent
+      const current = byId[navItemId];
+      let siblingNavIds = new Set();
+      if (current) {
+        const siblingLevelIds = current.parent_id
+          ? all.filter((n) => n.parent_id === current.parent_id).map((n) => n.id)
+          : all.filter((n) => n.parent_label === root.rootLabel && !n.parent_id).map((n) => n.id);
+        siblingNavIds = new Set(siblingLevelIds);
+      }
+
+      // Try sibling courses first
+      let { data: courses } = await supabase
+        .from('courses')
+        .select('*')
+        .in('nav_item_id', [...siblingNavIds])
+        .neq('id', courseId)
+        .eq('is_published', true);
+
+      if (courses && courses.length > 0) return courses;
+
+      // Fallback: same parent (go up one more level)
+      if (current?.parent_id) {
+        const parent = byId[current.parent_id];
+        if (parent) {
+          const uncleNavIds = parent.parent_id
+            ? all.filter((n) => n.parent_id === parent.parent_id && n.id !== parent.id).map((n) => n.id)
+            : [];
+          if (uncleNavIds.length > 0) {
+            const { data: cousins } = await supabase
+              .from('courses')
+              .select('*')
+              .in('nav_item_id', uncleNavIds)
+              .eq('is_published', true);
+            if (cousins && cousins.length > 0) return cousins;
+          }
+        }
+      }
+
+      // Last resort: tag-based within same root section
+      if (!tagsData.data || tagsData.data.length === 0) return [];
+
+      const tagIds = tagsData.data.map((t) => t.tag_id);
       const { data: tagged } = await supabase
         .from('course_tags')
         .select('course_id')
@@ -125,13 +213,14 @@ export function useRelatedCourses(courseId) {
       if (!tagged || tagged.length === 0) return [];
 
       const relatedIds = [...new Set(tagged.map((t) => t.course_id))];
-      const { data: courses } = await supabase
+      const { data: tagCourses } = await supabase
         .from('courses')
         .select('*')
         .in('id', relatedIds)
+        .in('nav_item_id', [...allAllowedIds])
         .eq('is_published', true);
 
-      return courses || [];
+      return tagCourses || [];
     },
     enabled: !!courseId,
   });

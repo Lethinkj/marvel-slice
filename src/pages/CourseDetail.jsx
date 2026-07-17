@@ -29,23 +29,23 @@ const HIGHLIGHT_ICONS = {
 };
 
 function CourseTabs({ tabs, curriculum }) {
-  const allTabs = [];
-  if (tabs && tabs.length > 0) {
-    tabs.forEach((t, i) => allTabs.push({ id: t.id || `admin-${i}`, label: t.label, type: 'admin', data: t }));
-  }
-  if (curriculum && curriculum.length > 0) {
-    allTabs.push({ id: 'curriculum', label: 'Curriculum', type: 'curriculum', data: curriculum });
-  }
-  if (allTabs.length === 0) return null;
+  const TAB_ORDER = ['Overview', 'Syllabus', 'Pricing', 'Curriculum'];
+
+  const tabMap = {};
+  if (tabs) tabs.forEach((t) => { if (t.label !== 'Apply Now') tabMap[t.label] = { type: 'admin', data: t }; });
+  if (curriculum?.length > 0) tabMap['Curriculum'] = { type: 'curriculum', data: curriculum };
+
+  const orderedTabs = TAB_ORDER
+    .filter((label) => tabMap[label])
+    .map((label, i) => ({ id: `tab-${i}`, label, ...tabMap[label] }));
+
+  if (orderedTabs.length === 0) return null;
 
   const [active, setActive] = useState(0);
-  const [pulsing, setPulsing] = useState(null);
   const [openMod, setOpenMod] = useState(null);
-  const activeTab = allTabs[active];
+  const activeTab = orderedTabs[active];
 
   function handleTabClick(i) {
-    setPulsing(i);
-    setTimeout(() => setPulsing(null), 400);
     setActive(i);
     setOpenMod(null);
   }
@@ -90,48 +90,80 @@ function CourseTabs({ tabs, curriculum }) {
     );
   }
 
+  function renderContent(t) {
+    const content = t.content || {};
+    const hasMain = content.heading || content.paragraph || content.subheading || content.text;
+    return (
+      <div className="space-y-6">
+        {content.heading && <h2 className="text-2xl font-bold text-dark-navy text-center">{content.heading}</h2>}
+        {content.paragraph && <p className="text-gray-600 leading-relaxed text-center max-w-2xl mx-auto">{content.paragraph}</p>}
+        {content.subheading && <h3 className="text-lg font-semibold text-dark-navy">{content.subheading}</h3>}
+        {content.text && <div className="text-gray-700 leading-relaxed whitespace-pre-line">{content.text}</div>}
+        {content.qa?.length > 0 && (
+          <div className="space-y-4">
+            {content.qa.map((item, qi) => (
+              <div key={qi} className="border border-gray-200 rounded-lg p-4">
+                <p className="font-semibold text-dark-navy mb-2">{item.question}</p>
+                {item.answers?.length > 0 && (
+                  <ul className="space-y-1">
+                    {item.answers.map((ans, ai) => (
+                      <li key={ai} className="flex items-start gap-2 text-sm text-gray-600">
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-accent/60 shrink-0" />
+                        {ans}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        {!hasMain && !content.qa?.length && <p className="text-gray-400 text-center py-8">Content coming soon.</p>}
+      </div>
+    );
+  }
+
   return (
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-start gap-2 mb-0">
-          {allTabs.map((t, i) => (
-            <div key={t.id} className="flex flex-col items-center">
-              <button
-                onClick={() => handleTabClick(i)}
-                className={`relative transition-all duration-[400ms] px-5 py-2 text-sm font-semibold whitespace-nowrap rounded-lg ${
-                  pulsing === i ? 'animate-pulse-scale' : ''
-                } ${
-                  i === active
-                    ? 'bg-brand-accent text-white shadow-sm'
-                    : 'bg-transparent text-dark-navy border-2 border-dark-navy hover:bg-gray-50'
-                }`}
-              >
-                {t.label}
-              </button>
-              {i === active && (
-                <div className="w-0 h-0 border-l-[10px] border-r-[10px] border-t-[10px] border-l-transparent border-r-transparent border-t-brand-accent relative z-10" />
-              )}
-            </div>
-          ))}
+        <div className="flex flex-wrap items-start justify-between gap-2 mb-0">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            {orderedTabs.map((tab, i) => {
+              const isActive = i === active;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(i)}
+                  className={`
+                    px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-semibold whitespace-nowrap
+                    transition-all duration-200
+                    ${isActive
+                      ? 'bg-brand-accent text-white rounded-t-lg rounded-b-none'
+                      : 'bg-white text-dark-navy border-2 border-dark-navy hover:bg-gray-50 rounded-lg'
+                    }
+                  `}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+          <Link
+            to="/contact"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-accent text-white rounded-full hover:bg-orange-600 transition-colors text-sm font-bold shadow-sm"
+          >
+            Apply Now
+            <FiArrowRight className="w-4 h-4" />
+          </Link>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8 mt-0">
-          <Reveal>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm -mt-px">
+          <div className="p-6 sm:p-8 h-[420px] overflow-y-auto">
             {activeTab.type === 'curriculum'
               ? renderCurriculum(activeTab.data)
-              : (() => {
-                  const t = activeTab.data;
-                  const content = t.content || {};
-                  return (
-                    <div>
-                      {content.heading && <h2 className="text-2xl font-bold text-dark-navy text-center mb-4">{content.heading}</h2>}
-                      {content.paragraph && <p className="text-gray-600 leading-relaxed text-center max-w-2xl mx-auto mb-6">{content.paragraph}</p>}
-                      {content.text && <div className="text-gray-700 leading-relaxed whitespace-pre-line">{content.text}</div>}
-                      {!content.heading && !content.paragraph && !content.text && <p className="text-gray-400 text-center">Content coming soon.</p>}
-                    </div>
-                  );
-                })()
+              : renderContent(activeTab.data)
             }
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>

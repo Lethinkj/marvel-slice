@@ -158,6 +158,7 @@ export default function CourseWizard() {
     highlights: [],
     overview_faqs: [],
     course_fees: [],
+    show_pricing: false,
     projects: [],
     certifications: [{ description: "", image_url: "", certificate_image_url: "", recognized_companies: [] }],
     faqs: [],
@@ -321,6 +322,7 @@ export default function CourseWizard() {
         mode: c.mode,
         checklist_items: (c.checklist_items || []).filter(Boolean),
         curriculum: c.curriculum,
+        show_pricing: c.show_pricing,
         nav_item_id: navItemId || null,
       };
 
@@ -336,8 +338,6 @@ export default function CourseWizard() {
         inserts.push(supabase.from("highlights").insert(c.highlights.map((h, i) => ({ ...h, course_id: cid, sort_order: i }))));
       if (c.overview_faqs.length > 0)
         inserts.push(supabase.from("overview_faqs").insert(c.overview_faqs.map((f, i) => ({ ...f, course_id: cid, sort_order: i }))));
-      if (c.course_fees.length > 0)
-        inserts.push(supabase.from("course_fees").insert(c.course_fees.map((f, i) => ({ ...f, course_id: cid, sort_order: i }))));
       if (c.projects.length > 0)
         inserts.push(supabase.from("projects").insert(c.projects.map((p, i) => ({ ...p, course_id: cid, sort_order: i }))));
       if (c.certifications.length > 0)
@@ -776,36 +776,9 @@ export default function CourseWizard() {
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-neutral-900">Pricing Plans</h3>
-                <AdminButton onClick={() => u("course_fees", [...c.course_fees, { plan_name: "", price: null, currency: "INR", cta_label: "" }])} variant="ghost" size="sm" className="text-accent-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
-              </div>
-              <div className="space-y-3">
-                {c.course_fees.map((f, i) => (
-                  <div key={i} className="border border-neutral-200 rounded-lg p-4 space-y-3 relative">
-                    <button onClick={() => u("course_fees", c.course_fees.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
-                    <div className="grid sm:grid-cols-4 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Plan</label>
-                        <input value={f.plan_name || ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], plan_name: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Basic" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Price</label>
-                        <input type="number" value={f.price ?? ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], price: e.target.value ? Number(e.target.value) : null }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="999" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Currency</label>
-                        <input value={f.currency || "INR"} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], currency: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">CTA</label>
-                        <input value={f.cta_label || ""} onChange={(e) => { const n = [...c.course_fees]; n[i] = { ...n[i], cta_label: e.target.value }; u("course_fees", n); }} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Enroll Now" />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+              <input type="checkbox" id="show_pricing" checked={c.show_pricing} onChange={(e) => u("show_pricing", e.target.checked)} className="w-4 h-4 rounded border-neutral-300 text-accent-600 focus:ring-accent-500" />
+              <label htmlFor="show_pricing" className="text-sm font-medium text-neutral-900 cursor-pointer">Show pricing on page</label>
             </div>
 
             <div>

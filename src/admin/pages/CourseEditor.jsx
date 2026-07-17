@@ -197,6 +197,7 @@ export default function CourseEditor() {
     highlights: [],
     overview_faqs: [],
     course_fees: [],
+    show_pricing: false,
     projects: [],
     certifications: [],
     faqs: [],
@@ -405,6 +406,7 @@ export default function CourseEditor() {
         video_thumbnail_url: course.video_thumbnail_url,
         video_url: course.video_url,
         nav_item_id: course.nav_item_id || null,
+        show_pricing: course.show_pricing,
         is_published: course.is_published,
         duration: course.duration,
         mode: course.mode,
@@ -436,7 +438,6 @@ export default function CourseEditor() {
         if (error) throw error;
         await saveRelated("highlights", course.highlights);
         await saveRelated("overview_faqs", course.overview_faqs);
-        await saveRelated("course_fees", course.course_fees);
         await saveRelated("projects", course.projects);
         await saveRelated("course_tabs", course.tabs);
         await supabase.from("certifications").delete().eq("course_id", id);
@@ -672,6 +673,15 @@ export default function CourseEditor() {
                   className="rounded"
                 />
                 Published
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={course.show_pricing}
+                  onChange={(e) => update("show_pricing", e.target.checked)}
+                  className="rounded"
+                />
+                Show pricing on page
               </label>
             </div>
           )}

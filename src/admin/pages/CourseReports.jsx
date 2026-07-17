@@ -273,7 +273,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
     el.style.top = '0';
     el.style.width = '800px';
     el.style.background = '#fff';
-    el.style.fontFamily = 'Inter, system-ui, sans-serif';
+    el.style.fontFamily = 'Roboto, Montserrat, system-ui, sans-serif';
     el.style.color = '#111';
     document.body.appendChild(el);
 
