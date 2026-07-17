@@ -25,6 +25,9 @@ import CareerPageEditor from './pages/CareerPageEditor';
 import ServicesPageEditor from './pages/ServicesPageEditor';
 import TrainingPageEditor from './pages/TrainingPageEditor';
 import CareerSubmissions from './pages/CareerSubmissions';
+import BrochureDownloads from './pages/BrochureDownloads';
+import NavItemChildren from './pages/NavItemChildren';
+import NavItemManager from './pages/NavItemManager';
 import FormSubmissions from './pages/FormSubmissions';
 import ChatPanel from './pages/ChatPanel';
 import BlogManager from './pages/BlogManager';
@@ -101,6 +104,8 @@ export default function Admin() {
           <Route index element={<Dashboard />} />
           <Route path="site-settings" element={<SiteSettings />} />
           <Route path="nav-menu" element={<NavMenuManager />} />
+          <Route path="nav-menu/children/:id" element={<NavItemChildren />} />
+          <Route path="nav-menu/manage" element={<NavItemManager />} />
           <Route path="courses" element={<CoursesList />} />
           <Route path="courses/wizard" element={<CourseWizard />} />
           <Route path="courses/reports" element={<CourseReports />} />
@@ -121,6 +126,7 @@ export default function Admin() {
           <Route path="services-page" element={<ServicesPageEditor />} />
           <Route path="training-page" element={<TrainingPageEditor />} />
           <Route path="career-submissions" element={<CareerSubmissions />} />
+          <Route path="brochure-downloads" element={<BrochureDownloads />} />
           <Route path="form-submissions" element={<FormSubmissions />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
           <Route path="chats" element={<ChatPanel />} />

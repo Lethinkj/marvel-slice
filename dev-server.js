@@ -95,6 +95,44 @@ async function handleForm(body) {
   return { success: true };
 }
 
+async function handleBrochure(body) {
+  const { name, email, phone, course_title } = body;
+  if (!name || !email) return { success: true };
+  if (!process.env.ADMIN_EMAIL || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) return { success: true };
+
+  const ts = new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' });
+  const html = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+    <div style="background:linear-gradient(135deg,#0B2D6B,#1E56C7);padding:24px 32px;">
+      <h1 style="color:#fff;margin:0;font-size:22px;">New Brochure Download Request</h1>
+      <p style="color:rgba(255,255,255,0.8);margin:6px 0 0;font-size:14px;">Submitted on ${ts}</p>
+    </div>
+    <div style="padding:24px 32px;">
+      <table style="width:100%;border-collapse:collapse;">
+        ${row('Name', name)}${row('Email', email)}${row('Phone', phone || '\u2014')}${row('Course', course_title || '\u2014')}
+      </table>
+    </div>
+    <div style="padding:16px 32px;background:#F5F6F8;font-size:12px;color:#5F6B7A;text-align:center;border-top:1px solid #e5e7eb;">Marvel Slice \u2014 Course Page</div>
+  </div>`;
+  const autoReplyHtml = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+    <div style="background:linear-gradient(135deg,#0B2D6B,#1E56C7);padding:24px 32px;"><h1 style="color:#fff;margin:0;font-size:22px;">Brochure Request Received</h1></div>
+    <div style="padding:24px 32px;">
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Hi ${name},</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Thank you for your interest in <strong>${course_title || 'our course'}</strong> at Marvel Slice.</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">We have received your brochure request. Please find the brochure attached to this email.</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">If you have any questions, feel free to reply to this email or contact us directly.</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Best regards,<br/>The Marvel Slice Team</p>
+    </div>
+    <div style="padding:16px 32px;background:#F5F6F8;font-size:12px;color:#5F6B7A;text-align:center;border-top:1px solid #e5e7eb;">Marvel Slice</div>
+  </div>`;
+
+  try {
+    await transporter.sendMail({ from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`, to: process.env.ADMIN_EMAIL, subject: `Brochure Request from ${name}`, html });
+    await transporter.sendMail({ from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`, to: email, subject: 'Brochure Request Received \u2014 Marvel Slice', html: autoReplyHtml });
+    console.log('[dev-server] Brochure emails sent');
+  } catch (err) { console.error('[dev-server] Brochure email failed:', err); }
+  return { success: true };
+}
+
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -120,6 +158,7 @@ const server = http.createServer(async (req, res) => {
       let result;
       if (req.url === '/api/submit-career') result = await handleCareer(parsed);
       else if (req.url === '/api/submit-form') result = await handleForm(parsed);
+      else if (req.url === '/api/submit-brochure') result = await handleBrochure(parsed);
       else { res.writeHead(404); res.end(JSON.stringify({ error: 'Not found' })); return; }
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(result));

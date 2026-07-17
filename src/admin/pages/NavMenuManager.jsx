@@ -10,6 +10,7 @@ import {
   FiFolder,
   FiFile,
   FiBookOpen,
+  FiList,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
@@ -31,6 +32,8 @@ export default function NavMenuManager() {
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [allCourses, setAllCourses] = useState([]);
+  const [courseDropdown, setCourseDropdown] = useState(null);
+  const dropdownRef = useRef(null);
   const pathAuto = useRef(true);
 
   useEffect(() => {
@@ -61,6 +64,16 @@ export default function NavMenuManager() {
       .then(({ data }) => {
         if (data) setAllCourses(data);
       });
+  }, []);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setCourseDropdown(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   if (currentUser?.role !== "admin" && currentUser?.role !== "manager" && currentUser?.role !== "master_admin") {
@@ -154,7 +167,7 @@ export default function NavMenuManager() {
 
   function getChildItems(pid) {
     return dbItems.filter(
-      (item) => item.parent_id === pid && !item.parent_label,
+      (item) => String(item.parent_id) === String(pid) && !item.parent_label,
     );
   }
 
@@ -170,8 +183,15 @@ export default function NavMenuManager() {
     return result;
   }
 
-  function linkedCourse(item) {
-    return allCourses.find((c) => c.nav_item_id === item.id);
+  function linkedCourses(item) {
+    return allCourses.filter((c) => c.nav_item_id === item.id);
+  }
+
+  async function toggleCourseLink(courseId, itemId) {
+    const course = allCourses.find(c => c.id === courseId);
+    const newNavItemId = course.nav_item_id === itemId ? null : itemId;
+    await supabase.from("courses").update({ nav_item_id: newNavItemId }).eq("id", courseId);
+    setAllCourses(prev => prev.map(c => c.id === courseId ? { ...c, nav_item_id: newNavItemId } : c));
   }
 
   function openAdd(sectionLabel, parentItem = null) {
@@ -566,15 +586,19 @@ export default function NavMenuManager() {
                                 {item.label}
                               </span>
                               {(() => {
-                                const course = linkedCourse(item);
-                                return course ? (
-                                  <Link
-                                    to={`/admin/courses/${course.id}`}
-                                    className="text-[11px] text-accent-700 bg-accent-50 px-2 py-0.5 rounded-full truncate max-w-[140px] hover:bg-accent-100 transition-colors flex items-center gap-1"
-                                  >
-                                    <FiBookOpen className="w-3 h-3" />
-                                    {course.title}
-                                  </Link>
+                                const linked = linkedCourses(item);
+                                return linked.length > 0 ? (
+                                  <div className="flex gap-1">
+                                    {linked.slice(0, 2).map(c => (
+                                      <Link key={c.id} to={`/admin/courses/${c.id}`}
+                                        className="text-[11px] text-accent-700 bg-accent-50 px-2 py-0.5 rounded-full truncate max-w-[100px] hover:bg-accent-100 transition-colors flex items-center gap-1">
+                                        <FiBookOpen className="w-3 h-3" /> {c.title}
+                                      </Link>
+                                    ))}
+                                    {linked.length > 2 && (
+                                      <span className="text-[11px] text-neutral-400">+{linked.length - 2}</span>
+                                    )}
+                                  </div>
                                 ) : null;
                               })()}
                               {item.path && (
@@ -589,12 +613,46 @@ export default function NavMenuManager() {
                               }`}>
                                 {item.is_active !== false ? "On" : "Off"}
                               </span>
-                              <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="flex items-center gap-1 shrink-0 transition-opacity">
+                                <Link to={`/admin/nav-menu/children/${item.id}`}
+                                  className="p-1 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded transition-colors"
+                                  title="Manage sub-items">
+                                  <FiList className="w-3.5 h-3.5" />
+                                </Link>
                                 <button onClick={() => { setActiveSection(activeSection || selectedSection); setForm({ label: "", path: "", is_active: true, parent_id: item.id }); setEditing(null); }}
                                   className="p-1 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded transition-colors"
                                   title="Add sub-item">
                                   <FiPlus className="w-3.5 h-3.5" />
                                 </button>
+                                <div className="relative" ref={courseDropdown === item.id ? dropdownRef : null}>
+                                  <button onClick={() => setCourseDropdown(courseDropdown === item.id ? null : item.id)}
+                                    className={`px-2 py-0.5 text-[11px] font-medium rounded transition-colors ${courseDropdown === item.id ? 'bg-accent-100 text-accent-700' : 'bg-accent-50 text-accent-600 hover:bg-accent-100'}`}>
+                                    Linked Courses
+                                  </button>
+                                  {courseDropdown === item.id && (
+                                    <div className="absolute top-full right-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-lg z-50 min-w-[200px] max-h-[260px] flex flex-col">
+                                      <div className="overflow-y-auto">
+                                        {allCourses.length === 0 ? (
+                                          <p className="px-3 py-3 text-xs text-neutral-400 text-center">No courses.</p>
+                                        ) : (
+                                          allCourses.map(c => {
+                                            const checked = linkedCourses(item).some(lc => lc.id === c.id);
+                                            return (
+                                              <label key={c.id}
+                                                className="flex items-center gap-2 px-3 py-1.5 hover:bg-neutral-50 cursor-pointer text-xs border-b border-neutral-50 last:border-b-0">
+                                                <div className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${checked ? 'bg-accent-600 border-accent-600' : 'border-neutral-300'}`}>
+                                                  {checked && <FiCheck className="w-2.5 h-2.5 text-white" />}
+                                                </div>
+                                                <input type="checkbox" checked={checked} onChange={() => toggleCourseLink(c.id, item.id)} className="sr-only" />
+                                                <span className="truncate text-neutral-700">{c.title}</span>
+                                              </label>
+                                            );
+                                          })
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
                                 <button onClick={() => openEdit(item)}
                                   className="px-2 py-0.5 text-[11px] font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded transition-colors">
                                   Edit

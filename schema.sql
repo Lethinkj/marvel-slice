@@ -876,3 +876,41 @@ do $$ begin
     using (true);
   end if;
 end $$;
+
+-- 32. Brochure downloads table
+create table if not exists brochure_downloads (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  phone text,
+  course_id uuid references courses(id) on delete set null,
+  course_title text,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+
+alter table brochure_downloads enable row level security;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can insert brochure_downloads') then
+    create policy "Anyone can insert brochure_downloads"
+    on brochure_downloads for insert to anon, authenticated
+    with check (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can read brochure_downloads') then
+    create policy "Anyone can read brochure_downloads"
+    on brochure_downloads for select to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can update brochure_downloads') then
+    create policy "Anyone can update brochure_downloads"
+    on brochure_downloads for update to anon, authenticated
+    using (true);
+  end if;
+end $$;

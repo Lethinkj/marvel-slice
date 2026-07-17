@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp } from 'react-icons/fi';
+import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import CourseCard from '../components/ui/CourseCard';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
+import { supabase } from '../lib/supabaseClient';
 
 function getYoutubeEmbedUrl(url) {
   if (!url) return null;
@@ -149,8 +150,8 @@ function CourseTabs({ tabs, curriculum }) {
                     px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-semibold whitespace-nowrap
                     transition-all duration-200 relative
                     ${isActive
-                      ? 'bg-brand-accent text-white rounded-t-lg'
-                      : 'bg-white text-dark-navy border-2 border-dark-navy hover:bg-gray-50 rounded-lg'
+                      ? 'bg-brand-accent text-white rounded-t-xl'
+                      : 'bg-gray-100 text-dark-navy hover:bg-gray-200 rounded-xl'
                     }
                   `}
                 >
@@ -351,6 +352,11 @@ function RelatedCoursesWithId({ courseId }) {
 export default function CourseDetail() {
   const { slug } = useParams();
   const { data: course, isLoading } = useCourse(slug);
+  const [showBrochure, setShowBrochure] = useState(false);
+  const [brochureForm, setBrochureForm] = useState({ name: '', email: '', phone: '' });
+  const [brochureSubmitting, setBrochureSubmitting] = useState(false);
+  const [brochureDone, setBrochureDone] = useState(false);
+  const [brochureError, setBrochureError] = useState('');
 
   if (isLoading) {
     return (
@@ -370,6 +376,32 @@ export default function CourseDetail() {
   }
 
   const embedUrl = course.video_url ? getYoutubeEmbedUrl(course.video_url) : null;
+
+  async function handleBrochureSubmit(e) {
+    e.preventDefault();
+    if (!brochureForm.name.trim() || !brochureForm.email.trim()) return;
+    setBrochureSubmitting(true);
+    setBrochureError('');
+
+    const payload = {
+      name: brochureForm.name.trim(),
+      email: brochureForm.email.trim(),
+      phone: brochureForm.phone.trim() || null,
+      course_id: course.id,
+      course_title: course.title,
+    };
+
+    const { error } = await supabase.from('brochure_downloads').insert(payload);
+    if (error) { setBrochureError(error.message); setBrochureSubmitting(false); return; }
+
+    fetch('/api/submit-brochure', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+
+    setBrochureSubmitting(false);
+    setBrochureDone(true);
+  }
 
   return (
     <div>
@@ -408,7 +440,7 @@ export default function CourseDetail() {
               </div>
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
                 <Button variant="accent" size="lg" to="#enroll" className="w-full sm:w-auto">Enroll Now</Button>
-                <Button variant="outline" size="lg" to="#brochure" className="w-full sm:w-auto">Download Brochure</Button>
+                <Button variant="outline" size="lg" onClick={() => { setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setShowBrochure(true); }} className="w-full sm:w-auto">Download Brochure</Button>
               </div>
             </div>
             <div className="lg:col-span-2">
@@ -471,6 +503,63 @@ export default function CourseDetail() {
 
       {/* FAQs */}
       <FAQSection faqs={course.faqs} />
+
+      {/* Brochure Download Modal */}
+      {showBrochure && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowBrochure(false)}>
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900">Download Brochure</h2>
+              <button onClick={() => setShowBrochure(false)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+                <FiX className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+            {brochureDone ? (
+              <div className="p-8 text-center">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                  <FiCheck className="w-7 h-7 text-emerald-600" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Thank You!</h3>
+                <p className="text-sm text-gray-500">We've received your request. The brochure will be sent to your email shortly.</p>
+                <button onClick={() => setShowBrochure(false)} className="mt-6 px-6 py-2.5 text-sm font-semibold rounded-lg bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors">
+                  Done
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleBrochureSubmit} className="p-6 space-y-4">
+                <p className="text-xs text-gray-500 bg-gray-50 rounded-lg p-3 border border-gray-100">
+                  Request a brochure for <strong className="text-gray-900">{course.title}</strong>
+                </p>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Name *</label>
+                  <input value={brochureForm.name} onChange={e => setBrochureForm(p => ({ ...p, name: e.target.value }))} placeholder="Your full name" required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Email *</label>
+                  <input type="email" value={brochureForm.email} onChange={e => setBrochureForm(p => ({ ...p, email: e.target.value }))} placeholder="your@email.com" required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Phone</label>
+                  <input type="tel" value={brochureForm.phone} onChange={e => setBrochureForm(p => ({ ...p, phone: e.target.value }))} placeholder="Your phone number"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" />
+                </div>
+                {brochureError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-700">
+                    <FiAlertCircle className="w-4 h-4 shrink-0" /> {brochureError}
+                  </div>
+                )}
+                <button type="submit" disabled={brochureSubmitting}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors disabled:opacity-60">
+                  {brochureSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
+                  {brochureSubmitting ? 'Sending...' : 'Get Brochure'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

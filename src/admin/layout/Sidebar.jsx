@@ -30,6 +30,7 @@ const navGroups = [
   { label: "Live Chat", icon: FiMessageCircle, items: [{ to: "/admin/chats", label: "Chat" }] },
   { label: "Submissions", icon: FiInbox, items: [
     { to: "/admin/career-submissions", label: "Career Submissions" },
+    { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
   ]},
   {
@@ -51,6 +52,7 @@ const navGroups = [
     { to: "/admin/nav-menu?section=Competitive%20Exam", label: "Competitive Exam" },
     { to: "/admin/nav-menu?section=Services", label: "Services" },
     { to: "/admin/nav-menu?section=Training", label: "Training" },
+    { to: "/admin/nav-menu/manage", label: "Manage Sub-items" },
   ]},
   { label: "Appearance", icon: FiLayers, items: [
     { to: "/admin/footer", label: "Footer" },
