@@ -752,6 +752,7 @@ create table if not exists career_page_content (
   section2_heading text default 'Job Openings',
   section2_subheading text,
   form_config jsonb default '{}',
+  carousel_enabled boolean default false,
   is_published boolean default true,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
@@ -768,6 +769,7 @@ alter table career_page_content add column if not exists section1_description te
 alter table career_page_content add column if not exists section2_heading text default 'Job Openings';
 alter table career_page_content add column if not exists section2_subheading text;
 alter table career_page_content add column if not exists form_config jsonb default '{}';
+alter table career_page_content add column if not exists carousel_enabled boolean default false;
 
 -- Enable RLS but allow public read for both tables
 alter table job_openings enable row level security;

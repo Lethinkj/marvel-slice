@@ -6,6 +6,7 @@ import Reveal from '../components/ui/Reveal';
 import {
   FiMapPin, FiClock, FiDollarSign,
   FiUpload, FiSend, FiCheck, FiAlertCircle, FiX, FiSearch,
+  FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
 
 function getFieldConfig(formConfig, key, defaults) {
@@ -64,6 +65,7 @@ function Field({ label, required, error, children }) {
 export default function Career() {
   const formRef = useRef(null);
   const jobsRef = useRef(null);
+  const categoryScrollRef = useRef(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     full_name: '',
@@ -81,6 +83,12 @@ export default function Career() {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [jobPage, setJobPage] = useState(1);
   const JOBS_PER_PAGE = 10;
+
+  function scrollCategories(dir) {
+    if (categoryScrollRef.current) {
+      categoryScrollRef.current.scrollBy({ left: dir * 300, behavior: 'smooth' });
+    }
+  }
 
   const { data: pageContent, isLoading: pageLoading } = useQuery({
     queryKey: ['career-page-content'],
@@ -486,20 +494,48 @@ export default function Career() {
 
         {roleCategories?.length > 0 ? (
           <div>
-            <div className="flex flex-wrap gap-3">
-              {(showAllCategories ? roleCategories : roleCategories.slice(0, 15)).map((cat, i) => (
-                <div key={cat.id}
-                  className="px-5 py-3 rounded-xl border border-gray-200 bg-white text-gray-900">
-                  <span className="text-sm font-semibold">{cat.name}</span>
+            {pageContent?.carousel_enabled ? (
+              <div className="relative">
+                <div ref={categoryScrollRef}
+                  className="flex gap-3 overflow-x-auto scroll-smooth pb-2 -mx-4 px-4 snap-x snap-mandatory scrollbar-hide">
+                  {roleCategories.map((cat) => (
+                    <div key={cat.id}
+                      className="px-5 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 snap-start shrink-0">
+                      <span className="text-sm font-semibold whitespace-nowrap">{cat.name}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            {roleCategories.length > 15 && (
-              <button onClick={() => setShowAllCategories(prev => !prev)}
-                className="mt-4 text-sm font-medium text-brand-accent hover:underline inline-flex items-center gap-1">
-                {showAllCategories ? 'Show less' : `View all (${roleCategories.length})`}
-                <svg className={`w-4 h-4 transition-transform ${showAllCategories ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-              </button>
+                {roleCategories.length > 4 && (
+                  <>
+                    <button onClick={() => scrollCategories(-1)}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-brand-accent hover:border-brand-accent transition-colors cursor-pointer">
+                      <FiChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => scrollCategories(1)}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-brand-accent hover:border-brand-accent transition-colors cursor-pointer">
+                      <FiChevronRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-wrap gap-3">
+                  {(showAllCategories ? roleCategories : roleCategories.slice(0, 15)).map((cat, i) => (
+                    <div key={cat.id}
+                      className="px-5 py-3 rounded-xl border border-gray-200 bg-white text-gray-900">
+                      <span className="text-sm font-semibold">{cat.name}</span>
+                    </div>
+                  ))}
+                </div>
+                {roleCategories.length > 15 && (
+                  <button onClick={() => setShowAllCategories(prev => !prev)}
+                    className="mt-4 text-sm font-medium text-brand-accent hover:underline inline-flex items-center gap-1">
+                    {showAllCategories ? 'Show less' : `View all (${roleCategories.length})`}
+                    <svg className={`w-4 h-4 transition-transform ${showAllCategories ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                )}
+              </>
             )}
           </div>
         ) : (

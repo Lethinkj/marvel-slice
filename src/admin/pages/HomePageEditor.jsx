@@ -90,10 +90,7 @@ function IconPicker({ value, onChange }) {
 const sectionDefs = [
   {
     key: 'hero', label: 'Hero Banner', icon: FiHome, color: 'from-orange-500 to-orange-600',
-    fields: [
-      { name: 'banner_image', label: 'Full-Width Banner Image', type: 'image' },
-      { name: 'headline', label: 'Heading Below Banner', type: 'text' },
-    ],
+    isHero: true,
   },
   {
     key: 'intro_form', label: 'Intro + Form', icon: FiMail, color: 'from-emerald-400 to-emerald-600',
@@ -215,13 +212,20 @@ function ListEditor({ def, data, onChange }) {
           <div className="space-y-3">
             {def.listItemFields.map((f) => (
               <div key={f.name}>
-                <label className="block text-xs font-medium text-neutral-600 mb-1">{f.label}</label>
-                {f.type === 'textarea' ? (
-                  <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
-                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
+                {f.type === 'image' ? (
+                  <ImageUploader value={item[f.name] || ''} onChange={(v) => updateItem(i, f.name, v)} label={f.label} />
+                ) : f.type === 'textarea' ? (
+                  <>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">{f.label}</label>
+                    <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
+                  </>
                 ) : (
-                  <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
-                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
+                  <>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">{f.label}</label>
+                    <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all" />
+                  </>
                 )}
               </div>
             ))}
@@ -492,7 +496,295 @@ function ServicesEditor({ data, onChange }) {
   );
 }
 
+function HeroEditor({ data, onChange }) {
+  const content = data?.content || {};
+  const mode = content.hero_mode || 'normal';
+  const carouselType = content.carousel_type || 'image';
+  const slides = Array.isArray(content.slides) ? content.slides : [];
+
+  function updateContent(name, value) {
+    onChange({ ...data, content: { ...content, [name]: value } });
+  }
+
+  function addSlide() {
+    const empty = carouselType === 'image'
+      ? { image: '', heading: '', description: '' }
+      : { heading: '', description: '' };
+    updateContent('slides', [...slides, empty]);
+  }
+
+  function updateSlide(idx, field, value) {
+    const u = slides.map((s, i) => i === idx ? { ...s, [field]: value } : s);
+    updateContent('slides', u);
+  }
+
+  function removeSlide(idx) {
+    updateContent('slides', slides.filter((_, i) => i !== idx));
+  }
+
+  const inputClass = 'w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all';
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-xs font-semibold text-neutral-700 mb-2 uppercase tracking-wider">Mode</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button type="button" onClick={() => updateContent('hero_mode', 'normal')}
+            className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+              mode === 'normal'
+                ? 'bg-accent-600 text-white border-accent-600'
+                : 'bg-white text-neutral-600 border-neutral-300 hover:border-accent-400'
+            }`}>
+            Normal (Single Banner)
+          </button>
+          <button type="button" onClick={() => updateContent('hero_mode', 'carousel')}
+            className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+              mode === 'carousel'
+                ? 'bg-accent-600 text-white border-accent-600'
+                : 'bg-white text-neutral-600 border-neutral-300 hover:border-accent-400'
+            }`}>
+            Carousel
+          </button>
+        </div>
+      </div>
+
+      {mode === 'normal' ? (
+        <div className="space-y-4">
+          <ImageUploader value={content.banner_image || ''} onChange={(v) => updateContent('banner_image', v)} label="Banner Image" />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">Banner Heading</label>
+              <input type="text" value={content.banner_heading || ''} onChange={(e) => updateContent('banner_heading', e.target.value)}
+                className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">Banner Description</label>
+              <input type="text" value={content.banner_description || ''} onChange={(e) => updateContent('banner_description', e.target.value)}
+                className={inputClass} />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-2 uppercase tracking-wider">Carousel Type</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button type="button" onClick={() => updateContent('carousel_type', 'text')}
+                className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+                  carouselType === 'text'
+                    ? 'bg-accent-600 text-white border-accent-600'
+                    : 'bg-white text-neutral-600 border-neutral-300 hover:border-accent-400'
+                }`}>
+                Text Slides
+              </button>
+              <button type="button" onClick={() => updateContent('carousel_type', 'image')}
+                className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+                  carouselType === 'image'
+                    ? 'bg-accent-600 text-white border-accent-600'
+                    : 'bg-white text-neutral-600 border-neutral-300 hover:border-accent-400'
+                }`}>
+                Image Slides
+              </button>
+            </div>
+          </div>
+
+          <div className="border-t border-neutral-200 pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-semibold text-neutral-700">Slides</p>
+              <AdminButton type="button" onClick={addSlide} variant="ghost" size="sm">
+                <FiPlus className="w-4 h-4" /> Add Slide
+              </AdminButton>
+            </div>
+            {slides.length === 0 ? (
+              <p className="text-sm text-neutral-400 italic py-6 text-center border-2 border-dashed border-neutral-200 rounded-lg">No slides yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {slides.map((slide, i) => (
+                  <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Slide {i + 1}</span>
+                      <button type="button" onClick={() => removeSlide(i)}
+                        className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors">
+                        <FiTrash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="space-y-3">
+                      {carouselType === 'image' && (
+                        <ImageUploader value={slide.image || ''} onChange={(v) => updateSlide(i, 'image', v)} label="Slide Image" />
+                      )}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-neutral-600 mb-1">Heading</label>
+                          <input type="text" value={slide.heading || ''} onChange={(e) => updateSlide(i, 'heading', e.target.value)}
+                            className={inputClass} />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-neutral-600 mb-1">Description</label>
+                          <input type="text" value={slide.description || ''} onChange={(e) => updateSlide(i, 'description', e.target.value)}
+                            className={inputClass} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="border-t border-neutral-200 pt-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-neutral-600 mb-1">Heading Below Banner</label>
+            <input type="text" value={content.headline || ''} onChange={(e) => updateContent('headline', e.target.value)}
+              className={inputClass} />
+          </div>
+        </div>
+      </div>
+
+      <details className="border border-neutral-200 rounded-lg overflow-hidden">
+        <summary className="px-4 py-3 text-sm font-semibold text-neutral-700 bg-neutral-50 cursor-pointer hover:bg-neutral-100 transition-colors">
+          Two-Column Layout Settings
+        </summary>
+        <div className="p-4 space-y-4">
+          <p className="text-xs text-neutral-400">These fields apply when no banner image is set (gradient background layout).</p>
+          <div>
+            <label className="block text-xs font-medium text-neutral-600 mb-1">Description</label>
+            <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
+              className={inputClass} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">Badge Text</label>
+              <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
+                className={inputClass} />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-neutral-600 mb-1">Feature Bullets (one per line)</label>
+            <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
+              className={`${inputClass} font-mono text-xs`} />
+          </div>
+          <ImageUploader value={content.student_image_url || ''} onChange={(v) => updateContent('student_image_url', v)} label="Student Image (right side)" />
+        </div>
+      </details>
+
+      <div className="border-t border-neutral-200 pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-sm font-semibold text-neutral-700">Stats</p>
+          <AdminButton type="button" onClick={() => {
+            const s = Array.isArray(content.stats) ? content.stats : [];
+            updateContent('stats', [...s, { value: '', label: '' }]);
+          }} variant="ghost" size="sm">
+            <FiPlus className="w-4 h-4" /> Add Stat
+          </AdminButton>
+        </div>
+        {(!Array.isArray(content.stats) || content.stats.length === 0) ? (
+          <p className="text-sm text-neutral-400 italic">No stats yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {content.stats.map((s, i) => (
+              <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat {i + 1}</span>
+                  <button type="button" onClick={() => {
+                    const arr = [...content.stats];
+                    arr.splice(i, 1);
+                    updateContent('stats', arr);
+                  }} className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg">
+                    <FiTrash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Value</label>
+                    <input type="text" value={s.value || ''} onChange={(e) => {
+                      const arr = [...content.stats];
+                      arr[i] = { ...arr[i], value: e.target.value };
+                      updateContent('stats', arr);
+                    }} className={inputClass} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Label</label>
+                    <input type="text" value={s.label || ''} onChange={(e) => {
+                      const arr = [...content.stats];
+                      arr[i] = { ...arr[i], label: e.target.value };
+                      updateContent('stats', arr);
+                    }} className={inputClass} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="border-t border-neutral-200 pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-sm font-semibold text-neutral-700">Buttons</p>
+          <AdminButton type="button" onClick={() => {
+            const b = Array.isArray(content.buttons) ? content.buttons : [];
+            updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
+          }} variant="ghost" size="sm">
+            <FiPlus className="w-4 h-4" /> Add Button
+          </AdminButton>
+        </div>
+        {(!Array.isArray(content.buttons) || content.buttons.length === 0) ? (
+          <p className="text-sm text-neutral-400 italic">No buttons yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {content.buttons.map((btn, i) => (
+              <div key={i} className="bg-neutral-50 rounded-lg border border-neutral-200 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Button {i + 1}</span>
+                  <button type="button" onClick={() => {
+                    const arr = [...content.buttons];
+                    arr.splice(i, 1);
+                    updateContent('buttons', arr);
+                  }} className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg">
+                    <FiTrash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Label</label>
+                    <input type="text" value={btn.label || ''} onChange={(e) => {
+                      const arr = [...content.buttons];
+                      arr[i] = { ...arr[i], label: e.target.value };
+                      updateContent('buttons', arr);
+                    }} className={inputClass} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-600 mb-1">Link</label>
+                      <input type="text" value={btn.link || ''} onChange={(e) => {
+                        const arr = [...content.buttons];
+                        arr[i] = { ...arr[i], link: e.target.value };
+                        updateContent('buttons', arr);
+                      }} className={inputClass} placeholder="/courses" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-600 mb-1">Color</label>
+                      <input type="text" value={btn.color || ''} onChange={(e) => {
+                        const arr = [...content.buttons];
+                        arr[i] = { ...arr[i], color: e.target.value };
+                        updateContent('buttons', arr);
+                      }} className={inputClass} placeholder="#F7941D" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SectionEditor({ def, data, onChange }) {
+  if (def.isHero) return <HeroEditor data={data} onChange={onChange} />;
   if (def.isFeatureCards) return <FeatureCardsEditor data={data} onChange={onChange} />;
   if (def.isServices) return <ServicesEditor data={data} onChange={onChange} />;
   if (def.isList) return <SimpleListEditor def={def} data={data} onChange={onChange} />;
@@ -523,12 +815,18 @@ function FieldEditor({ def, data, onChange }) {
       {def.fields.map((f) => (
         <RenderField key={f.name} field={f} value={content[f.name]} onChange={(v) => updateContent(f.name, v)} />
       ))}
-      {def.hasList && (
+      {def.hasList && !Array.isArray(def.hasList) && (
         <div className="border-t border-neutral-200 pt-4">
           <h4 className="text-sm font-semibold text-neutral-700 mb-3">{def.listLabel || 'List Items'}</h4>
           <ListEditor def={{ ...def, listKey: def.listKey || 'stats' }} data={data} onChange={onChange} />
         </div>
       )}
+      {Array.isArray(def.hasList) && def.hasList.map((lc, li) => (
+        <div key={li} className="border-t border-neutral-200 pt-4">
+          <h4 className="text-sm font-semibold text-neutral-700 mb-3">{lc.listLabel || 'Items'}</h4>
+          <ListEditor def={{ ...def, listKey: lc.listKey || `list_${li}`, listItemFields: lc.listItemFields, listLabel: lc.listLabel }} data={data} onChange={onChange} />
+        </div>
+      ))}
     </div>
   );
 }
@@ -612,6 +910,17 @@ function RenderField({ field, value, onChange }) {
         <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
         <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={4}
           className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all font-mono text-xs" placeholder="Enter one per line" />
+      </div>
+    );
+  }
+  if (field.type === 'boolean') {
+    return (
+      <div className="flex items-center justify-between">
+        <label className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">{field.label}</label>
+        <button type="button" onClick={() => onChange(!value)}
+          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${value ? 'bg-accent-600' : 'bg-neutral-300'}`}>
+          <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${value ? 'translate-x-4' : 'translate-x-0.5'}`} />
+        </button>
       </div>
     );
   }

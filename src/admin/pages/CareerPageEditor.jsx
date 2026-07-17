@@ -158,6 +158,7 @@ export default function CareerPageEditor() {
   const [section1, setSection1] = useState({ heading: 'We\'re Hiring', subheading: '', description: '' });
   const [section2, setSection2] = useState({ heading: 'Job Openings', subheading: '' });
   const [formConfig, setFormConfig] = useState(buildDefaultFormConfig());
+  const [carouselEnabled, setCarouselEnabled] = useState(false);
 
   const [openings, setOpenings] = useState([]);
   const [roleCategories, setRoleCategories] = useState([]);
@@ -190,6 +191,7 @@ export default function CareerPageEditor() {
         setSection2({ heading: content.section2_heading || 'Job Openings', subheading: content.section2_subheading || '' });
         if (content.form_config && typeof content.form_config === 'object' && Object.keys(content.form_config).length > 0) {
           setFormConfig({ ...buildDefaultFormConfig(), ...content.form_config });
+        setCarouselEnabled(content.carousel_enabled || false);
         }
       } else {
         const { data: navItems } = await supabase
@@ -261,6 +263,7 @@ export default function CareerPageEditor() {
       section2_heading: section2.heading || 'Job Openings',
       section2_subheading: section2.subheading,
       form_config: formConfig,
+      carousel_enabled: carouselEnabled,
       is_published: true,
     };
 
@@ -486,9 +489,18 @@ export default function CareerPageEditor() {
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-neutral-900">Role Categories</h2>
-            <AdminButton type="button" onClick={openCategoryForm} variant="ghost" size="sm">
-              <FiPlus className="w-4 h-4" /> Add Category
-            </AdminButton>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 text-sm text-neutral-600 cursor-pointer">
+                <span>Carousel mode</span>
+                <button type="button" onClick={() => setCarouselEnabled(!carouselEnabled)}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${carouselEnabled ? 'bg-accent-600' : 'bg-neutral-300'}`}>
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${carouselEnabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                </button>
+              </label>
+              <AdminButton type="button" onClick={openCategoryForm} variant="ghost" size="sm">
+                <FiPlus className="w-4 h-4" /> Add Category
+              </AdminButton>
+            </div>
           </div>
 
           {roleCategories.length === 0 ? (

@@ -21,18 +21,9 @@ const ICON_MAP = {
 };
 
 export default function ServicesSection({ section }) {
-  if (!section) return null;
-
-  const c = section.content || {};
-  const heading = section.heading || 'Featured Services';
-  const intro = c.intro || '';
-  const leftImageUrl = c.left_image_url || '';
-  const leftHeading = c.left_heading || 'Transform Your Future with Industry-Focused Training';
-  const leftDescription = c.left_description || '';
-  const ctaText = c.cta_text || 'Explore Our Services';
-  const ctaLink = c.cta_link || '#';
-  const servicesList = c.services_list || [];
+  const c = section?.content || {};
   const serviceCards = c.service_cards || [];
+
   const [cardIdx, setCardIdx] = useState(0);
   const [paused, setPaused] = useState(false);
   const maxCardIdx = Math.max(0, serviceCards.length - 3);
@@ -49,6 +40,17 @@ export default function ServicesSection({ section }) {
   useEffect(() => {
     setCardIdx(0);
   }, [serviceCards.length]);
+
+  if (!section) return null;
+
+  const heading = section.heading || 'Featured Services';
+  const intro = c.intro || '';
+  const leftImageUrl = c.left_image_url || '';
+  const leftHeading = c.left_heading || 'Transform Your Future with Industry-Focused Training';
+  const leftDescription = c.left_description || '';
+  const ctaText = c.cta_text || 'Explore Our Services';
+  const ctaLink = c.cta_link || '#';
+  const servicesList = c.services_list || [];
 
   function CardContent({ card }) {
     return (
