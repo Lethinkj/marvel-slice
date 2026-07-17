@@ -60,7 +60,14 @@ body {
   background-color: var(--color-neutral-50);
 }
 
-h1, h2, h3, h4, p, span, a, li {
+h1,
+h2,
+h3,
+h4,
+p,
+span,
+a,
+li {
   overflow-wrap: break-word;
 }
 
@@ -103,9 +110,15 @@ h1, h2, h3, h4, p, span, a, li {
 }
 
 @keyframes pulse-scale {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 .animate-pulse-scale {
   animation: pulse-scale 0.4s ease-in-out;
@@ -118,7 +131,7 @@ h1, h2, h3, h4, p, span, a, li {
 .max-w-5xl,
 .max-w-4xl,
 .max-w-3xl {
-  max-width: 1600px;
+  max-width: 1400px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
