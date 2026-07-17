@@ -11,33 +11,33 @@ export default function TopBar() {
 
   return (
     <div className="bg-brand-blue text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-[44px] py-1.5">
-        <div className="flex items-center gap-5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-0.5">
+        <div className="flex items-center gap-3">
           <a
             href={`mailto:${email}`}
-            className="flex items-center gap-2 text-sm lg:text-base hover:underline"
+            className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
           >
-            <FiMail className="w-4 h-4 shrink-0" />
+            <FiMail className="w-3 h-3 shrink-0" />
             <span className="hidden sm:inline">{email}</span>
           </a>
           <a
             href={`tel:${phone}`}
-            className="flex items-center gap-2 text-sm lg:text-base hover:underline"
+            className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
           >
-            <FiPhone className="w-4 h-4 shrink-0" />
+            <FiPhone className="w-3 h-3 shrink-0" />
             <span className="hidden sm:inline">{phone}</span>
           </a>
         </div>
-        <div className="flex items-center gap-4 text-sm lg:text-base">
+        <div className="flex items-center gap-2 text-xs lg:text-sm">
           <a href="#" className="hover:underline">Login</a>
           <span className="text-white/40">|</span>
           <a href="#" className="hover:underline font-semibold">SIGN UP</a>
           <span className="text-white/40">|</span>
-          <div className="flex items-center gap-3">
-            <a href={social.twitter || '#'} aria-label="Twitter"><FaTwitter className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
-            <a href={social.facebook || '#'} aria-label="Facebook"><FaFacebookF className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
-            <a href={social.instagram || '#'} aria-label="Instagram"><FaInstagram className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
-            <a href={social.linkedin || '#'} aria-label="LinkedIn"><FaLinkedinIn className="w-4 h-4 hover:text-brand-orange transition-colors" /></a>
+          <div className="flex items-center gap-2">
+            <a href={social.twitter || '#'} aria-label="Twitter"><FaTwitter className="w-3 h-3 hover:text-brand-orange transition-colors" /></a>
+            <a href={social.facebook || '#'} aria-label="Facebook"><FaFacebookF className="w-3 h-3 hover:text-brand-orange transition-colors" /></a>
+            <a href={social.instagram || '#'} aria-label="Instagram"><FaInstagram className="w-3 h-3 hover:text-brand-orange transition-colors" /></a>
+            <a href={social.linkedin || '#'} aria-label="LinkedIn"><FaLinkedinIn className="w-3 h-3 hover:text-brand-orange transition-colors" /></a>
           </div>
         </div>
       </div>

@@ -10,14 +10,14 @@ function NavColumn({ parentLabel }) {
   if (!children || children.length === 0) return null;
   return (
     <div>
-      <h4 className="font-semibold text-base uppercase tracking-wider mb-4 text-white/80">
+      <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 text-white/80">
         {parentLabel}
       </h4>
-      <ul className="space-y-3">
+      <ul className="space-y-2">
         {children.map((child, i) => (
           <li key={i}>
             <Link to={child.path || '#'}
-              className="text-base text-gray-400 hover:text-brand-orange transition-colors">
+              className="text-sm text-gray-400 hover:text-brand-orange transition-colors">
               {child.label}
             </Link>
           </li>
@@ -51,35 +51,35 @@ export default function Footer() {
 
   return (
     <footer className="bg-black text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-8">
           <div className="lg:col-span-1">
-            <h3 className="text-xl font-bold text-brand-orange mb-4">Marvel Slice</h3>
-            <p className="text-base text-gray-400 mb-6 leading-relaxed">
+            <h3 className="text-lg font-bold text-brand-orange mb-3">Marvel Slice</h3>
+            <p className="text-sm text-gray-400 mb-4 leading-relaxed">
               Empowering careers through expert-led training and hands-on learning experiences.
             </p>
-            <div className="space-y-3 text-base text-gray-400">
-              <p className="flex items-start gap-3">
-                <FiMapPin className="w-5 h-5 mt-0.5 shrink-0 text-brand-orange" />
+            <div className="space-y-2 text-sm text-gray-400">
+              <p className="flex items-start gap-2">
+                <FiMapPin className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
                 <span>123 Tech Park, Chennai, Tamil Nadu, India</span>
               </p>
-              <a href={`tel:${phone}`} className="flex items-center gap-3 hover:text-brand-orange transition-colors">
-                <FiPhone className="w-5 h-5 shrink-0 text-brand-orange" />
+              <a href={`tel:${phone}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
+                <FiPhone className="w-4 h-4 shrink-0 text-brand-orange" />
                 <span>{phone}</span>
               </a>
-              <a href={`mailto:${email}`} className="flex items-center gap-3 hover:text-brand-orange transition-colors">
-                <FiMail className="w-5 h-5 shrink-0 text-brand-orange" />
+              <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
+                <FiMail className="w-4 h-4 shrink-0 text-brand-orange" />
                 <span>{email}</span>
               </a>
             </div>
           </div>
 
           <div>
-            <h4 className="font-semibold text-base uppercase tracking-wider mb-4 text-white/80">Quick Links</h4>
-            <ul className="space-y-3">
+            <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 text-white/80">Quick Links</h4>
+            <ul className="space-y-2">
               {linkItems.map((item, i) => (
                 <li key={i}>
-                  <Link to={item.path} className="text-base text-gray-400 hover:text-brand-orange transition-colors">
+                  <Link to={item.path} className="text-sm text-gray-400 hover:text-brand-orange transition-colors">
                     {item.label}
                   </Link>
                 </li>
@@ -93,10 +93,10 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="bg-brand-orange py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm sm:text-base text-white">
+      <div className="bg-brand-orange py-0.5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs sm:text-sm text-white">
           <span>&copy; Marvel Slice. All rights reserved.</span>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <a href="#" className="hover:underline">Privacy Policy</a>
             <span className="text-white/60">|</span>
             <a href="#" className="hover:underline">Terms of Service</a>
@@ -109,7 +109,7 @@ export default function Footer() {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 bg-brand-blue text-white p-3.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50"
+          className="fixed bottom-6 right-0 bg-brand-blue text-white p-2.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50 cursor-pointer"
           aria-label="Scroll to top"
         >
           <FiArrowUp className="w-5 h-5" />
