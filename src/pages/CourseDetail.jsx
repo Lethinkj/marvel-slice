@@ -27,14 +27,24 @@ const HIGHLIGHT_ICONS = {
   cpu: FiCpu, database: FiDatabase, layers: FiLayers,
   zap: FiZap, shield: FiShield, trending: FiTrendingUp,
 };
-
 function CourseTabs({ tabs, curriculum }) {
   const TAB_ORDER = ['Overview', 'Syllabus', 'Pricing', 'Curriculum'];
 
   const tabMap = {};
-  if (tabs) tabs.forEach((t) => { if (t.label !== 'Apply Now') tabMap[t.label] = { type: 'admin', data: t }; });
+  if (tabs) tabs.forEach((t) => {
+    if (t.label !== 'Apply Now') tabMap[t.label] = { type: 'admin', data: t };
+  });
   if (curriculum?.length > 0) tabMap['Curriculum'] = { type: 'curriculum', data: curriculum };
 
+  // Fallback defaults for courses without tabs data
+  TAB_ORDER.forEach((label) => {
+    if (!tabMap[label]) {
+      tabMap[label] = {
+        type: 'admin',
+        data: { label, content: { heading: label, paragraph: 'Content coming soon.' } },
+      };
+    }
+  });
   const orderedTabs = TAB_ORDER
     .filter((label) => tabMap[label])
     .map((label, i) => ({ id: `tab-${i}`, label, ...tabMap[label] }));
@@ -137,14 +147,15 @@ function CourseTabs({ tabs, curriculum }) {
                   onClick={() => handleTabClick(i)}
                   className={`
                     px-4 sm:px-6 py-2.5 sm:py-3 text-sm font-semibold whitespace-nowrap
-                    transition-all duration-200
+                    transition-all duration-200 relative
                     ${isActive
-                      ? 'bg-brand-accent text-white rounded-t-lg rounded-b-none'
+                      ? 'bg-brand-accent text-white rounded-t-lg'
                       : 'bg-white text-dark-navy border-2 border-dark-navy hover:bg-gray-50 rounded-lg'
                     }
                   `}
                 >
                   {tab.label}
+                  {isActive && <span className="absolute bottom-0 left-0 right-0 h-[3px] bg-white rounded-full" />}
                 </button>
               );
             })}
@@ -303,7 +314,7 @@ function FAQSection({ faqs }) {
                 </span>
               </button>
               {open === i && (
-                <div className="px-6 pb-4 text-gray-600 leading-relaxed">{f.answer}</div>
+                <div className="px-6 pb-4 text-gray-500 leading-relaxed">{f.answer}</div>
               )}
             </div>
           ))}

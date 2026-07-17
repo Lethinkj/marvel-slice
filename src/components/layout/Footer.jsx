@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowUp, FiPhone, FiMail, FiMapPin } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSiteSettings } from '../../hooks/useSupabase';
 import { topNav } from './Header';
 import { useNavChildren } from '../../hooks/useSupabase';
@@ -106,15 +107,21 @@ export default function Footer() {
         </div>
       </div>
 
-      {showScrollTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-0 bg-brand-blue text-white p-2.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50 cursor-pointer"
-          aria-label="Scroll to top"
-        >
-          <FiArrowUp className="w-5 h-5" />
-        </button>
-      )}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-0 bg-brand-blue text-white p-2.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50 cursor-pointer"
+            aria-label="Scroll to top"
+          >
+            <FiArrowUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </footer>
   );
 }

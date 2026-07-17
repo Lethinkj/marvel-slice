@@ -359,7 +359,7 @@ function ServicesEditor({ data, onChange }) {
     updateContent('services_list', u);
   }
   function removeService(idx) { updateContent('services_list', services.filter((_, i) => i !== idx)); }
-  function addCard() { updateContent('service_cards', [...cards, { image_url: '', title: '', description: '' }]); }
+  function addCard() { updateContent('service_cards', [...cards, { image_url: '', title: '', description: '', link_url: '', is_clickable: false }]); }
   function updateCard(idx, field, value) {
     const u = cards.map((c, i) => i === idx ? { ...c, [field]: value } : c);
     updateContent('service_cards', u);
@@ -471,6 +471,18 @@ function ServicesEditor({ data, onChange }) {
                   </div>
                 </div>
                 <ImageUploader value={c.image_url} onChange={(v) => updateCard(i, 'image_url', v)} label="Image" />
+                  <div className="flex items-center gap-3 pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={!!c.is_clickable} onChange={(e) => updateCard(i, 'is_clickable', e.target.checked)}
+                        className="w-4 h-4 rounded border-neutral-300 text-accent-600 focus:ring-accent-500" />
+                      <span className="text-xs font-medium text-neutral-600">Clickable</span>
+                    </label>
+                    {c.is_clickable && (
+                      <input type="text" value={c.link_url || ''} onChange={(e) => updateCard(i, 'link_url', e.target.value)}
+                        placeholder="/courses or https://..."
+                        className="flex-1 px-3 py-1.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
+                    )}
+                  </div>
               </div>
             </div>
           ))}

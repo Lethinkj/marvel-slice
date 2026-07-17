@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiArrowRight, FiChevronLeft, FiChevronRight, FiCalendar, FiUser, FiArrowUp, FiArrowLeft, FiTag } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
@@ -332,9 +333,13 @@ export default function Blog() {
           </div>
         )}
       </section>
-      <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, delay: 0.5, ease: 'easeOut' }}
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className="fixed bottom-4 right-0 sm:bottom-8 sm:right-0 w-10 h-10 sm:w-10 sm:h-10 bg-brand-blue text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition-colors z-50 cursor-pointer">
-        <FiArrowUp className="w-5 h-5" /></button>
+        <FiArrowUp className="w-5 h-5" /></motion.button>
     </div>
   );
 }

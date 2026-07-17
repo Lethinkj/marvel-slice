@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Roboto", "Montserrat", system-ui, sans-serif;
+  --font-sans: "Montserrat", system-ui, sans-serif;
   --color-neutral-50: #f8fafc;
   --color-neutral-100: #f1f5f9;
   --color-neutral-200: #e2e8f0;
@@ -49,7 +49,7 @@ html {
 }
 
 body {
-  font-family: "Roboto", "Montserrat", system-ui, sans-serif;
+  font-family: "Montserrat", system-ui, sans-serif;
   font-size: 14px;
   line-height: 1.5;
   color: var(--color-neutral-900);
@@ -110,8 +110,14 @@ li {
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .animate-fade-in-up {
   animation: fade-in-up 0.2s ease-out;
@@ -139,7 +145,7 @@ li {
 .max-w-5xl,
 .max-w-4xl,
 .max-w-3xl {
-  max-width: 1600px;
+  max-width: 1400px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;

@@ -705,7 +705,7 @@ do $$ begin
   end if;
   if not exists (select 1 from pg_policies where policyname = 'Authenticated can update conversations') then
     create policy "Authenticated can update conversations"
-    on conversations for update to authenticated
+    on conversations for update to anon, authenticated
     using (true);
   end if;
   if not exists (select 1 from pg_policies where policyname = 'Anyone can insert messages') then
@@ -716,6 +716,163 @@ do $$ begin
   if not exists (select 1 from pg_policies where policyname = 'Anyone can select messages') then
     create policy "Anyone can select messages"
     on messages for select to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+-- 28. Job openings table (dedicated, replaces JSONB sections)
+create table if not exists job_openings (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  department text not null,
+  location text,
+  type text,
+  experience text,
+  salary text,
+  description text,
+  is_active boolean default true,
+  sort_order int default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- 29. Career page content table (hero, section headings, form config)
+create table if not exists career_page_content (
+  id uuid primary key default gen_random_uuid(),
+  hero_image text,
+  hero_heading text,
+  hero_subheading text,
+  culture text,
+  culture_heading text default 'Company Culture',
+  benefits jsonb default '[]',
+  benefits_heading text default 'Benefits & Perks',
+  section1_heading text default 'We''re Hiring',
+  section1_subheading text,
+  section1_description text,
+  section2_heading text default 'Job Openings',
+  section2_subheading text,
+  form_config jsonb default '{}',
+  is_published boolean default true,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- Add columns that may be missing if table already existed
+alter table career_page_content add column if not exists culture_heading text default 'Company Culture';
+alter table career_page_content add column if not exists culture text;
+alter table career_page_content add column if not exists benefits jsonb default '[]';
+alter table career_page_content add column if not exists benefits_heading text default 'Benefits & Perks';
+alter table career_page_content add column if not exists section1_heading text default 'We''re Hiring';
+alter table career_page_content add column if not exists section1_subheading text;
+alter table career_page_content add column if not exists section1_description text;
+alter table career_page_content add column if not exists section2_heading text default 'Job Openings';
+alter table career_page_content add column if not exists section2_subheading text;
+alter table career_page_content add column if not exists form_config jsonb default '{}';
+
+-- Enable RLS but allow public read for both tables
+alter table job_openings enable row level security;
+alter table career_page_content enable row level security;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can read job_openings') then
+    create policy "Anyone can read job_openings"
+    on job_openings for select to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can insert job_openings') then
+    create policy "Authenticated can insert job_openings"
+    on job_openings for insert to anon, authenticated
+    with check (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can update job_openings') then
+    create policy "Authenticated can update job_openings"
+    on job_openings for update to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can read career_page_content') then
+    create policy "Anyone can read career_page_content"
+    on career_page_content for select to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can insert career_page_content') then
+    create policy "Authenticated can insert career_page_content"
+    on career_page_content for insert to anon, authenticated
+    with check (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can update career_page_content') then
+    create policy "Authenticated can update career_page_content"
+    on career_page_content for update to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can delete job_openings') then
+    create policy "Authenticated can delete job_openings"
+    on job_openings for delete to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+-- 30. Role categories table (carousel cards, broad job families)
+create table if not exists role_categories (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  display_order int default 0,
+  is_active boolean default true,
+  created_at timestamptz default now()
+);
+
+-- 31. Update job_openings: add FK to role_categories
+alter table job_openings add column if not exists role_category_id uuid references role_categories(id) on delete set null;
+alter table job_openings drop column if exists apply_link;
+
+-- Enable RLS for role_categories
+alter table role_categories enable row level security;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can read role_categories') then
+    create policy "Anyone can read role_categories"
+    on role_categories for select to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can insert role_categories') then
+    create policy "Authenticated can insert role_categories"
+    on role_categories for insert to anon, authenticated
+    with check (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can update role_categories') then
+    create policy "Authenticated can update role_categories"
+    on role_categories for update to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can delete role_categories') then
+    create policy "Authenticated can delete role_categories"
+    on role_categories for delete to anon, authenticated
     using (true);
   end if;
 end $$;

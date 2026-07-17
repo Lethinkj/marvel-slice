@@ -2,16 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiBookOpen, FiUsers, FiBriefcase, FiStar, FiClock, FiAward, FiTarget, FiSend, FiPhone, FiMail, FiUser, FiCheckCircle, FiLoader } from 'react-icons/fi';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
-import Button from '../ui/Button';
 import { supabase } from '../../lib/supabaseClient';
-
-const DEFAULT_FEATURES = [
-  { icon: FiStar, label: 'Expert Trainers' },
-  { icon: FiTarget, label: 'Practical Learning' },
-  { icon: FiBriefcase, label: 'Placement Support' },
-  { icon: FiClock, label: 'Flexible Batches' },
-  { icon: FiAward, label: 'Certification' },
-];
 
 function getStatIcon(label) {
   const l = (label || '').toLowerCase();
@@ -74,9 +65,7 @@ export default function IntroFormSection({ section }) {
     setSubmitting(false);
   }
 
-  const features = rawPills.length > 0
-    ? rawPills.map((label) => ({ label, icon: FiCheckCircle }))
-    : DEFAULT_FEATURES;
+  const features = rawPills.map((label) => ({ label, icon: FiCheckCircle }));
 
   return (
     <section className="relative overflow-hidden bg-gray-50">

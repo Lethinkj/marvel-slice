@@ -1,8 +1,8 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
-import { useNavChildren } from '../../hooks/useSupabase';
+import { useState, useRef, useCallback, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { useNavChildren } from "../../hooks/useSupabase";
 
 function hasChildren(item) {
   return (item.children && item.children.length > 0) || hasNavChildren(item);
@@ -26,10 +26,11 @@ function DesktopNavItem({
   const closeTimer = useRef(null);
 
   const { data: navChildren } = useNavChildren(
-    depth === 0 && !item.path ? item.label : null
+    depth === 0 && !item.path ? item.label : null,
   );
 
-  const resolvedChildren = item.children || item._navChildren || navChildren || [];
+  const resolvedChildren =
+    item.children || item._navChildren || navChildren || [];
   const hasSub = resolvedChildren.length > 0;
 
   const scheduleClose = useCallback(() => {
@@ -53,32 +54,39 @@ function DesktopNavItem({
   function handleKeyDown(e) {
     const container = containerRef.current;
     if (!container) return;
-    const items = container.querySelectorAll('[role="menuitem"]:not([data-hidden])');
+    const items = container.querySelectorAll(
+      '[role="menuitem"]:not([data-hidden])',
+    );
     const currentIndex = Array.from(items).indexOf(document.activeElement);
 
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         items[(currentIndex + 1) % items.length]?.focus();
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         items[(currentIndex - 1 + items.length) % items.length]?.focus();
         break;
-      case 'ArrowRight':
+      case "ArrowRight":
         e.preventDefault();
         if (hasSub && depth > 0) {
           onOpen();
           requestAnimationFrame(() => {
-            container.querySelector(':scope > [data-submenu] [role="menuitem"]')?.focus();
+            container
+              .querySelector(':scope > [data-submenu] [role="menuitem"]')
+              ?.focus();
           });
         }
         break;
-      case 'ArrowLeft':
-      case 'Escape':
+      case "ArrowLeft":
+      case "Escape":
         e.preventDefault();
         onClose();
-        container.closest('[data-menu-item]')?.querySelector('[role="menuitem"]')?.focus();
+        container
+          .closest("[data-menu-item]")
+          ?.querySelector('[role="menuitem"]')
+          ?.focus();
         break;
     }
   }
@@ -87,12 +95,12 @@ function DesktopNavItem({
     const isActive = item.path && currentPath === item.path;
     return (
       <Link
-        to={item.path || '#'}
+        to={item.path || "#"}
         role="menuitem"
-        className={`block px-5 py-2.5 text-sm rounded-md transition-all ${
+        className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors ${
           isActive
-            ? 'bg-brand-accent/10 text-brand-accent font-semibold border-l-[3px] border-brand-accent'
-            : 'text-gray-600 hover:bg-brand-accent/5 hover:text-brand-accent hover:border-l-[3px] hover:border-brand-accent/50 border-l-[3px] border-transparent'
+            ? "text-brand-accent font-semibold"
+            : "text-gray-600 hover:text-brand-accent"
         }`}
         onClick={onItemClick}
         tabIndex={0}
@@ -108,7 +116,10 @@ function DesktopNavItem({
         ref={containerRef}
         data-menu-item
         className="relative"
-        onMouseEnter={() => { cancelClose(); onOpen(); }}
+        onMouseEnter={() => {
+          cancelClose();
+          onOpen();
+        }}
         onMouseLeave={scheduleClose}
         onKeyDown={handleKeyDown}
       >
@@ -116,13 +127,17 @@ function DesktopNavItem({
           role="menuitem"
           aria-haspopup="true"
           aria-expanded={isOpen}
-          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all cursor-pointer ${
-            isOpen ? 'text-brand-orange bg-brand-orange/[0.06]' : 'text-dark-navy hover:text-brand-orange hover:bg-brand-orange/[0.04]'
+          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors cursor-pointer ${
+            isOpen
+              ? "text-brand-orange"
+              : "text-dark-navy hover:text-brand-orange"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
           {item.label}
-          <FiChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+          <FiChevronDown
+            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          />
         </button>
 
         <AnimatePresence>
@@ -131,8 +146,8 @@ function DesktopNavItem({
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="absolute left-0 top-full mt-1.5 bg-white shadow-2xl rounded-xl border border-gray-100 py-2 z-50 min-w-[250px] before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-gradient-to-r before:from-brand-orange before:to-brand-accent before:rounded-t-xl"
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute left-0 top-full mt-1.5 bg-white py-2 z-50 min-w-max"
               role="menu"
               data-submenu
             >
@@ -155,7 +170,10 @@ function DesktopNavItem({
       ref={containerRef}
       data-menu-item
       className="relative"
-      onMouseEnter={() => { cancelClose(); onOpen(); }}
+      onMouseEnter={() => {
+        cancelClose();
+        onOpen();
+      }}
       onMouseLeave={scheduleClose}
       onKeyDown={handleKeyDown}
     >
@@ -163,15 +181,17 @@ function DesktopNavItem({
         role="menuitem"
         aria-haspopup="true"
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm rounded-md transition-all border-l-[3px] cursor-pointer ${
+        className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors cursor-pointer ${
           isOpen
-            ? 'bg-brand-accent/10 text-brand-accent font-semibold border-brand-accent'
-            : 'text-gray-700 hover:bg-brand-accent/5 hover:text-dark-navy hover:border-brand-accent/30 border-transparent'
+            ? "text-brand-accent font-semibold"
+            : "text-gray-700 hover:text-dark-navy"
         }`}
         onClick={() => (isOpen ? onClose() : onOpen())}
       >
         <span>{item.label}</span>
-        <FiChevronRight className={`w-3.5 h-3.5 shrink-0 text-gray-400 transition-transform duration-200 ${isOpen ? 'translate-x-0.5' : ''}`} />
+        <FiChevronRight
+          className={`w-3.5 h-3.5 shrink-0 text-gray-400 transition-transform duration-200 ${isOpen ? "translate-x-0.5" : ""}`}
+        />
       </button>
 
       <AnimatePresence>
@@ -180,8 +200,8 @@ function DesktopNavItem({
             initial={{ opacity: 0, x: -4 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -4 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="absolute left-full top-0 ml-1.5 bg-white shadow-2xl rounded-xl border border-gray-100 py-2 z-50 min-w-[240px] max-h-[60vh] overflow-y-auto before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-gradient-to-r before:from-brand-orange/70 before:to-brand-accent/70 before:rounded-t-xl"
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="absolute left-full top-0 ml-1.5 bg-white py-2 z-50 min-w-[240px] max-h-[60vh] overflow-y-auto"
             role="menu"
             data-submenu
           >
@@ -213,7 +233,9 @@ function SubmenuItems({ items, depth, currentPath, onItemClick, closeDelay }) {
   }, []);
 
   useEffect(() => {
-    return () => { if (openTimer.current) clearTimeout(openTimer.current); };
+    return () => {
+      if (openTimer.current) clearTimeout(openTimer.current);
+    };
   }, []);
 
   return items.map((child, idx) => {
@@ -232,13 +254,27 @@ function SubmenuItems({ items, depth, currentPath, onItemClick, closeDelay }) {
     );
 
     if (depth === 1) {
-      return <div key={idx} className={child.children || child._navChildren ? '' : 'min-w-[200px]'}>{childItem}</div>;
+      return (
+        <div
+          key={idx}
+          className={
+            child.children || child._navChildren ? "" : "min-w-[200px]"
+          }
+        >
+          {childItem}
+        </div>
+      );
     }
     return childItem;
   });
 }
 
-export default function NavDropdown({ items, currentPath, onItemClick, closeDelay = 250 }) {
+export default function NavDropdown({
+  items,
+  currentPath,
+  onItemClick,
+  closeDelay = 250,
+}) {
   const [openIdx, setOpenIdx] = useState(null);
   const openTimer = useRef(null);
 
@@ -253,14 +289,16 @@ export default function NavDropdown({ items, currentPath, onItemClick, closeDela
 
   useEffect(() => {
     function onKeyDown(e) {
-      if (e.key === 'Escape' && openIdx !== null) setOpenIdx(null);
+      if (e.key === "Escape" && openIdx !== null) setOpenIdx(null);
     }
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [openIdx]);
 
   useEffect(() => {
-    return () => { if (openTimer.current) clearTimeout(openTimer.current); };
+    return () => {
+      if (openTimer.current) clearTimeout(openTimer.current);
+    };
   }, []);
 
   return (
@@ -275,16 +313,16 @@ export default function NavDropdown({ items, currentPath, onItemClick, closeDela
             key={idx}
             to={item.path}
             role="menuitem"
-            className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all ${
+            className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors ${
               currentPath === item.path
-                ? 'text-brand-orange'
-                : 'text-dark-navy hover:text-brand-orange hover:bg-brand-orange/[0.04]'
+                ? "text-brand-orange"
+                : "text-dark-navy hover:text-brand-orange"
             }`}
             onClick={onItemClick}
           >
             {item.label}
             {currentPath === item.path && (
-              <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-brand-orange rounded-full" />
+              <span className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-brand-orange rounded-full" />
             )}
           </Link>
         ) : (
@@ -308,11 +346,19 @@ export default function NavDropdown({ items, currentPath, onItemClick, closeDela
    MOBILE
    ================================================================== */
 
-function MobileNavItem({ item, depth = 0, currentPath, onItemClick, isOpen, onToggle }) {
+function MobileNavItem({
+  item,
+  depth = 0,
+  currentPath,
+  onItemClick,
+  isOpen,
+  onToggle,
+}) {
   const { data: navChildren } = useNavChildren(
-    depth === 0 && !item.path ? item.label : null
+    depth === 0 && !item.path ? item.label : null,
   );
-  const resolvedChildren = item.children || item._navChildren || navChildren || [];
+  const resolvedChildren =
+    item.children || item._navChildren || navChildren || [];
   const hasSub = resolvedChildren.length > 0;
   const [childOpenIdx, setChildOpenIdx] = useState(null);
 
@@ -321,11 +367,11 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick, isOpen, onTo
 
     return (
       <Link
-        to={item.path || '#'}
-        className={`block px-5 py-3 text-sm rounded-md transition-all border-l-[3px] ${
+        to={item.path || "#"}
+        className={`block px-5 py-3 text-sm rounded-md transition-colors ${
           isActive
-            ? 'text-brand-orange bg-brand-orange/10 font-semibold border-brand-orange'
-            : 'text-gray-600 hover:text-brand-accent hover:bg-gray-50 hover:border-brand-accent/50 border-transparent'
+            ? "text-brand-orange font-semibold"
+            : "text-gray-600 hover:text-brand-accent"
         }`}
         onClick={onItemClick}
       >
@@ -341,24 +387,28 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick, isOpen, onTo
         aria-expanded={isOpen}
         className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors cursor-pointer ${
           depth === 0
-            ? 'font-medium text-dark-navy hover:text-brand-orange'
-            : 'text-gray-700 hover:text-brand-accent hover:bg-gray-50'
+            ? "font-medium text-dark-navy hover:text-brand-orange"
+            : "text-gray-700 hover:text-brand-accent"
         }`}
       >
         <span>{item.label}</span>
-        <FiChevronDown className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <FiChevronDown
+          className={`w-5 h-5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
             key="mobile-sub"
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className={`py-1 ${depth === 0 ? 'pl-6' : 'pl-4'} border-l-2 border-gray-100 ml-5`}>
+            <div
+              className={`py-1 ${depth === 0 ? "pl-6" : "pl-4"} border-l-2 border-gray-100 ml-5`}
+            >
               {resolvedChildren.map((child, idx) => (
                 <MobileNavItem
                   key={idx}
@@ -367,7 +417,9 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick, isOpen, onTo
                   currentPath={currentPath}
                   onItemClick={onItemClick}
                   isOpen={childOpenIdx === idx}
-                  onToggle={() => setChildOpenIdx(childOpenIdx === idx ? null : idx)}
+                  onToggle={() =>
+                    setChildOpenIdx(childOpenIdx === idx ? null : idx)
+                  }
                 />
               ))}
             </div>

@@ -200,8 +200,8 @@ export default function ChatWidget() {
         <div
           className="fixed z-50 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-fade-in-up"
           style={{
-            width: maximized ? 'calc(100vw - 2rem)' : 'min(90vw, 360px)',
-            maxWidth: maximized ? 'none' : '400px',
+            width: maximized ? 'calc(100vw - 2rem)' : 'min(72vw, 288px)',
+            maxWidth: maximized ? 'none' : '320px',
             height: maximized ? 'calc(100vh - 2rem)' : '520px',
             maxHeight: maximized ? 'none' : '80vh',
             bottom: maximized ? '1rem' : '1rem',
@@ -209,14 +209,14 @@ export default function ChatWidget() {
           }}
         >
             {/* Header */}
-            <div className="bg-gray-800 text-white flex items-center justify-between px-4 py-3 shrink-0">
+            <div className="bg-brand-accent text-white flex items-center justify-between px-4 py-3 shrink-0">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                   <FiMessageCircle className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-bold text-sm">Marvel Slice Chat</p>
-                  <p className="text-[11px] text-white/80">We typically reply in minutes</p>
+                  <p className="font-bold text-sm">Live Chat</p>
+                  <p className="text-[11px] text-white/80">Welcome to Marvel Slice</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -242,7 +242,7 @@ export default function ChatWidget() {
                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-gray-700 text-white rounded-br-md'
+                      ? 'bg-gray-200 text-dark-navy rounded-br-md'
                       : 'bg-white border border-gray-200 text-dark-navy rounded-bl-md shadow-sm'
                   }`}>
                     <div className="flex items-center gap-1.5 mb-1">
@@ -270,7 +270,7 @@ export default function ChatWidget() {
                     className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gray-500/40"
                     autoFocus
                   />
-                  <button type="submit" className="px-4 py-2 bg-gray-700 text-white text-sm font-semibold rounded-lg hover:bg-gray-600 transition-colors shrink-0 cursor-pointer">
+                  <button type="submit" className="px-4 py-2 bg-gray-400 text-white text-sm font-semibold rounded-lg hover:bg-gray-500 transition-colors shrink-0 cursor-pointer">
                     Save
                   </button>
                 </form>
@@ -290,7 +290,7 @@ export default function ChatWidget() {
                 <button
                   type="submit"
                   disabled={!input.trim() || sending}
-                  className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center hover:bg-gray-600 transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
+                  className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center hover:bg-gray-500 transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
                 >
                   {sending ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
                 </button>
@@ -302,7 +302,7 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-gray-700 text-white shadow-lg hover:bg-gray-600 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-brand-accent text-white shadow-lg hover:bg-orange-600 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
         >
           <FiMessageCircle className="w-6 h-6" />
         </button>

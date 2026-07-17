@@ -12,7 +12,7 @@ export default function AccordionItem({ title, children, defaultOpen = false, is
   }
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden">
+    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
       <button
         onClick={handleToggle}
         className="w-full flex items-center justify-between px-4 sm:px-5 py-3 text-left font-semibold text-dark-navy hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
@@ -32,7 +32,7 @@ export default function AccordionItem({ title, children, defaultOpen = false, is
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-4 sm:px-5 pb-4 text-sm text-text-gray leading-relaxed">
+            <div className="px-4 sm:px-5 pb-4 text-sm text-gray-500 leading-relaxed">
               {children}
             </div>
           </motion.div>
