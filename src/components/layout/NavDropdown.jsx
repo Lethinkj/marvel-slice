@@ -116,7 +116,7 @@ function DesktopNavItem({
           role="menuitem"
           aria-haspopup="true"
           aria-expanded={isOpen}
-          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all cursor-pointer ${
             isOpen ? 'text-brand-orange bg-brand-orange/[0.06]' : 'text-dark-navy hover:text-brand-orange hover:bg-brand-orange/[0.04]'
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
@@ -163,7 +163,7 @@ function DesktopNavItem({
         role="menuitem"
         aria-haspopup="true"
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm rounded-md transition-all border-l-[3px] ${
+        className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm rounded-md transition-all border-l-[3px] cursor-pointer ${
           isOpen
             ? 'bg-brand-accent/10 text-brand-accent font-semibold border-brand-accent'
             : 'text-gray-700 hover:bg-brand-accent/5 hover:text-dark-navy hover:border-brand-accent/30 border-transparent'
@@ -339,7 +339,7 @@ function MobileNavItem({ item, depth = 0, currentPath, onItemClick, isOpen, onTo
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors ${
+        className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors cursor-pointer ${
           depth === 0
             ? 'font-medium text-dark-navy hover:text-brand-orange'
             : 'text-gray-700 hover:text-brand-accent hover:bg-gray-50'

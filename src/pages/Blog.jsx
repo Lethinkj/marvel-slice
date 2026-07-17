@@ -333,7 +333,7 @@ export default function Blog() {
         )}
       </section>
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 w-11 h-11 sm:w-12 sm:h-12 bg-brand-orange text-white rounded-full shadow-lg flex items-center justify-center hover:bg-orange-600 transition-colors z-50">
+        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 w-11 h-11 sm:w-12 sm:h-12 bg-brand-blue text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition-colors z-50">
         <FiArrowUp className="w-5 h-5" /></button>
     </div>
   );

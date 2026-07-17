@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import TopBar from './components/layout/TopBar';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import ChatWidget from './components/chat/ChatWidget';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
@@ -141,6 +142,7 @@ function PublicLayout() {
         <AnimatedRoutes />
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 }

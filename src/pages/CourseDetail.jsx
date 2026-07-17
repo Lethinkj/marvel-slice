@@ -295,7 +295,7 @@ function FAQSection({ faqs }) {
             <div key={f.id || i} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between px-6 py-4 text-left font-semibold text-dark-navy hover:bg-gray-50 transition-colors gap-3"
+                className="w-full flex items-center justify-between px-6 py-4 text-left font-semibold text-dark-navy hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
               >
                 <span>{f.question}</span>
                 <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange">

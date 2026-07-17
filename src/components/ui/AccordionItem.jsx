@@ -15,7 +15,7 @@ export default function AccordionItem({ title, children, defaultOpen = false, is
     <div className="border border-gray-200 rounded-xl overflow-hidden">
       <button
         onClick={handleToggle}
-        className="w-full flex items-center justify-between px-4 sm:px-5 py-3 text-left font-semibold text-dark-navy hover:bg-gray-50 transition-colors gap-3"
+        className="w-full flex items-center justify-between px-4 sm:px-5 py-3 text-left font-semibold text-dark-navy hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
       >
         <span className="text-sm sm:text-base leading-snug flex-1">{title}</span>
         <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-brand-orange/10 text-brand-orange">

@@ -655,3 +655,67 @@ do $$ begin
     with check (true);
   end if;
 end $$;
+
+-- 26. Chat conversations
+create table if not exists conversations (
+  id uuid primary key default gen_random_uuid(),
+  user_identifier text,
+  user_name text default '',
+  status text default 'open',
+  created_at timestamptz default now(),
+  last_message_at timestamptz default now()
+);
+
+-- 27. Chat messages
+create table if not exists messages (
+  id uuid primary key default gen_random_uuid(),
+  conversation_id uuid references conversations(id) on delete cascade,
+  sender text not null,
+  content text not null,
+  created_at timestamptz default now()
+);
+create index if not exists idx_messages_conversation_id on messages(conversation_id);
+create index if not exists idx_conversations_last_message_at on conversations(last_message_at desc);
+
+-- Enable Realtime for chat tables (safe to re-run)
+do $$
+begin
+  if not exists (select 1 from pg_publication_rel pr join pg_class c on c.oid = pr.prrelid where pr.prpubid = (select oid from pg_publication where pubname = 'supabase_realtime') and c.relname = 'conversations') then
+    alter publication supabase_realtime add table conversations;
+  end if;
+  if not exists (select 1 from pg_publication_rel pr join pg_class c on c.oid = pr.prrelid where pr.prpubid = (select oid from pg_publication where pubname = 'supabase_realtime') and c.relname = 'messages') then
+    alter publication supabase_realtime add table messages;
+  end if;
+end $$;
+
+-- RLS policies for chat (public insert/select for widget)
+alter table conversations enable row level security;
+alter table messages enable row level security;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can insert conversations') then
+    create policy "Anyone can insert conversations"
+    on conversations for insert to anon, authenticated
+    with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can select conversations') then
+    create policy "Anyone can select conversations"
+    on conversations for select to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Authenticated can update conversations') then
+    create policy "Authenticated can update conversations"
+    on conversations for update to authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can insert messages') then
+    create policy "Anyone can insert messages"
+    on messages for insert to anon, authenticated
+    with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Anyone can select messages') then
+    create policy "Anyone can select messages"
+    on messages for select to anon, authenticated
+    using (true);
+  end if;
+end $$;

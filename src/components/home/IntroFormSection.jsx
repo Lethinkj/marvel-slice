@@ -83,8 +83,8 @@ export default function IntroFormSection({ section }) {
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(#1B3A6B 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-          <Reveal variant="up" className="space-y-7">
+        <div className="grid lg:grid-cols-6 gap-10 lg:gap-16 items-start">
+          <Reveal variant="up" className="lg:col-span-4 space-y-7">
             {introText && (
               <p className="text-text-gray text-base sm:text-lg leading-relaxed">
                 {introText}
@@ -144,8 +144,8 @@ export default function IntroFormSection({ section }) {
             </div>
           </Reveal>
 
-          <Reveal variant="right">
-            <div className="rounded-2xl shadow-lg overflow-hidden" style={{ backgroundColor: '#74a916' }}>
+          <Reveal variant="right" className="lg:col-span-2">
+            <div className="rounded-2xl shadow-lg overflow-hidden max-w-sm w-full lg:ml-auto" style={{ backgroundColor: '#74a916' }}>
               {/* diagonal header: white left / orange right */}
               <div className="relative h-28" style={{ backgroundColor: '#ff8415' }}>
                 <div

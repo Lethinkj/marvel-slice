@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiGlobe, FiSettings, FiSearch } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiGlobe, FiSettings, FiSearch, FiMessageCircle } from "react-icons/fi";
 
 const navGroups = [
   { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
@@ -27,6 +27,7 @@ const navGroups = [
       { to: "/admin/training-page", label: "Training" },
     ],
   },
+  { label: "Live Chat", icon: FiMessageCircle, items: [{ to: "/admin/chats", label: "Chat" }] },
   { label: "Submissions", icon: FiInbox, items: [
     { to: "/admin/career-submissions", label: "Career Submissions" },
     { to: "/admin/form-submissions", label: "Form Submissions" },

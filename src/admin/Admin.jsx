@@ -26,6 +26,7 @@ import ServicesPageEditor from './pages/ServicesPageEditor';
 import TrainingPageEditor from './pages/TrainingPageEditor';
 import CareerSubmissions from './pages/CareerSubmissions';
 import FormSubmissions from './pages/FormSubmissions';
+import ChatPanel from './pages/ChatPanel';
 import BlogManager from './pages/BlogManager';
 import BlogPostEditor from './pages/BlogPostEditor';
 import BlogCategoriesManager from './pages/BlogCategoriesManager';
@@ -122,6 +123,7 @@ export default function Admin() {
           <Route path="career-submissions" element={<CareerSubmissions />} />
           <Route path="form-submissions" element={<FormSubmissions />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
+          <Route path="chats" element={<ChatPanel />} />
           <Route path="blog" element={<BlogManager />} />
           <Route path="blog/:id" element={<BlogPostEditor />} />
           <Route path="blog/categories" element={<BlogCategoriesManager />} />
