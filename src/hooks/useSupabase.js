@@ -73,20 +73,15 @@ export function useCourse(slug) {
           overview_faqs(*),
           course_fees(*),
           projects(*),
-          certifications(*)`
+          certifications(*),
+          course_tabs(*),
+          faqs(*)`
         )
         .eq('slug', slug)
         .eq('is_published', true)
         .maybeSingle();
       if (error) throw error;
-      if (!course) return null;
-
-      const [tabsRes, faqsRes] = await Promise.all([
-        supabase.from('course_tabs').select('*').eq('course_id', course.id).order('sort_order'),
-        supabase.from('faqs').select('*').eq('course_id', course.id).order('sort_order'),
-      ]);
-
-      return { ...course, course_tabs: tabsRes.data || [], faqs: faqsRes.data || [] };
+      return course || null;
     },
     enabled: !!slug,
   });

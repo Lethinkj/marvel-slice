@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import EmptyState from '../components/EmptyState';
@@ -144,6 +145,7 @@ const defaultJobForm = {
 };
 
 export default function CareerPageEditor() {
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -279,6 +281,7 @@ export default function CareerPageEditor() {
     } else {
       if (res.data?.id) setPageId(res.data.id);
       setSaved(true);
+      queryClient.invalidateQueries({ queryKey: ['career-page-content'] });
       setTimeout(() => setSaved(false), 3000);
     }
     setSaving(false);
@@ -331,6 +334,7 @@ export default function CareerPageEditor() {
       if (data) payload.id = data.id;
     }
 
+    queryClient.invalidateQueries({ queryKey: ['job-openings'] });
     setJobSaving(false);
     closeJobForm();
 
@@ -345,11 +349,13 @@ export default function CareerPageEditor() {
   async function deleteJob(id) {
     if (!window.confirm('Delete this job opening?')) return;
     await supabase.from('job_openings').delete().eq('id', id);
+    queryClient.invalidateQueries({ queryKey: ['job-openings'] });
     setOpenings(prev => prev.filter(j => j.id !== id));
   }
 
   async function toggleActive(job) {
     await supabase.from('job_openings').update({ is_active: !job.is_active }).eq('id', job.id);
+    queryClient.invalidateQueries({ queryKey: ['job-openings'] });
     setOpenings(prev => prev.map(j => j.id === job.id ? { ...j, is_active: !j.is_active } : j));
   }
 
@@ -396,6 +402,7 @@ export default function CareerPageEditor() {
       if (error) return alert('Insert error: ' + error.message);
     }
 
+    queryClient.invalidateQueries({ queryKey: ['role-categories'] });
     setCategorySaving(false);
     closeCategoryForm();
 
@@ -410,11 +417,13 @@ export default function CareerPageEditor() {
   async function deleteCategory(id) {
     if (!window.confirm('Delete this role category?')) return;
     await supabase.from('role_categories').delete().eq('id', id);
+    queryClient.invalidateQueries({ queryKey: ['role-categories'] });
     setRoleCategories(prev => prev.filter(c => c.id !== id));
   }
 
   async function toggleCategoryActive(cat) {
     await supabase.from('role_categories').update({ is_active: !cat.is_active }).eq('id', cat.id);
+    queryClient.invalidateQueries({ queryKey: ['role-categories'] });
     setRoleCategories(prev => prev.map(c => c.id === cat.id ? { ...c, is_active: !c.is_active } : c));
   }
 

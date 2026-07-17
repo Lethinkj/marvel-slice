@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavPage } from '../../hooks/useSupabase';
 import AdminButton from '../components/AdminButton';
@@ -69,6 +70,7 @@ function ImageUploader({ value, onChange, label }) {
 export default function NavPageEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: page, isLoading } = useNavPage(id);
   const [navItem, setNavItem] = useState(null);
   const [heading, setHeading] = useState('');
@@ -188,6 +190,9 @@ export default function NavPageEditor() {
       setCourseChanges(false);
     }
 
+    queryClient.invalidateQueries({ queryKey: ['navPage', id] });
+    queryClient.invalidateQueries({ queryKey: ['navPageData'] });
+    queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
     navigate('/admin/nav-menu');
   }
 

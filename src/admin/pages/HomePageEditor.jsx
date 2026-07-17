@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import {
@@ -1024,6 +1025,7 @@ export default function HomePageEditor() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const savingRef = useRef(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (section && !loading) {
@@ -1115,6 +1117,9 @@ export default function HomePageEditor() {
     savingRef.current = false;
     setSaving(false);
     setSaved(true);
+    queryClient.invalidateQueries({ queryKey: ['homeSections'] });
+    queryClient.invalidateQueries({ queryKey: ['promoBanner'] });
+    queryClient.invalidateQueries({ queryKey: ['alumniCompanies'] });
     setTimeout(() => setSaved(false), 2000);
   }
 

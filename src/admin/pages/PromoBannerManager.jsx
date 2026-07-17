@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
 import { FiSave, FiCheck, FiEye } from 'react-icons/fi';
 
 export default function PromoBannerManager() {
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({
     heading: '',
     highlighted_text: '',
@@ -49,6 +51,7 @@ export default function PromoBannerManager() {
     } else {
       await supabase.from('promo_banners').insert(payload);
     }
+    queryClient.invalidateQueries({ queryKey: ['promoBanner'] });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);

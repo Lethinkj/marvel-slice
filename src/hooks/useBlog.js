@@ -109,7 +109,8 @@ export function usePopularTags() {
       const { data, error } = await supabase
         .from('tags')
         .select('id, name')
-        .order('name');
+        .order('name')
+        .limit(50);
       if (error) throw error;
       return data || [];
     },

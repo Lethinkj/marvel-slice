@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import AdminButton from "../components/AdminButton";
@@ -166,6 +167,7 @@ export default function CourseEditor() {
   const { user: currentUser } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const isNew = id === "new";
   const [tab, setTab] = useState("basic");
@@ -467,6 +469,10 @@ export default function CourseEditor() {
             );
         }
       }
+      queryClient.invalidateQueries({ queryKey: ['course', course.slug] });
+      queryClient.invalidateQueries({ queryKey: ['allCourses'] });
+      queryClient.invalidateQueries({ queryKey: ['featuredCourses'] });
+      queryClient.invalidateQueries({ queryKey: ['courseNavCategories'] });
       setMessage("Course saved successfully.");
       setIsDirty(false);
     } catch (err) {

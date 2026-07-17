@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiFolder } from 'react-icons/fi';
 
 export default function BlogCategoriesManager() {
+  const queryClient = useQueryClient();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
@@ -39,6 +41,7 @@ export default function BlogCategoriesManager() {
     } else {
       await supabase.from('blog_categories').insert({ ...payload, sort_order: categories.length });
     }
+    queryClient.invalidateQueries({ queryKey: ['blogCategories'] });
     const { data } = await supabase.from('blog_categories').select('*').order('sort_order');
     setCategories(data || []);
     resetForm();
@@ -47,6 +50,7 @@ export default function BlogCategoriesManager() {
   async function deleteCategory(id) {
     if (!window.confirm('Delete this category?')) return;
     await supabase.from('blog_categories').delete().eq('id', id);
+    queryClient.invalidateQueries({ queryKey: ['blogCategories'] });
     setCategories(categories.filter((c) => c.id !== id));
   }
 

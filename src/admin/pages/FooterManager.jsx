@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiPlus, FiLink, FiChevronDown, FiChevronRight } from 'react-icons/fi';
@@ -60,6 +61,7 @@ function ColumnCard({ column, onUpdate, onDelete, onAddLink, onUpdateLink, onDel
 }
 
 export default function FooterManager() {
+  const queryClient = useQueryClient();
   const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -95,12 +97,14 @@ export default function FooterManager() {
     newCols[idx] = updated;
     setColumns(newCols);
     await supabase.from('footer_columns').update({ [field]: value }).eq('id', col.id);
+    queryClient.invalidateQueries({ queryKey: ['footer'] });
   }
 
   async function deleteColumn(idx) {
     const col = columns[idx];
     if (!window.confirm(`Delete column "${col.title}" and all its links?`)) return;
     await supabase.from('footer_columns').delete().eq('id', col.id);
+    queryClient.invalidateQueries({ queryKey: ['footer'] });
     setColumns(columns.filter((_, i) => i !== idx));
   }
 
@@ -116,6 +120,7 @@ export default function FooterManager() {
       newCols[colIdx] = { ...col, footer_links: [...(col.footer_links || []), data] };
       setColumns(newCols);
     }
+    queryClient.invalidateQueries({ queryKey: ['footer'] });
   }
 
   async function updateLink(colIdx, linkIdx, field, value) {
@@ -128,12 +133,14 @@ export default function FooterManager() {
     newCols[colIdx] = { ...col, footer_links: newLinks };
     setColumns(newCols);
     await supabase.from('footer_links').update({ [field]: value }).eq('id', link.id);
+    queryClient.invalidateQueries({ queryKey: ['footer'] });
   }
 
   async function deleteLink(colIdx, linkIdx) {
     const col = columns[colIdx];
     const link = col.footer_links[linkIdx];
     await supabase.from('footer_links').delete().eq('id', link.id);
+    queryClient.invalidateQueries({ queryKey: ['footer'] });
     const newCols = [...columns];
     newCols[colIdx] = { ...col, footer_links: col.footer_links.filter((_, i) => i !== linkIdx) };
     setColumns(newCols);

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import TopBar from './components/layout/TopBar';
@@ -11,8 +11,9 @@ import CourseDetail from './pages/CourseDetail';
 import Blog from './pages/Blog';
 import NavPage from './pages/NavPage';
 import Career from './pages/Career';
-import Admin from './admin/Admin';
 import { pageTransition } from './lib/motion';
+
+const Admin = lazy(() => import('./admin/Admin'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -152,7 +153,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/*" element={<PublicLayout />} />
-        <Route path="/admin/*" element={<Admin />} />
+        <Route path="/admin/*" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center text-neutral-500 text-sm">Loading admin…</div>}><Admin /></Suspense>} />
       </Routes>
     </BrowserRouter>
   );

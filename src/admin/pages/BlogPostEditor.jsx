@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag } from 'react-icons/fi';
@@ -65,6 +66,7 @@ export default function BlogPostEditor() {
   const navigate = useNavigate();
   const isNew = id === 'new';
   const savingRef = useRef(false);
+  const queryClient = useQueryClient();
   const formRef = useRef(null);
   const [form, setForm] = useState({
     title: '',
@@ -205,6 +207,10 @@ export default function BlogPostEditor() {
       }
     }
 
+    queryClient.invalidateQueries({ queryKey: ['blogPosts'] });
+    queryClient.invalidateQueries({ queryKey: ['blogPost', form.slug] });
+    queryClient.invalidateQueries({ queryKey: ['recentPosts'] });
+    queryClient.invalidateQueries({ queryKey: ['popularTags'] });
     setSaving(false);
     navigate('/admin/blog');
   }

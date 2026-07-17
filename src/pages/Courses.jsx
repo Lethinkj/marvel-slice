@@ -8,6 +8,7 @@ import {
 } from "react-icons/fi";
 import { supabase } from "../lib/supabaseClient";
 import CourseCard from "../components/ui/CourseCard";
+import CourseSkeleton from "../components/ui/CourseSkeleton";
 import Reveal, { Stagger, StaggerItem } from "../components/ui/Reveal";
 
 const PER_PAGE = 6;
@@ -232,8 +233,9 @@ export default function Courses() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="w-48 h-8 bg-gray-200 rounded mb-8 animate-pulse" />
+        <CourseSkeleton count={6} />
       </div>
     );
   }

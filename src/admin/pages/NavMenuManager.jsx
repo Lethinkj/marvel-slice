@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import AdminButton from "../components/AdminButton";
 import {
@@ -23,6 +24,7 @@ const sections = [
 
 export default function NavMenuManager() {
   const { user: currentUser } = useAuth();
+  const queryClient = useQueryClient();
 
   const [dbItems, setDbItems] = useState([]);
   const [editing, setEditing] = useState(null);
@@ -237,6 +239,7 @@ export default function NavMenuManager() {
         sort_order: 0,
       });
     }
+    queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
     setEditing(null);
     setForm({ label: "", path: "", is_active: true, parent_id: null });
     fetchItems();
@@ -245,6 +248,7 @@ export default function NavMenuManager() {
   async function handleDelete(item) {
     if (!window.confirm(`Delete "${item.label}"?`)) return;
     await supabase.from("nav_items").delete().eq("id", item.id);
+    queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
     fetchItems();
   }
 

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FiStar, FiBookOpen, FiClock, FiMonitor } from 'react-icons/fi';
+import { useQueryClient } from '@tanstack/react-query';
+import { supabase } from '../../lib/supabaseClient';
 
 const bannerHeights = { sm: 'h-40', md: 'h-44', lg: 'h-48' };
 const contentPaddings = { sm: 'p-5', md: 'p-5', lg: 'p-6' };
@@ -11,9 +13,27 @@ export default function CourseCard({
   showViewLink = false,
   variant = 'icon',
 }) {
+  const queryClient = useQueryClient();
   const bannerH = bannerHeights[bannerSize] || bannerHeights.md;
   const pad = contentPaddings[bannerSize] || contentPaddings.md;
   const titleSize = bannerSize === 'lg' ? 'text-lg sm:text-xl' : 'text-base sm:text-lg';
+
+  function handlePrefetch() {
+    if (course?.slug) {
+      queryClient.prefetchQuery({
+        queryKey: ['course', course.slug],
+        queryFn: () =>
+          supabase
+            .from('courses')
+            .select('*, highlights(*), overview_faqs(*), course_fees(*), projects(*), certifications(*), course_tabs(*), faqs(*)')
+            .eq('slug', course.slug)
+            .eq('is_published', true)
+            .maybeSingle()
+            .then(({ data }) => data || null),
+        staleTime: 1000 * 60 * 5,
+      });
+    }
+  }
 
   function renderBanner() {
     if (course.hero_image_url) {
@@ -27,6 +47,7 @@ export default function CourseCard({
 
   return (
     <Link to={`/courses/${course.slug}`}
+      onMouseEnter={handlePrefetch}
       className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group h-full flex flex-col"
     >
       <div className={`${bannerH} bg-gradient-to-br from-brand-blue to-dark-navy flex items-center justify-center shrink-0 overflow-hidden`}>

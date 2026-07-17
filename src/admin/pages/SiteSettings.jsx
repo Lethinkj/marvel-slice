@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiSave, FiUpload, FiTrash2, FiCheck, FiMail, FiPhone, FiGlobe } from 'react-icons/fi';
@@ -53,6 +54,7 @@ function ImageUploader({ value, onChange, label }) {
 }
 
 export default function SiteSettings() {
+  const queryClient = useQueryClient();
   const [form, setForm] = useState({
     logo_url: '',
     contact_email: '',
@@ -111,6 +113,7 @@ export default function SiteSettings() {
       const { data } = await supabase.from('site_settings').insert(payload).select().single();
       if (data) setSettingsId(data.id);
     }
+    queryClient.invalidateQueries({ queryKey: ['siteSettings'] });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);

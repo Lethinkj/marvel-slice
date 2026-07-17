@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
@@ -6,6 +7,7 @@ import EmptyState from '../components/EmptyState';
 import { FiPlus, FiTag } from 'react-icons/fi';
 
 export default function TagsManager() {
+  const queryClient = useQueryClient();
   const [tags, setTags] = useState([]);
   const [name, setName] = useState('');
 
@@ -28,11 +30,13 @@ export default function TagsManager() {
       setTags([...tags, data]);
       setName('');
     }
+    queryClient.invalidateQueries({ queryKey: ['popularTags'] });
   }
 
   async function deleteTag(id) {
     if (!window.confirm('Delete this tag?')) return;
     await supabase.from('tags').delete().eq('id', id);
+    queryClient.invalidateQueries({ queryKey: ['popularTags'] });
     setTags(tags.filter((t) => t.id !== id));
   }
 

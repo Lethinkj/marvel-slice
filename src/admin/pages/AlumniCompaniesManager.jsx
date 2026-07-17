@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import EmptyState from '../components/EmptyState';
 import { FiPlus, FiBriefcase } from 'react-icons/fi';
 
 export default function AlumniCompaniesManager() {
+  const queryClient = useQueryClient();
   const [companies, setCompanies] = useState([]);
   const [name, setName] = useState('');
 
@@ -27,11 +29,13 @@ export default function AlumniCompaniesManager() {
       setCompanies([...companies, data]);
       setName('');
     }
+    queryClient.invalidateQueries({ queryKey: ['alumniCompanies'] });
   }
 
   async function deleteCompany(id) {
     if (!window.confirm('Delete this company?')) return;
     await supabase.from('alumni_companies').delete().eq('id', id);
+    queryClient.invalidateQueries({ queryKey: ['alumniCompanies'] });
     setCompanies(companies.filter((c) => c.id !== id));
   }
 

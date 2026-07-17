@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
@@ -39,6 +40,7 @@ const PAGE_PATH = '/training';
 
 export default function TrainingPageEditor() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [navItem, setNavItem] = useState(null);
   const [navItemId, setNavItemId] = useState(null);
@@ -123,6 +125,8 @@ export default function TrainingPageEditor() {
     } else {
       if (res.data?.id) setPageId(res.data.id);
       setSaved(true);
+      queryClient.invalidateQueries({ queryKey: ['navPage', navItemId] });
+      queryClient.invalidateQueries({ queryKey: ['navPageData'] });
       setTimeout(() => setSaved(false), 2000);
       savingRef.current = false;
       setSaving(false);

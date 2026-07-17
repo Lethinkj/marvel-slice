@@ -8,11 +8,13 @@ import { useBlogPosts, useBlogCategories, useRecentPosts, usePopularTags, useBlo
 
 function Hero({ search, onSearchChange, onSearch }) {
   return (
-    <section className="relative bg-gradient-to-br from-dark-navy via-brand-blue to-dark-navy text-white overflow-hidden">
-      <div className="absolute inset-0 opacity-10" style={{
-        backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+    <section className="relative text-white overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-10" />
+      <div className="absolute inset-0" style={{
+        backgroundImage: 'url(https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&q=75)',
+        backgroundSize: 'cover', backgroundPosition: 'center',
       }} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28 text-center relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 text-center relative z-20">
         <Reveal>
           <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-extrabold leading-tight">Latest Articles & News</h1>
           <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/70 max-w-2xl mx-auto">Insights, tutorials, and stories from the Marvel Slice team</p>
@@ -86,7 +88,7 @@ function PostCard({ post }) {
           <span className="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-semibold rounded-full mb-3 w-fit">{post.blog_categories.name}</span>
         )}
         <h3 className="font-bold text-dark-navy text-lg group-hover:text-brand-accent transition-colors line-clamp-2">{post.title}</h3>
-        <p className="mt-2 text-sm text-text-gray line-clamp-2 flex-1">{post.excerpt}</p>
+        <p className="mt-2 text-sm text-text-gray line-clamp-4 flex-1">{post.excerpt}</p>
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
           <span className="text-xs text-gray-400 flex items-center gap-1"><FiCalendar className="w-3.5 h-3.5" />
             {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
