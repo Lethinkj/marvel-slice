@@ -115,7 +115,7 @@ export default function HeroSection({ section }) {
                 <motion.div variants={container} {...mount} className="flex flex-col justify-center">
                   {badgeText && (
                     <Reveal as="div" className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-semibold text-white w-fit mb-6">
-                      <span className="w-2 h-2 rounded-full bg-brand-bright-blue" />
+                      <span className="w-2 h-2 rounded-full bg-brand-blue" />
                       {badgeText}
                     </Reveal>
                   )}
@@ -171,7 +171,7 @@ export default function HeroSection({ section }) {
           </div>
 
           {stats.length > 0 && (
-            <div className="bg-brand-navy-dark">
+            <div className="bg-dark-navy">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <Stagger className="grid grid-cols-3 gap-4">
                   {stats.map((stat, i) => (

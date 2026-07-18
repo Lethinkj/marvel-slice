@@ -16,7 +16,7 @@ export default function Tabs({ tabs, panels, className = '' }) {
                 classNames(
                   'px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-medium rounded-t-lg transition-colors outline-none whitespace-nowrap shrink-0',
                   selected
-                    ? 'bg-brand-purple text-white shadow-sm'
+                    ? 'bg-brand-blue text-white shadow-sm'
                     : 'text-text-gray hover:text-brand-blue hover:bg-gray-100'
                 )
               }

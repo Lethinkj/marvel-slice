@@ -209,22 +209,22 @@ export default function ChatWidget() {
           }}
         >
             {/* Header */}
-            <div className="bg-brand-accent text-white flex items-center justify-between px-4 py-3 shrink-0">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                  <FiMessageCircle className="w-5 h-5" />
+            <div className="bg-brand-orange text-white flex items-center justify-between px-3 py-2 shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                  <FiMessageCircle className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-bold text-sm">Live Chat</p>
-                  <p className="text-[11px] text-white/80">Welcome to Marvel Slice</p>
+                  <p className="font-semibold text-xs">Live Chat</p>
+                  <p className="text-[10px] text-white/80">Welcome to Marvel Slice</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
-                <button onClick={() => setMaximized((p) => !p)} className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors shrink-0 cursor-pointer">
-                  {maximized ? <FiMinimize2 className="w-4 h-4" /> : <FiMaximize2 className="w-4 h-4" />}
+              <div className="flex items-center gap-0.5">
+                <button onClick={() => setMaximized((p) => !p)} className="w-7 h-7 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors shrink-0 cursor-pointer">
+                  {maximized ? <FiMinimize2 className="w-3.5 h-3.5" /> : <FiMaximize2 className="w-3.5 h-3.5" />}
                 </button>
-                <button onClick={() => setOpen(false)} className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors shrink-0 cursor-pointer">
-                  <FiX className="w-4 h-4" />
+                <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors shrink-0 cursor-pointer">
+                  <FiX className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -302,9 +302,9 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-brand-accent text-white shadow-lg hover:bg-orange-600 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-10 h-10 rounded-full bg-brand-orange text-white shadow-lg hover:bg-orange-600 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
         >
-          <FiMessageCircle className="w-6 h-6" />
+          <FiMessageCircle className="w-5 h-5" />
         </button>
       )}
     </>

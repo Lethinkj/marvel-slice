@@ -30,7 +30,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
       <div className="shrink-0 px-4 pt-4 pb-3 border-b border-gray-100">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-bold text-dark-navy text-base flex items-center gap-2">
-            <FiMessageCircle className="w-4 h-4 text-brand-accent" />
+            <FiMessageCircle className="w-4 h-4 text-brand-orange" />
             Chats
           </h2>
         </div>
@@ -40,7 +40,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search conversations..."
-            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-accent/30 placeholder-gray-400"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 placeholder-gray-400"
           />
         </div>
         <div className="flex gap-1 mt-3">
@@ -49,7 +49,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
               key={f}
               onClick={() => onFilterChange(f)}
               className={`px-3 py-1 text-xs font-medium rounded-full transition-colors cursor-pointer ${
-                filter === f ? 'bg-brand-accent text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                filter === f ? 'bg-brand-orange text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
               }`}
             >
               {f}
@@ -84,7 +84,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 ${
-                      unread ? 'bg-brand-accent text-white' : 'bg-gray-200 text-gray-500'
+                      unread ? 'bg-brand-orange text-white' : 'bg-gray-200 text-gray-500'
                     }`}>
                       {(conv.user_name || 'V')[0].toUpperCase()}
                     </div>
@@ -102,8 +102,8 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
                       )}
                       {unread && (
                         <div className="flex items-center gap-1.5 mt-1.5">
-                          <span className="w-2 h-2 rounded-full bg-brand-accent" />
-                          <span className="text-[10px] text-brand-accent font-semibold">New message</span>
+                          <span className="w-2 h-2 rounded-full bg-brand-orange" />
+                          <span className="text-[10px] text-brand-orange font-semibold">New message</span>
                         </div>
                       )}
                     </div>
@@ -125,7 +125,7 @@ function MessageBox({ msg }) {
       <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
         isUser
           ? 'bg-[#f1f1f5] text-dark-navy rounded-bl-md'
-          : 'bg-brand-accent text-white rounded-br-md'
+          : 'bg-brand-orange text-white rounded-br-md'
       }`}>
         <p className="whitespace-pre-wrap break-words">{msg.content}</p>
         <div className={`flex items-center gap-1 mt-1 ${isUser ? 'justify-end' : 'justify-start'}`}>
@@ -278,7 +278,7 @@ export default function ChatPanel() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -318,8 +318,8 @@ export default function ChatPanel() {
               onClick={() => handleToggleStatus(activeConv.id, activeConv.status)}
               className={`text-xs px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
                 activeConv.status === 'open'
-                  ? 'text-gray-400 hover:text-white hover:bg-brand-accent border-gray-200 hover:border-brand-accent'
-                  : 'text-brand-accent hover:text-white hover:bg-brand-accent border-brand-accent'
+                  ? 'text-gray-400 hover:text-white hover:bg-brand-orange border-gray-200 hover:border-brand-orange'
+                  : 'text-brand-orange hover:text-white hover:bg-brand-orange border-brand-orange'
               }`}
             >
               {activeConv.status === 'open' ? 'Close conversation' : 'Reopen conversation'}
@@ -345,13 +345,13 @@ export default function ChatPanel() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your reply..."
-              className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-brand-accent placeholder-gray-400 resize-none"
+              className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-orange/30 focus:border-brand-orange placeholder-gray-400 resize-none"
               disabled={sending || activeConv.status === 'closed'}
             />
             <button
               type="submit"
               disabled={!input.trim() || sending || activeConv.status === 'closed'}
-              className="w-10 h-10 rounded-full bg-brand-accent text-white flex items-center justify-center hover:bg-orange-600 transition-colors disabled:opacity-40 shrink-0 cursor-pointer"
+              className="w-10 h-10 rounded-full bg-brand-orange text-white flex items-center justify-center hover:bg-orange-600 transition-colors disabled:opacity-40 shrink-0 cursor-pointer"
             >
               {sending ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
             </button>

@@ -56,7 +56,7 @@ export default function CourseCard({
         </div>
       </div>
       <div className={`${pad} flex flex-col flex-1`}>
-        <h3 className={`font-bold text-dark-navy ${titleSize} group-hover:text-brand-accent transition-colors`}>
+        <h3 className={`font-bold text-dark-navy ${titleSize} group-hover:text-brand-orange transition-colors`}>
           {course.title}
         </h3>
         <p className="text-sm text-text-gray mt-2 line-clamp-2 flex-1">{course.description}</p>
@@ -91,7 +91,7 @@ export default function CourseCard({
             <span>{(course.learner_count || 0).toLocaleString()} {(bannerSize === 'lg' ? 'learners' : 'Learners')}</span>
           </div>
           {showViewLink && (
-            <span className="text-sm font-semibold text-brand-accent">View Course &rarr;</span>
+            <span className="text-sm font-semibold text-brand-orange">View Course &rarr;</span>
           )}
         </div>
       </div>

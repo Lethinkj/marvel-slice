@@ -35,10 +35,10 @@ export default function KeyHighlights({ section }) {
             return (
               <StaggerItem
                 key={i}
-                className="bg-white border-l-4 border-brand-accent rounded-lg shadow-sm p-5 flex items-center gap-4"
+                className="bg-white border-l-4 border-brand-orange rounded-lg shadow-sm p-5 flex items-center gap-4"
               >
-                <div className="w-14 h-14 bg-brand-accent/10 rounded-full flex items-center justify-center shrink-0">
-                  <Icon className="w-7 h-7 text-brand-accent" />
+                <div className="w-14 h-14 bg-brand-orange/10 rounded-full flex items-center justify-center shrink-0">
+                  <Icon className="w-7 h-7 text-brand-orange" />
                 </div>
                 <span className="font-medium text-dark-navy text-base lg:text-lg">
                   {item.label}

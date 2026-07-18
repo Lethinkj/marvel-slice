@@ -61,14 +61,14 @@ function FeaturedPost({ post }) {
           {post.blog_categories && (
             <span className="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-semibold rounded-full mb-4 w-fit">{post.blog_categories.name}</span>
           )}
-          <h2 className="text-2xl lg:text-3xl font-bold text-dark-navy group-hover:text-brand-accent transition-colors">{post.title}</h2>
+          <h2 className="text-2xl lg:text-3xl font-bold text-dark-navy group-hover:text-brand-orange transition-colors">{post.title}</h2>
           <p className="mt-3 text-text-gray leading-relaxed line-clamp-3">{post.excerpt}</p>
           <div className="flex items-center gap-4 mt-6 text-sm text-gray-400">
             <span className="flex items-center gap-1.5"><FiUser className="w-4 h-4" />{post.author || 'Admin'}</span>
             <span className="flex items-center gap-1.5"><FiCalendar className="w-4 h-4" />
               {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}</span>
           </div>
-          <span className="mt-6 text-brand-accent font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+          <span className="mt-6 text-brand-orange font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
             Read More <FiArrowRight className="w-4 h-4" /></span>
         </div>
       </div>
@@ -87,12 +87,12 @@ function PostCard({ post }) {
         {post.blog_categories && (
           <span className="inline-block px-3 py-1 bg-brand-orange/10 text-brand-orange text-xs font-semibold rounded-full mb-3 w-fit">{post.blog_categories.name}</span>
         )}
-        <h3 className="font-bold text-dark-navy text-lg group-hover:text-brand-accent transition-colors line-clamp-2">{post.title}</h3>
+        <h3 className="font-bold text-dark-navy text-lg group-hover:text-brand-orange transition-colors line-clamp-2">{post.title}</h3>
         <p className="mt-2 text-sm text-text-gray line-clamp-4 flex-1">{post.excerpt}</p>
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
           <span className="text-xs text-gray-400 flex items-center gap-1"><FiCalendar className="w-3.5 h-3.5" />
             {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
-          <span className="text-sm text-brand-accent font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+          <span className="text-sm text-brand-orange font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
             Read More <FiArrowRight className="w-3.5 h-3.5" /></span>
         </div>
       </div>
@@ -140,7 +140,7 @@ function RecentPostsWidget({ posts }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <h3 className="font-bold text-dark-navy text-lg mb-4 flex items-center gap-2">
-        <FiCalendar className="w-4 h-4 text-brand-accent" />
+        <FiCalendar className="w-4 h-4 text-brand-orange" />
         Recent Posts
       </h3>
       <Stagger className="space-y-3">
@@ -148,11 +148,11 @@ function RecentPostsWidget({ posts }) {
           <StaggerItem key={post.id}>
             <Link to={`/blog/${post.slug}`} className="block group p-3 -mx-3 rounded-xl hover:bg-gray-50 transition-all duration-200">
               <div className="flex items-start gap-3">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-accent/10 to-brand-blue/10 flex items-center justify-center text-xs font-bold text-brand-accent shrink-0 mt-0.5">
+                <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-orange/10 to-brand-blue/10 flex items-center justify-center text-xs font-bold text-brand-orange shrink-0 mt-0.5">
                   {i + 1}
                 </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-dark-navy group-hover:text-brand-accent transition-colors line-clamp-2">{post.title}</p>
+                  <p className="text-sm font-medium text-dark-navy group-hover:text-brand-orange transition-colors line-clamp-2">{post.title}</p>
                   {post.published_at && <p className="text-xs text-gray-400 mt-1 flex items-center gap-1"><FiCalendar className="w-3 h-3" />{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>}
                 </div>
               </div>
@@ -216,19 +216,19 @@ function PopularTags({ tags, activeTag, onTagClick }) {
 function SinglePost({ slug }) {
   const { data: post, isLoading } = useBlogPost(slug);
 
-  if (isLoading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>;
+  if (isLoading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" /></div>;
   if (!post) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center">
         <h1 className="text-2xl font-bold text-dark-navy mb-4">Post not found</h1>
-        <Link to="/blog" className="text-brand-accent hover:underline">Back to blog</Link>
+        <Link to="/blog" className="text-brand-orange hover:underline">Back to blog</Link>
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-text-gray hover:text-brand-accent mb-8 transition-colors">
+      <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-text-gray hover:text-brand-orange mb-8 transition-colors">
         <FiArrowLeft className="w-4 h-4" /> Back to Blog</Link>
       <Reveal>
         {post.blog_categories && (
@@ -311,7 +311,7 @@ export default function Blog() {
               <CategoryPills categories={categories || []} active={category} onChange={(slug) => { setCategory(slug); setTag(null); setPage(1); setSearchParams({}); }} />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {isLoading ? (
-          <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>
+          <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" /></div>
         ) : posts.length === 0 ? (
           <div className="text-center py-20 text-text-gray"><p className="text-lg">No articles found.</p></div>
         ) : (

@@ -32,7 +32,7 @@ function TabPanel({ tab }) {
               const Icon = iconMap[b.icon] || FiCheck;
               return (
                 <li key={i} className="flex items-start gap-3 text-text-gray text-base">
-                  <Icon className="w-5 h-5 text-brand-accent shrink-0 mt-0.5" />
+                  <Icon className="w-5 h-5 text-brand-orange shrink-0 mt-0.5" />
                   <span>{b.text}</span>
                 </li>
               );

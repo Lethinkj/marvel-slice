@@ -11,7 +11,7 @@ export default function TopBar() {
 
   return (
     <div className="bg-brand-blue text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-0.5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-[5px]">
         <div className="flex items-center gap-3">
           <a
             href={`mailto:${email}`}

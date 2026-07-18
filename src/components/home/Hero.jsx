@@ -45,7 +45,7 @@ export default function Hero({ section }) {
               {heading}
             </motion.h1>
             {subheading && (
-              <motion.p variants={item} className="mt-3 text-base sm:text-lg text-brand-accent font-semibold">{subheading}</motion.p>
+              <motion.p variants={item} className="mt-3 text-base sm:text-lg text-brand-orange font-semibold">{subheading}</motion.p>
             )}
             <motion.p variants={item} className="mt-4 sm:mt-5 text-base sm:text-lg text-text-gray leading-relaxed max-w-xl">
               {description}

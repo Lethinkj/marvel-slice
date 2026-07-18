@@ -9,7 +9,7 @@ export default function CourseOverview({ section }) {
   const content = section.content || {};
   const description = content.description || '';
   const items = content.items || [];
-  const [openIdx, setOpenIdx] = useState(0);
+  const [openIdx, setOpenIdx] = useState(null);
 
   if (items.length === 0 && !description) return null;
 
@@ -51,7 +51,7 @@ export default function CourseOverview({ section }) {
             )}
           </div>
 
-          <Reveal variant="left" className="bg-gradient-to-br from-brand-purple to-brand-blue rounded-xl p-6 sm:p-8 text-white">
+          <Reveal variant="left" className="bg-gradient-to-br from-brand-blue to-brand-blue rounded-xl p-6 sm:p-8 text-white">
             <h4 className="font-semibold text-lg sm:text-xl mb-3">Talk To Us</h4>
             <a href="tel:+916380957390" className="text-brand-orange font-bold text-xl sm:text-2xl block mb-6 hover:underline">
               +91 6380957390

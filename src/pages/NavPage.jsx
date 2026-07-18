@@ -68,7 +68,7 @@ function SectionRenderer({ section }) {
           <Stagger className="space-y-4">
             {(section.items || (section.content || '').split('\n').filter(Boolean)).map((item, i) => (
               <StaggerItem key={i} className="flex items-start gap-3">
-                <FiCheckCircle className="w-5 h-5 text-brand-accent shrink-0 mt-0.5" />
+                <FiCheckCircle className="w-5 h-5 text-brand-orange shrink-0 mt-0.5" />
                 <span className="text-text-gray text-base">{(typeof item === 'string') ? item : item.title}</span>
               </StaggerItem>
             ))}
@@ -81,7 +81,7 @@ function SectionRenderer({ section }) {
           <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6">
             {(section.items || []).map((stat, i) => (
               <div key={i} className="text-center p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-                <div className="text-3xl sm:text-4xl font-extrabold text-brand-accent">{stat.number}</div>
+                <div className="text-3xl sm:text-4xl font-extrabold text-brand-orange">{stat.number}</div>
                 <div className="text-sm text-text-gray mt-1">{stat.label}</div>
               </div>
             ))}
@@ -96,11 +96,11 @@ function SectionRenderer({ section }) {
             {(section.items || []).map((member, i) => (
               <StaggerItem key={i} className="h-full">
                 <Card className="p-6 text-center h-full">
-                  <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-brand-blue to-brand-accent flex items-center justify-center text-white text-2xl font-bold mb-3 overflow-hidden">
+                  <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-brand-blue to-brand-orange flex items-center justify-center text-white text-2xl font-bold mb-3 overflow-hidden">
                     {member.image_url ? <img src={member.image_url} alt={member.name} className="w-full h-full object-cover" /> : (member.name?.[0] || '?')}
                   </div>
                   <h3 className="font-bold text-dark-navy">{member.name}</h3>
-                  <p className="text-sm text-brand-accent font-medium mt-0.5">{member.role}</p>
+                  <p className="text-sm text-brand-orange font-medium mt-0.5">{member.role}</p>
                   {member.bio && <p className="text-xs text-text-gray mt-2 line-clamp-3">{member.bio}</p>}
                 </Card>
               </StaggerItem>
@@ -113,9 +113,9 @@ function SectionRenderer({ section }) {
         <Reveal className="max-w-lg mx-auto">
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
           <div className="space-y-4">
-            {section.address && <div className="flex items-start gap-4"><div className="w-10 h-10 rounded-xl bg-brand-accent/10 flex items-center justify-center shrink-0"><FiMapPin className="w-5 h-5 text-brand-accent" /></div><div className="text-text-gray text-base whitespace-pre-line">{section.address}</div></div>}
-            {section.phone && <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-xl bg-brand-accent/10 flex items-center justify-center shrink-0"><FiPhone className="w-5 h-5 text-brand-accent" /></div><a href={`tel:${section.phone}`} className="text-text-gray text-base hover:text-brand-accent transition-colors">{section.phone}</a></div>}
-            {section.email && <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-xl bg-brand-accent/10 flex items-center justify-center shrink-0"><FiMail className="w-5 h-5 text-brand-accent" /></div><a href={`mailto:${section.email}`} className="text-text-gray text-base hover:text-brand-accent transition-colors">{section.email}</a></div>}
+            {section.address && <div className="flex items-start gap-4"><div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center shrink-0"><FiMapPin className="w-5 h-5 text-brand-orange" /></div><div className="text-text-gray text-base whitespace-pre-line">{section.address}</div></div>}
+            {section.phone && <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center shrink-0"><FiPhone className="w-5 h-5 text-brand-orange" /></div><a href={`tel:${section.phone}`} className="text-text-gray text-base hover:text-brand-orange transition-colors">{section.phone}</a></div>}
+            {section.email && <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center shrink-0"><FiMail className="w-5 h-5 text-brand-orange" /></div><a href={`mailto:${section.email}`} className="text-text-gray text-base hover:text-brand-orange transition-colors">{section.email}</a></div>}
           </div>
         </Reveal>
       );
@@ -170,7 +170,7 @@ function SectionRenderer({ section }) {
       );
     case 'cta':
       return (
-        <Reveal variant="scale" className="bg-gradient-to-r from-brand-blue to-brand-accent rounded-xl p-6 sm:p-8 text-center text-white">
+        <Reveal variant="scale" className="bg-gradient-to-r from-brand-blue to-brand-orange rounded-xl p-6 sm:p-8 text-center text-white">
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold mb-3">{section.heading}</h2>}
           {section.content && <p className="text-white/80 text-base mb-6">{section.content}</p>}
           {section.image_url && (
@@ -228,7 +228,7 @@ export default function NavPage() {
   });
 
   if (isLoading) {
-    return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-4 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>;
+    return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" /></div>;
   }
 
   const hasContent = data && (data.heading || data.subheading || data.sections?.length > 0 || data.courses?.length > 0);
@@ -238,7 +238,7 @@ export default function NavPage() {
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <h1 className="text-3xl font-bold text-dark-navy mb-4">Page Not Found</h1>
         <p className="text-text-gray mb-8">The page you're looking for doesn't exist.</p>
-        <Link to="/" className="inline-flex items-center gap-2 text-brand-accent hover:underline"><FiArrowLeft className="w-4 h-4" /> Back to Home</Link>
+        <Link to="/" className="inline-flex items-center gap-2 text-brand-orange hover:underline"><FiArrowLeft className="w-4 h-4" /> Back to Home</Link>
       </div>
     );
   }

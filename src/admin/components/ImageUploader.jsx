@@ -76,7 +76,7 @@ export default function ImageUploader({
         <button
           onClick={() => setShowUrlInput(!showUrlInput)}
           className={`flex items-center gap-1 text-sm px-3 py-2 rounded-md transition-colors ${
-            showUrlInput ? 'bg-brand-accent/10 text-brand-accent' : 'text-gray-500 hover:text-brand-accent'
+            showUrlInput ? 'bg-brand-orange/10 text-brand-orange' : 'text-gray-500 hover:text-brand-orange'
           }`}
           title="Paste image URL"
         >
@@ -87,7 +87,7 @@ export default function ImageUploader({
           <>
             <button
               onClick={copyUrl}
-              className="flex items-center gap-1 text-sm text-gray-500 hover:text-brand-accent"
+              className="flex items-center gap-1 text-sm text-gray-500 hover:text-brand-orange"
               title="Copy URL"
             >
               <FiCopy className="w-3.5 h-3.5" />
@@ -117,7 +117,7 @@ export default function ImageUploader({
             value={value || ''}
             onChange={(e) => handleUrlChange(e.target.value)}
             placeholder="Paste image URL here..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
           />
         </div>
       )}

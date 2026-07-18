@@ -19,7 +19,7 @@ export default function ProjectsSection({ section }) {
           {items.map((item, i) => (
             <StaggerItem key={i} className="h-full">
               <Card className="p-8 h-full">
-                <h3 className="font-bold text-brand-accent text-xl mb-3">
+                <h3 className="font-bold text-brand-orange text-xl mb-3">
                   {item.title}
                 </h3>
                 <p className="text-text-gray text-base leading-relaxed">

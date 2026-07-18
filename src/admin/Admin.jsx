@@ -81,12 +81,12 @@ function PageEditorRedirect() {
     resolve();
   }, [slug, navigate]);
 
-  return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>;
+  return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" /></div>;
 }
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="flex items-center justify-center h-screen"><div className="w-8 h-8 border-2 border-brand-accent border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading) return <div className="flex items-center justify-center h-screen"><div className="w-8 h-8 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" /></div>;
   if (!user) return <Navigate to="/admin/login" replace />;
   return children;
 }

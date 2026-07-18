@@ -99,8 +99,8 @@ function DesktopNavItem({
         role="menuitem"
         className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors ${
           isActive
-            ? "text-brand-accent font-semibold"
-            : "text-gray-600 hover:text-brand-accent"
+            ? "text-brand-orange font-semibold"
+            : "text-gray-600 hover:text-brand-orange"
         }`}
         onClick={onItemClick}
         tabIndex={0}
@@ -183,7 +183,7 @@ function DesktopNavItem({
         aria-expanded={isOpen}
         className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors cursor-pointer ${
           isOpen
-            ? "text-brand-accent font-semibold"
+            ? "text-brand-orange font-semibold"
             : "text-gray-700 hover:text-dark-navy"
         }`}
         onClick={() => (isOpen ? onClose() : onOpen())}
@@ -371,7 +371,7 @@ function MobileNavItem({
         className={`block px-5 py-3 text-sm rounded-md transition-colors ${
           isActive
             ? "text-brand-orange font-semibold"
-            : "text-gray-600 hover:text-brand-accent"
+            : "text-gray-600 hover:text-brand-orange"
         }`}
         onClick={onItemClick}
       >
@@ -388,7 +388,7 @@ function MobileNavItem({
         className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors cursor-pointer ${
           depth === 0
             ? "font-medium text-dark-navy hover:text-brand-orange"
-            : "text-gray-700 hover:text-brand-accent"
+            : "text-gray-700 hover:text-brand-orange"
         }`}
       >
         <span>{item.label}</span>

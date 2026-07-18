@@ -37,7 +37,7 @@ export default function FeatureCardsSection({ section }) {
                     />
                   </div>
                 ) : (
-                  <div className="mx-6 mt-4 h-48 bg-gradient-to-r from-brand-blue to-brand-accent rounded-xl" />
+                  <div className="mx-6 mt-4 h-48 bg-gradient-to-r from-brand-blue to-brand-orange rounded-xl" />
                 )}
                 <div className="p-6 flex flex-col flex-1">
                   {card.bullets && card.bullets.length > 0 && (

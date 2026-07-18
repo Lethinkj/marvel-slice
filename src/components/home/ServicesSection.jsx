@@ -58,7 +58,7 @@ export default function ServicesSection({ section }) {
         {card.image_url ? (
           <img src={card.image_url} alt={card.title} className="w-full h-48 object-cover" />
         ) : (
-          <div className="w-full h-48 bg-gradient-to-br from-brand-blue to-brand-accent flex items-center justify-center">
+          <div className="w-full h-48 bg-gradient-to-br from-brand-blue to-brand-orange flex items-center justify-center">
             <FiTarget className="w-8 h-8 text-white/70" />
           </div>
         )}
@@ -71,7 +71,7 @@ export default function ServicesSection({ section }) {
   }
 
   return (
-    <section className="py-16">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-6">
           {heading}
@@ -91,7 +91,7 @@ export default function ServicesSection({ section }) {
                 className="w-full h-72 object-cover rounded-2xl"
               />
             ) : (
-              <div className="w-full h-72 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-accent" />
+              <div className="w-full h-72 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-orange" />
             )}
             <h3 className="font-bold text-xl mt-6 text-dark-navy">{leftHeading}</h3>
             {leftDescription && (
@@ -181,7 +181,7 @@ export default function ServicesSection({ section }) {
                   key={i}
                   onClick={() => setCardIdx(i)}
                   className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${
-                    i === cardIdx ? 'bg-brand-accent' : 'bg-gray-300'
+                    i === cardIdx ? 'bg-brand-orange' : 'bg-gray-300'
                   }`}
                 />
               ))}

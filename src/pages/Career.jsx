@@ -307,16 +307,16 @@ export default function Career() {
             {fieldDefs.full_name.enabled !== false && (
               <Field label={fieldDefs.full_name.label} required={fieldDefs.full_name.required !== false} error={errors.full_name}>
                 <input name="full_name" value={form.full_name} onChange={handleChange}
-                  className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-accent/30 ${
-                    errors.full_name ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-accent'
+                  className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-orange/30 ${
+                    errors.full_name ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-orange'
                   }`} placeholder={fieldDefs.full_name.placeholder} />
               </Field>
             )}
             {fieldDefs.email.enabled !== false && (
               <Field label={fieldDefs.email.label} required={fieldDefs.email.required !== false} error={errors.email}>
                 <input name="email" type="email" value={form.email} onChange={handleChange}
-                  className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-accent/30 ${
-                    errors.email ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-accent'
+                  className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-orange/30 ${
+                    errors.email ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-orange'
                   }`} placeholder={fieldDefs.email.placeholder} />
               </Field>
             )}
@@ -325,8 +325,8 @@ export default function Career() {
           {fieldDefs.phone.enabled !== false && (
             <Field label={fieldDefs.phone.label} required={fieldDefs.phone.required !== false} error={errors.phone}>
               <input name="phone" type="tel" value={form.phone} onChange={handleChange}
-                className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-accent/30 ${
-                  errors.phone ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-accent'
+                className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-orange/30 ${
+                  errors.phone ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-orange'
                 }`} placeholder={fieldDefs.phone.placeholder} />
             </Field>
           )}
@@ -337,8 +337,8 @@ export default function Career() {
                 <Field label={fieldDefs.department.label} required={fieldDefs.department.required === true} error={errors.department}>
                   <div className="relative">
                     <select name="department" value={form.department} onChange={handleChange}
-                      className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-brand-accent/30 appearance-none bg-white ${
-                        errors.department ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-accent'
+                      className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-brand-orange/30 appearance-none bg-white ${
+                        errors.department ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-orange'
                       } ${!form.department ? 'text-gray-400' : ''}`}>
                       <option value="" disabled>{fieldDefs.department.placeholder}</option>
                       {(fieldDefs.department.options || []).map(d => <option key={d} value={d}>{d}</option>)}
@@ -351,8 +351,8 @@ export default function Career() {
                 <Field label={fieldDefs.category.label} required={fieldDefs.category.required === true} error={errors.category}>
                   <div className="relative">
                     <select name="category" value={form.category} onChange={handleChange}
-                      className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-brand-accent/30 appearance-none bg-white ${
-                        errors.category ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-accent'
+                      className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-brand-orange/30 appearance-none bg-white ${
+                        errors.category ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-orange'
                       } ${!form.category ? 'text-gray-400' : ''}`}>
                       <option value="" disabled>{fieldDefs.category.placeholder}</option>
                       {(fieldDefs.category.options || []).map(c => <option key={c} value={c}>{c}</option>)}
@@ -367,8 +367,8 @@ export default function Career() {
           {fieldDefs.description.enabled !== false && (
             <Field label={fieldDefs.description.label} required={fieldDefs.description.required === true} error={errors.description}>
               <textarea name="description" value={form.description} onChange={handleChange} rows={4}
-                className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-accent/30 resize-y ${
-                  errors.description ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-accent'
+                className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-brand-orange/30 resize-y ${
+                  errors.description ? 'border-red-300 focus:border-red-400' : 'border-gray-300 focus:border-brand-orange'
                 }`} placeholder={fieldDefs.description.placeholder} />
             </Field>
           )}
@@ -376,12 +376,12 @@ export default function Career() {
           {fieldDefs.file_upload.enabled !== false && (
             <Field label={fieldDefs.file_upload.label} required={fieldDefs.file_upload.required === true} error={errors.file}>
               <label className={`relative flex flex-col items-center justify-center gap-2 px-4 py-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-                errors.file ? 'border-red-300 bg-red-50/50' : 'border-gray-300 hover:border-brand-accent hover:bg-brand-accent/5'
+                errors.file ? 'border-red-300 bg-red-50/50' : 'border-gray-300 hover:border-brand-orange hover:bg-brand-orange/5'
               }`}>
                 <FiUpload className={`w-8 h-8 ${errors.file ? 'text-red-400' : 'text-gray-300'}`} />
                 <div className="text-sm text-center">
                   {file ? (
-                    <span className="font-medium text-brand-accent">{file.name}</span>
+                    <span className="font-medium text-brand-orange">{file.name}</span>
                   ) : (
                     <>
                       <span className="text-gray-700 font-medium">Click to upload</span>
@@ -411,8 +411,8 @@ export default function Career() {
                 ctaVariant === 'primary'
                   ? 'bg-dark-navy text-white hover:bg-dark-navy/90 focus:ring-dark-navy/30'
                   : ctaVariant === 'outline'
-                    ? 'border-2 border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-white focus:ring-brand-accent/30'
-                    : 'bg-brand-accent text-white hover:bg-brand-accent/90 focus:ring-brand-accent/30'
+                    ? 'border-2 border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white focus:ring-brand-orange/30'
+                    : 'bg-brand-orange text-white hover:bg-brand-orange/90 focus:ring-brand-orange/30'
               }`}>
               {uploading ? (
                 <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Uploading...</>
@@ -473,8 +473,8 @@ export default function Career() {
             <div className="grid sm:grid-cols-2 gap-4">
               {pageContent.benefits.map((item, i) => (
                 <Reveal key={i} className="flex items-start gap-3 bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-                  <div className="w-5 h-5 rounded-full bg-brand-accent/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-brand-accent" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  <div className="w-5 h-5 rounded-full bg-brand-orange/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <svg className="w-3 h-3 text-brand-orange" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                   </div>
                   <div>
                     <p className="font-semibold text-gray-900 text-sm">{typeof item === 'string' ? item : item.title}</p>
@@ -508,11 +508,11 @@ export default function Career() {
                 {roleCategories.length > 4 && (
                   <>
                     <button onClick={() => scrollCategories(-1)}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-brand-accent hover:border-brand-accent transition-colors cursor-pointer">
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-brand-orange hover:border-brand-orange transition-colors cursor-pointer">
                       <FiChevronLeft className="w-4 h-4" />
                     </button>
                     <button onClick={() => scrollCategories(1)}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-brand-accent hover:border-brand-accent transition-colors cursor-pointer">
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-brand-orange hover:border-brand-orange transition-colors cursor-pointer">
                       <FiChevronRight className="w-4 h-4" />
                     </button>
                   </>
@@ -530,7 +530,7 @@ export default function Career() {
                 </div>
                 {roleCategories.length > 15 && (
                   <button onClick={() => setShowAllCategories(prev => !prev)}
-                    className="mt-4 text-sm font-medium text-brand-accent hover:underline inline-flex items-center gap-1">
+                    className="mt-4 text-sm font-medium text-brand-orange hover:underline inline-flex items-center gap-1">
                     {showAllCategories ? 'Show less' : `View all (${roleCategories.length})`}
                     <svg className={`w-4 h-4 transition-transform ${showAllCategories ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   </button>
@@ -567,7 +567,7 @@ export default function Career() {
                     transition={{ delay: i * 0.05 }}
                     className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col"
                   >
-                    <h3 className="text-lg font-bold text-brand-accent mb-3">{job.title}</h3>
+                    <h3 className="text-lg font-bold text-brand-orange mb-3">{job.title}</h3>
                     {(job.experience || job.salary) && (
                       <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
                         {job.experience && <span className="flex items-center gap-1"><FiClock className="w-3.5 h-3.5" />{job.experience}</span>}
@@ -582,7 +582,7 @@ export default function Career() {
                         <p className="text-sm text-gray-400 flex items-center gap-1 mb-4"><FiMapPin className="w-3.5 h-3.5 shrink-0" />{job.location}</p>
                       )}
                       <button onClick={() => setShowForm(true)}
-                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg border-2 border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-white transition-colors cursor-pointer">
+                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg border-2 border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white transition-colors cursor-pointer">
                         Apply Now
                       </button>
                     </div>
@@ -599,7 +599,7 @@ export default function Career() {
                     <button key={i} onClick={() => setJobPage(i + 1)}
                       className={`w-8 h-8 text-sm font-medium rounded-lg transition-colors ${
                         jobPage === i + 1
-                          ? 'bg-brand-accent text-white'
+                          ? 'bg-brand-orange text-white'
                           : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
                       }`}>
                       {i + 1}

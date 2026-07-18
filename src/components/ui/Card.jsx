@@ -6,7 +6,7 @@ export default function Card({
 }) {
   return (
     <div
-      className={`bg-white rounded-xl border border-gray-100 transition-shadow duration-300 hover:shadow-md ${accent ? 'border-l-4 border-brand-accent' : ''} ${className}`}
+      className={`bg-white rounded-xl border border-gray-100 transition-shadow duration-300 hover:shadow-md ${accent ? 'border-l-4 border-brand-orange' : ''} ${className}`}
       style={{ boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)' }}
       {...props}
     >

@@ -28,7 +28,7 @@ export default function RelatedCourses() {
           <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark-navy">
             Latest Courses
           </Reveal>
-          <Link to="/courses" className="text-brand-accent font-medium text-base hover:underline">
+          <Link to="/courses" className="text-brand-orange font-medium text-base hover:underline">
             View All &rarr;
           </Link>
         </div>
