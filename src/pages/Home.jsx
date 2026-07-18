@@ -10,7 +10,7 @@ import FAQSection from '../components/home/FAQSection';
 
 export default function Home() {
   const { data: homeSections } = useQuery({
-    queryKey: ['homeSections'],
+    queryKey: ['homeSections', 'all'],
     queryFn: async () => {
       const { data, error } = await supabase.from('home_sections').select('*').order('sort_order');
       if (error) {

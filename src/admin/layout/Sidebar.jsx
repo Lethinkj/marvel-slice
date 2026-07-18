@@ -16,7 +16,6 @@ const navGroups = [
           { to: "/admin/home/services", label: "Featured Services" },
           { to: "/admin/home/cta_banner", label: "CTA Banner" },
           { to: "/admin/home/faqs", label: "FAQs" },
-          { to: "/admin/home/promo_banner", label: "Promo Banner" },
           { to: "/admin/home/alumni", label: "Alumni Partners" },
         ],
       },

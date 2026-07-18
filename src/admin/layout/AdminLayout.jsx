@@ -29,7 +29,6 @@ function Breadcrumbs() {
     "career-page": "Career",
     "services-page": "Services",
     "training-page": "Training",
-    "promo-banner": "Promo Banner",
     "form-submissions": "Form Submissions",
     "career-submissions": "Career Submissions",
   };

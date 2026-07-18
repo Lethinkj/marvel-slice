@@ -195,7 +195,7 @@ export default function NavPage() {
     queryFn: async () => {
       const { data: navItems } = await supabase
         .from('nav_items')
-        .select('id, label')
+        .select('id, label, parent_label')
         .eq('path', path)
         .eq('is_active', true)
         .order('id')
@@ -220,8 +220,18 @@ export default function NavPage() {
       const allCourses = [...directCourses, ...childCourses];
       const unique = allCourses.filter((c, i, a) => a.findIndex(x => x.id === c.id) === i);
 
+      const parentSlug = navItem.parent_label
+        ? navItem.parent_label.toLowerCase().replace(/\s+/g, '-')
+        : null;
+      const categorySlug = path.replace(/.*\//, '');
+      const exploreLink = parentSlug
+        ? `/courses?parent=${parentSlug}&category=${categorySlug}`
+        : `/courses`;
+
       const pageData = pageRes.data?.[0] || null;
-      const page = pageData ? { ...pageData, courses: unique, navLabel: navItem.label } : { courses: unique, navLabel: navItem.label };
+      const page = pageData
+        ? { ...pageData, courses: unique, navLabel: navItem.label, exploreLink }
+        : { courses: unique, navLabel: navItem.label, exploreLink };
       return page;
     },
     enabled: !!path,
@@ -281,6 +291,14 @@ export default function NavPage() {
               </StaggerItem>
             ))}
           </Stagger>
+          <div className="text-right mt-6">
+            <Link
+              to={data.exploreLink}
+              className="text-sm font-semibold text-brand-orange hover:underline"
+            >
+              Explore All Courses →
+            </Link>
+          </div>
         </div>
       )}
     </div>

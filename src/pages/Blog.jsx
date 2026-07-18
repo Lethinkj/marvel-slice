@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiArrowRight, FiChevronLeft, FiChevronRight, FiCalendar, FiUser, FiArrowUp, FiArrowLeft, FiTag } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useBlogPosts, useBlogCategories, useRecentPosts, usePopularTags, useBlogPost } from '../hooks/useBlog';
+import { useSiteSettings } from '../hooks/useSupabase';
 
-function Hero({ search, onSearchChange, onSearch }) {
+function Hero({ search, onSearchChange, onSearch, heroImage }) {
   return (
     <section className="relative text-white overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-10" />
       <div className="absolute inset-0" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&q=75)',
+        backgroundImage: `url(${heroImage || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&q=75'})`,
         backgroundSize: 'cover', backgroundPosition: 'center',
       }} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 text-center relative z-20">
@@ -267,20 +268,12 @@ function SinglePost({ slug }) {
 export default function Blog() {
   const { slug } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [category, setCategory] = useState(null);
-  const [tag, setTag] = useState(searchParams.get('tag') || null);
-  const [page, setPage] = useState(1);
+  const tag = searchParams.get('tag') || null;
+  const category = searchParams.get('category') || null;
+  const page = parseInt(searchParams.get('page') || '1', 10);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    const urlTag = searchParams.get('tag');
-    if (urlTag && urlTag !== tag) {
-      setTag(urlTag);
-      setCategory(null);
-      setPage(1);
-    }
-  }, [searchParams]);
-
+  const { data: settings } = useSiteSettings();
   const perPage = page === 1 ? 5 : 6;
   const { data: postsData, isLoading } = useBlogPosts({ category, tag, search, page, perPage });
   const { data: categories } = useBlogCategories();
@@ -299,16 +292,19 @@ export default function Blog() {
   const gridPosts = featured ? posts.filter((p) => p.id !== featured.id) : posts;
 
   function handleSearch() {
-    setCategory(null);
-    setTag(null);
-    setPage(1);
     setSearchParams({});
+  }
+
+  function handlePageChange(p) {
+    const next = new URLSearchParams(searchParams);
+    next.set('page', String(p));
+    setSearchParams(next);
   }
 
   return (
     <div>
-      <Hero search={search} onSearchChange={setSearch} onSearch={handleSearch} />
-              <CategoryPills categories={categories || []} active={category} onChange={(slug) => { setCategory(slug); setTag(null); setPage(1); setSearchParams({}); }} />
+      <Hero search={search} onSearchChange={setSearch} onSearch={handleSearch} heroImage={settings?.blog_hero_image} />
+              <CategoryPills categories={categories || []} active={category} onChange={(slug) => { const next = new URLSearchParams(); if (slug) next.set('category', slug); setSearchParams(next); }} />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {isLoading ? (
           <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" /></div>
@@ -325,12 +321,12 @@ export default function Blog() {
                   </StaggerItem>
                 ))}
               </Stagger>
-              <Pagination page={page} total={total} perPage={perPage} onChange={setPage} />
+              <Pagination page={page} total={total} perPage={perPage} onChange={handlePageChange} />
             </div>
             <Reveal variant="left" as="aside" className="lg:w-[30%] space-y-6">
               <RecentPostsWidget posts={recentPosts || []} />
               <NewsletterForm />
-              <PopularTags tags={popularTags || []} activeTag={tag} onTagClick={(t) => { const next = t === tag ? null : t; setTag(next); setCategory(null); setPage(1); setSearchParams(next ? { tag: next } : {}); }} />
+              <PopularTags tags={popularTags || []} activeTag={tag} onTagClick={(t) => { const next = new URLSearchParams(searchParams); if (t === tag) next.delete('tag'); else next.set('tag', t); next.delete('category'); next.delete('page'); setSearchParams(next); }} />
             </Reveal>
           </div>
         )}

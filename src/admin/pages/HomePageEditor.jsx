@@ -123,9 +123,11 @@ const sectionDefs = [
     key: 'cta_banner', label: 'CTA Banner', icon: FiMessageSquare, color: 'from-teal-500 to-teal-600',
     fields: [
       { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'cta_text', label: 'CTA Button Text', type: 'text' },
       { name: 'cta_link', label: 'Phone Number (tel:)', type: 'text' },
+      { name: 'background_image', label: 'Background Image', type: 'image' },
     ],
   },
   {
@@ -934,49 +936,6 @@ function RenderField({ field, value, onChange }) {
   );
 }
 
-function PromoEditor({ data, onChange }) {
-  const form = data?.form || { heading: '', highlighted_text: '', subtext: '', cta_label: '', cta_link: '', is_active: true };
-  function update(name, value) { onChange({ ...data, form: { ...form, [name]: value } }); }
-  return (
-    <div className="space-y-5">
-      <div>
-        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
-        <input type="text" value={form.heading} onChange={(e) => update('heading', e.target.value)}
-          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Main banner heading" />
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Highlighted Text</label>
-        <input type="text" value={form.highlighted_text} onChange={(e) => update('highlighted_text', e.target.value)}
-          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Text that appears highlighted in orange" />
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtext</label>
-        <textarea value={form.subtext} onChange={(e) => update('subtext', e.target.value)} rows={2}
-          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" />
-      </div>
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Label</label>
-          <input type="text" value={form.cta_label} onChange={(e) => update('cta_label', e.target.value)}
-            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Know More" />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Link</label>
-          <input type="text" value={form.cta_link} onChange={(e) => update('cta_link', e.target.value)}
-            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="/courses" />
-        </div>
-      </div>
-      <label className="flex items-center gap-3 p-4 bg-neutral-50 rounded-lg border border-neutral-200 cursor-pointer hover:bg-neutral-100/50 transition-colors">
-        <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? 'bg-accent-600' : 'bg-neutral-300'}`}>
-          <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_active ? 'translate-x-4' : ''}`} />
-          <input type="checkbox" checked={form.is_active} onChange={(e) => update('is_active', e.target.checked)} className="sr-only" />
-        </div>
-        <span className="text-sm font-medium text-neutral-900">Active</span>
-      </label>
-    </div>
-  );
-}
-
 function AlumniEditor({ data, onChange }) {
   const companies = data?.companies || [];
   const [name, setName] = useState('');
@@ -1010,7 +969,6 @@ function AlumniEditor({ data, onChange }) {
 }
 
 const extraNavItems = [
-  { key: 'promo_banner', label: 'Promo Banner', icon: FiBell, color: 'from-pink-500 to-pink-600', type: 'promo' },
   { key: 'alumni', label: 'Alumni Partners', icon: FiUsers, color: 'from-indigo-500 to-indigo-600', type: 'alumni' },
 ];
 
@@ -1018,9 +976,7 @@ export default function HomePageEditor() {
   const { section } = useParams();
   const navigate = useNavigate();
   const [sections, setSections] = useState([]);
-  const [promoData, setPromoData] = useState({ form: { heading: '', highlighted_text: '', subtext: '', cta_label: '', cta_link: '', is_active: true } });
   const [alumniData, setAlumniData] = useState({ companies: [] });
-  const [promoId, setPromoId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -1029,7 +985,7 @@ export default function HomePageEditor() {
 
   useEffect(() => {
     if (section && !loading) {
-      const validKeys = ['hero', 'intro_form', 'empowering', 'featured_courses', 'services', 'cta_banner', 'faqs', 'promo_banner', 'alumni'];
+      const validKeys = ['hero', 'intro_form', 'empowering', 'featured_courses', 'services', 'cta_banner', 'faqs', 'alumni'];
       if (!validKeys.includes(section)) navigate('/admin/home/hero', { replace: true });
     }
   }, [section, loading, navigate]);
@@ -1042,9 +998,8 @@ export default function HomePageEditor() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const [homeRes, promoRes, alumniRes] = await Promise.all([
+      const [homeRes, alumniRes] = await Promise.all([
         supabase.from('home_sections').select('*'),
-        supabase.from('promo_banners').select('*').limit(1),
         supabase.from('alumni_companies').select('*').order('sort_order'),
       ]);
       const dbMap = {};
@@ -1061,11 +1016,6 @@ export default function HomePageEditor() {
         };
       });
       setSections(merged);
-      if (promoRes.data?.[0]) {
-        const b = promoRes.data[0];
-        setPromoId(b.id);
-        setPromoData({ form: { heading: b.heading || '', highlighted_text: b.highlighted_text || '', subtext: b.subtext || '', cta_label: b.cta_label || '', cta_link: b.cta_link || '', is_active: b.is_active !== false } });
-      }
       if (alumniRes.data) {
         setAlumniData({ companies: alumniRes.data.map(c => ({ name: c.name })) });
       }
@@ -1098,13 +1048,6 @@ export default function HomePageEditor() {
         await supabase.from('home_sections').insert(payload);
       }
     }
-    const promoPayload = { ...promoData.form, updated_at: new Date().toISOString() };
-    if (promoId) {
-      await supabase.from('promo_banners').update(promoPayload).eq('id', promoId);
-    } else {
-      const { data } = await supabase.from('promo_banners').insert(promoPayload).select('id').single();
-      if (data?.id) setPromoId(data.id);
-    }
     const { data: existingAlumni } = await supabase.from('alumni_companies').select('id');
     const existingAlumniIds = existingAlumni?.map(c => c.id) || [];
     if (existingAlumniIds.length > 0) {
@@ -1118,13 +1061,11 @@ export default function HomePageEditor() {
     setSaving(false);
     setSaved(true);
     queryClient.invalidateQueries({ queryKey: ['homeSections'] });
-    queryClient.invalidateQueries({ queryKey: ['promoBanner'] });
     queryClient.invalidateQueries({ queryKey: ['alumniCompanies'] });
     setTimeout(() => setSaved(false), 2000);
   }
 
   function isEdited(navItem) {
-    if (navItem.type === 'promo') return promoData.form.heading !== '' || promoData.form.highlighted_text !== '';
     if (navItem.type === 'alumni') return alumniData.companies.length > 0;
     const section = sections.find(s => s.section_key === navItem.key);
     return section?.content && Object.keys(section.content).length > 0;
@@ -1167,7 +1108,6 @@ export default function HomePageEditor() {
           <p className="text-sm text-neutral-500 mt-0.5">Edit the {selectedNav.label.toLowerCase()} section</p>
         </div>
         <div className="rounded-lg border border-neutral-200 p-6">
-          {selectedNav.type === 'promo' && <PromoEditor data={promoData} onChange={setPromoData} />}
           {selectedNav.type === 'alumni' && <AlumniEditor data={alumniData} onChange={setAlumniData} />}
           {selectedNav.type === 'home_section' && (() => {
             const def = sectionDefs.find(d => d.key === section);

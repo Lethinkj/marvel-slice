@@ -14,10 +14,8 @@ export function useTopNavItems() {
         .order('sort_order');
       if (error) throw error;
       const filtered = (data || []).filter((item) => {
-        console.log('topNav item:', item.label, '| parent_id:', JSON.stringify(item.parent_id), '| parent_label:', JSON.stringify(item.parent_label));
         return !item.parent_id && !item.parent_label;
       });
-      console.log('topNav filtered:', filtered.map((i) => i.label));
       return filtered;
     },
     staleTime: 5 * 60 * 1000,
@@ -262,23 +260,6 @@ export function useSiteSettings() {
       const { data, error } = await supabase
         .from('site_settings')
         .select('*')
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
-}
-
-/* ---------- promo banner ---------- */
-
-export function usePromoBanner() {
-  return useQuery({
-    queryKey: ['promoBanner'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('promo_banners')
-        .select('*')
-        .eq('is_active', true)
         .maybeSingle();
       if (error) throw error;
       return data;

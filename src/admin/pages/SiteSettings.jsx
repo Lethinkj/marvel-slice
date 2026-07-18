@@ -59,6 +59,7 @@ export default function SiteSettings() {
     logo_url: '',
     contact_email: '',
     contact_phone: '',
+    blog_hero_image: '',
     twitter: '',
     facebook: '',
     instagram: '',
@@ -82,6 +83,7 @@ export default function SiteSettings() {
             logo_url: data.logo_url || '',
             contact_email: data.contact_email || '',
             contact_phone: data.contact_phone || '',
+            blog_hero_image: data.blog_hero_image || '',
             twitter: social.twitter || '',
             facebook: social.facebook || '',
             instagram: social.instagram || '',
@@ -99,6 +101,7 @@ export default function SiteSettings() {
       logo_url: form.logo_url || null,
       contact_email: form.contact_email || null,
       contact_phone: form.contact_phone || null,
+      blog_hero_image: form.blog_hero_image || null,
       social_links: {
         twitter: form.twitter || null,
         facebook: form.facebook || null,
@@ -143,6 +146,10 @@ export default function SiteSettings() {
       <form onSubmit={handleSave} className="bg-white rounded-lg border border-neutral-200 p-6 space-y-6">
         <div>
           <ImageUploader value={form.logo_url} onChange={(v) => setForm({ ...form, logo_url: v })} label="Site Logo" />
+        </div>
+
+        <div className="border-t border-neutral-100 pt-6">
+          <ImageUploader value={form.blog_hero_image} onChange={(v) => setForm({ ...form, blog_hero_image: v })} label="Blog Page Hero Image" />
         </div>
 
         <div className="border-t border-neutral-100 pt-6">

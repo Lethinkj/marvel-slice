@@ -15,6 +15,7 @@ create table if not exists site_settings (
   logo_url text,
   contact_email text,
   contact_phone text,
+  blog_hero_image text,
   social_links jsonb default '{}',
   updated_at timestamptz default now()
 );
@@ -170,18 +171,7 @@ create table if not exists related_courses (
   unique(course_id, related_course_id)
 );
 
--- 14. Promo banner
-create table if not exists promo_banners (
-  id uuid primary key default gen_random_uuid(),
-  heading text,
-  highlighted_text text,
-  subtext text,
-  cta_label text,
-  cta_link text,
-  is_active boolean default true
-);
-
--- 15. Course tabs
+-- 14. Course tabs
 create table if not exists course_tabs (
   id uuid primary key default gen_random_uuid(),
   course_id uuid references courses(id) on delete cascade not null,

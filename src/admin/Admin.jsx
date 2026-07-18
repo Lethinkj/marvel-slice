@@ -11,7 +11,6 @@ import CoursesList from './pages/CoursesList';
 import CourseEditor from './pages/CourseEditor';
 import CourseWizard from './pages/CourseWizard';
 import CourseReports from './pages/CourseReports';
-import PromoBannerManager from './pages/PromoBannerManager';
 import AlumniCompaniesManager from './pages/AlumniCompaniesManager';
 import TagsManager from './pages/TagsManager';
 import FooterManager from './pages/FooterManager';
@@ -110,7 +109,6 @@ export default function Admin() {
           <Route path="courses/wizard" element={<CourseWizard />} />
           <Route path="courses/reports" element={<CourseReports />} />
           <Route path="courses/:id" element={<CourseEditor />} />
-          <Route path="promo-banner" element={<PromoBannerManager />} />
           <Route path="alumni" element={<AlumniCompaniesManager />} />
           <Route path="tags" element={<TagsManager />} />
           <Route path="footer" element={<FooterManager />} />

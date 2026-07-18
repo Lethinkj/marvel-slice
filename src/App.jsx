@@ -58,19 +58,6 @@ function DataPrefetcher() {
   });
 
   useQuery({
-    queryKey: ['promoBanner'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('promo_banners')
-        .select('*')
-        .eq('is_active', true)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  useQuery({
     queryKey: ['alumniCompanies'],
     queryFn: async () => {
       const { data, error } = await supabase

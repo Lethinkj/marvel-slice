@@ -202,7 +202,7 @@ export default function ChatWidget() {
           style={{
             width: maximized ? 'calc(100vw - 2rem)' : 'min(72vw, 288px)',
             maxWidth: maximized ? 'none' : '320px',
-            height: maximized ? 'calc(100vh - 2rem)' : '520px',
+            height: maximized ? 'calc(100vh - 2rem)' : '416px',
             maxHeight: maximized ? 'none' : '80vh',
             bottom: maximized ? '1rem' : '1rem',
             right: maximized ? '1rem' : '44px',

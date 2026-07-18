@@ -48,16 +48,15 @@ export default function Dashboard() {
         supabase.from("faqs").select("*", { count: "exact", head: true }),
         supabase.from("alumni_companies").select("*", { count: "exact", head: true }),
         supabase.from("tags").select("*", { count: "exact", head: true }),
-        supabase.from("promo_banners").select("*", { count: "exact", head: true }),
         supabase.from("blog_posts").select("*", { count: "exact", head: true }),
         supabase.from("courses").select("id, title, slug, is_published, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
       const getCount = (r) => (r.status === "fulfilled" ? r.value.count ?? 0 : 0);
       setStats({
         courses: getCount(results[0]), navItems: getCount(results[1]), faqs: getCount(results[2]),
-        companies: getCount(results[3]), tags: getCount(results[4]), banners: getCount(results[5]), blogPosts: getCount(results[6]),
+        companies: getCount(results[3]), tags: getCount(results[4]), blogPosts: getCount(results[5]),
       });
-      setRecentCourses(results[7].status === "fulfilled" ? results[7].value.data ?? [] : []);
+      setRecentCourses(results[6].status === "fulfilled" ? results[6].value.data ?? [] : []);
       setLoading(false);
     }
     fetchData();
@@ -72,7 +71,6 @@ export default function Dashboard() {
     { label: "Alumni", value: stats.companies, icon: FiUsers, link: "/admin/alumni", bg: "bg-accent-50", color: "text-accent-600", subtitle: "Partner companies" },
     { label: "Tags", value: stats.tags, icon: FiTag, link: "/admin/tags", bg: "bg-warning-50", color: "text-warning-700", subtitle: "Course categories" },
     { label: "FAQs", value: stats.faqs, icon: FiMessageCircle, link: "/admin/courses", bg: "bg-destructive-50", color: "text-destructive-500", subtitle: "Across all courses" },
-    { label: "Banners", value: stats.banners, icon: FiStar, link: "/admin/promo-banner", bg: "bg-warning-50", color: "text-warning-700", subtitle: "Home page banners" },
   ];
 
   const quickActions = [
