@@ -200,6 +200,12 @@ export default function CourseEditor() {
     overview_faqs: [],
     course_fees: [],
     show_pricing: false,
+    cta_heading: '',
+    cta_description: '',
+    cta_text: '',
+    cta_link: '',
+    cta_phone: '',
+    cta_background_image: '',
     projects: [],
     certifications: [],
     faqs: [],
@@ -409,6 +415,12 @@ export default function CourseEditor() {
         video_url: course.video_url,
         nav_item_id: course.nav_item_id || null,
         show_pricing: course.show_pricing,
+        cta_heading: course.cta_heading,
+        cta_description: course.cta_description,
+        cta_text: course.cta_text,
+        cta_link: course.cta_link,
+        cta_phone: course.cta_phone,
+        cta_background_image: course.cta_background_image,
         is_published: course.is_published,
         duration: course.duration,
         mode: course.mode,
@@ -689,6 +701,47 @@ export default function CourseEditor() {
                 />
                 Show pricing on page
               </label>
+
+              <div className="border-t border-neutral-200 pt-6 mt-6">
+                <h3 className="text-sm font-semibold text-neutral-700 mb-4">Call to Action</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">CTA Heading</label>
+                    <input value={course.cta_heading || ''} onChange={(e) => update('cta_heading', e.target.value)}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                      placeholder="Ready to start your learning journey?" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">CTA Description</label>
+                    <textarea value={course.cta_description || ''} onChange={(e) => update('cta_description', e.target.value)} rows={2}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                      placeholder="Enroll now and gain industry-ready skills with expert mentors." />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-600 mb-1">Button Text</label>
+                      <input value={course.cta_text || ''} onChange={(e) => update('cta_text', e.target.value)}
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                        placeholder="Enroll Now" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-600 mb-1">Button Link (URL)</label>
+                      <input value={course.cta_link || ''} onChange={(e) => update('cta_link', e.target.value)}
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                        placeholder="/courses or https://..." />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Phone Number (tel:)</label>
+                    <input value={course.cta_phone || ''} onChange={(e) => update('cta_phone', e.target.value)}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                      placeholder="+916380957390" />
+                  </div>
+                  <div>
+                    <ImageUploader value={course.cta_background_image || ''} onChange={(v) => update('cta_background_image', v)} label="Background Image" />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

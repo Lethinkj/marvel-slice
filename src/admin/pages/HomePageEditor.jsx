@@ -108,7 +108,11 @@ const sectionDefs = [
   {
     key: 'empowering', label: 'Empowering Careers', icon: FiStar, color: 'from-blue-500 to-blue-600',
     fields: [
+      { name: 'heading', label: 'Heading', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'cta_text', label: 'CTA Button Text', type: 'text' },
+      { name: 'cta_link', label: 'CTA Link', type: 'text' },
+      { name: 'background_image', label: 'Background Image', type: 'image' },
     ],
   },
   {

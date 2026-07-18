@@ -149,6 +149,12 @@ export default function CourseWizard() {
     video_url: "",
     cta_left: "",
     cta_right: "",
+    cta_heading: '',
+    cta_description: '',
+    cta_text: '',
+    cta_link: '',
+    cta_phone: '',
+    cta_background_image: '',
     is_published: true,
     status: "Active",
     duration: "3 months",
@@ -316,6 +322,12 @@ export default function CourseWizard() {
         video_url: c.video_url,
         cta_left: c.cta_left,
         cta_right: c.cta_right,
+        cta_heading: c.cta_heading,
+        cta_description: c.cta_description,
+        cta_text: c.cta_text,
+        cta_link: c.cta_link,
+        cta_phone: c.cta_phone,
+        cta_background_image: c.cta_background_image,
         is_published: c.is_published,
         status: c.status,
         duration: c.duration,
@@ -607,6 +619,37 @@ export default function CourseWizard() {
               <div>
                 <label className="block text-sm font-semibold text-neutral-900 mb-1">CTA Right</label>
                 <input value={c.cta_right || ""} onChange={(e) => u("cta_right", e.target.value)} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="Download Brochure" />
+              </div>
+            </div>
+
+            <div className="border-t border-neutral-200 pt-6 mt-2">
+              <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">Call to Action Banner</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-neutral-900 mb-1">CTA Heading</label>
+                  <input value={c.cta_heading || ''} onChange={(e) => u("cta_heading", e.target.value)} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="Ready to start your learning journey?" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-neutral-900 mb-1">CTA Description</label>
+                  <textarea value={c.cta_description || ''} onChange={(e) => u("cta_description", e.target.value)} rows={2} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="Enroll now and gain industry-ready skills with expert mentors." />
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-neutral-900 mb-1">Button Text</label>
+                    <input value={c.cta_text || ''} onChange={(e) => u("cta_text", e.target.value)} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="Enroll Now" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-neutral-900 mb-1">Button Link (URL)</label>
+                    <input value={c.cta_link || ''} onChange={(e) => u("cta_link", e.target.value)} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="/courses or https://..." />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-neutral-900 mb-1">Phone Number (tel:)</label>
+                  <input value={c.cta_phone || ''} onChange={(e) => u("cta_phone", e.target.value)} className="w-full px-3 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 text-sm transition-all" placeholder="+916380957390" />
+                </div>
+                <div>
+                  <ImageUploader value={c.cta_background_image || ''} onChange={(v) => u("cta_background_image", v)} label="Background Image" />
+                </div>
               </div>
             </div>
 

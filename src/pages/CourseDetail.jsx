@@ -467,17 +467,36 @@ export default function CourseDetail() {
       <CourseTabs tabs={course.course_tabs} curriculum={course.curriculum} />
 
       {/* CTA Banner */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal className="bg-gradient-to-r from-brand-blue to-blue-700 rounded-2xl p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6 text-white shadow-lg">
-            <div>
-              <h3 className="text-xl sm:text-2xl font-bold">Ready to start your learning journey?</h3>
-              <p className="text-white/80 mt-2">Enroll now and gain industry-ready skills with expert mentors.</p>
-            </div>
-            <Button variant="outline" size="lg" className="shrink-0 whitespace-nowrap border-white text-white hover:bg-white hover:text-brand-orange">Enroll Now →</Button>
-          </Reveal>
-        </div>
-      </section>
+      {course.cta_heading && course.cta_heading.trim() ? (
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0">
+            {course.cta_background_image ? (
+              <img src={course.cta_background_image} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-r from-brand-blue to-blue-700" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
+          </div>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+            <Reveal>
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+                <div className="text-center lg:text-left text-white">
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">{course.cta_heading}</h2>
+                  {course.cta_description && <p className="text-white/80 mt-3 max-w-xl text-base sm:text-lg">{course.cta_description}</p>}
+                </div>
+                <Button
+                  variant="outline-white"
+                  size="lg"
+                  href={course.cta_link || (course.cta_phone ? `tel:${course.cta_phone}` : undefined)}
+                  className="shrink-0"
+                >
+                  {course.cta_text || 'Enroll Now'} <FiArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      ) : null}
 
       {/* Projects */}
       <ProjectsSection projects={course.projects} />
