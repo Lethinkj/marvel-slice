@@ -97,10 +97,10 @@ function DesktopNavItem({
       <Link
         to={item.path || "#"}
         role="menuitem"
-        className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors ${
+        className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
           isActive
             ? "text-brand-orange font-semibold bg-brand-orange/10"
-            : "text-gray-600 hover:text-brand-orange hover:bg-blue-50"
+            : "text-gray-600 hover:text-brand-orange hover:bg-brand-orange/10"
         }`}
         onClick={onItemClick}
         tabIndex={0}
@@ -127,10 +127,10 @@ function DesktopNavItem({
           role="menuitem"
           aria-haspopup="true"
           aria-expanded={isOpen}
-          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
             isOpen
               ? "text-brand-orange bg-brand-orange/10"
-              : "text-dark-navy hover:text-brand-orange hover:bg-blue-50"
+              : "text-dark-navy hover:text-brand-orange hover:bg-brand-orange/10"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
@@ -147,7 +147,7 @@ function DesktopNavItem({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute left-0 top-full mt-1.5 bg-white py-2 z-50 min-w-max shadow-lg shadow-blue-100/50 border border-gray-100"
+               className="absolute left-0 top-full mt-1.5 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] rounded-lg border border-gray-100 py-3 z-50 min-w-[240px]"
               role="menu"
               data-submenu
             >
@@ -181,16 +181,16 @@ function DesktopNavItem({
         role="menuitem"
         aria-haspopup="true"
         aria-expanded={isOpen}
-          className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors cursor-pointer ${
+          className={`group w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
             isOpen
               ? "text-brand-orange font-semibold bg-brand-orange/10"
-              : "text-gray-700 hover:text-brand-orange hover:bg-blue-50"
+              : "text-gray-700 hover:text-brand-orange hover:bg-brand-orange/10"
           }`}
         onClick={() => (isOpen ? onClose() : onOpen())}
       >
         <span>{item.label}</span>
         <FiChevronRight
-          className={`w-3.5 h-3.5 shrink-0 text-gray-400 transition-transform duration-200 ${isOpen ? "translate-x-0.5" : ""}`}
+          className={`w-3.5 h-3.5 shrink-0 transition-all duration-200 ease-out ${isOpen ? "translate-x-0.5" : "group-hover:translate-x-0.5"}`}
         />
       </button>
 
@@ -201,7 +201,7 @@ function DesktopNavItem({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -4 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute left-full top-0 ml-1.5 bg-white py-2 z-50 min-w-[240px] max-h-[60vh] overflow-y-auto shadow-lg shadow-blue-100/50 border border-gray-100"
+            className="absolute left-full top-0 ml-1.5 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] rounded-lg border border-gray-100 py-3 z-50 min-w-[240px]"
             role="menu"
             data-submenu
           >
@@ -313,10 +313,10 @@ export default function NavDropdown({
             key={idx}
             to={item.path}
             role="menuitem"
-            className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors ${
+            className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
               currentPath === item.path
 ? "text-brand-orange bg-brand-orange/10"
-                : "text-dark-navy hover:text-brand-orange hover:bg-blue-50"
+                : "text-dark-navy hover:text-brand-orange hover:bg-brand-orange/10"
             }`}
             onClick={onItemClick}
           >
