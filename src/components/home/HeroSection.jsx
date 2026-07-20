@@ -136,7 +136,7 @@ export default function HeroSection({ section }) {
                     <motion.ul variants={item} className="mt-8 space-y-3">
                       {featureBullets.map((bullet, i) => (
                         <li key={i} className="flex items-start gap-3 text-base text-white">
-                          <FiCheckCircle className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
+                          <FiCheckCircle className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
                           <span>{bullet}</span>
                         </li>
                       ))}

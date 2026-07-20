@@ -99,8 +99,8 @@ function DesktopNavItem({
         role="menuitem"
         className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors ${
           isActive
-            ? "text-brand-orange font-semibold"
-            : "text-gray-600 hover:text-brand-orange"
+            ? "text-brand-orange font-semibold bg-brand-orange/10"
+            : "text-gray-600 hover:text-brand-orange hover:bg-blue-50"
         }`}
         onClick={onItemClick}
         tabIndex={0}
@@ -129,8 +129,8 @@ function DesktopNavItem({
           aria-expanded={isOpen}
           className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors cursor-pointer ${
             isOpen
-              ? "text-brand-orange"
-              : "text-dark-navy hover:text-brand-orange"
+              ? "text-brand-orange bg-brand-orange/10"
+              : "text-dark-navy hover:text-brand-orange hover:bg-blue-50"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
@@ -147,7 +147,7 @@ function DesktopNavItem({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="absolute left-0 top-full mt-1.5 bg-white py-2 z-50 min-w-max"
+              className="absolute left-0 top-full mt-1.5 bg-white py-2 z-50 min-w-max shadow-lg shadow-blue-100/50 border border-gray-100"
               role="menu"
               data-submenu
             >
@@ -181,11 +181,11 @@ function DesktopNavItem({
         role="menuitem"
         aria-haspopup="true"
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors cursor-pointer ${
-          isOpen
-            ? "text-brand-orange font-semibold"
-            : "text-gray-700 hover:text-dark-navy"
-        }`}
+          className={`w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-colors cursor-pointer ${
+            isOpen
+              ? "text-brand-orange font-semibold bg-brand-orange/10"
+              : "text-gray-700 hover:text-brand-orange hover:bg-blue-50"
+          }`}
         onClick={() => (isOpen ? onClose() : onOpen())}
       >
         <span>{item.label}</span>
@@ -201,7 +201,7 @@ function DesktopNavItem({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -4 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute left-full top-0 ml-1.5 bg-white py-2 z-50 min-w-[240px] max-h-[60vh] overflow-y-auto"
+            className="absolute left-full top-0 ml-1.5 bg-white py-2 z-50 min-w-[240px] max-h-[60vh] overflow-y-auto shadow-lg shadow-blue-100/50 border border-gray-100"
             role="menu"
             data-submenu
           >
@@ -315,8 +315,8 @@ export default function NavDropdown({
             role="menuitem"
             className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-colors ${
               currentPath === item.path
-                ? "text-brand-orange"
-                : "text-dark-navy hover:text-brand-orange"
+? "text-brand-orange bg-brand-orange/10"
+                : "text-dark-navy hover:text-brand-orange hover:bg-blue-50"
             }`}
             onClick={onItemClick}
           >

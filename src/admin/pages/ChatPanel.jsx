@@ -351,7 +351,7 @@ export default function ChatPanel() {
             <button
               type="submit"
               disabled={!input.trim() || sending || activeConv.status === 'closed'}
-              className="w-10 h-10 rounded-full bg-brand-orange text-white flex items-center justify-center hover:bg-orange-600 transition-colors disabled:opacity-40 shrink-0 cursor-pointer"
+              className="w-10 h-10 rounded-full bg-brand-orange text-white flex items-center justify-center hover:bg-brand-orange/90 transition-colors disabled:opacity-40 shrink-0 cursor-pointer"
             >
               {sending ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
             </button>

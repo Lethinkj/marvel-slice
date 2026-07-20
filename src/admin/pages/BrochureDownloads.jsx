@@ -172,7 +172,7 @@ export default function BrochureDownloads() {
                         <button onClick={() => setSelected(d)} className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-colors" title="View">
                           <FiEye className="w-4 h-4" />
                         </button>
-                        <button onClick={() => toggleRead(d)} className={`p-1.5 rounded-lg transition-colors ${d.is_read ? 'text-neutral-400 hover:text-orange-600 hover:bg-orange-50' : 'text-neutral-400 hover:text-emerald-600 hover:bg-emerald-50'}`} title={d.is_read ? 'Mark unread' : 'Mark read'}>
+                        <button onClick={() => toggleRead(d)} className={`p-1.5 rounded-lg transition-colors ${d.is_read ? 'text-neutral-400 hover:text-brand-orange hover:bg-brand-orange/10' : 'text-neutral-400 hover:text-emerald-600 hover:bg-emerald-50'}`} title={d.is_read ? 'Mark unread' : 'Mark read'}>
                           {d.is_read ? <FiX className="w-4 h-4" /> : <FiCheck className="w-4 h-4" />}
                         </button>
                       </div>
@@ -250,7 +250,7 @@ export default function BrochureDownloads() {
               </div>
               <div className="flex justify-end pt-2">
                 <button onClick={() => { toggleRead(selected); }}
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${selected.is_read ? 'bg-orange-50 text-orange-600 hover:bg-orange-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}>
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${selected.is_read ? 'bg-brand-orange/10 text-brand-orange hover:bg-brand-orange/20' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}>
                   {selected.is_read ? 'Mark as Unread' : 'Mark as Read'}
                 </button>
               </div>

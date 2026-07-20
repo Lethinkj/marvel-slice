@@ -20,7 +20,7 @@ export default function CourseFees() {
               <ul className="space-y-3 mb-8">
                 {(plan.features || []).map((feat, j) => (
                   <li key={j} className="flex items-center gap-3 text-base text-text-gray">
-                    <FiCheck className="w-5 h-5 text-brand-green shrink-0" />
+                    <FiCheck className="w-5 h-5 text-brand-blue shrink-0" />
                     <span>{feat}</span>
                   </li>
                 ))}

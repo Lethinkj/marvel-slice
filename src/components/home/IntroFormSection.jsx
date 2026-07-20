@@ -68,7 +68,7 @@ export default function IntroFormSection({ section }) {
   const features = rawPills.map((label) => ({ label, icon: FiCheckCircle }));
 
   return (
-    <section className="relative overflow-hidden bg-gray-50">
+    <section className="relative overflow-hidden bg-white">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(#1B3A6B 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
@@ -126,7 +126,7 @@ export default function IntroFormSection({ section }) {
               </Link>
               <Link
                 to="/courses?parent=competitive-exam"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
               >
                 Competitive Exam
               </Link>

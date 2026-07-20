@@ -55,7 +55,7 @@ export default function Hero({ section }) {
               <motion.ul variants={item} className="mt-8 space-y-3">
                 {checklist.map((c, i) => (
                   <li key={i} className="flex items-start gap-3 text-base text-dark-navy">
-                    <FiCheckCircle className="w-6 h-6 text-brand-green shrink-0 mt-0.5" />
+                    <FiCheckCircle className="w-6 h-6 text-brand-blue shrink-0 mt-0.5" />
                     <span>{c}</span>
                   </li>
                 ))}

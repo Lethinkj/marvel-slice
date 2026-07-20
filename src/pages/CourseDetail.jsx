@@ -15,10 +15,10 @@ function AccordionQA({ items }) {
       {items.map((item, i) => (
         <div key={i} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
           <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
-            className="w-full flex items-center justify-between px-4 sm:px-5 py-3 text-left font-semibold text-brand-orange hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
+            className="w-full flex items-center justify-between px-4 sm:px-5 py-3 text-left font-semibold text-white bg-brand-orange hover:bg-brand-orange/90 transition-colors gap-3 cursor-pointer"
           >
             <span className="text-sm sm:text-base leading-snug flex-1">{item.question}</span>
-            <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-black/5 text-black">
+            <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-black/10 text-white">
               {openIdx === i ? <FiMinus className="w-3.5 h-3.5" /> : <FiPlus className="w-3.5 h-3.5" />}
             </span>
           </button>
@@ -155,7 +155,7 @@ function CourseTabs({ tabs, curriculum }) {
             />
           <Link
             to="/contact"
-            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-orange-600 transition-colors text-sm font-bold shadow-sm" style={{ marginLeft: 'auto', position: 'relative', left: '30px', top: '-15px' }}
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 transition-colors text-sm font-bold shadow-sm" style={{ marginLeft: 'auto', position: 'relative', left: '30px', top: '-15px' }}
           >
             Apply Now
             <FiArrowRight className="w-4 h-4" />

@@ -302,7 +302,7 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-10 h-10 rounded-full bg-brand-orange text-white shadow-lg hover:bg-orange-600 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-10 h-10 rounded-full bg-brand-orange text-white shadow-lg hover:bg-brand-orange/90 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
         >
           <FiMessageCircle className="w-5 h-5" />
         </button>

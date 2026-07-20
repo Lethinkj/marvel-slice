@@ -44,7 +44,7 @@ export default function FeatureCardsSection({ section }) {
                     <ul className="space-y-2 flex-1">
                       {card.bullets.map((bullet, j) => (
                         <li key={j} className="flex items-start gap-2">
-                          <FiCheckCircle className="w-5 h-5 text-brand-green shrink-0 mt-0.5" />
+                          <FiCheckCircle className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
                           <span className="text-text-gray text-base">{bullet}</span>
                         </li>
                       ))}
@@ -55,7 +55,7 @@ export default function FeatureCardsSection({ section }) {
                     size="sm"
                     shape="pill"
                     href={card.button_link || '/courses'}
-                    className="mt-6 bg-brand-green text-white px-5 py-2 text-base font-semibold rounded-full hover:bg-brand-green/90 transition-all self-start"
+                    className="mt-6 bg-brand-orange text-white px-5 py-2 text-base font-semibold rounded-full hover:bg-brand-orange/90 transition-all self-start"
                   >
                     {card.button_text || 'View More'}
                   </Button>

@@ -28,7 +28,7 @@ function Hero({ search, onSearchChange, onSearch, heroImage }) {
               onKeyDown={(e) => e.key === 'Enter' && onSearch?.()}
               className="w-full pl-11 sm:pl-12 pr-4 py-3.5 rounded-xl sm:rounded-l-xl sm:rounded-r-none bg-white text-dark-navy text-base focus:outline-none focus:ring-2 focus:ring-brand-orange" />
           </div>
-          <button onClick={onSearch} className="bg-brand-orange text-white px-8 py-3.5 rounded-xl sm:rounded-l-none sm:rounded-r-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
+          <button onClick={onSearch} className="bg-brand-orange text-white px-8 py-3.5 rounded-xl sm:rounded-l-none sm:rounded-r-xl font-semibold hover:bg-brand-orange/90 transition-colors flex items-center justify-center gap-2">
             Search <FiArrowRight className="w-4 h-4" />
           </button>
         </div>
