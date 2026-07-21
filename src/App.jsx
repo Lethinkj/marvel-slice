@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import TopBar from './components/layout/TopBar';
 import Header from './components/layout/Header';
@@ -98,7 +98,7 @@ function CourseNavRedirect() {
   const parent = loc.pathname.startsWith("/courses/sl/")
     ? "software-learning"
     : "competitive-exam";
-  return <Navigate to={`/courses?parent=${parent}&category=${subSlug}`} replace />;
+  return <Navigate to={`/courses?parent=${parent}&category=${subSlug}&view=list`} replace />;
 }
 
 // Fades/slides each page in and out on route changes.

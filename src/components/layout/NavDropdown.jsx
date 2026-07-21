@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { useNavChildren } from "../../hooks/useSupabase";
@@ -24,6 +24,8 @@ function DesktopNavItem({
 }) {
   const containerRef = useRef(null);
   const closeTimer = useRef(null);
+  const [searchParams] = useSearchParams();
+  const parentParam = searchParams.get("parent");
 
   const { data: navChildren } = useNavChildren(
     depth === 0 && !item.path ? item.label : null,
@@ -99,8 +101,8 @@ function DesktopNavItem({
         role="menuitem"
         className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
           isActive
-            ? "text-gray-900 font-semibold"
-            : "text-gray-600 hover:text-gray-900"
+            ? "text-brand-blue font-semibold underline underline-offset-4"
+            : "text-gray-600 hover:text-brand-blue"
         }`}
         onClick={onItemClick}
         tabIndex={0}
@@ -111,6 +113,9 @@ function DesktopNavItem({
   }
 
   if (depth === 0) {
+    const parentSlug = item.label.toLowerCase().replace(/\s+/g, "-");
+    const hasActiveChild = parentParam === parentSlug;
+
     return (
       <div
         ref={containerRef}
@@ -129,8 +134,10 @@ function DesktopNavItem({
           aria-expanded={isOpen}
           className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
               isOpen
-              ? "text-gray-900"
-              : "text-gray-500 hover:text-gray-900"
+              ? "text-brand-blue"
+              : hasActiveChild
+              ? "text-brand-blue underline underline-offset-4"
+              : "text-gray-500 hover:text-brand-blue"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
@@ -183,8 +190,8 @@ function DesktopNavItem({
         aria-expanded={isOpen}
           className={`group w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
             isOpen
-              ? "text-gray-900 font-semibold"
-              : "text-gray-700 hover:text-gray-900"
+              ? "text-brand-blue font-semibold"
+              : "text-gray-700 hover:text-brand-blue"
           }`}
         onClick={() => (isOpen ? onClose() : onOpen())}
       >
@@ -315,8 +322,8 @@ export default function NavDropdown({
             role="menuitem"
             className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
               currentPath === item.path
-                ? "text-gray-900"
-                : "text-gray-500 hover:text-gray-900"
+                ? "text-brand-blue underline underline-offset-4"
+                : "text-gray-500 hover:text-brand-blue"
             }`}
             onClick={onItemClick}
           >
@@ -351,6 +358,8 @@ function MobileNavItem({
   isOpen,
   onToggle,
 }) {
+  const [searchParams] = useSearchParams();
+  const parentParam = searchParams.get("parent");
   const { data: navChildren } = useNavChildren(
     depth === 0 && !item.path ? item.label : null,
   );
@@ -367,8 +376,8 @@ function MobileNavItem({
         to={item.path || "#"}
         className={`block px-5 py-3 text-sm rounded-md transition-colors ${
           isActive
-            ? "text-gray-900 font-semibold"
-            : "text-gray-600 hover:text-gray-900"
+            ? "text-brand-blue font-semibold underline underline-offset-4"
+            : "text-gray-600 hover:text-brand-blue"
         }`}
         onClick={onItemClick}
       >
@@ -377,6 +386,9 @@ function MobileNavItem({
     );
   }
 
+  const parentSlug = item.slug || item.label.toLowerCase().replace(/\s+/g, "-");
+  const hasActiveChild = parentParam === parentSlug;
+
   return (
     <div>
       <button
@@ -384,8 +396,10 @@ function MobileNavItem({
         aria-expanded={isOpen}
         className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors cursor-pointer ${
           depth === 0
-            ? "font-medium text-gray-900 hover:text-gray-900"
-            : "text-gray-700 hover:text-gray-900"
+            ? hasActiveChild
+              ? "font-medium text-brand-blue underline underline-offset-4"
+              : "font-medium text-gray-900 hover:text-brand-blue"
+            : "text-gray-700 hover:text-brand-blue"
         }`}
       >
         <span>{item.label}</span>

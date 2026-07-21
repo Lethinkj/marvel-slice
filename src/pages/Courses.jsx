@@ -34,8 +34,16 @@ const PER_PAGE = 6;
 // category (Web Development, UPSC, Cybersecurity, etc.) to be treated
 // as a top-level parent and rendered as one long horizontal chip strip.
 const PARENTS = [
-  { label: "Software Learning", slug: "software-learning" },
-  { label: "Competitive Exam", slug: "competitive-exam" },
+  {
+    label: "Software Learning",
+    slug: "software-learning",
+    displayLabel: "Software",
+  },
+  {
+    label: "Competitive Exam",
+    slug: "competitive-exam",
+    displayLabel: "Competitive",
+  },
 ];
 
 const CATEGORY_ICONS = {
@@ -57,11 +65,11 @@ function Pagination({ page, total, onPage }) {
   const last = Math.ceil(total / PER_PAGE);
   if (last <= 1) return null;
   return (
-    <div className="flex items-center justify-center gap-2 mt-10">
+    <div className="flex items-center justify-center gap-1.5 mt-12">
       <button
         onClick={() => onPage(page - 1)}
         disabled={page <= 1}
-        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-brand-orange hover:border-brand-orange disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+        className="w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-brand-orange hover:bg-brand-orange/10 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
         aria-label="Previous page"
       >
         <FiChevronLeft className="w-4 h-4" />
@@ -70,10 +78,10 @@ function Pagination({ page, total, onPage }) {
         <button
           key={p}
           onClick={() => onPage(p)}
-          className={`w-9 h-9 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+          className={`w-9 h-9 rounded-full text-sm font-medium transition-all cursor-pointer ${
             p === page
-              ? "bg-brand-orange text-white shadow-sm"
-              : "border border-gray-200 text-gray-600 hover:border-brand-orange hover:text-brand-orange"
+              ? "bg-brand-orange text-white shadow-sm shadow-brand-orange/30"
+              : "text-gray-500 hover:bg-gray-100"
           }`}
           aria-label={`Page ${p}`}
           aria-current={p === page ? "page" : undefined}
@@ -84,7 +92,7 @@ function Pagination({ page, total, onPage }) {
       <button
         onClick={() => onPage(page + 1)}
         disabled={page >= last}
-        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-brand-orange hover:border-brand-orange disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+        className="w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-brand-orange hover:bg-brand-orange/10 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
         aria-label="Next page"
       >
         <FiChevronRight className="w-4 h-4" />
@@ -97,9 +105,9 @@ function CourseListItem({ course }) {
   return (
     <Link
       to={`/courses/${course.slug}`}
-      className="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
+      className="group flex items-center gap-4 p-3 sm:p-4 bg-white rounded-2xl border border-gray-100 hover:border-brand-orange/30 hover:shadow-lg hover:shadow-gray-200/60 transition-all duration-200"
     >
-      <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-brand-orange/20 to-brand-orange/10 flex items-center justify-center">
+      <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-brand-orange/15 to-brand-orange/5 flex items-center justify-center">
         {course.hero_image_url ? (
           <img
             src={course.hero_image_url}
@@ -107,11 +115,11 @@ function CourseListItem({ course }) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <FiBookOpen className="w-8 h-8 text-brand-orange/40" />
+          <FiBookOpen className="w-7 h-7 text-brand-orange/40" />
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-dark-navy text-sm sm:text-base truncate">
+        <h3 className="font-semibold text-dark-navy text-sm sm:text-base truncate group-hover:text-brand-orange transition-colors">
           {course.title}
         </h3>
         {course.description && (
@@ -119,7 +127,7 @@ function CourseListItem({ course }) {
             {course.description}
           </p>
         )}
-        <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-400">
+        <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
           {course.duration && (
             <span className="flex items-center gap-1">
               <FiClock className="w-3.5 h-3.5" />
@@ -134,8 +142,42 @@ function CourseListItem({ course }) {
           )}
         </div>
       </div>
-      <FiChevronRight className="w-5 h-5 text-gray-300 shrink-0" />
+      <FiChevronRight className="w-5 h-5 text-gray-300 shrink-0 group-hover:text-brand-orange group-hover:translate-x-0.5 transition-all" />
     </Link>
+  );
+}
+
+// Segmented parent toggle — shared visual between desktop sidebar and mobile
+function ParentToggle({ parents, parentParam, onSelect, className = "" }) {
+  return (
+    <div
+      className={`flex gap-6 border-b border-gray-200 ${className}`}
+      role="tablist"
+    >
+      {parents.map((p) => {
+        const active = parentParam === p.slug;
+        return (
+          <button
+            key={p.slug}
+            role="tab"
+            aria-selected={active}
+            onClick={() => onSelect(p.slug)}
+            className={`relative pb-3 text-[15px] transition-colors cursor-pointer ${
+              active
+                ? "text-brand-orange font-semibold"
+                : "text-gray-500 font-medium hover:text-gray-800"
+            }`}
+          >
+            {p.displayLabel}
+            <span
+              className={`absolute left-0 right-0 -bottom-px h-[2px] rounded-full bg-brand-orange transition-transform duration-200 origin-left ${
+                active ? "scale-x-100" : "scale-x-0"
+              }`}
+            />
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -149,6 +191,7 @@ export default function Courses() {
   const [viewMode, setViewMode] = useState("grid");
   const parentParam = searchParams.get("parent") || PARENTS[0].slug;
   const activeCategory = searchParams.get("category") || categorySlug || null;
+  const listOnly = searchParams.get("view") === "list";
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   const setPage = useCallback(
@@ -357,7 +400,7 @@ export default function Courses() {
   if (isLoading || navLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="w-48 h-8 bg-gray-200 rounded mb-8 animate-pulse" />
+        <div className="w-48 h-8 bg-gray-200 rounded-lg mb-8 animate-pulse" />
         <CourseSkeleton count={6} />
       </div>
     );
@@ -373,7 +416,7 @@ export default function Courses() {
     const hasChildren = parentNode.children.length > 0;
 
     return (
-      <div key={parentNode.id}>
+      <div key={parentNode.id} className="mb-0.5">
         <button
           onClick={() => {
             if (hasChildren) {
@@ -389,10 +432,10 @@ export default function Courses() {
               selectCategory(parentSlug);
             }
           }}
-          className={`w-full text-left px-3 py-2.5 text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
+          className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
             isParentActive
-              ? "text-gray-900 font-bold"
-              : "text-gray-500 hover:text-gray-900 hover:font-semibold"
+              ? "bg-brand-orange/10 text-brand-orange font-semibold"
+              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
           }`}
           aria-expanded={hasChildren ? expanded : undefined}
           aria-label={`${parentNode.label} (${parentNode.totalCount} courses)`}
@@ -400,7 +443,7 @@ export default function Courses() {
           <span className="flex items-center gap-3 min-w-0 flex-1">
             <span className="w-[18px] h-[18px] flex items-center justify-center shrink-0">
               <Icon
-                className={`w-[18px] h-[18px] ${isParentActive ? "text-gray-900" : "text-gray-400"}`}
+                className={`w-[18px] h-[18px] ${isParentActive ? "text-brand-orange" : "text-gray-400"}`}
               />
             </span>
             <span className="truncate min-w-0 max-w-full">
@@ -408,13 +451,19 @@ export default function Courses() {
             </span>
           </span>
           <span className="flex items-center gap-1.5 shrink-0">
-            <span className="text-xs font-medium text-gray-400 tabular-nums leading-none">
+            <span
+              className={`text-xs font-medium tabular-nums leading-none px-1.5 py-0.5 rounded-full ${
+                isParentActive
+                  ? "bg-brand-orange/15 text-brand-orange"
+                  : "text-gray-400"
+              }`}
+            >
               {parentNode.totalCount}
             </span>
             {hasChildren && (
               <FiChevronRight
                 className={`w-3.5 h-3.5 transition-transform duration-200 ease-out ${expanded ? "rotate-90" : ""} ${
-                  isParentActive ? "text-gray-900" : "text-gray-400"
+                  isParentActive ? "text-brand-orange" : "text-gray-400"
                 }`}
               />
             )}
@@ -440,17 +489,17 @@ export default function Courses() {
                     <button
                       key={child.id}
                       onClick={() => selectCategory(childSlug)}
-                      className={`w-full text-left pl-3 pr-3 py-2 text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
+                      className={`w-full text-left pl-3 pr-3 py-2 rounded-lg text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                         isChildActive
-                          ? "text-gray-900 font-semibold"
-                          : "text-gray-500 hover:text-gray-900 hover:font-semibold"
+                          ? "text-brand-orange font-semibold bg-brand-orange/5"
+                          : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                       }`}
                       aria-label={`${child.label} (${countFor(child.id)} courses)`}
                     >
                       <span className="flex items-center gap-2.5 min-w-0 flex-1">
                         <span className="w-[14px] h-[14px] flex items-center justify-center shrink-0">
                           <ChildIcon
-                            className={`w-[14px] h-[14px] ${isChildActive ? "text-gray-900" : "text-gray-400"}`}
+                            className={`w-[14px] h-[14px] ${isChildActive ? "text-brand-orange" : "text-gray-400"}`}
                           />
                         </span>
                         <span className="truncate min-w-0 max-w-full">
@@ -472,67 +521,50 @@ export default function Courses() {
   };
 
   return (
-    <div>
-        <div className="flex w-full">
-          {/* Left Sidebar — light gray, flush top, no gap */}
+    <div className="bg-white">
+      <div className={`flex w-full ${listOnly ? "" : "h-[calc(100vh-68px)]"}`}>
+        {/* Left Sidebar — hidden in list-only mode */}
+        {!listOnly && (
           <aside
-            className="w-[270px] shrink-0 hidden lg:block bg-gray-50"
+            className="w-[270px] shrink-0 hidden lg:flex lg:flex-col bg-gray-50/60 border-r border-gray-200 overflow-hidden"
             aria-label="Course categories"
           >
-            <nav className="sticky top-0 pt-6 pb-4 px-4">
-              {/* Segmented control for SL/CE — only 2 tabs, always */}
-              <div
-                className="flex p-0.5 bg-gray-100 rounded-xl mb-6"
-                role="tablist"
-              >
-                {parents.map((p) => (
-                  <button
-                    key={p.slug}
-                    role="tab"
-                    aria-selected={parentParam === p.slug}
-                    onClick={() => selectParent(p.slug)}
-                    className={`flex-1 px-3 py-2 text-xs font-bold rounded-[10px] transition-all duration-150 cursor-pointer ${
-                      parentParam === p.slug
-                        ? "bg-white text-brand-orange"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
+            {/* Toggle at top — flush with header */}
+            <div className="px-5 pt-4 bg-gray-50/60">
+              <ParentToggle
+                parents={parents}
+                parentParam={parentParam}
+                onSelect={selectParent}
+              />
+            </div>
+            {/* Category tree */}
+            <nav className="px-3 pt-3 pb-4 overflow-y-auto flex-1">
               {currentTree.map(sidebarNode)}
             </nav>
           </aside>
+        )}
 
-          {/* Right content — white bg, flush top, wraps mobile dropdown and course grid */}
-          <div className="flex-1 min-w-0 max-w-[1600px] bg-white pt-6">
-            {/* Mobile sidebar (dropdown) */}
+        {/* Right content — scrollable */}
+        <div
+          className={`flex-1 min-w-0 bg-white ${
+            listOnly
+              ? "max-w-[1400px] mx-auto pt-6"
+              : "max-w-[1600px] pt-6 overflow-y-auto h-[calc(100vh-68px)]"
+          }`}
+        >
+          {/* Mobile sidebar (dropdown) — hidden in list-only mode */}
+          {!listOnly && (
             <div className="lg:hidden px-4 sm:px-6 mb-6">
-              <div
-                className="flex p-0.5 bg-gray-100 rounded-xl mb-4"
-                role="tablist"
-              >
-                {parents.map((p) => (
-                  <button
-                    key={p.slug}
-                    role="tab"
-                    aria-selected={parentParam === p.slug}
-                    onClick={() => selectParent(p.slug)}
-                    className={`flex-1 px-3 py-2 text-xs font-bold rounded-[10px] transition-all duration-150 cursor-pointer ${
-                      parentParam === p.slug
-                        ? "bg-white text-brand-orange shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
+              <ParentToggle
+                parents={parents}
+                parentParam={parentParam}
+                onSelect={selectParent}
+                className="mb-4"
+              />
               <div className="relative">
                 <button
                   onClick={() => setMobileOpen(!mobileOpen)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-dark-navy bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange cursor-pointer flex items-center justify-between gap-2"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-dark-navy bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange cursor-pointer flex items-center justify-between gap-2"
                   aria-label="Select a course category"
                   aria-expanded={mobileOpen}
                 >
@@ -552,7 +584,7 @@ export default function Courses() {
                       className="fixed inset-0 z-10"
                       onClick={() => setMobileOpen(false)}
                     />
-                    <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-xl max-h-[60vh] overflow-y-auto">
+                    <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-2xl shadow-lg shadow-gray-200/60 max-h-[60vh] overflow-y-auto">
                       <button
                         onClick={() => {
                           clearCategory();
@@ -575,7 +607,9 @@ export default function Courses() {
                                   const firstChild = parent.children[0];
                                   const childSlug = firstChild.path
                                     ? firstChild.path.replace(/.*\//, "")
-                                    : firstChild.label.toLowerCase().replace(/\s+/g, "-");
+                                    : firstChild.label
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-");
                                   selectCategory(childSlug);
                                 } else {
                                   selectCategory(parentSlug);
@@ -584,8 +618,8 @@ export default function Courses() {
                               }}
                               className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                                 isParentActive
-                                  ? "text-gray-900 font-semibold"
-                                  : "text-gray-500 hover:text-gray-900 hover:font-semibold"
+                                  ? "text-brand-orange font-semibold"
+                                  : "text-gray-500 hover:text-gray-900"
                               }`}
                             >
                               <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -612,8 +646,8 @@ export default function Courses() {
                                   }}
                                   className={`w-full text-left pl-8 pr-4 py-2 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                                     isChildActive
-                                      ? "text-gray-900 font-semibold"
-                                      : "text-gray-500 hover:text-gray-900 hover:font-semibold"
+                                      ? "text-brand-orange font-semibold"
+                                      : "text-gray-500 hover:text-gray-900"
                                   }`}
                                 >
                                   <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -633,110 +667,167 @@ export default function Courses() {
                 )}
               </div>
             </div>
+          )}
 
-            <div className="pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-6 lg:pl-10 pb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-dark-navy mb-1">
-                Find Your Courses
-              </h2>
-              <div className="flex items-center justify-between mb-5 sm:mb-6 flex-wrap gap-3">
-                <h1 className="text-lg sm:text-2xl font-bold text-dark-navy">
-                  {activeNavId
-                    ? navItems?.find((n) => n.id === activeNavId)?.label ||
-                      "Courses"
-                    : parents.find((p) => p.slug === parentParam)?.label ||
-                      "Courses"}
+          <div
+            className={`${
+              listOnly
+                ? "max-w-[1280px] mx-auto px-4 sm:px-6 py-6"
+                : "pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-6 lg:pl-10 pb-16"
+            }`}
+          >
+            {/* List-only header */}
+            {listOnly && (
+              <div className="mb-6">
+                <Link
+                  to={`/courses?parent=${parentParam}`}
+                  className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-orange transition-colors mb-3"
+                >
+                  <FiChevronLeft className="w-4 h-4" />
+                  Back
+                </Link>
+                <h1 className="text-2xl sm:text-3xl font-bold text-dark-navy">
+                  {navItems?.find((n) => n.id === activeNavId)?.label ||
+                    "Courses"}
                 </h1>
-                <div className="flex items-center gap-3">
-                  <div className="relative w-full sm:w-56 lg:w-60">
-                    <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      value={search}
-                      onChange={(e) => {
-                        setSearch(e.target.value);
-                        setPage(1);
-                      }}
-                      placeholder="Search courses..."
-                      className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 text-sm text-dark-navy bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
-                      aria-label="Search courses"
-                    />
-                  </div>
-                  <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden shrink-0">
-                    <button
-                      onClick={() => setViewMode("grid")}
-                      className={`p-2 transition-colors ${viewMode === "grid" ? "bg-brand-orange text-white" : "bg-white text-gray-400 hover:text-dark-navy"}`}
-                      aria-label="Grid view"
-                    >
-                      <FiGrid className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode("list")}
-                      className={`p-2 transition-colors ${viewMode === "list" ? "bg-brand-orange text-white" : "bg-white text-gray-400 hover:text-dark-navy"}`}
-                      aria-label="List view"
-                    >
-                      <FiList className="w-4 h-4" />
-                    </button>
-                  </div>
+              </div>
+            )}
+
+            {/* Sidebar-mode header */}
+            {!listOnly && (
+              <div className="mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-brand-orange mb-1">
+                  Find Your Courses related to{" "}
+                  {parents.find((p) => p.slug === parentParam)?.label || "Software Learning"}
+                </h1>
+                {activeNavId && (
+                  <p className="text-lg sm:text-xl font-semibold text-[#175CDD]">
+                    {navItems?.find((n) => n.id === activeNavId)?.label || ""}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Toolbar row */}
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3 pb-4 border-b border-gray-100">
+              <p className="text-sm text-gray-500">
+                <span className="font-semibold text-dark-navy">
+                  {totalItems}
+                </span>{" "}
+                {totalItems === 1 ? "course" : "courses"}
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="relative w-full sm:w-56 lg:w-64">
+                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      setPage(1);
+                    }}
+                    placeholder="Search courses..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 text-sm text-dark-navy bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange/40 focus:border-brand-orange transition-all"
+                    aria-label="Search courses"
+                  />
+                </div>
+                <div className="flex items-center gap-1 bg-gray-100 rounded-full p-1 shrink-0">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2 rounded-full transition-colors cursor-pointer ${
+                      viewMode === "grid"
+                        ? "bg-white text-brand-orange shadow-sm"
+                        : "text-gray-400 hover:text-gray-600"
+                    }`}
+                    aria-label="Grid view"
+                  >
+                    <FiGrid className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 rounded-full transition-colors cursor-pointer ${
+                      viewMode === "list"
+                        ? "bg-white text-brand-orange shadow-sm"
+                        : "text-gray-400 hover:text-gray-600"
+                    }`}
+                    aria-label="List view"
+                  >
+                    <FiList className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-
-              {searchedCourses.length === 0 ? (
-                <div className="text-center py-16">
-                  {search ? (
-                    <>
-                      <FiSearch className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                      <p className="text-text-gray">
-                        No courses match &quot;{search}&quot;
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                        <FiClock className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <p className="text-lg font-semibold text-dark-navy mb-1">
-                        Coming Soon
-                      </p>
-                      <p className="text-text-gray text-sm mb-6">
-                        We&apos;re working on courses in this category. Check
-                        back soon!
-                      </p>
-                      <Link
-                        to="/courses"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white text-sm font-semibold rounded-xl hover:bg-brand-orange/90 transition-colors"
-                      >
-                        <FiGrid className="w-4 h-4" />
-                        Browse All Courses
-                      </Link>
-                    </>
-                  )}
-                </div>
-              ) : (
-                <>
-                  {viewMode === "grid" ? (
-                    <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
-                      {paginatedCourses.map((course) => (
-                        <StaggerItem key={course.id} className="h-full">
-                          <CourseCard
-                            course={course}
-                            bannerSize="lg"
-                            showViewLink
-                          />
-                        </StaggerItem>
-                      ))}
-                    </Stagger>
-                  ) : (
-                    <div className="space-y-4">
-                      {paginatedCourses.map((course) => (
-                        <CourseListItem key={course.id} course={course} />
-                      ))}
-                    </div>
-                  )}
-                  <Pagination page={page} total={totalItems} onPage={setPage} />
-                </>
-              )}
             </div>
+
+            {searchedCourses.length === 0 ? (
+              <div className="text-center py-20">
+                {search ? (
+                  <>
+                    <FiSearch className="w-14 h-14 text-gray-200 mx-auto mb-4" />
+                    <p className="text-gray-500">
+                      No courses match &quot;{search}&quot;
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-brand-orange/10 flex items-center justify-center mx-auto mb-4">
+                      <FiClock className="w-7 h-7 text-brand-orange" />
+                    </div>
+                    <p className="text-lg font-semibold text-dark-navy mb-1">
+                      Coming soon
+                    </p>
+                    <p className="text-gray-500 text-sm mb-6">
+                      We&apos;re working on courses in this category. Check back
+                      soon.
+                    </p>
+                    <Link
+                      to="/courses"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white text-sm font-semibold rounded-full hover:bg-brand-orange/90 transition-colors"
+                    >
+                      <FiGrid className="w-4 h-4" />
+                      Browse all courses
+                    </Link>
+                  </>
+                )}
+              </div>
+            ) : (
+              <>
+                {viewMode === "grid" ? (
+                  <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {paginatedCourses.map((course) => (
+                      <StaggerItem key={course.id}>
+                        <CourseCard
+                          course={course}
+                          bannerSize="lg"
+                          showViewLink
+                        />
+                      </StaggerItem>
+                    ))}
+                  </Stagger>
+                ) : (
+                  <div className="space-y-3">
+                    {paginatedCourses.map((course) => (
+                      <CourseListItem key={course.id} course={course} />
+                    ))}
+                  </div>
+                )}
+                {!listOnly && (
+                  <Pagination page={page} total={totalItems} onPage={setPage} />
+                )}
+                {listOnly && totalItems > 0 && (
+                  <div className="flex justify-end mt-8">
+                    <Link
+                      to={`/courses?parent=${parentParam}`}
+                      className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-orange transition-colors"
+                    >
+                      Explore more courses
+                      <FiChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
+      </div>
     </div>
   );
 }
