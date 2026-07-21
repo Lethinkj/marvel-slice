@@ -315,7 +315,7 @@ export default function NavDropdown({
             role="menuitem"
             className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
               currentPath === item.path
-? "text-brand-orange bg-brand-orange/10"
+                ? "text-brand-orange"
                 : "text-dark-navy hover:text-brand-orange hover:bg-brand-orange/10"
             }`}
             onClick={onItemClick}
