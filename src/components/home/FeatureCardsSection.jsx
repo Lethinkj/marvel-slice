@@ -1,6 +1,5 @@
 import Reveal from '../ui/Reveal';
 import { FiCheckCircle } from 'react-icons/fi';
-import Button from '../ui/Button';
 
 export default function FeatureCardsSection({ section }) {
   if (!section) return null;
@@ -50,15 +49,12 @@ export default function FeatureCardsSection({ section }) {
                       ))}
                     </ul>
                   )}
-                  <Button
-                    variant="link"
-                    size="sm"
-                    shape="pill"
+                  <a
                     href={card.button_link || '/courses'}
-                    className="mt-6 bg-brand-orange text-white px-5 py-2 text-base font-semibold rounded-full hover:bg-brand-orange/90 transition-all self-start"
+                    className="inline-flex items-center justify-center gap-2 mt-6 bg-brand-green text-white px-5 py-2 text-base font-semibold rounded-full hover:bg-brand-green/90 active:scale-[0.97] transition-all duration-200 self-start"
                   >
                     {card.button_text || 'View More'}
-                  </Button>
+                  </a>
                 </div>
               </div>
             </Reveal>

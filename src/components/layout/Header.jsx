@@ -39,7 +39,7 @@ export default function Header() {
         </div>
 
         <button
-          className="lg:hidden p-2.5 -mr-2 text-dark-navy rounded-md hover:bg-gray-100 transition-colors"
+          className="lg:hidden p-2.5 -mr-2 text-gray-900 rounded-md hover:bg-gray-100 transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >

@@ -128,9 +128,9 @@ function DesktopNavItem({
           aria-haspopup="true"
           aria-expanded={isOpen}
           className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
-            isOpen
+              isOpen
               ? "text-brand-orange bg-brand-orange/10"
-              : "text-dark-navy hover:text-brand-orange hover:bg-brand-orange/10"
+              : "text-gray-900 hover:text-brand-orange hover:bg-brand-orange/10"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
@@ -316,7 +316,7 @@ export default function NavDropdown({
             className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
               currentPath === item.path
                 ? "text-brand-orange"
-                : "text-dark-navy hover:text-brand-orange hover:bg-brand-orange/10"
+                : "text-gray-900 hover:text-brand-orange hover:bg-brand-orange/10"
             }`}
             onClick={onItemClick}
           >
@@ -387,7 +387,7 @@ function MobileNavItem({
         aria-expanded={isOpen}
         className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors cursor-pointer ${
           depth === 0
-            ? "font-medium text-dark-navy hover:text-brand-orange"
+            ? "font-medium text-gray-900 hover:text-brand-orange"
             : "text-gray-700 hover:text-brand-orange"
         }`}
       >

@@ -99,7 +99,7 @@ export default function ServicesSection({ section }) {
             )}
             <Button
               variant="accent"
-              shape="xl"
+              shape="pill"
               href={ctaLink}
               className="mt-4 self-start"
             >

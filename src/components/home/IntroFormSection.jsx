@@ -126,7 +126,7 @@ export default function IntroFormSection({ section }) {
               </Link>
               <Link
                 to="/courses?parent=competitive-exam"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
               >
                 Competitive Exam
               </Link>
