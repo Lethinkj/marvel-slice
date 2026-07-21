@@ -82,6 +82,7 @@ export function useCourse(slug) {
       return course || null;
     },
     enabled: !!slug,
+    staleTime: 0,
   });
 }
 
@@ -216,6 +217,7 @@ export function useRelatedCourses(courseId) {
       return tagCourses || [];
     },
     enabled: !!courseId,
+    staleTime: 0,
   });
 }
 

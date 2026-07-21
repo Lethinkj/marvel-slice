@@ -30,7 +30,7 @@ export default function CourseCard({
             .eq('is_published', true)
             .maybeSingle()
             .then(({ data }) => data || null),
-        staleTime: 1000 * 60 * 5,
+        staleTime: 0,
       });
     }
   }

@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useParams, Link } from "react-router-dom";
 import {
@@ -24,7 +24,7 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import CourseCard from "../components/ui/CourseCard";
 import CourseSkeleton from "../components/ui/CourseSkeleton";
-import Reveal, { Stagger, StaggerItem } from "../components/ui/Reveal";
+import { Stagger, StaggerItem } from "../components/ui/Reveal";
 
 const PER_PAGE = 6;
 
@@ -147,7 +147,7 @@ export default function Courses() {
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
-  const parentParam = searchParams.get("parent") || null;
+  const parentParam = searchParams.get("parent") || PARENTS[0].slug;
   const activeCategory = searchParams.get("category") || categorySlug || null;
   const page = parseInt(searchParams.get("page") || "1", 10);
 
@@ -173,21 +173,21 @@ export default function Courses() {
   const selectCategory = useCallback(
     (slug) => {
       setSearch("");
-      setPage(1);
       const next = new URLSearchParams(searchParams);
+      next.delete("page");
       next.set("category", slug);
       setSearchParams(next);
     },
-    [searchParams, setPage, setSearchParams],
+    [searchParams, setSearchParams],
   );
 
   const clearCategory = useCallback(() => {
     setSearch("");
-    setPage(1);
     const next = new URLSearchParams(searchParams);
+    next.delete("page");
     next.delete("category");
     setSearchParams(next);
-  }, [searchParams, setPage, setSearchParams]);
+  }, [searchParams, setSearchParams]);
 
   const { data: courses, isLoading } = useQuery({
     queryKey: ["allCourses"],
@@ -199,9 +199,10 @@ export default function Courses() {
         .order("created_at", { ascending: false });
       return data || [];
     },
+    staleTime: 0,
   });
 
-  const { data: navItems } = useQuery({
+  const { data: navItems, isLoading: navLoading } = useQuery({
     queryKey: ["courseNavCategories"],
     queryFn: async () => {
       const { data } = await supabase
@@ -211,6 +212,7 @@ export default function Courses() {
         .order("sort_order");
       return data || [];
     },
+    staleTime: 0,
   });
 
   const courseMap = useMemo(() => {
@@ -291,46 +293,44 @@ export default function Courses() {
     [hasUserInteracted, userExpanded, activeNavId, isActiveOrChild],
   );
 
+  useEffect(() => {
+    if (!parentParam || activeNavId || !navItems || !currentTree.length) return;
+    const first = currentTree[0]?.children?.[0];
+    if (!first) return;
+    const slug = first.path
+      ? first.path.replace(/.*\//, "")
+      : first.label.toLowerCase().replace(/\s+/g, "-");
+    const next = new URLSearchParams();
+    next.set("parent", parentParam);
+    next.set("category", slug);
+    setSearchParams(next);
+  }, [parentParam, activeNavId, navItems, currentTree, setSearchParams]);
+
+  // Auto-select first category if none selected
+  useEffect(() => {
+    if (!parentParam || !navItems || !currentTree.length) return;
+    if (!searchParams.get("category") && currentTree.length > 0) {
+      const first = currentTree[0]?.children?.[0] || currentTree[0];
+      if (first) {
+        const slug = first.path
+          ? first.path.replace(/.*\//, "")
+          : first.label.toLowerCase().replace(/\s+/g, "-");
+        const next = new URLSearchParams();
+        next.set("parent", parentParam);
+        next.set("category", slug);
+        setSearchParams(next);
+      }
+    }
+  }, [parentParam, navItems, currentTree, searchParams, setSearchParams]);
+
   const filteredCourses = useMemo(() => {
     if (!courses) return [];
     if (activeNavId) {
-      const ids = new Set();
-      const collect = (items) => {
-        items.forEach((item) => {
-          ids.add(item.id);
-          if (item.children) collect(item.children);
-        });
-      };
-      const findNode = (items) => {
-        for (const item of items) {
-          if (item.id === activeNavId) return item;
-          if (item.children) {
-            const found = findNode(item.children);
-            if (found) return found;
-          }
-        }
-        return null;
-      };
-      const node = findNode(currentTree);
-      if (node) {
-        collect([node]);
-        return courses.filter((c) => c.nav_item_id && ids.has(c.nav_item_id));
-      }
-      return courseMap[activeNavId] || [];
+      const byId = courseMap[activeNavId];
+      if (byId && byId.length > 0) return byId;
     }
-    if (parentParam) {
-      const ids = new Set();
-      const collect = (items) => {
-        items.forEach((item) => {
-          ids.add(item.id);
-          if (item.children) collect(item.children);
-        });
-      };
-      collect(currentTree);
-      return courses.filter((c) => c.nav_item_id && ids.has(c.nav_item_id));
-    }
-    return courses;
-  }, [courses, courseMap, activeNavId, parentParam, currentTree]);
+    return [];
+  }, [courses, courseMap, activeNavId]);
 
   const searchedCourses = useMemo(() => {
     if (!search) return filteredCourses;
@@ -354,7 +354,7 @@ export default function Courses() {
     setUserExpanded((prev) => (prev === id ? null : id));
   }
 
-  if (isLoading) {
+  if (isLoading || navLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="w-48 h-8 bg-gray-200 rounded mb-8 animate-pulse" />
@@ -376,13 +376,23 @@ export default function Courses() {
       <div key={parentNode.id}>
         <button
           onClick={() => {
-            if (hasChildren) toggleParent(parentNode.id);
-            selectCategory(parentSlug);
+            if (hasChildren) {
+              toggleParent(parentNode.id);
+              const firstChild = parentNode.children[0];
+              if (firstChild) {
+                const childSlug = firstChild.path
+                  ? firstChild.path.replace(/.*\//, "")
+                  : firstChild.label.toLowerCase().replace(/\s+/g, "-");
+                selectCategory(childSlug);
+              }
+            } else {
+              selectCategory(parentSlug);
+            }
           }}
           className={`w-full text-left px-3 py-2.5 text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
             isParentActive
-              ? "text-brand-orange font-bold"
-              : "text-gray-700 hover:text-brand-orange hover:font-semibold"
+              ? "text-gray-900 font-bold"
+              : "text-gray-500 hover:text-gray-900 hover:font-semibold"
           }`}
           aria-expanded={hasChildren ? expanded : undefined}
           aria-label={`${parentNode.label} (${parentNode.totalCount} courses)`}
@@ -390,7 +400,7 @@ export default function Courses() {
           <span className="flex items-center gap-3 min-w-0 flex-1">
             <span className="w-[18px] h-[18px] flex items-center justify-center shrink-0">
               <Icon
-                className={`w-[18px] h-[18px] ${isParentActive ? "text-brand-orange" : "text-gray-400"}`}
+                className={`w-[18px] h-[18px] ${isParentActive ? "text-gray-900" : "text-gray-400"}`}
               />
             </span>
             <span className="truncate min-w-0 max-w-full">
@@ -404,7 +414,7 @@ export default function Courses() {
             {hasChildren && (
               <FiChevronRight
                 className={`w-3.5 h-3.5 transition-transform duration-200 ease-out ${expanded ? "rotate-90" : ""} ${
-                  isParentActive ? "text-brand-orange" : "text-gray-400"
+                  isParentActive ? "text-gray-900" : "text-gray-400"
                 }`}
               />
             )}
@@ -432,15 +442,15 @@ export default function Courses() {
                       onClick={() => selectCategory(childSlug)}
                       className={`w-full text-left pl-3 pr-3 py-2 text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                         isChildActive
-                          ? "text-brand-orange font-semibold"
-                          : "text-gray-700 hover:text-brand-orange hover:font-semibold"
+                          ? "text-gray-900 font-semibold"
+                          : "text-gray-500 hover:text-gray-900 hover:font-semibold"
                       }`}
                       aria-label={`${child.label} (${countFor(child.id)} courses)`}
                     >
                       <span className="flex items-center gap-2.5 min-w-0 flex-1">
                         <span className="w-[14px] h-[14px] flex items-center justify-center shrink-0">
                           <ChildIcon
-                            className={`w-[14px] h-[14px] ${isChildActive ? "text-brand-orange" : "text-gray-400"}`}
+                            className={`w-[14px] h-[14px] ${isChildActive ? "text-gray-900" : "text-gray-400"}`}
                           />
                         </span>
                         <span className="truncate min-w-0 max-w-full">
@@ -463,32 +473,6 @@ export default function Courses() {
 
   return (
     <div>
-      {!parentParam ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-          <Reveal className="text-center mb-10">
-            <h1 className="text-[clamp(1.75rem,3vw,2.5rem)] font-extrabold text-dark-navy">
-              Our Courses
-            </h1>
-            <p className="text-text-gray text-base sm:text-lg mt-3">
-              Choose a category to explore courses
-            </p>
-          </Reveal>
-          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {parents.map((p) => (
-              <button
-                key={p.slug}
-                onClick={() => selectParent(p.slug)}
-                className="bg-white rounded-2xl border-2 border-gray-200 p-8 text-center hover:border-brand-orange hover:shadow-md transition-all group cursor-pointer"
-              >
-                <div className="w-16 h-16 rounded-full bg-brand-orange/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-brand-orange/20 transition-colors">
-                  <FiBookOpen className="w-8 h-8 text-brand-orange" />
-                </div>
-                <h3 className="text-xl font-bold text-dark-navy">{p.label}</h3>
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : (
         <div className="flex w-full">
           {/* Left Sidebar — light gray, flush top, no gap */}
           <aside
@@ -587,13 +571,21 @@ export default function Courses() {
                           <div key={parent.id}>
                             <button
                               onClick={() => {
-                                selectCategory(parentSlug);
+                                if (parent.children?.length > 0) {
+                                  const firstChild = parent.children[0];
+                                  const childSlug = firstChild.path
+                                    ? firstChild.path.replace(/.*\//, "")
+                                    : firstChild.label.toLowerCase().replace(/\s+/g, "-");
+                                  selectCategory(childSlug);
+                                } else {
+                                  selectCategory(parentSlug);
+                                }
                                 setMobileOpen(false);
                               }}
                               className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                                 isParentActive
-                                  ? "text-brand-orange font-semibold"
-                                  : "text-gray-700 hover:text-brand-orange hover:font-semibold"
+                                  ? "text-gray-900 font-semibold"
+                                  : "text-gray-500 hover:text-gray-900 hover:font-semibold"
                               }`}
                             >
                               <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -620,8 +612,8 @@ export default function Courses() {
                                   }}
                                   className={`w-full text-left pl-8 pr-4 py-2 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                                     isChildActive
-                                      ? "text-brand-orange font-semibold"
-                                      : "text-gray-700 hover:text-brand-orange hover:font-semibold"
+                                      ? "text-gray-900 font-semibold"
+                                      : "text-gray-500 hover:text-gray-900 hover:font-semibold"
                                   }`}
                                 >
                                   <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -689,12 +681,34 @@ export default function Courses() {
 
               {searchedCourses.length === 0 ? (
                 <div className="text-center py-16">
-                  <FiSearch className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                  <p className="text-text-gray">
-                    {search
-                      ? `No courses match "${search}"`
-                      : "No courses found in this category."}
-                  </p>
+                  {search ? (
+                    <>
+                      <FiSearch className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                      <p className="text-text-gray">
+                        No courses match &quot;{search}&quot;
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                        <FiClock className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <p className="text-lg font-semibold text-dark-navy mb-1">
+                        Coming Soon
+                      </p>
+                      <p className="text-text-gray text-sm mb-6">
+                        We&apos;re working on courses in this category. Check
+                        back soon!
+                      </p>
+                      <Link
+                        to="/courses"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white text-sm font-semibold rounded-xl hover:bg-brand-orange/90 transition-colors"
+                      >
+                        <FiGrid className="w-4 h-4" />
+                        Browse All Courses
+                      </Link>
+                    </>
+                  )}
                 </div>
               ) : (
                 <>
@@ -723,7 +737,6 @@ export default function Courses() {
             </div>
           </div>
         </div>
-      )}
     </div>
   );
 }

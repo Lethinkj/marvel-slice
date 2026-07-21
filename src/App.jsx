@@ -84,6 +84,23 @@ function DataPrefetcher() {
   return null;
 }
 
+// Forces a clean mount when search params change, avoiding stale state.
+function CoursesWithKey() {
+  const { search } = useLocation();
+  return <Courses key={search} />;
+}
+
+// Redirects /courses/sl/:slug and /courses/ce/:slug to the search-param
+// format so the listing page can filter without AnimatePresence re-mounts.
+function CourseNavRedirect() {
+  const { subSlug } = useParams();
+  const loc = useLocation();
+  const parent = loc.pathname.startsWith("/courses/sl/")
+    ? "software-learning"
+    : "competitive-exam";
+  return <Navigate to={`/courses?parent=${parent}&category=${subSlug}`} replace />;
+}
+
 // Fades/slides each page in and out on route changes.
 function AnimatedRoutes() {
   const location = useLocation();
@@ -94,8 +111,10 @@ function AnimatedRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:slug" element={<Blog />} />
-      <Route path="/courses" element={<Courses />} />
-      <Route path="/courses/category/:categorySlug" element={<Courses />} />
+      <Route path="/courses" element={<CoursesWithKey />} />
+      <Route path="/courses/category/:categorySlug" element={<CoursesWithKey />} />
+      <Route path="/courses/sl/:subSlug" element={<CourseNavRedirect />} />
+      <Route path="/courses/ce/:subSlug" element={<CourseNavRedirect />} />
       <Route path="/courses/:slug" element={<CourseDetail />} />
       <Route path="/career" element={<Career />} />
       <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
