@@ -1,12 +1,34 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend } from 'react-icons/fi';
+import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
 import Button from '../components/ui/Button';
-import CourseCard from '../components/ui/CourseCard';
 import TabBar from '../components/ui/TabBar';
+import CourseCard from '../components/ui/CourseCard';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
 import { supabase } from '../lib/supabaseClient';
+
+const HIGHLIGHT_ICONS = {
+  code: FiCode,
+  star: FiStar,
+  award: FiAward,
+  users: FiUsers,
+  clock: FiClock,
+  target: FiBarChart2,
+  book: FiBookOpen,
+  video: FiVideo,
+  calendar: FiCalendar,
+  refresh: FiRefreshCw,
+  message: FiMessageCircle,
+  briefcase: FiBriefcase,
+  globe: FiGlobe,
+  cpu: FiCpu,
+  database: FiDatabase,
+  layers: FiLayers,
+  zap: FiZap,
+  shield: FiShield,
+  trending: FiTrendingUp,
+};
 
 function AccordionQA({ items }) {
   const [openIdx, setOpenIdx] = useState(null);
@@ -15,11 +37,11 @@ function AccordionQA({ items }) {
       {items.map((item, i) => (
         <div key={i} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
           <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
-            className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-white bg-brand-orange hover:bg-brand-orange/90 transition-colors gap-3 cursor-pointer"
+            className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-gray-900 hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
           >
             <span className="text-sm sm:text-base leading-snug flex-1">{item.question}</span>
-            <span className="shrink-0 w-8 h-8 p-1.5 flex items-center justify-center rounded-full bg-white text-brand-orange">
-              {openIdx === i ? <FiMinus className="w-3.5 h-3.5" strokeWidth={3} /> : <FiPlus className="w-3.5 h-3.5" strokeWidth={3} />}
+            <span className="shrink-0 w-8 h-8 flex items-center justify-center text-gray-400">
+              {openIdx === i ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
             </span>
           </button>
           {openIdx === i && (
@@ -48,96 +70,24 @@ function getYoutubeEmbedUrl(url) {
   return null;
 }
 
-const HIGHLIGHT_ICONS = {
-  code: FiCode, star: FiStar, award: FiAward, users: FiUsers,
-  clock: FiClock, target: FiBarChart2, book: FiBookOpen,
-  video: FiVideo, calendar: FiCalendar, refresh: FiRefreshCw,
-  message: FiMessageCircle, briefcase: FiBriefcase, globe: FiGlobe,
-  cpu: FiCpu, database: FiDatabase, layers: FiLayers,
-  zap: FiZap, shield: FiShield, trending: FiTrendingUp,
-};
-function CourseTabs({ tabs, curriculum }) {
-  const TAB_ORDER = ['Overview', 'Syllabus', 'Pricing', 'Curriculum'];
-
-  const tabMap = {};
-  if (tabs) tabs.forEach((t) => {
-    if (t.label !== 'Apply Now') tabMap[t.label] = { type: 'admin', data: t };
-  });
-  if (curriculum?.length > 0) tabMap['Curriculum'] = { type: 'curriculum', data: curriculum };
-
-  // Fallback defaults for courses without tabs data
-  TAB_ORDER.forEach((label) => {
-    if (!tabMap[label]) {
-      tabMap[label] = {
-        type: 'admin',
-        data: { label, content: { heading: label, paragraph: 'Content coming soon.' } },
-      };
-    }
-  });
-  const orderedTabs = TAB_ORDER
-    .filter((label) => tabMap[label])
-    .map((label, i) => ({ id: `tab-${i}`, label, ...tabMap[label] }));
-
-  if (orderedTabs.length === 0) return null;
-
+function CourseTabs({ tabs }) {
+  if (!tabs || tabs.length === 0) return null;
   const [active, setActive] = useState(0);
-  const [openMod, setOpenMod] = useState(null);
-  const activeTab = orderedTabs[active];
-
-  function handleTabClick(i) {
-    setActive(i);
-    setOpenMod(null);
-  }
-
-  function renderCurriculum(cur) {
-    return (
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {cur.map((mod, i) => (
-          <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-            <div className="p-5">
-              <span className="text-xs font-bold text-brand-orange uppercase tracking-wider">Module {i + 1}</span>
-              <h3 className="font-semibold text-dark-navy mt-1 mb-2">{mod.title}</h3>
-              {mod.description && <p className="text-sm text-gray-500 mb-3">{mod.description}</p>}
-              <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
-                <span>{mod.topics?.length || 0} lessons</span>
-              </div>
-              {mod.topics?.length > 0 && (
-                <>
-                  <button
-                    onClick={() => setOpenMod(openMod === i ? null : i)}
-                    className="flex items-center gap-1 text-xs font-medium text-brand-orange hover:underline"
-                  >
-                    {openMod === i ? 'Hide' : 'Show'} lessons
-                    <FiChevronDown className={`w-3 h-3 transition-transform ${openMod === i ? 'rotate-180' : ''}`} />
-                  </button>
-                  {openMod === i && (
-                    <div className="mt-3 pt-3 border-t border-gray-100 space-y-1.5">
-                      {mod.topics.map((topic, j) => (
-                        <div key={j} className="flex items-center gap-2 text-sm text-gray-600">
-                          <span className="w-1.5 h-1.5 rounded-full bg-brand-orange/60 shrink-0" />
-                          {topic}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  const activeTab = tabs[active];
 
   function renderContent(t) {
     const content = t.content || {};
     const hasMain = content.heading || content.paragraph || content.subheading || content.text;
+    const align = (key) => {
+      const a = content[key + "Align"] || "center";
+      return a === "left" ? "text-left" : a === "right" ? "text-right" : "text-center";
+    };
     return (
       <div className="space-y-6">
-        {content.heading && <h2 className="text-2xl font-bold text-dark-navy text-center">{content.heading}</h2>}
-        {content.paragraph && <p className="text-gray-600 leading-relaxed text-center max-w-2xl mx-auto">{content.paragraph}</p>}
-        {content.subheading && <h3 className="text-lg font-semibold text-dark-navy">{content.subheading}</h3>}
-        {content.text && <div className="text-gray-700 leading-relaxed whitespace-pre-line">{content.text}</div>}
+        {content.heading && <h2 className={`text-2xl font-bold text-dark-navy ${align("heading")}`}>{content.heading}</h2>}
+        {content.paragraph && <p className={`text-gray-600 leading-relaxed ${align("paragraph")} ${align("paragraph") === "text-center" ? "max-w-2xl mx-auto" : ""}`}>{content.paragraph}</p>}
+        {content.subheading && <h3 className={`text-lg font-semibold text-dark-navy ${align("subheading")}`}>{content.subheading}</h3>}
+        {content.text && <div className={`text-gray-700 leading-relaxed whitespace-pre-line ${align("text")}`}>{content.text}</div>}
         {content.qa?.length > 0 && <AccordionQA items={content.qa} />}
         {!hasMain && !content.qa?.length && <p className="text-gray-400 text-center py-8">Content coming soon.</p>}
       </div>
@@ -147,26 +97,23 @@ function CourseTabs({ tabs, curriculum }) {
   return (
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-start justify-between gap-2 mb-0">
-            <TabBar
-              tabs={orderedTabs.map(t => t.label)}
-              activeIndex={active}
-              onChange={handleTabClick}
-            />
+        <div className="flex items-center justify-between gap-4">
+          <TabBar
+            tabs={tabs.map(t => t.label)}
+            activeIndex={active}
+            onChange={setActive}
+          />
           <Link
             to="/contact"
-            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 transition-colors text-sm font-bold shadow-sm" style={{ marginLeft: 'auto', position: 'relative', left: '30px', top: '-15px' }}
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 transition-colors text-sm font-bold shadow-sm"
           >
             Apply Now
             <FiArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm -mt-px">
+        <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-sm">
           <div className="p-6 sm:p-8 h-[420px] overflow-y-auto">
-            {activeTab.type === 'curriculum'
-              ? renderCurriculum(activeTab.data)
-              : renderContent(activeTab.data)
-            }
+            {renderContent(activeTab)}
           </div>
         </div>
       </div>
@@ -178,27 +125,27 @@ function OverviewSection({ course }) {
   if (!course) return null;
 
   return (
-    <section id="overview" data-section="overview" className="py-16">
+    <section id="overview" data-section="overview" className="py-16 bg-bg-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {course.highlights?.length > 0 && (
-          <div className="mb-12">
-            <Reveal as="h3" className="text-2xl font-bold text-dark-navy text-center mb-6">Key Highlights</Reveal>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <div>
+            <Reveal as="h2" className="text-2xl font-bold text-dark-navy text-center mb-10">Key Highlights</Reveal>
+            <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
               {course.highlights.map((h, i) => (
-                <Reveal key={h.id || i}>
-                  <div className="bg-white rounded-xl shadow-sm flex items-center gap-4 p-4 h-[72px]" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)' }}>
-                    <div className="shrink-0 w-1 self-stretch rounded-full bg-blue-500" />
+                <StaggerItem key={h.id || i}>
+                  <div className="bg-white rounded-xl shadow-sm flex items-center gap-4 px-4 py-4 border border-gray-100">
+                    <div className="shrink-0 w-1 self-stretch rounded-full bg-blue-600" />
                     <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
                       {(() => {
                         const IconComp = HIGHLIGHT_ICONS[h.icon] || FiAward;
-                        return <IconComp className="w-5 h-5 text-indigo-400" />;
+                        return <IconComp className="w-5 h-5 text-indigo-500" />;
                       })()}
                     </div>
                     <span className="font-semibold text-dark-navy text-sm">{h.label}</span>
                   </div>
-                </Reveal>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </div>
         )}
       </div>
@@ -349,6 +296,7 @@ export default function CourseDetail() {
   const [brochureSubmitting, setBrochureSubmitting] = useState(false);
   const [brochureDone, setBrochureDone] = useState(false);
   const [brochureError, setBrochureError] = useState('');
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
   if (isLoading) {
     return (
@@ -398,13 +346,13 @@ export default function CourseDetail() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <section className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
           <Link to="/courses" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-brand-orange mb-6 transition-colors">
             <FiArrowLeft className="w-4 h-4" /> Back to Courses
           </Link>
-          <div className="grid lg:grid-cols-5 gap-8 lg:gap-14">
-            <div className="lg:col-span-3">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div>
               <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15]">
                 {course.title}
                 {course.status && course.status !== 'Active' && (
@@ -415,31 +363,46 @@ export default function CourseDetail() {
                   </span>
                 )}
               </h1>
-              {course.subtitle && (
-                <p className="mt-3 text-lg text-brand-orange font-medium">{course.subtitle}</p>
-              )}
               <p className="mt-4 text-base text-gray-600 leading-relaxed">{course.description}</p>
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 text-sm">
-                <span className="flex items-center gap-1.5 text-gray-600">
-                  <FiStar className="w-4 h-4 text-yellow-500 fill-current" />
-                  <span className="font-semibold text-dark-navy">{course.rating || 4.5}</span>
-                  <span className="text-gray-400">({course.review_count || 0} reviews)</span>
-                </span>
-                <span className="flex items-center gap-1.5 text-gray-500">
-                  <FiUsers className="w-4 h-4" />
-                  {(course.learner_count || 0).toLocaleString()} learners
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
-                <Button variant="accent" size="lg" to="#enroll" className="w-full sm:w-auto">Enroll Now</Button>
-                <Button variant="outline" size="lg" onClick={() => { setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setShowBrochure(true); }} className="w-full sm:w-auto">Download Brochure</Button>
+              {course.checklist_items?.length > 0 && (
+                <ul className="mt-6 space-y-2.5">
+                  {course.checklist_items.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
+                      <FiCheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                <Button variant="accent" size="lg" to={course.cta_link || '#contact'} className="w-full sm:w-auto">
+                  {course.cta_left || 'Talk to Advisor'}
+                </Button>
+                <Button variant="outline" size="lg" onClick={() => { setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setShowBrochure(true); }} className="w-full sm:w-auto">
+                  {course.cta_right || 'Download Brochure'}
+                </Button>
               </div>
             </div>
-            <div className="lg:col-span-2">
-              {embedUrl ? (
+            <div className="relative">
+              {embedUrl && !videoPlaying ? (
+                <div className="relative rounded-xl overflow-hidden shadow-lg">
+                  {course.video_thumbnail_url ? (
+                    <img src={course.video_thumbnail_url} alt="Course video thumbnail" className="w-full aspect-video object-cover" />
+                  ) : (
+                    <div className="w-full aspect-video bg-gray-100 flex items-center justify-center">
+                      <FiBarChart2 className="w-16 h-16 text-gray-300" />
+                    </div>
+                  )}
+                  <button onClick={() => setVideoPlaying(true)} className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer">
+                    <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg hover:bg-white transition-colors">
+                      <FiPlay className="w-7 h-7 text-brand-orange ml-0.5" />
+                    </div>
+                  </button>
+                </div>
+              ) : embedUrl && videoPlaying ? (
                 <div className="relative rounded-xl overflow-hidden shadow-lg">
                   <iframe
-                    src={`${embedUrl}&mute=1&controls=1`}
+                    src={`${embedUrl}&autoplay=1&controls=1`}
                     title="Course Introduction Video"
                     className="w-full aspect-video"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -452,7 +415,6 @@ export default function CourseDetail() {
                   <p className="text-gray-400 text-sm">Course preview video</p>
                 </div>
               )}
-
             </div>
           </div>
         </div>
@@ -463,8 +425,8 @@ export default function CourseDetail() {
       {/* Overview */}
       <OverviewSection course={course} />
 
-      {/* Course Tabs (includes Curriculum) */}
-      <CourseTabs tabs={course.course_tabs} curriculum={course.curriculum} />
+      {/* Course Tabs */}
+      <CourseTabs tabs={course.course_tabs} />
 
       {/* CTA Banner */}
       {course.cta_heading && course.cta_heading.trim() ? (

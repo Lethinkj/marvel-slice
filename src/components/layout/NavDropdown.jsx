@@ -99,8 +99,8 @@ function DesktopNavItem({
         role="menuitem"
         className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
           isActive
-            ? "text-brand-orange font-semibold bg-brand-orange/10"
-            : "text-gray-600 hover:text-brand-orange hover:bg-brand-orange/10"
+            ? "text-brand-orange font-semibold"
+            : "text-gray-600 hover:text-brand-orange"
         }`}
         onClick={onItemClick}
         tabIndex={0}
@@ -129,8 +129,8 @@ function DesktopNavItem({
           aria-expanded={isOpen}
           className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
               isOpen
-              ? "text-brand-orange bg-brand-orange/10"
-              : "text-gray-900 hover:text-brand-orange hover:bg-brand-orange/10"
+              ? "text-brand-orange"
+              : "text-gray-900 hover:text-brand-orange"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
@@ -183,8 +183,8 @@ function DesktopNavItem({
         aria-expanded={isOpen}
           className={`group w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
             isOpen
-              ? "text-brand-orange font-semibold bg-brand-orange/10"
-              : "text-gray-700 hover:text-brand-orange hover:bg-brand-orange/10"
+              ? "text-brand-orange font-semibold"
+              : "text-gray-700 hover:text-brand-orange"
           }`}
         onClick={() => (isOpen ? onClose() : onOpen())}
       >
@@ -316,14 +316,11 @@ export default function NavDropdown({
             className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
               currentPath === item.path
                 ? "text-brand-orange"
-                : "text-gray-900 hover:text-brand-orange hover:bg-brand-orange/10"
+                : "text-gray-900 hover:text-brand-orange"
             }`}
             onClick={onItemClick}
           >
             {item.label}
-            {currentPath === item.path && (
-              <span className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-brand-orange rounded-full" />
-            )}
           </Link>
         ) : (
           <DesktopNavItem

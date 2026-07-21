@@ -604,6 +604,35 @@ export default function CourseEditor() {
                   className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
                 />
               </div>
+              <div className="border-t border-neutral-200 pt-4 mt-4">
+                <h3 className="text-sm font-semibold text-neutral-700 mb-3">Hero Section</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-600 mb-1">Feature Bullet Points (one per line)</label>
+                    <textarea
+                      value={(course.checklist_items || []).join('\n')}
+                      onChange={(e) => update("checklist_items", e.target.value.split('\n').filter(Boolean))}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                      placeholder="Expert Led Live Training Sessions&#10;Angular Fundamentals to Advanced Concepts&#10;Real Time Project Development Experience"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-600 mb-1">Left Button Label</label>
+                      <input value={course.cta_left || ''} onChange={(e) => update('cta_left', e.target.value)}
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                        placeholder="Talk to Advisor" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-neutral-600 mb-1">Right Button Label</label>
+                      <input value={course.cta_right || ''} onChange={(e) => update('cta_right', e.target.value)}
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                        placeholder="Download Brochure" />
+                    </div>
+                  </div>
+                </div>
+              </div>
               {categories.length > 0 && (
                 <div>
                   <label className="block text-xs font-medium text-neutral-600 mb-2">Category *</label>
@@ -835,9 +864,6 @@ export default function CourseEditor() {
           {tab === "tabs" && !isNew && (
             <div className="space-y-4 max-w-2xl">
               <h3 className="font-semibold text-neutral-900 mb-3">Course Tabs</h3>
-              <p className="text-sm text-neutral-600 mb-4">
-                Content types: overview, syllabus, pricing, apply_now
-              </p>
               {course.tabs.map((t, i) => (
                 <div
                   key={t.id || i}
@@ -895,147 +921,161 @@ export default function CourseEditor() {
                       </button>
                     </div>
                   </div>
-                  {(t.content_type === "overview" ||
-                    t.content_type === "syllabus") && (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-600 mb-1">Heading (centered)</label>
-                        <input
-                          value={t.content?.heading || ""}
-                          onChange={(e) => {
-                            const n = [...course.tabs];
-                            n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } };
-                            update("tabs", n);
-                          }}
-                          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
-                          placeholder="Main heading"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-600 mb-1">Paragraph</label>
-                        <textarea
-                          value={t.content?.paragraph || ""}
-                          onChange={(e) => {
-                            const n = [...course.tabs];
-                            n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } };
-                            update("tabs", n);
-                          }}
-                          rows={2}
-                          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
-                          placeholder="Paragraph text"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-600 mb-1">Sub Heading</label>
-                        <input
-                          value={t.content?.subheading || ""}
-                          onChange={(e) => {
-                            const n = [...course.tabs];
-                            n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } };
-                            update("tabs", n);
-                          }}
-                          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
-                          placeholder="Sub heading"
-                        />
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <label className="text-xs font-medium text-neutral-600">Q&A Items</label>
-                          <button
-                            onClick={() => {
-                              const n = [...course.tabs];
-                              const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }];
-                              n[i] = { ...n[i], content: { ...n[i].content, qa } };
-                              update("tabs", n);
-                            }}
-                            className="text-xs text-accent-600 font-semibold hover:underline"
-                          >
-                            + Add Question
-                          </button>
-                        </div>
-                        <div className="space-y-3">
-                          {(t.content?.qa || []).map((qa, qi) => (
-                            <div key={qi} className="border border-neutral-200 rounded-lg p-3">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-xs font-semibold text-neutral-500">Question {qi + 1}</span>
+                  <div className="space-y-4">
+                    {["heading","paragraph","subheading","text"].map(field => {
+                      const alignKey = field + "Align";
+                      const align = t.content?.[alignKey] || "center";
+                      return (
+                        <div key={field}>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-xs font-medium text-neutral-600 capitalize">{field}</label>
+                            <div className="flex items-center gap-1">
+                              {["left","center","right"].map(a => (
                                 <button
+                                  key={a}
+                                  type="button"
                                   onClick={() => {
                                     const n = [...course.tabs];
-                                    const qa = n[i].content.qa.filter((_, j) => j !== qi);
-                                    n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                    n[i] = { ...n[i], content: { ...n[i].content, [alignKey]: a } };
                                     update("tabs", n);
                                   }}
-                                  className="text-xs text-destructive-500 hover:underline"
+                                  className={`w-7 h-7 flex items-center justify-center rounded text-xs font-bold border transition-colors ${
+                                    align === a
+                                      ? "bg-accent-100 border-accent-500 text-accent-700"
+                                      : "border-neutral-200 text-neutral-400 hover:border-neutral-300"
+                                  }`}
+                                  title={`Align ${a}`}
                                 >
-                                  Remove
+                                  {a === "left" ? "≡" : a === "center" ? "≣" : "≡"}
                                 </button>
-                              </div>
-                              <input
-                                value={qa.question}
-                                onChange={(e) => {
+                              ))}
+                            </div>
+                          </div>
+                          {field === "text" || field === "paragraph" ? (
+                            <textarea
+                              value={t.content?.[field] || ""}
+                              onChange={(e) => {
+                                const n = [...course.tabs];
+                                n[i] = { ...n[i], content: { ...n[i].content, [field]: e.target.value } };
+                                update("tabs", n);
+                              }}
+                              rows={field === "text" ? 6 : 2}
+                              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                              placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)} content`}
+                            />
+                          ) : (
+                            <input
+                              value={t.content?.[field] || ""}
+                              onChange={(e) => {
+                                const n = [...course.tabs];
+                                n[i] = { ...n[i], content: { ...n[i].content, [field]: e.target.value } };
+                                update("tabs", n);
+                              }}
+                              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                              placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)} content`}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                    <hr className="border-neutral-200" />
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-xs font-medium text-neutral-600">Q&A Items</label>
+                        <button
+                          onClick={() => {
+                            const n = [...course.tabs];
+                            const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }];
+                            n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                            update("tabs", n);
+                          }}
+                          className="text-xs text-accent-600 font-semibold hover:underline"
+                        >
+                          + Add Question
+                        </button>
+                      </div>
+                      <div className="space-y-3">
+                        {(t.content?.qa || []).map((qa, qi) => (
+                          <div key={qi} className="border border-neutral-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-semibold text-neutral-500">Question {qi + 1}</span>
+                              <button
+                                onClick={() => {
                                   const n = [...course.tabs];
-                                  const qa = [...n[i].content.qa];
-                                  qa[qi] = { ...qa[qi], question: e.target.value };
+                                  const qa = n[i].content.qa.filter((_, j) => j !== qi);
                                   n[i] = { ...n[i], content: { ...n[i].content, qa } };
                                   update("tabs", n);
                                 }}
-                                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 mb-2"
-                                placeholder="Question"
-                              />
-                              <div>
-                                <div className="flex items-center justify-between mb-1">
-                                  <span className="text-xs text-neutral-500">Answers (one per line)</span>
+                                className="text-xs text-destructive-500 hover:underline"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                            <input
+                              value={qa.question}
+                              onChange={(e) => {
+                                const n = [...course.tabs];
+                                const qa = [...n[i].content.qa];
+                                qa[qi] = { ...qa[qi], question: e.target.value };
+                                n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                update("tabs", n);
+                              }}
+                              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 mb-2"
+                              placeholder="Question"
+                            />
+                            <div>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs text-neutral-500">Answers (one per line)</span>
+                                <button
+                                  onClick={() => {
+                                    const n = [...course.tabs];
+                                    const qa = [...n[i].content.qa];
+                                    qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] };
+                                    n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                    update("tabs", n);
+                                  }}
+                                  className="text-xs text-accent-600 hover:underline"
+                                >
+                                  + Add bullet
+                                </button>
+                              </div>
+                              {qa.answers.map((ans, ai) => (
+                                <div key={ai} className="flex items-center gap-2 mb-1">
+                                  <span className="text-xs text-neutral-400">•</span>
+                                  <input
+                                    value={ans}
+                                    onChange={(e) => {
+                                      const n = [...course.tabs];
+                                      const qa = [...n[i].content.qa];
+                                      const answers = [...qa[qi].answers];
+                                      answers[ai] = e.target.value;
+                                      qa[qi] = { ...qa[qi], answers };
+                                      n[i] = { ...n[i], content: { ...n[i].content, qa } };
+                                      update("tabs", n);
+                                    }}
+                                    className="flex-1 px-2 py-1 border border-neutral-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                                    placeholder="Answer bullet"
+                                  />
                                   <button
                                     onClick={() => {
                                       const n = [...course.tabs];
                                       const qa = [...n[i].content.qa];
-                                      qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] };
+                                      qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) };
                                       n[i] = { ...n[i], content: { ...n[i].content, qa } };
                                       update("tabs", n);
                                     }}
-                                    className="text-xs text-accent-600 hover:underline"
+                                    className="text-xs text-destructive-400 hover:text-destructive-600"
                                   >
-                                    + Add bullet
+                                    ×
                                   </button>
                                 </div>
-                                {qa.answers.map((ans, ai) => (
-                                  <div key={ai} className="flex items-center gap-2 mb-1">
-                                    <span className="text-xs text-neutral-400">•</span>
-                                    <input
-                                      value={ans}
-                                      onChange={(e) => {
-                                        const n = [...course.tabs];
-                                        const qa = [...n[i].content.qa];
-                                        const answers = [...qa[qi].answers];
-                                        answers[ai] = e.target.value;
-                                        qa[qi] = { ...qa[qi], answers };
-                                        n[i] = { ...n[i], content: { ...n[i].content, qa } };
-                                        update("tabs", n);
-                                      }}
-                                      className="flex-1 px-2 py-1 border border-neutral-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
-                                      placeholder="Answer bullet"
-                                    />
-                                    <button
-                                      onClick={() => {
-                                        const n = [...course.tabs];
-                                        const qa = [...n[i].content.qa];
-                                        qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) };
-                                        n[i] = { ...n[i], content: { ...n[i].content, qa } };
-                                        update("tabs", n);
-                                      }}
-                                      className="text-xs text-destructive-400 hover:text-destructive-600"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                ))}
-                              </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
               <button

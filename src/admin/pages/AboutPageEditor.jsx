@@ -1,9 +1,43 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import * as LuIcons from 'react-icons/lu';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiChevronUp, FiChevronDown, FiChevronRight } from 'react-icons/fi';
+
+const LUCIDE_ICON_NAMES = Object.keys(LuIcons).filter(k => k.startsWith('Lu')).map(k => k.slice(2)).sort();
+
+const SECTION_TYPES = [
+  { value: 'text', label: 'Text' },
+  { value: 'stats_row', label: 'Stats Row' },
+  { value: 'team_grid', label: 'Team Grid' },
+  { value: 'feature_grid', label: 'Feature Grid' },
+  { value: 'content_media_list', label: 'Content Media List' },
+  { value: 'cta', label: 'Call to Action' },
+];
+
+const IMAGE_EXT_RE = /\.(jpe?g|png|webp|gif)(\?.*)?$/i;
+
+function createEmptySection(type) {
+  const base = { section_type: type, heading: '' };
+  switch (type) {
+    case 'text':
+      return { ...base, content: '' };
+    case 'stats_row':
+      return { ...base, items: [] };
+    case 'team_grid':
+      return { ...base, items: [] };
+    case 'feature_grid':
+      return { ...base, subheading: '', items: [] };
+    case 'content_media_list':
+      return { ...base, content: '', image_url: '', list_items: [] };
+    case 'cta':
+      return { ...base, content: '', image_url: '' };
+    default:
+      return base;
+  }
+}
 
 function ImageUploader({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);
@@ -36,6 +70,254 @@ function ImageUploader({ value, onChange, label }) {
   );
 }
 
+function TextInput({ value, onChange, placeholder, label, required, error }) {
+  return (
+    <div>
+      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
+      <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all" placeholder={placeholder} />
+      {error && <p className="text-xs text-destructive-500 mt-1">{error}</p>}
+    </div>
+  );
+}
+
+function TextArea({ value, onChange, placeholder, label, rows, required }) {
+  return (
+    <div>
+      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
+      <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={rows || 3}
+        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all" placeholder={placeholder} />
+    </div>
+  );
+}
+
+function PlainUrlInput({ value, onChange, placeholder, label }) {
+  const warn = value && !IMAGE_EXT_RE.test(value) && value.startsWith('http');
+  return (
+    <div>
+      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}</label>}
+      <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
+        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all" placeholder={placeholder} />
+      {warn && <p className="text-xs text-amber-600 mt-1">Warning: URL does not end in a common image extension (jpg, jpeg, png, webp, gif)</p>}
+      {value && IMAGE_EXT_RE.test(value) && (
+        <img src={value} alt="" className="mt-2 h-28 w-full object-cover rounded-lg border border-neutral-200" onError={(e) => { e.target.style.display = 'none'; }} />
+      )}
+    </div>
+  );
+}
+
+function IconPicker({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const ref = useRef(null);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (!search) return LUCIDE_ICON_NAMES.slice(0, 100);
+    const q = search.toLowerCase();
+    return LUCIDE_ICON_NAMES.filter(n => n.toLowerCase().includes(q)).slice(0, 100);
+  }, [search]);
+
+  const isValid = value && LUCIDE_ICON_NAMES.includes(value);
+  const IconComp = value ? LuIcons[`Lu${value}`] : null;
+
+  return (
+    <div ref={ref} className="relative">
+      <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Icon *</label>
+      <button type="button" onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-accent-500 transition-all cursor-pointer hover:border-accent-400">
+        {IconComp ? <IconComp className="w-5 h-5 text-brand-orange" /> : <div className="w-5 h-5" />}
+        <span className={`flex-1 ${value ? '' : 'text-neutral-400'}`}>{value || 'Select an icon...'}</span>
+        <FiChevronRight className={`w-4 h-4 text-neutral-400 transition-transform ${open ? 'rotate-90' : ''}`} />
+      </button>
+      {!isValid && value && <p className="text-xs text-destructive-500 mt-1">Invalid icon name — must be a valid Lucide icon</p>}
+      {open && (
+        <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-64 overflow-hidden flex flex-col">
+          <div className="p-2 border-b border-neutral-100">
+            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search icons..." autoFocus
+              className="w-full px-2 py-1.5 border border-neutral-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-accent-500" />
+          </div>
+          <div className="overflow-y-auto flex-1">
+            {filtered.length === 0 ? (
+              <p className="p-3 text-sm text-neutral-400 text-center">No icons found</p>
+            ) : (
+              filtered.map((name) => {
+                const Ic = LuIcons[`Lu${name}`];
+                return (
+                  <button key={name} type="button" onClick={() => { onChange(name); setOpen(false); setSearch(''); }}
+                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-accent-50 transition-colors cursor-pointer ${value === name ? 'bg-accent-50 text-accent-700 font-medium' : 'text-neutral-700'}`}>
+                    {Ic && <Ic className="w-5 h-5 text-brand-orange shrink-0" />}
+                    <span>{name}</span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReorderableList({ items, onChange, renderItem, getKey }) {
+  function move(from, dir) {
+    const to = from + dir;
+    if (to < 0 || to >= items.length) return;
+    const next = [...items];
+    const [removed] = next.splice(from, 1);
+    next.splice(to, 0, removed);
+    onChange(next);
+  }
+
+  function remove(idx) {
+    onChange(items.filter((_, i) => i !== idx));
+  }
+
+  return items.map((item, i) => (
+    <div key={getKey ? getKey(item, i) : i} className="border border-neutral-200 rounded-lg p-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Item {i + 1}</span>
+        <div className="flex items-center gap-1">
+          <button type="button" onClick={() => move(i, -1)} disabled={i === 0}
+            className="p-1 text-neutral-400 hover:text-neutral-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
+          <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1}
+            className="p-1 text-neutral-400 hover:text-neutral-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
+          <button type="button" onClick={() => remove(i)} className="p-1 text-destructive-400 hover:text-destructive-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
+        </div>
+      </div>
+      {renderItem(item, i, (updated) => {
+        const next = [...items];
+        next[i] = updated;
+        onChange(next);
+      })}
+    </div>
+  ));
+}
+
+function SubEditor({ section, onChange }) {
+  const set = (patch) => onChange({ ...section, ...patch });
+
+  switch (section.section_type) {
+    case 'text':
+      return (
+        <div className="space-y-3">
+          <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
+          <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Content..." label="Content" required />
+        </div>
+      );
+    case 'stats_row':
+      return (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
+            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Stat</AdminButton>
+          </div>
+          <ReorderableList
+            items={section.items || []}
+            onChange={(v) => set({ items: v })}
+            renderItem={(item, i, onItemChange) => (
+              <div className="flex items-center gap-3">
+                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+              </div>
+            )}
+          />
+        </div>
+      );
+    case 'team_grid':
+      return (
+        <div>
+          <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
+          <div className="mt-3 flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Team Members</span>
+            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { name: '', role: '', bio: '', image_url: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Member</AdminButton>
+          </div>
+          <ReorderableList
+            items={section.items || []}
+            onChange={(v) => set({ items: v })}
+            renderItem={(item, i, onItemChange) => (
+              <div className="space-y-3">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <TextInput value={item.name} onChange={(v) => onItemChange({ ...item, name: v })} placeholder="Name" label="Name" required />
+                  <TextInput value={item.role} onChange={(v) => onItemChange({ ...item, role: v })} placeholder="Role" label="Role" />
+                </div>
+                <TextArea value={item.bio} onChange={(v) => onItemChange({ ...item, bio: v })} placeholder="Short bio..." label="Bio" rows={2} />
+                <ImageUploader value={item.image_url} onChange={(v) => onItemChange({ ...item, image_url: v })} label="Photo" />
+              </div>
+            )}
+          />
+        </div>
+      );
+    case 'feature_grid':
+      return (
+        <div>
+          <div className="space-y-3 mb-4">
+            <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
+            <TextArea value={section.subheading} onChange={(v) => set({ subheading: v })} placeholder="Subheading (optional)" label="Subheading" rows={2} />
+          </div>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Feature Items</span>
+            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { icon: '', title: '', description: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Feature</AdminButton>
+          </div>
+          <ReorderableList
+            items={section.items || []}
+            onChange={(v) => set({ items: v })}
+            renderItem={(item, i, onItemChange) => (
+              <div className="space-y-3">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <IconPicker value={item.icon} onChange={(v) => onItemChange({ ...item, icon: v })} />
+                  <TextInput value={item.title} onChange={(v) => onItemChange({ ...item, title: v })} placeholder="Title" label="Title" required />
+                </div>
+                <TextArea value={item.description} onChange={(v) => onItemChange({ ...item, description: v })} placeholder="Description..." label="Description" rows={2} />
+              </div>
+            )}
+          />
+        </div>
+      );
+    case 'content_media_list':
+      return (
+        <div>
+          <div className="space-y-3 mb-4">
+            <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
+            <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Content..." label="Content" rows={3} />
+            <PlainUrlInput value={section.image_url} onChange={(v) => set({ image_url: v })} placeholder="https://example.com/image.jpg" label="Image URL" />
+          </div>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">List Items</span>
+            <AdminButton type="button" onClick={() => set({ list_items: [...(section.list_items || []), ''] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Item</AdminButton>
+          </div>
+          <ReorderableList
+            items={section.list_items || []}
+            onChange={(v) => set({ list_items: v })}
+            renderItem={(item, i, onItemChange) => (
+              <TextInput value={item} onChange={(v) => onItemChange(v)} placeholder="List item text..." />
+            )}
+            getKey={(_, i) => i}
+          />
+        </div>
+      );
+    case 'cta':
+      return (
+        <div className="space-y-3">
+          <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Heading" label="Heading" />
+          <TextInput value={section.content} onChange={(v) => set({ content: v })} placeholder="Subtext" label="Subtext" />
+          <TextInput value={section.image_url} onChange={(v) => set({ image_url: v })} placeholder="/contact or https://..." label="Button Link URL" />
+        </div>
+      );
+    default:
+      return null;
+  }
+}
+
+const SECTION_TYPE_LABELS = Object.fromEntries(SECTION_TYPES.map(t => [t.value, t.label]));
+
 const PAGE_PATH = '/about';
 
 export default function AboutPageEditor() {
@@ -48,19 +330,18 @@ export default function AboutPageEditor() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const [validationErrors, setValidationErrors] = useState([]);
+  const [expandedIdx, setExpandedIdx] = useState(null);
   const navItemIdRef = useRef(null);
   const savingRef = useRef(false);
 
   const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '' });
-  const [mission, setMission] = useState('');
-  const [vision, setVision] = useState('');
-  const [stats, setStats] = useState([]);
-  const [team, setTeam] = useState([]);
-  const [cta, setCta] = useState({ heading: '', content: '', link: '' });
+  const [sections, setSections] = useState([]);
+  const [newType, setNewType] = useState('text');
 
   useEffect(() => {
     async function resolve() {
-      let { data: items, error: findErr } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).eq('is_active', true).order('id').limit(1);
+      let { data: items } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).eq('is_active', true).order('id').limit(1);
       let item = items?.[0] || null;
 
       if (!item) {
@@ -73,8 +354,7 @@ export default function AboutPageEditor() {
       }
 
       if (!item) {
-        const { data: newItem, error: createErr } = await supabase.from('nav_items').insert({ label: 'About', path: PAGE_PATH, is_active: true, sort_order: 99 }).select('*').single();
-        if (createErr) { console.error('create nav_item failed:', createErr); }
+        const { data: newItem } = await supabase.from('nav_items').insert({ label: 'About', path: PAGE_PATH, is_active: true, sort_order: 99 }).select('*').single();
         item = newItem || null;
       }
 
@@ -87,18 +367,7 @@ export default function AboutPageEditor() {
         if (page) {
           setPageId(page.id);
           setHero({ heading: page.heading || '', subheading: page.subheading || '', hero_image: page.hero_image || '' });
-          const secs = page.sections || [];
-          const find = (type) => secs.find(s => s.section_type === type);
-          const f = find('text');
-          if (f) { setMission(f.content || ''); }
-          const v = secs.filter(s => s.section_type === 'text');
-          if (v.length > 1) setVision(v[1].content || '');
-          const s = find('stats_row');
-          if (s?.items) setStats(s.items);
-          const t = find('team_grid');
-          if (t?.items) setTeam(t.items);
-          const c = find('cta');
-          if (c) setCta({ heading: c.heading || '', content: c.content || '', link: c.image_url || '' });
+          setSections(page.sections || []);
         }
       }
       setLoading(false);
@@ -106,24 +375,64 @@ export default function AboutPageEditor() {
     resolve();
   }, []);
 
+  function addSection() {
+    setSections([...sections, createEmptySection(newType)]);
+    setExpandedIdx(sections.length);
+  }
+
+  function removeSection(idx) {
+    setSections(sections.filter((_, i) => i !== idx));
+    setExpandedIdx((prev) => (prev === idx ? null : prev > idx ? prev - 1 : prev));
+  }
+
+  function moveSection(from, dir) {
+    const to = from + dir;
+    if (to < 0 || to >= sections.length) return;
+    const next = [...sections];
+    const [removed] = next.splice(from, 1);
+    next.splice(to, 0, removed);
+    setSections(next);
+    setExpandedIdx(to);
+  }
+
+  function updateSection(idx, updated) {
+    const next = [...sections];
+    next[idx] = updated;
+    setSections(next);
+  }
+
+  function validate() {
+    const errors = [];
+    sections.forEach((sec, i) => {
+      if (sec.section_type === 'feature_grid') {
+        (sec.items || []).forEach((item, j) => {
+          if (item.icon && !LUCIDE_ICON_NAMES.includes(item.icon)) {
+            errors.push(`Section ${i + 1} (Feature Grid), Item ${j + 1}: "${item.icon}" is not a valid Lucide icon name`);
+          }
+        });
+      }
+    });
+    setValidationErrors(errors);
+    return errors.length === 0;
+  }
+
   async function handleSave(e) {
     e.preventDefault();
     if (savingRef.current) return;
+    if (!validate()) return;
     savingRef.current = true;
     setSaving(true);
     setSaveError('');
     if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); savingRef.current = false; return; }
-    const sections = [
-      mission ? { section_type: 'text', heading: 'Our Mission', content: mission } : null,
-      vision ? { section_type: 'text', heading: 'Our Vision', content: vision } : null,
-      stats.length > 0 ? { section_type: 'stats_row', heading: '', items: stats } : null,
-      team.length > 0 ? { section_type: 'team_grid', heading: 'Our Team', items: team } : null,
-      cta.heading || cta.content ? { section_type: 'cta', heading: cta.heading, content: cta.content, image_url: cta.link || null } : null,
-    ].filter(Boolean);
 
-    if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); return; }
-
-    const payload = { nav_item_id: navItemId || navItemIdRef.current, heading: hero.heading, subheading: hero.subheading, hero_image: hero.hero_image || null, sections, is_published: true };
+    const payload = {
+      nav_item_id: navItemId || navItemIdRef.current,
+      heading: hero.heading,
+      subheading: hero.subheading,
+      hero_image: hero.hero_image || null,
+      sections,
+      is_published: true,
+    };
     let res;
     if (pageId) {
       res = await supabase.from('nav_pages').update(payload).eq('id', pageId);
@@ -157,6 +466,14 @@ export default function AboutPageEditor() {
         </div>
       </div>
       {saveError && <div className="mb-6 p-4 bg-destructive-50 border border-destructive-200 rounded-lg flex items-center gap-2 text-destructive-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
+      {validationErrors.length > 0 && (
+        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm font-semibold text-amber-800 mb-1">Validation warnings</p>
+          <ul className="list-disc pl-5 text-sm text-amber-700 space-y-0.5">
+            {validationErrors.map((err, i) => <li key={i}>{err}</li>)}
+          </ul>
+        </div>
+      )}
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <h2 className="font-semibold text-neutral-900 mb-4">Hero Section</h2>
@@ -168,60 +485,46 @@ export default function AboutPageEditor() {
         </div>
 
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">Mission</h2>
-          <textarea value={mission} onChange={(e) => setMission(e.target.value)} rows={3} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Our mission statement..." />
-        </div>
-
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">Vision</h2>
-          <textarea value={vision} onChange={(e) => setVision(e.target.value)} rows={3} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Our vision statement..." />
-        </div>
-
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-neutral-900">Stats</h2>
-            <AdminButton type="button" onClick={() => setStats([...stats, { number: '', label: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Stat</AdminButton>
+            <h2 className="font-semibold text-neutral-900">Sections</h2>
+            <div className="flex items-center gap-2">
+              <select value={newType} onChange={(e) => setNewType(e.target.value)}
+                className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
+                {SECTION_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+              <AdminButton type="button" onClick={addSection} variant="primary" size="sm"><FiPlus className="w-4 h-4" /> Add Section</AdminButton>
+            </div>
           </div>
+          {sections.length === 0 && (
+            <p className="text-sm text-neutral-400 text-center py-8">No sections yet. Click "Add Section" to get started.</p>
+          )}
           <div className="space-y-3">
-            {stats.map((s, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <input type="text" value={s.number} onChange={(e) => { const u = [...stats]; u[i] = { ...u[i], number: e.target.value }; setStats(u); }} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                <input type="text" value={s.label} onChange={(e) => { const u = [...stats]; u[i] = { ...u[i], label: e.target.value }; setStats(u); }} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                <button type="button" onClick={() => setStats(stats.filter((_, j) => j !== i))} className="p-2 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
+            {sections.map((sec, i) => (
+              <div key={i} className="border border-neutral-200 rounded-lg overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 bg-neutral-50 cursor-pointer" onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-neutral-400">{i + 1}</span>
+                    <span className="text-sm font-medium text-neutral-700">{SECTION_TYPE_LABELS[sec.section_type] || sec.section_type}</span>
+                    {sec.heading && <span className="text-xs text-neutral-400 max-w-48 truncate">— {sec.heading}</span>}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, -1); }} disabled={i === 0}
+                      className="p-1 text-neutral-400 hover:text-neutral-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, 1); }} disabled={i === sections.length - 1}
+                      className="p-1 text-neutral-400 hover:text-neutral-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); removeSection(i); }}
+                      className="p-1 text-destructive-400 hover:text-destructive-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
+                  </div>
+                </div>
+                {expandedIdx === i && (
+                  <div className="p-4 border-t border-neutral-200">
+                    <SubEditor section={sec} onChange={(updated) => updateSection(i, updated)} />
+                  </div>
+                )}
               </div>
             ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-neutral-900">Team Members</h2>
-            <AdminButton type="button" onClick={() => setTeam([...team, { name: '', role: '', bio: '', image_url: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Member</AdminButton>
-          </div>
-          <div className="space-y-4">
-            {team.map((m, i) => (
-              <div key={i} className="border border-neutral-200 rounded-lg p-4">
-                <div className="flex justify-between mb-3">
-                  <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Member {i + 1}</span>
-                  <button type="button" onClick={() => setTeam(team.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <input type="text" value={m.name} onChange={(e) => { const u = [...team]; u[i] = { ...u[i], name: e.target.value }; setTeam(u); }} placeholder="Name" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                  <input type="text" value={m.role} onChange={(e) => { const u = [...team]; u[i] = { ...u[i], role: e.target.value }; setTeam(u); }} placeholder="Role" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                </div>
-                <textarea value={m.bio} onChange={(e) => { const u = [...team]; u[i] = { ...u[i], bio: e.target.value }; setTeam(u); }} rows={2} placeholder="Short bio..." className="w-full mt-3 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                <div className="mt-3"><ImageUploader value={m.image_url} onChange={(v) => { const u = [...team]; u[i] = { ...u[i], image_url: v }; setTeam(u); }} label="Photo" /></div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">Call to Action</h2>
-          <div className="grid sm:grid-cols-3 gap-4">
-            <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-            <input type="text" value={cta.content} onChange={(e) => setCta({ ...cta, content: e.target.value })} placeholder="Subtext" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-            <input type="text" value={cta.link} onChange={(e) => setCta({ ...cta, link: e.target.value })} placeholder="Button link URL" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
           </div>
         </div>
 
