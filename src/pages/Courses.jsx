@@ -530,12 +530,25 @@ export default function Courses() {
             aria-label="Course categories"
           >
             {/* Toggle at top — flush with header */}
-            <div className="px-5 pt-4 bg-gray-50/60">
-              <ParentToggle
-                parents={parents}
-                parentParam={parentParam}
-                onSelect={selectParent}
-              />
+            <div className="px-0 pt-0">
+              <div className="flex border-b border-gray-200 overflow-hidden">
+                {parents.map((p) => {
+                  const active = parentParam === p.slug;
+                  return (
+                    <button
+                      key={p.slug}
+                      onClick={() => selectParent(p.slug)}
+                      className={`flex-1 py-3 text-sm font-medium text-center transition-all cursor-pointer ${
+                        active
+                          ? "bg-[#F97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.4)]"
+                          : "bg-white text-gray-500 hover:text-gray-800"
+                      }`}
+                    >
+                      {p.displayLabel}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             {/* Category tree */}
             <nav className="px-3 pt-3 pb-4 overflow-y-auto flex-1">
