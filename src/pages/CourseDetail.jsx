@@ -18,8 +18,8 @@ function AccordionQA({ items }) {
             className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-white bg-brand-orange hover:bg-brand-orange/90 transition-colors gap-3 cursor-pointer"
           >
             <span className="text-sm sm:text-base leading-snug flex-1">{item.question}</span>
-            <span className="shrink-0 w-8 h-8 p-1.5 flex items-center justify-center rounded-full bg-black/10 text-white">
-              {openIdx === i ? <FiMinus className="w-3.5 h-3.5" /> : <FiPlus className="w-3.5 h-3.5" />}
+            <span className="shrink-0 w-8 h-8 p-1.5 flex items-center justify-center rounded-full bg-white text-brand-orange">
+              {openIdx === i ? <FiMinus className="w-3.5 h-3.5" strokeWidth={3} /> : <FiPlus className="w-3.5 h-3.5" strokeWidth={3} />}
             </span>
           </button>
           {openIdx === i && (
@@ -302,8 +302,8 @@ function FAQSection({ faqs }) {
                 className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-brand-orange hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
               >
                 <span>{f.question}</span>
-                <span className="shrink-0 w-8 h-8 p-1.5 flex items-center justify-center rounded-full bg-black/5 text-black">
-                  {open === i ? <FiMinus className="w-3.5 h-3.5" /> : <FiPlus className="w-3.5 h-3.5" />}
+                <span className="shrink-0 w-8 h-8 p-1.5 flex items-center justify-center rounded-full bg-white text-brand-orange">
+                  {open === i ? <FiMinus className="w-3.5 h-3.5" strokeWidth={3} /> : <FiPlus className="w-3.5 h-3.5" strokeWidth={3} />}
                 </span>
               </button>
               {open === i && (
