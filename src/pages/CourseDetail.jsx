@@ -65,7 +65,7 @@ function getYoutubeEmbedUrl(url) {
   ];
   for (const p of patterns) {
     const m = url.match(p);
-    if (m) return `https://www.youtube.com/embed/${m[1]}?autoplay=1`;
+    if (m) return `https://www.youtube.com/embed/${m[1]}`;
   }
   return null;
 }
@@ -296,7 +296,7 @@ export default function CourseDetail() {
   const [brochureSubmitting, setBrochureSubmitting] = useState(false);
   const [brochureDone, setBrochureDone] = useState(false);
   const [brochureError, setBrochureError] = useState('');
-  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(true);
 
   if (isLoading) {
     return (
@@ -402,7 +402,7 @@ export default function CourseDetail() {
               ) : embedUrl && videoPlaying ? (
                 <div className="relative rounded-xl overflow-hidden shadow-lg">
                   <iframe
-                    src={`${embedUrl}&autoplay=1&controls=1`}
+                    src={`${embedUrl}?autoplay=1&mute=1&controls=1`}
                     title="Course Introduction Video"
                     className="w-full aspect-video"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
