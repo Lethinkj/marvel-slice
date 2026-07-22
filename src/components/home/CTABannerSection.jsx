@@ -1,27 +1,17 @@
 import { FiArrowRight } from 'react-icons/fi';
 import Reveal from '../ui/Reveal';
-import Button from '../ui/Button';
 
 export default function CTABannerSection({ section }) {
   if (!section) return null;
 
-  const { heading, subheading, description, cta_text, cta_link, background_image, image_url } = section.content || {};
-  const hasImage = background_image || image_url;
+  const { heading, subheading, description, cta_text, cta_link } = section.content || {};
 
   if (!heading && !description) return null;
 
   return (
-    <section className="relative overflow-hidden shadow-2xl">
-      {hasImage ? (
-        <div className="absolute inset-0">
-          <img src={background_image || image_url} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/20 to-transparent" />
-        </div>
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-blue via-blue-700 to-blue-900" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-white/5 to-transparent pointer-events-none" />
+    <section className="relative overflow-hidden shadow-2xl" style={{ backgroundColor: '#1a1a2e' }}>
+      <div className="absolute inset-0" style={{ backgroundColor: '#74a916', clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
+      <div className="absolute inset-0" style={{ backgroundColor: '#5a8a10', clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
         <Reveal>
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
