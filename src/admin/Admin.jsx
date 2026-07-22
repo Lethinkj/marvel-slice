@@ -21,6 +21,12 @@ import HomePageEditor from './pages/HomePageEditor';
 import AboutPageEditor from './pages/AboutPageEditor';
 import ContactPageEditor from './pages/ContactPageEditor';
 import CareerPageEditor from './pages/CareerPageEditor';
+import ServicesManager from './pages/ServicesManager';
+import ServiceEditor from './pages/ServiceEditor';
+import ServiceCategoriesManager from './pages/ServiceCategoriesManager';
+import TrainingManager from './pages/TrainingManager';
+import TrainingEditor from './pages/TrainingEditor';
+import TrainingCategoriesManager from './pages/TrainingCategoriesManager';
 import ServicesPageEditor from './pages/ServicesPageEditor';
 import TrainingPageEditor from './pages/TrainingPageEditor';
 import CareerSubmissions from './pages/CareerSubmissions';
@@ -121,6 +127,14 @@ export default function Admin() {
           <Route path="about-page" element={<AboutPageEditor />} />
           <Route path="contact-page" element={<ContactPageEditor />} />
           <Route path="career-page" element={<CareerPageEditor />} />
+          <Route path="services" element={<ServicesManager />} />
+          <Route path="services/new" element={<ServiceEditor />} />
+          <Route path="services/:id" element={<ServiceEditor />} />
+          <Route path="service-categories" element={<ServiceCategoriesManager />} />
+          <Route path="training" element={<TrainingManager />} />
+          <Route path="training/new" element={<TrainingEditor />} />
+          <Route path="training/:id" element={<TrainingEditor />} />
+          <Route path="training-categories" element={<TrainingCategoriesManager />} />
           <Route path="services-page" element={<ServicesPageEditor />} />
           <Route path="training-page" element={<TrainingPageEditor />} />
           <Route path="career-submissions" element={<CareerSubmissions />} />

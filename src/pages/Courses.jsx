@@ -434,7 +434,7 @@ export default function Courses() {
           }}
           className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
             isParentActive
-              ? "bg-brand-orange/10 text-brand-orange font-semibold"
+              ? "bg-brand-blue/10 text-brand-blue font-semibold"
               : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
           }`}
           aria-expanded={hasChildren ? expanded : undefined}
@@ -443,7 +443,7 @@ export default function Courses() {
           <span className="flex items-center gap-3 min-w-0 flex-1">
             <span className="w-[18px] h-[18px] flex items-center justify-center shrink-0">
               <Icon
-                className={`w-[18px] h-[18px] ${isParentActive ? "text-brand-orange" : "text-gray-400"}`}
+                className={`w-[18px] h-[18px] ${isParentActive ? "text-brand-blue" : "text-gray-400"}`}
               />
             </span>
             <span className="truncate min-w-0 max-w-full">
@@ -491,7 +491,7 @@ export default function Courses() {
                       onClick={() => selectCategory(childSlug)}
                       className={`w-full text-left pl-3 pr-3 py-2 rounded-lg text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                         isChildActive
-                          ? "text-brand-orange font-semibold bg-brand-orange/5"
+                          ? "text-brand-blue font-semibold bg-brand-blue/5"
                           : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                       }`}
                       aria-label={`${child.label} (${countFor(child.id)} courses)`}
@@ -499,7 +499,7 @@ export default function Courses() {
                       <span className="flex items-center gap-2.5 min-w-0 flex-1">
                         <span className="w-[14px] h-[14px] flex items-center justify-center shrink-0">
                           <ChildIcon
-                            className={`w-[14px] h-[14px] ${isChildActive ? "text-brand-orange" : "text-gray-400"}`}
+                            className={`w-[14px] h-[14px] ${isChildActive ? "text-brand-blue" : "text-gray-400"}`}
                           />
                         </span>
                         <span className="truncate min-w-0 max-w-full">
@@ -631,7 +631,7 @@ export default function Courses() {
                               }}
                               className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                                 isParentActive
-                                  ? "text-brand-orange font-semibold"
+                                  ? "text-brand-blue font-semibold"
                                   : "text-gray-500 hover:text-gray-900"
                               }`}
                             >
@@ -659,7 +659,7 @@ export default function Courses() {
                                   }}
                                   className={`w-full text-left pl-8 pr-4 py-2 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
                                     isChildActive
-                                      ? "text-brand-orange font-semibold"
+                                      ? "text-brand-blue font-semibold"
                                       : "text-gray-500 hover:text-gray-900"
                                   }`}
                                 >
@@ -739,7 +739,7 @@ export default function Courses() {
                       setPage(1);
                     }}
                     placeholder="Search courses..."
-                    className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 text-sm text-dark-navy bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange/40 focus:border-brand-orange transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 text-sm text-dark-navy bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
                     aria-label="Search courses"
                   />
                 </div>

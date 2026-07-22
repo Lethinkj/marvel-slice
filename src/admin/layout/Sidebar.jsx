@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiGlobe, FiSettings, FiSearch, FiMessageCircle } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiGlobe, FiSettings, FiSearch, FiMessageCircle, FiServer, FiZap } from "react-icons/fi";
 
 const navGroups = [
   { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
@@ -22,11 +22,25 @@ const navGroups = [
       { to: "/admin/about-page", label: "About" },
       { to: "/admin/career-page", label: "Career" },
       { to: "/admin/contact-page", label: "Contact" },
-      { to: "/admin/services-page", label: "Services" },
-      { to: "/admin/training-page", label: "Training" },
     ],
   },
   { label: "Live Chat", icon: FiMessageCircle, items: [{ to: "/admin/chats", label: "Chat" }] },
+  {
+    label: "Services", icon: FiServer, parentTo: "/admin/services", items: [
+      { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
+      { to: "/admin/services/new", label: "Add Service" },
+      { to: "/admin/service-categories", label: "Categories" },
+      { to: "/admin/services-page", label: "Services Page" },
+    ],
+  },
+  {
+    label: "Training", icon: FiZap, parentTo: "/admin/training", items: [
+      { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
+      { to: "/admin/training/new", label: "Add Program" },
+      { to: "/admin/training-categories", label: "Categories" },
+      { to: "/admin/training-page", label: "Training Page" },
+    ],
+  },
   { label: "Submissions", icon: FiInbox, items: [
     { to: "/admin/career-submissions", label: "Career Submissions" },
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
@@ -198,6 +212,41 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
                   <Icon className="w-4 h-4 shrink-0" />
                   <span>{group.label}</span>
                 </NavLink>
+              ) : group.parentTo ? (
+                <>
+                  <div className="flex items-center">
+                    <NavLink
+                      to={group.parentTo}
+                      end
+                      onClick={onMobileClose}
+                      className={`flex-1 flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors ${groupActive ? "text-accent-600 font-semibold bg-accent-50" : "text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50"}`}
+                    >
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span>{group.label}</span>
+                    </NavLink>
+                    <button
+                      onClick={() => setOpenIndex(isOpen ? null : idx)}
+                      className="p-2 mr-1 text-neutral-400 hover:text-neutral-600 rounded-md hover:bg-neutral-100 transition-colors"
+                    >
+                      <FiChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
+                    </button>
+                  </div>
+                  {isOpen && (
+                    <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
+                      {group.items.map((item) => {
+                        if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onMobileClose} />;
+                        const act = isActive(pathname, item);
+                        return (
+                          <Link key={item.to} to={item.to} onClick={onMobileClose}
+                            className={`relative block px-3 py-1.5 rounded-md text-sm transition-colors ${act ? "text-accent-600 font-semibold bg-accent-50 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.5 before:bg-accent-500 before:rounded-full" : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"}`}
+                          >
+                            {item.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
               ) : (
                 <>
                   <button

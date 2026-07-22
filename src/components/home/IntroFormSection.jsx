@@ -71,27 +71,27 @@ export default function IntroFormSection({ section }) {
     <section className="relative overflow-hidden bg-white">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(#1B3A6B 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="grid lg:grid-cols-6 gap-10 lg:gap-16 items-start">
-          <Reveal variant="up" className="lg:col-span-4 space-y-7">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="grid lg:grid-cols-6 gap-8 lg:gap-12 items-start">
+          <Reveal variant="up" className="lg:col-span-4 space-y-6">
             {introText && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed">
+              <p className="text-text-gray text-sm sm:text-base leading-relaxed">
                 {introText}
               </p>
             )}
 
             {stats.length > 0 && (
-              <Stagger className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <Stagger className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {stats.map((stat, i) => {
                   const Icon = getStatIcon(stat.label);
                   return (
                     <StaggerItem key={i}>
-                      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                        <div className="w-11 h-11 mx-auto rounded-xl bg-brand-orange/10 flex items-center justify-center mb-3">
-                          <Icon className="w-5 h-5 text-brand-orange" />
+                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                        <div className="w-10 h-10 mx-auto rounded-lg bg-brand-orange/10 flex items-center justify-center mb-2">
+                          <Icon className="w-4 h-4 text-brand-orange" />
                         </div>
-                        <p className="text-2xl sm:text-3xl font-extrabold text-dark-navy">{stat.value}</p>
-                        <p className="text-sm text-text-gray mt-1">{stat.label}</p>
+                        <p className="text-xl sm:text-2xl font-extrabold text-dark-navy">{stat.value}</p>
+                        <p className="text-xs text-text-gray mt-0.5">{stat.label}</p>
                       </div>
                     </StaggerItem>
                   );
@@ -100,16 +100,16 @@ export default function IntroFormSection({ section }) {
             )}
 
             {features.length > 0 && (
-              <Stagger className="grid sm:grid-cols-2 gap-3">
+              <Stagger className="grid sm:grid-cols-2 gap-2">
                 {features.map((feat, i) => {
                   const Icon = feat.icon;
                   return (
                     <StaggerItem key={i}>
-                      <div className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 px-4 py-3.5 hover:shadow-sm hover:border-gray-200 transition-all duration-200">
-                        <div className="w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
-                          <Icon className="w-4 h-4 text-brand-blue" />
+                      <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 hover:shadow-sm hover:border-gray-200 transition-all duration-200">
+                        <div className="w-7 h-7 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
+                          <Icon className="w-3.5 h-3.5 text-brand-blue" />
                         </div>
-                        <span className="text-sm font-medium text-dark-navy">{feat.label}</span>
+                        <span className="text-xs font-medium text-dark-navy">{feat.label}</span>
                       </div>
                     </StaggerItem>
                   );
@@ -117,16 +117,16 @@ export default function IntroFormSection({ section }) {
               </Stagger>
             )}
 
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-2 pt-1">
               <Link
                 to="/courses?parent=software-learning"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
               >
                 Software Learning
               </Link>
               <Link
                 to="/courses?parent=competitive-exam"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
               >
                 Competitive Exam
               </Link>
@@ -136,7 +136,7 @@ export default function IntroFormSection({ section }) {
           <Reveal variant="right" className="lg:col-span-2">
             <div className="rounded-2xl shadow-lg overflow-hidden max-w-sm w-full lg:ml-auto" style={{ backgroundColor: '#74a916' }}>
               {/* diagonal header: white left / orange right */}
-              <div className="relative h-28" style={{ backgroundColor: '#ff8415' }}>
+              <div className="relative h-24" style={{ backgroundColor: '#ff8415' }}>
                 <div
                   className="absolute inset-0"
                   style={{
@@ -144,19 +144,19 @@ export default function IntroFormSection({ section }) {
                     backgroundColor: '#ffffff',
                   }}
                 >
-                  <div className="h-full flex items-center pl-8">
-                    <span className="text-2xl font-serif font-bold" style={{ color: '#ff8415' }}>Career</span>
+                  <div className="h-full flex items-center pl-6">
+                    <span className="text-xl font-serif font-bold" style={{ color: '#ff8415' }}>Career</span>
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-end">
-                  <span className="bg-white rounded-[6px] px-5 py-2 text-lg font-serif font-bold shadow-sm mr-2" style={{ color: '#ff8415' }}>
+                  <span className="bg-white rounded-[6px] px-4 py-1.5 text-base font-serif font-bold shadow-sm mr-2" style={{ color: '#ff8415' }}>
                     Counselling
                   </span>
                 </div>
               </div>
 
               {/* green body with subtle texture */}
-              <div className="relative p-6">
+              <div className="relative p-5">
                 <div
                   className="absolute inset-0 pointer-events-none opacity-[0.04]"
                   style={{
@@ -165,30 +165,30 @@ export default function IntroFormSection({ section }) {
                   }}
                 />
                 {formMsg && formMsg.text !== 'Please agree to the terms and conditions.' && (
-                  <div className={`relative z-10 p-3 mb-4 text-sm font-medium rounded ${formMsg.type === 'success' ? 'bg-green-500/20 text-white' : 'bg-red-500/20 text-white'}`}>
+                  <div className={`relative z-10 p-2.5 mb-3 text-xs font-medium rounded ${formMsg.type === 'success' ? 'bg-green-500/20 text-white' : 'bg-red-500/20 text-white'}`}>
                     {formMsg.text}
                   </div>
                 )}
-                <form onSubmit={handleSubmit} className="relative z-10 space-y-4">
+                <form onSubmit={handleSubmit} className="relative z-10 space-y-3">
                   <input type="text" placeholder="Your Name" value={formName} onChange={(e) => setFormName(e.target.value)}
-                    className="w-full px-5 py-3.5 border-0 text-sm bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
+                    className="w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
                   <input type="email" placeholder="your@email.com" value={formEmail} onChange={(e) => setFormEmail(e.target.value)}
-                    className="w-full px-5 py-3.5 border-0 text-sm bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
+                    className="w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
                   <input type="tel" placeholder="Your Phone Number" value={formPhone} onChange={(e) => setFormPhone(e.target.value)}
-                    className="w-full px-5 py-3.5 border-0 text-sm bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
+                    className="w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
                   {formMsg?.type === 'error' && formMsg?.text === 'Please agree to the terms and conditions.' && (
                     <p className="text-red-300 text-xs">{formMsg.text}</p>
                   )}
-                  <label className="flex items-start gap-3 cursor-pointer pt-1">
-                    <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-1 w-4 h-4 border-white/50 accent-white" />
-                    <span className="text-sm text-white/90 leading-relaxed">
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 w-3.5 h-3.5 border-white/50 accent-white" />
+                    <span className="text-xs text-white/90 leading-relaxed">
                       I agree to the{' '}
                       <a href="/terms" className="text-blue-300 underline hover:text-blue-200">Terms of Use</a>
                       {' '}and{' '}
                       <a href="/privacy" className="text-blue-300 underline hover:text-blue-200">Privacy Policy</a>.
                     </span>
                   </label>
-                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-7 py-3.5 bg-[#ff8415] text-white font-bold rounded hover:bg-[#ff8415]/90 transition-colors disabled:opacity-70 text-base">
+                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-[#ff8415] text-white font-bold rounded hover:bg-[#ff8415]/90 transition-colors disabled:opacity-70 text-sm">
                     {submitting ? <FiLoader className="w-4 h-4 animate-spin" /> : null}
                     {submitting ? 'Submitting...' : 'Send Message'}
                   </button>
