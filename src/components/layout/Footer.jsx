@@ -99,7 +99,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="bg-brand-orange py-[10px]">
+      <div className="bg-brand-orange py-[15px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs sm:text-sm text-white">
           <span className="font-bold">&copy; Marvel Slice. All rights reserved.</span>
           <div className="flex items-center gap-3 font-bold">
