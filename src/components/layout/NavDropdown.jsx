@@ -147,7 +147,7 @@ function DesktopNavItem({
                 ? "text-brand-blue"
                 : ""
             }`}>{item.label}</span>
-            <span className={`absolute left-0 bottom-0 w-full h-[3px] bg-brand-blue rounded-full origin-left transition-transform duration-300 ease-in-out ${
+            <span className={`absolute left-0 bottom-0 w-full h-[2px] bg-brand-blue rounded-full origin-left transition-transform duration-300 ease-in-out ${
                 isOpen || hasActiveChild ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
             }`} />
           </span>
@@ -338,7 +338,7 @@ export default function NavDropdown({
           >
             <span className="relative inline-block pb-[3px]">
               {item.label}
-              <span className={`absolute left-0 bottom-0 w-full h-[3px] bg-brand-blue rounded-full origin-left transition-transform duration-300 ease-in-out ${
+              <span className={`absolute left-0 bottom-0 w-full h-[2px] bg-brand-blue rounded-full origin-left transition-transform duration-300 ease-in-out ${
                 currentPath === item.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
               }`} />
             </span>

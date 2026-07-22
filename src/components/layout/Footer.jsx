@@ -55,7 +55,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-8">
           <div className="lg:col-span-1">
-            <h3 className="text-lg font-bold text-brand-orange mb-3">Marvel Slice</h3>
+            <div className="flex items-center gap-2 mb-3">
+              {settings?.logo_url && (
+                <img src={settings.logo_url} alt="Marvel Slice" className="h-8 w-auto object-contain" />
+              )}
+              <h3 className="text-lg font-bold text-brand-orange">Marvel Slice</h3>
+            </div>
             <p className="text-sm text-gray-400 mb-4 leading-relaxed">
               Empowering careers through expert-led training and hands-on learning experiences.
             </p>
