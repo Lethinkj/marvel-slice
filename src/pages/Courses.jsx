@@ -432,10 +432,10 @@ export default function Courses() {
               selectCategory(parentSlug);
             }
           }}
-          className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
+          className={`w-full text-left pl-[9px] pr-3 py-2.5 rounded-r-xl text-sm transition-all duration-200 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden border-l-[3px] ${
             isParentActive
-              ? "bg-brand-blue/10 text-brand-blue font-semibold"
-              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              ? "border-brand-blue text-brand-blue font-semibold"
+              : "border-transparent text-gray-600 hover:border-brand-blue/50 hover:text-gray-900"
           }`}
           aria-expanded={hasChildren ? expanded : undefined}
           aria-label={`${parentNode.label} (${parentNode.totalCount} courses)`}
@@ -454,7 +454,7 @@ export default function Courses() {
             <span
               className={`text-xs font-medium tabular-nums leading-none px-1.5 py-0.5 rounded-full ${
                 isParentActive
-                  ? "bg-brand-orange/15 text-brand-orange"
+                  ? "bg-brand-blue/15 text-brand-blue"
                   : "text-gray-400"
               }`}
             >
@@ -463,7 +463,7 @@ export default function Courses() {
             {hasChildren && (
               <FiChevronRight
                 className={`w-3.5 h-3.5 transition-transform duration-200 ease-out ${expanded ? "rotate-90" : ""} ${
-                  isParentActive ? "text-brand-orange" : "text-gray-400"
+                  isParentActive ? "text-brand-blue" : "text-gray-400"
                 }`}
               />
             )}
@@ -478,7 +478,7 @@ export default function Courses() {
         >
           <div className="overflow-hidden">
             {hasChildren && (
-              <div className="ml-[22px] border-l-2 border-gray-100 pl-4">
+              <div className="ml-[22px] pl-[13px]">
                 {parentNode.children.map((child) => {
                   const ChildIcon = CATEGORY_ICONS[child.label] || DEFAULT_ICON;
                   const childSlug = child.path
@@ -489,10 +489,10 @@ export default function Courses() {
                     <button
                       key={child.id}
                       onClick={() => selectCategory(childSlug)}
-                      className={`w-full text-left pl-3 pr-3 py-2 rounded-lg text-sm transition-all duration-150 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
+                      className={`w-full text-left pl-[9px] pr-3 py-2 text-sm transition-all duration-200 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden border-l-[3px] ${
                         isChildActive
-                          ? "text-brand-blue font-semibold bg-brand-blue/5"
-                          : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                          ? "border-brand-blue text-brand-blue font-semibold"
+                          : "border-transparent text-gray-500 hover:border-brand-blue/50 hover:text-gray-900"
                       }`}
                       aria-label={`${child.label} (${countFor(child.id)} courses)`}
                     >
@@ -629,10 +629,10 @@ export default function Courses() {
                                 }
                                 setMobileOpen(false);
                               }}
-                              className={`w-full text-left px-4 py-2.5 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
+                              className={`w-full text-left pl-[13px] pr-4 py-2.5 text-sm transition-all duration-200 cursor-pointer flex items-center justify-between gap-2 overflow-hidden border-l-[3px] ${
                                 isParentActive
-                                  ? "text-brand-blue font-semibold"
-                                  : "text-gray-500 hover:text-gray-900"
+                                  ? "border-brand-blue text-brand-blue font-semibold"
+                                  : "border-transparent text-gray-500 hover:border-brand-blue/50 hover:text-gray-900"
                               }`}
                             >
                               <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -657,10 +657,10 @@ export default function Courses() {
                                     selectCategory(childSlug);
                                     setMobileOpen(false);
                                   }}
-                                  className={`w-full text-left pl-8 pr-4 py-2 text-sm transition-colors cursor-pointer flex items-center justify-between gap-2 overflow-hidden ${
+                                  className={`w-full text-left pl-[31px] pr-4 py-2 text-sm transition-all duration-200 cursor-pointer flex items-center justify-between gap-2 overflow-hidden border-l-[3px] ${
                                     isChildActive
-                                      ? "text-brand-blue font-semibold"
-                                      : "text-gray-500 hover:text-gray-900"
+                                      ? "border-brand-blue text-brand-blue font-semibold"
+                                      : "border-transparent text-gray-500 hover:border-brand-blue/50 hover:text-gray-900"
                                   }`}
                                 >
                                   <span className="flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">

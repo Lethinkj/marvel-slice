@@ -73,11 +73,14 @@ export default function ServicesSection({ section }) {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-center text-dark-navy mb-6">
-          {heading}
-        </Reveal>
+        <div className="max-w-fit mx-auto text-center">
+          <Reveal as="h2" className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-dark-navy mb-6">
+            {heading}
+          </Reveal>
+          <div className="w-4/5 h-[3px] bg-brand-orange mx-auto mb-6" />
+        </div>
         {intro && (
-          <Reveal className="text-text-gray max-w-2xl mx-auto mb-12 text-center">
+          <Reveal className="text-text-gray mb-12 text-center">
             <p className="text-lg">{intro}</p>
           </Reveal>
         )}

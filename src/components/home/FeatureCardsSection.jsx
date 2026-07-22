@@ -11,12 +11,12 @@ export default function FeatureCardsSection({ section }) {
   return (
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8 justify-items-center">
           {cards.map((card, i) => (
             <Reveal key={i} variant={i === 0 ? 'right' : 'left'}>
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col">
-                <div className="p-6 pb-0">
-                  <h3 className="font-bold text-3xl" style={{ color: '#ff8415' }}>
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col w-full max-w-[90%]">
+                <div className="p-6 pb-0 text-center">
+                  <h3 className="font-bold text-xl sm:text-2xl text-brand-blue">
                     {card.heading}
                   </h3>
                 </div>
@@ -51,7 +51,7 @@ export default function FeatureCardsSection({ section }) {
                   )}
                   <a
                     href={card.button_link || '/courses'}
-                    className="inline-flex items-center justify-center gap-2 mt-6 bg-brand-green text-white px-5 py-2 text-base font-semibold rounded-full hover:bg-brand-green/90 active:scale-[0.97] transition-all duration-200 self-start"
+                    className="inline-flex items-center justify-center gap-2 mt-6 bg-brand-orange text-white px-[30px] py-[15px] text-base font-semibold rounded-full hover:bg-brand-orange/90 active:scale-[0.97] transition-all duration-200 self-start"
                   >
                     {card.button_text || 'View More'}
                   </a>

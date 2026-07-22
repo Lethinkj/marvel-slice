@@ -1,16 +1,16 @@
 export const BUTTON_SIZES = {
   xs: 'px-2 py-1 text-xs',
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-sm',
-  lg: 'px-6 py-2.5 text-base',
-  xl: 'px-7 py-3 text-base',
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-[30px] py-[15px] text-sm',
+  lg: 'px-[30px] py-[15px] text-base',
+  xl: 'px-[30px] py-[15px] text-base',
 };
 
 export const BUTTON_VARIANTS = {
   primary: 'bg-brand-orange text-white font-semibold hover:brightness-90 shadow-sm transition-all',
   'primary-lg': 'bg-brand-orange text-white font-semibold hover:brightness-90 shadow-lg shadow-brand-orange/25 transition-all',
   secondary: 'bg-white/10 text-white font-semibold hover:bg-white/20 border border-white/20 transition-all',
-  accent: 'bg-brand-orange text-white font-semibold hover:bg-brand-blue shadow-sm transition-all',
+  accent: 'bg-brand-orange text-white font-semibold hover:brightness-90 shadow-sm transition-all',
   success: 'bg-brand-orange text-white font-semibold hover:brightness-90 shadow-sm transition-all',
   outline: 'border-2 border-brand-blue text-brand-blue font-semibold hover:bg-brand-blue hover:text-white transition-all',
   'outline-white': 'border-2 border-white text-white font-semibold hover:bg-white hover:text-brand-blue transition-all',

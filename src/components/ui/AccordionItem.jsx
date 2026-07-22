@@ -17,7 +17,7 @@ export default function AccordionItem({ title, children, defaultOpen = false, is
         onClick={handleToggle}
         className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-white bg-brand-orange hover:bg-brand-orange/90 transition-colors gap-3 cursor-pointer"
       >
-        <span className="text-sm sm:text-base leading-snug flex-1">{title}</span>
+        <span className="text-sm sm:text-xl leading-snug flex-1">{title}</span>
         <span className="shrink-0 w-6 h-6 p-1 flex items-center justify-center rounded-full bg-white text-brand-orange">
           {open ? <FiMinus className="w-3.5 h-3.5" strokeWidth={3} /> : <FiPlus className="w-3.5 h-3.5" strokeWidth={3} />}
         </span>
@@ -32,7 +32,7 @@ export default function AccordionItem({ title, children, defaultOpen = false, is
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-4 sm:px-5 pb-4 text-sm text-gray-500 leading-relaxed">
+            <div className="px-4 sm:px-5 pb-4 text-xl text-gray-500 leading-relaxed">
               {children}
             </div>
           </motion.div>

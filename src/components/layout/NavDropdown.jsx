@@ -99,10 +99,10 @@ function DesktopNavItem({
       <Link
         to={item.path || "#"}
         role="menuitem"
-        className={`block px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
+        className={`block pl-[17px] pr-5 py-2.5 text-sm whitespace-nowrap transition-all duration-200 ease-out border-l-[3px] ${
           isActive
-            ? "text-brand-blue font-semibold underline underline-offset-4"
-            : "text-gray-600 hover:text-brand-blue"
+            ? "border-brand-blue text-brand-blue font-semibold"
+            : "border-transparent text-gray-600 hover:border-brand-blue/50 hover:text-brand-blue"
         }`}
         onClick={onItemClick}
         tabIndex={0}
@@ -132,16 +132,25 @@ function DesktopNavItem({
           role="menuitem"
           aria-haspopup="true"
           aria-expanded={isOpen}
-          className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
+          className={`group flex items-center gap-1.5 px-3 py-2 text-sm font-medium whitespace-nowrap rounded-t-md transition-all duration-200 ease-out cursor-pointer ${
               isOpen
               ? "text-brand-blue"
               : hasActiveChild
-              ? "text-brand-blue underline underline-offset-4"
+              ? "text-brand-blue"
               : "text-gray-500 hover:text-brand-blue"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
-          {item.label}
+          <span className="relative inline-block pb-[3px]">
+            <span className={`transition-all duration-300 ease-in-out ${
+                isOpen || hasActiveChild
+                ? "text-brand-blue"
+                : ""
+            }`}>{item.label}</span>
+            <span className={`absolute left-0 bottom-0 w-full h-[3px] bg-brand-blue rounded-full origin-left transition-transform duration-300 ease-in-out ${
+                isOpen || hasActiveChild ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+            }`} />
+          </span>
           <FiChevronDown
             className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           />
@@ -188,10 +197,10 @@ function DesktopNavItem({
         role="menuitem"
         aria-haspopup="true"
         aria-expanded={isOpen}
-          className={`group w-full flex items-center justify-between gap-3 px-5 py-2.5 text-sm whitespace-nowrap rounded-md transition-all duration-200 ease-out cursor-pointer ${
+          className={`group w-full flex items-center justify-between gap-3 pl-[17px] pr-5 py-2.5 text-sm whitespace-nowrap transition-all duration-200 ease-out cursor-pointer border-l-[3px] ${
             isOpen
-              ? "text-brand-blue font-semibold"
-              : "text-gray-700 hover:text-brand-blue"
+              ? "border-brand-blue text-brand-blue font-semibold"
+              : "border-transparent text-gray-700 hover:border-brand-blue/50 hover:text-brand-blue"
           }`}
         onClick={() => (isOpen ? onClose() : onOpen())}
       >
@@ -320,14 +329,19 @@ export default function NavDropdown({
             key={idx}
             to={item.path}
             role="menuitem"
-            className={`relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-md transition-all duration-200 ease-out ${
+            className={`group relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-t-md transition-all duration-200 ease-out ${
               currentPath === item.path
-                ? "text-brand-blue underline underline-offset-4"
+                ? "text-brand-blue"
                 : "text-gray-500 hover:text-brand-blue"
             }`}
             onClick={onItemClick}
           >
-            {item.label}
+            <span className="relative inline-block pb-[3px]">
+              {item.label}
+              <span className={`absolute left-0 bottom-0 w-full h-[3px] bg-brand-blue rounded-full origin-left transition-transform duration-300 ease-in-out ${
+                currentPath === item.path ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+              }`} />
+            </span>
           </Link>
         ) : (
           <DesktopNavItem
@@ -374,10 +388,10 @@ function MobileNavItem({
     return (
       <Link
         to={item.path || "#"}
-        className={`block px-5 py-3 text-sm rounded-md transition-colors ${
+        className={`block pl-[17px] pr-5 py-3 text-sm transition-all duration-200 border-l-[3px] ${
           isActive
-            ? "text-brand-blue font-semibold underline underline-offset-4"
-            : "text-gray-600 hover:text-brand-blue"
+            ? "border-brand-blue text-brand-blue font-semibold"
+            : "border-transparent text-gray-600 hover:border-brand-blue/50 hover:text-brand-blue"
         }`}
         onClick={onItemClick}
       >
@@ -394,12 +408,12 @@ function MobileNavItem({
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between px-5 py-3 text-base rounded-md transition-colors cursor-pointer ${
+        className={`w-full flex items-center justify-between pl-[17px] pr-5 py-3 text-base transition-all duration-200 cursor-pointer border-l-[3px] ${
           depth === 0
             ? hasActiveChild
-              ? "font-medium text-brand-blue underline underline-offset-4"
-              : "font-medium text-gray-900 hover:text-brand-blue"
-            : "text-gray-700 hover:text-brand-blue"
+              ? "border-brand-blue font-medium text-brand-blue"
+              : "border-transparent font-medium text-gray-900 hover:border-brand-blue/50 hover:text-brand-blue"
+            : "border-transparent text-gray-700 hover:border-brand-blue/50 hover:text-brand-blue"
         }`}
       >
         <span>{item.label}</span>
@@ -418,7 +432,7 @@ function MobileNavItem({
             className="overflow-hidden"
           >
             <div
-              className={`py-1 ${depth === 0 ? "pl-6" : "pl-4"} border-l-2 border-gray-100 ml-5`}
+              className={`py-1 ${depth === 0 ? "pl-6" : "pl-4"} border-l border-gray-100 ml-5`}
             >
               {resolvedChildren.map((child, idx) => (
                 <MobileNavItem

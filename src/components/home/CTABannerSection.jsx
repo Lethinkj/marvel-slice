@@ -6,16 +6,22 @@ export default function CTABannerSection({ section }) {
   if (!section) return null;
 
   const { heading, subheading, description, cta_text, cta_link, background_image, image_url } = section.content || {};
-  const bannerUrl = background_image || image_url || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80';
+  const hasImage = background_image || image_url;
 
   if (!heading && !description) return null;
 
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={bannerUrl} alt="" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
-      </div>
+    <section className="relative overflow-hidden shadow-2xl">
+      {hasImage ? (
+        <div className="absolute inset-0">
+          <img src={background_image || image_url} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-blue/20 to-transparent" />
+        </div>
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-blue via-blue-700 to-blue-900" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-white/5 to-transparent pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
         <Reveal>
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
@@ -30,15 +36,18 @@ export default function CTABannerSection({ section }) {
                 <p className="text-white/80 mt-3 max-w-xl text-base sm:text-lg">{description}</p>
               )}
             </div>
-            <Button
-              variant="outline-white"
-              shape="xl"
-              href={cta_link ? `tel:${cta_link}` : undefined}
-              className="shrink-0"
-            >
-              {cta_text || 'Request a Call Back'}
-              <FiArrowRight className="w-4 h-4" />
-            </Button>
+            <div className="flex flex-col items-center gap-3 shrink-0">
+              <a
+                href={cta_link ? `tel:${cta_link}` : undefined}
+                className="inline-flex items-center justify-center gap-3 px-[30px] py-[15px] rounded-full bg-gradient-to-r from-white to-orange-100 text-brand-orange font-semibold shadow-lg shadow-brand-orange/20 hover:shadow-xl hover:shadow-brand-orange/30 hover:brightness-95 transition-all shrink-0"
+              >
+                <span className="flex flex-col items-start">
+                  <span className="text-sm font-bold">{cta_text || 'Request a Call Back'}</span>
+                  {cta_link && <span className="text-xs font-medium text-brand-orange/70">{cta_link}</span>}
+                </span>
+                <FiArrowRight className="w-5 h-5" />
+              </a>
+            </div>
           </div>
         </Reveal>
       </div>

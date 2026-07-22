@@ -16,6 +16,7 @@ function getStatIcon(label) {
 
 export default function IntroFormSection({ section }) {
   const content = section?.content || {};
+  const heading = section?.heading || '';
   const introText = content.intro_text || '';
   const stats = content.stats || [];
   const rawPills = Array.isArray(content.pill_buttons) ? content.pill_buttons : (content.pill_buttons || '').split('\n').filter(Boolean);
@@ -72,10 +73,15 @@ export default function IntroFormSection({ section }) {
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(#1B3A6B 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="grid lg:grid-cols-6 gap-8 lg:gap-12 items-start">
-          <Reveal variant="up" className="lg:col-span-4 space-y-6">
+        <div className="grid lg:grid-cols-6 gap-8 lg:gap-12">
+          <Reveal variant="up" className="lg:col-span-4 space-y-6 self-start">
+            {heading && (
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-dark-navy -mt-2">
+                {heading}
+              </h2>
+            )}
             {introText && (
-              <p className="text-text-gray text-sm sm:text-base leading-relaxed">
+              <p className="text-text-gray text-sm sm:text-base leading-relaxed text-justify">
                 {introText}
               </p>
             )}
@@ -99,44 +105,27 @@ export default function IntroFormSection({ section }) {
               </Stagger>
             )}
 
-            {features.length > 0 && (
-              <Stagger className="grid sm:grid-cols-2 gap-2">
-                {features.map((feat, i) => {
-                  const Icon = feat.icon;
-                  return (
-                    <StaggerItem key={i}>
-                      <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 hover:shadow-sm hover:border-gray-200 transition-all duration-200">
-                        <div className="w-7 h-7 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
-                          <Icon className="w-3.5 h-3.5 text-brand-blue" />
-                        </div>
-                        <span className="text-xs font-medium text-dark-navy">{feat.label}</span>
-                      </div>
-                    </StaggerItem>
-                  );
-                })}
-              </Stagger>
-            )}
-
             <div className="flex flex-wrap gap-2 pt-1">
               <Link
                 to="/courses?parent=software-learning"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
               >
                 Software Learning
               </Link>
               <Link
                 to="/courses?parent=competitive-exam"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
               >
                 Competitive Exam
               </Link>
             </div>
           </Reveal>
 
-          <Reveal variant="right" className="lg:col-span-2">
+          <Reveal variant="right" className="lg:col-span-2 self-start">
+            <p className="text-brand-blue text-base font-semibold text-center mb-2">Book Your Demo Now!</p>
             <div className="rounded-2xl shadow-lg overflow-hidden max-w-sm w-full lg:ml-auto" style={{ backgroundColor: '#74a916' }}>
               {/* diagonal header: white left / orange right */}
-              <div className="relative h-24" style={{ backgroundColor: '#ff8415' }}>
+              <div className="relative h-16" style={{ backgroundColor: '#ff8415' }}>
                 <div
                   className="absolute inset-0"
                   style={{
@@ -144,12 +133,12 @@ export default function IntroFormSection({ section }) {
                     backgroundColor: '#ffffff',
                   }}
                 >
-                  <div className="h-full flex items-center pl-6">
+                  <div className="h-full flex items-center pl-5">
                     <span className="text-xl font-serif font-bold" style={{ color: '#ff8415' }}>Career</span>
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-end">
-                  <span className="bg-white rounded-[6px] px-4 py-1.5 text-base font-serif font-bold shadow-sm mr-2" style={{ color: '#ff8415' }}>
+                  <span className="bg-white rounded-[6px] px-3 py-1 text-base font-serif font-bold shadow-sm mr-1.5" style={{ color: '#ff8415' }}>
                     Counselling
                   </span>
                 </div>
@@ -188,13 +177,30 @@ export default function IntroFormSection({ section }) {
                       <a href="/privacy" className="text-blue-300 underline hover:text-blue-200">Privacy Policy</a>.
                     </span>
                   </label>
-                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-[#ff8415] text-white font-bold rounded hover:bg-[#ff8415]/90 transition-colors disabled:opacity-70 text-sm">
+                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-[30px] py-[15px] bg-[#ff8415] text-white font-bold rounded hover:bg-[#ff8415]/90 transition-colors disabled:opacity-70 text-sm">
                     {submitting ? <FiLoader className="w-4 h-4 animate-spin" /> : null}
                     {submitting ? 'Submitting...' : 'Send Message'}
                   </button>
                 </form>
               </div>
             </div>
+            {features.length > 0 && (
+              <Stagger className="grid grid-cols-2 gap-2 mt-4">
+                {features.map((feat, i) => {
+                  const Icon = feat.icon;
+                  return (
+                    <StaggerItem key={i}>
+                      <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                        <div className="w-7 h-7 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
+                          <Icon className="w-3.5 h-3.5 text-brand-blue" />
+                        </div>
+                        <span className="text-xs font-bold text-dark-navy">{feat.label}</span>
+                      </div>
+                    </StaggerItem>
+                  );
+                })}
+              </Stagger>
+            )}
           </Reveal>
         </div>
       </div>

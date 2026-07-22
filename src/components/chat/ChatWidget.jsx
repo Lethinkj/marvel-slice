@@ -209,7 +209,7 @@ export default function ChatWidget() {
           }}
         >
             {/* Header */}
-            <div className="bg-brand-orange text-white flex items-center justify-between px-3 py-2 shrink-0">
+            <div className="bg-brand-green text-white flex items-center justify-between px-3 py-2 shrink-0">
               <div className="flex items-center gap-2 min-w-0">
                 <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                   <FiMessageCircle className="w-4 h-4" />
@@ -302,7 +302,7 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-10 h-10 rounded-full bg-brand-orange text-white shadow-lg hover:bg-brand-orange/90 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-10 h-10 rounded-full bg-brand-green text-white shadow-lg hover:bg-brand-green/90 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
         >
           <FiMessageCircle className="w-5 h-5" />
         </button>
