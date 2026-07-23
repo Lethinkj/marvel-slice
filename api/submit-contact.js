@@ -13,10 +13,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { full_name, email, phone } = req.body;
+  const { full_name, email, phone, subject, message } = req.body;
 
-  if (!full_name || !email || !phone) {
-    return res.status(400).json({ error: 'All fields are required' });
+  if (!full_name || !email) {
+    return res.status(400).json({ error: 'Name and email are required' });
   }
 
   const adminEmail = process.env.ADMIN_EMAIL;
@@ -40,7 +40,9 @@ export default async function handler(req, res) {
         <table style="width:100%;border-collapse:collapse;">
           ${row('Full Name', full_name)}
           ${row('Email', email)}
-          ${row('Phone', phone)}
+          ${row('Phone', phone || '\u2014')}
+          ${row('Subject', subject || '\u2014')}
+          ${row('Message', (message || '\u2014').replace(/\n/g, '<br>'))}
         </table>
       </div>
       <div style="padding:16px 32px;background:#F5F6F8;font-size:12px;color:#5F6B7A;text-align:center;border-top:1px solid #e5e7eb;">

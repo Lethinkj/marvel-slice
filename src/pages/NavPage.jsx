@@ -94,11 +94,13 @@ export default function NavPage() {
         </Reveal>
       )}
 
-      {data.sections?.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 space-y-12 sm:space-y-16">
-          {data.sections.map((section, i) => <SectionRenderer key={i} section={section} />)}
+      {data.sections?.length > 0 && data.sections.filter(s => !s.hidden).map((section, i) => (
+        <div key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SectionRenderer section={section} />
+          </div>
         </div>
-      )}
+      ))}
 
       {data.courses?.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">

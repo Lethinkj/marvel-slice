@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import { FiSearch, FiEye, FiX, FiChevronLeft, FiChevronRight, FiRefreshCw, FiDownload, FiLoader } from 'react-icons/fi';
+import { FiSearch, FiEye, FiX, FiChevronLeft, FiChevronRight, FiRefreshCw, FiDownload, FiLoader, FiFileText, FiSend } from 'react-icons/fi';
+import ReplyModal from '../components/ReplyModal';
 
 const PAGE_OPTIONS = [10, 20, 30, 50, 100];
 
@@ -15,27 +16,20 @@ export default function ContactSubmissions() {
   const [customEnd, setCustomEnd] = useState('');
   const [selected, setSelected] = useState(null);
   const [exportModal, setExportModal] = useState(null);
+  const [replyTo, setReplyTo] = useState(null);
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   async function load() {
     setLoading(true);
-    const { data } = await supabase
-      .from('contact_submissions')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const { data } = await supabase.from('contact_submissions').select('*').order('created_at', { ascending: false });
     setSubmissions(data || []);
     setLoading(false);
   }
 
   async function refresh() {
     setLoading(true);
-    const { data } = await supabase
-      .from('contact_submissions')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const { data } = await supabase.from('contact_submissions').select('*').order('created_at', { ascending: false });
     setSubmissions(data || []);
     setLoading(false);
   }
@@ -43,7 +37,7 @@ export default function ContactSubmissions() {
   async function remove(id) {
     if (!confirm('Delete this submission?')) return;
     await supabase.from('contact_submissions').delete().eq('id', id);
-    setSubmissions((prev) => prev.filter((s) => s.id !== id));
+    setSubmissions(prev => prev.filter(s => s.id !== id));
     setSelected(null);
   }
 
@@ -51,23 +45,22 @@ export default function ContactSubmissions() {
     let result = submissions;
     const q = search.trim().toLowerCase();
     if (q) {
-      result = result.filter((s) =>
+      result = result.filter(s =>
         (s.full_name || '').toLowerCase().includes(q) ||
         (s.email || '').toLowerCase().includes(q) ||
-        (s.phone || '').includes(q)
+        (s.phone || '').includes(q) ||
+        (s.subject || '').toLowerCase().includes(q) ||
+        (s.message || '').toLowerCase().includes(q)
       );
     }
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     if (dateFilter === 'today') {
-      result = result.filter((s) => new Date(s.created_at) >= startOfToday);
+      result = result.filter(s => new Date(s.created_at) >= startOfToday);
     } else if (dateFilter === 'custom' && customStart) {
       const from = new Date(customStart);
       const to = customEnd ? new Date(customEnd + 'T23:59:59') : new Date(from.getFullYear(), from.getMonth(), from.getDate(), 23, 59, 59);
-      result = result.filter((s) => {
-        const d = new Date(s.created_at);
-        return d >= from && d <= to;
-      });
+      result = result.filter(s => { const d = new Date(s.created_at); return d >= from && d <= to; });
     }
     return result;
   }, [submissions, search, dateFilter, customStart, customEnd]);
@@ -76,11 +69,7 @@ export default function ContactSubmissions() {
   const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   function clearFilters() {
-    setSearch('');
-    setDateFilter('all');
-    setCustomStart('');
-    setCustomEnd('');
-    setPage(1);
+    setSearch(''); setDateFilter('all'); setCustomStart(''); setCustomEnd(''); setPage(1);
   }
 
   return (
@@ -92,6 +81,10 @@ export default function ContactSubmissions() {
             className="flex items-center gap-2 px-4 py-2 border border-neutral-300 text-neutral-600 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-all disabled:opacity-50">
             <FiRefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </button>
+          <button onClick={() => setExportModal('pdf')}
+            className="flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
+            <FiFileText className="w-4 h-4" /> PDF
+          </button>
           <button onClick={() => setExportModal('csv')}
             className="flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
             <FiDownload className="w-4 h-4" /> CSV
@@ -99,21 +92,20 @@ export default function ContactSubmissions() {
         </div>
       </div>
 
+      {/* Filters */}
       <div className="bg-white rounded-lg border border-neutral-200 p-4 mb-4">
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex-1 min-w-[200px]">
             <label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">Search</label>
             <div className="relative">
               <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-              <input value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                placeholder="Search by name, email, phone..."
+              <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Search by name, email, phone..."
                 className="w-full pl-9 pr-4 py-2 border border-neutral-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-accent-500" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">Date</label>
-            <select value={dateFilter} onChange={(e) => { setDateFilter(e.target.value); setPage(1); setCustomStart(''); setCustomEnd(''); }}
+            <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); setCustomStart(''); setCustomEnd(''); }}
               className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 min-w-[140px]">
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -124,34 +116,26 @@ export default function ContactSubmissions() {
             <>
               <div>
                 <label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">From</label>
-                <input type="date" value={customStart} onChange={(e) => { setCustomStart(e.target.value); setPage(1); }}
+                <input type="date" value={customStart} onChange={e => { setCustomStart(e.target.value); setPage(1); }}
                   className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">To</label>
-                <input type="date" value={customEnd} onChange={(e) => { setCustomEnd(e.target.value); setPage(1); }}
+                <input type="date" value={customEnd} onChange={e => { setCustomEnd(e.target.value); setPage(1); }}
                   className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
               </div>
             </>
           )}
-          <button onClick={clearFilters}
-            className="px-3 py-2 text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors">
-            Clear
-          </button>
+          <button onClick={clearFilters} className="px-3 py-2 text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 rounded-lg transition-colors">Clear</button>
         </div>
       </div>
 
+      {/* Table */}
       <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
-          </div>
+          <div className="flex items-center justify-center py-16"><div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" /></div>
         ) : paged.length === 0 ? (
-          <div className="text-center py-16 text-neutral-400">
-            <FiSearch className="w-10 h-10 mx-auto mb-3 opacity-50" />
-            <p className="text-lg font-medium">No submissions found</p>
-            <p className="text-sm mt-1">Try adjusting your filters</p>
-          </div>
+          <div className="text-center py-16 text-neutral-400"><FiSearch className="w-10 h-10 mx-auto mb-3 opacity-50" /><p className="text-lg font-medium">No submissions found</p><p className="text-sm mt-1">Try adjusting your filters</p></div>
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -162,6 +146,7 @@ export default function ContactSubmissions() {
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Name</th>
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Email</th>
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Phone</th>
+                    <th className="text-left px-4 py-3 font-semibold text-neutral-600">Subject</th>
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Date</th>
                     <th className="text-right px-4 py-3 font-semibold text-neutral-600">Actions</th>
                   </tr>
@@ -173,11 +158,14 @@ export default function ContactSubmissions() {
                       <td className="px-4 py-3 font-medium text-neutral-900">{s.full_name}</td>
                       <td className="px-4 py-3 text-neutral-600">{s.email}</td>
                       <td className="px-4 py-3 text-neutral-600">{s.phone}</td>
+                      <td className="px-4 py-3 text-neutral-600 max-w-[200px] truncate">{s.subject || '—'}</td>
                       <td className="px-4 py-3 text-neutral-500 text-xs whitespace-nowrap">{new Date(s.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => setSelected(s)}
-                            className="p-1.5 text-neutral-400 hover:text-accent-700 hover:bg-accent-100 rounded-lg transition-all">
+                          <button onClick={() => setReplyTo(s)} className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-all" title="Reply">
+                            <FiSend className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => setSelected(s)} className="p-1.5 text-neutral-400 hover:text-accent-700 hover:bg-accent-100 rounded-lg transition-all" title="View">
                             <FiEye className="w-4 h-4" />
                           </button>
                         </div>
@@ -187,39 +175,28 @@ export default function ContactSubmissions() {
                 </tbody>
               </table>
             </div>
-
             <div className="flex items-center justify-between px-4 py-3 border-t border-neutral-100 bg-neutral-50/50">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-neutral-500">{filtered.length} total</span>
                 <span className="text-xs text-neutral-300">|</span>
-                <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+                <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
                   className="text-xs border border-neutral-200 rounded px-1.5 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
-                  {PAGE_OPTIONS.map((n) => <option key={n} value={n}>{n}</option>)}
+                  {PAGE_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
                 </select>
                 <span className="text-xs text-neutral-400">per page</span>
               </div>
               {totalPages > 1 && (
                 <div className="flex items-center gap-1">
                   <span className="text-xs text-neutral-500 mr-2">Page {page} of {totalPages}</span>
-                  <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
-                    className="p-1.5 text-neutral-400 hover:text-accent-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg hover:bg-white transition-colors">
-                    <FiChevronLeft className="w-4 h-4" />
-                  </button>
+                  <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+                    className="p-1.5 text-neutral-400 hover:text-accent-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg hover:bg-white transition-colors"><FiChevronLeft className="w-4 h-4" /></button>
                   {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-                    const start = Math.max(1, page - 3);
-                    const n = start + i;
+                    const start = Math.max(1, page - 3); const n = start + i;
                     if (n > totalPages) return null;
-                    return (
-                      <button key={n} onClick={() => setPage(n)}
-                        className={`w-7 h-7 text-xs rounded-lg font-medium transition-colors ${n === page ? 'bg-accent-600 text-white' : 'text-neutral-500 hover:bg-neutral-200'}`}>
-                        {n}
-                      </button>
-                    );
+                    return <button key={n} onClick={() => setPage(n)} className={`w-7 h-7 text-xs rounded-lg font-medium transition-colors ${n === page ? 'bg-accent-600 text-white' : 'text-neutral-500 hover:bg-neutral-200'}`}>{n}</button>;
                   })}
-                  <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                    className="p-1.5 text-neutral-400 hover:text-accent-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg hover:bg-white transition-colors">
-                    <FiChevronRight className="w-4 h-4" />
-                  </button>
+                  <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+                    className="p-1.5 text-neutral-400 hover:text-accent-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-lg hover:bg-white transition-colors"><FiChevronRight className="w-4 h-4" /></button>
                 </div>
               )}
             </div>
@@ -227,26 +204,30 @@ export default function ContactSubmissions() {
         )}
       </div>
 
-      {exportModal === 'csv' && (
-        <ExportCSV allData={filtered} onClose={() => setExportModal(null)} />
-      )}
+      {exportModal && <ExportDialog type={exportModal} allData={submissions} onClose={() => setExportModal(null)} />}
+
+      {replyTo && <ReplyModal submission={replyTo} type="contact" onClose={() => setReplyTo(null)} />}
 
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelected(null)}>
-          <div className="bg-white rounded-lg border border-neutral-200 max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-lg border border-neutral-200 max-w-lg w-full" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
               <h2 className="text-lg font-bold text-neutral-900">Submission Details</h2>
-              <button onClick={() => setSelected(null)} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors">
-                <FiX className="w-5 h-5" />
-              </button>
+              <button onClick={() => setSelected(null)} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"><FiX className="w-5 h-5" /></button>
             </div>
             <div className="p-6 space-y-4">
               <DetailRow label="ID" value={selected.id} />
               <DetailRow label="Full Name" value={selected.full_name} />
               <DetailRow label="Email" value={selected.email} />
               <DetailRow label="Phone" value={selected.phone} />
+              <DetailRow label="Subject" value={selected.subject} />
+              <DetailRow label="Message" value={selected.message} />
               <DetailRow label="Submitted At" value={new Date(selected.created_at).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })} />
               <div className="flex gap-2 pt-2">
+                <button onClick={() => { const s = selected; setSelected(null); setTimeout(() => setReplyTo(s), 100); }}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
+                  <FiSend className="w-4 h-4" /> Reply
+                </button>
                 <a href={`mailto:${selected.email}?subject=Marvel%20Slice%20-%20We%20Received%20Your%20Request&body=Hi%20${encodeURIComponent(selected.full_name)}%2C%0A%0AThank%20you%20for%20contacting%20Marvel%20Slice.%20We%20will%20get%20back%20to%20you%20shortly.%0A%0ARegards%2C%0AMarvel%20Slice%20Team`}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
                   <FiDownload className="w-4 h-4 rotate-90" /> Reply via Email
@@ -273,41 +254,82 @@ function DetailRow({ label, value }) {
   );
 }
 
-function ExportCSV({ allData, onClose }) {
+function ExportDialog({ type, allData, onClose }) {
   const [loading, setLoading] = useState(false);
+  const [dateFilter, setDateFilter] = useState('all');
+  const [customStart, setCustomStart] = useState('');
+  const [customEnd, setCustomEnd] = useState('');
 
-  async function doExport() {
-    if (allData.length === 0) return;
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 30));
-    const headers = ['ID', 'Full Name', 'Email', 'Phone', 'Submitted At'];
-    const rows = allData.map((s) => [
-      s.id, s.full_name, s.email, s.phone, s.created_at,
-    ]);
-    const csv = [headers.join(','), ...rows.map((r) => r.map((v) => `"${v}"`).join(','))].join('\n');
+  const filtered = useMemo(() => {
+    let result = allData;
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (dateFilter === 'today') {
+      result = result.filter(s => new Date(s.created_at) >= startOfToday);
+    } else if (dateFilter === 'custom' && customStart) {
+      const from = new Date(customStart);
+      const to = customEnd ? new Date(customEnd + 'T23:59:59') : new Date(from.getFullYear(), from.getMonth(), from.getDate(), 23, 59, 59);
+      result = result.filter(s => { const d = new Date(s.created_at); return d >= from && d <= to; });
+    }
+    return result;
+  }, [allData, dateFilter, customStart, customEnd]);
+
+  async function exportCSV() {
+    if (filtered.length === 0) return;
+    setLoading(true); await new Promise(r => setTimeout(r, 30));
+    const headers = ['SL.No', 'Full Name', 'Email', 'Phone', 'Subject', 'Message', 'Submitted At'];
+    const rows = filtered.map((s, i) => [i + 1, s.full_name, s.email, s.phone || '', s.subject || '', (s.message || '').replace(/"/g, '""'), s.created_at]);
+    const csv = [headers.join(','), ...rows.map(r => r.map(v => `"${v}"`).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `contact-submissions-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setLoading(false);
-    onClose();
+    const a = document.createElement('a'); a.href = url; a.download = 'contact-submissions-' + new Date().toISOString().slice(0, 10) + '.csv'; a.click();
+    URL.revokeObjectURL(url); setLoading(false); onClose();
+  }
+
+  async function exportPDF() {
+    if (filtered.length === 0) return;
+    setLoading(true); await new Promise(r => setTimeout(r, 50));
+    const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([import('jspdf'), import('jspdf-autotable')]);
+    const pdf = new jsPDF('l', 'mm', 'a4');
+    const rows = filtered.map((s, i) => [i + 1, s.full_name, s.email, s.phone || '—', s.subject || '—', (s.message || '—').slice(0, 80), new Date(s.created_at).toLocaleDateString()]);
+    autoTable(pdf, { head: [['#', 'Name', 'Email', 'Phone', 'Subject', 'Message', 'Date']], body: rows, styles: { fontSize: 8 }, headStyles: { fillColor: ['#1e293b'] }, margin: { top: 20 } });
+    pdf.setFontSize(16); pdf.setFont('helvetica', 'bold'); pdf.text('Contact Submissions', 14, 14);
+    pdf.setFontSize(8); pdf.setFont('helvetica', 'normal'); pdf.text('Generated: ' + new Date().toLocaleDateString() + '  |  ' + filtered.length + ' submissions', 14, 20);
+    pdf.save('contact-submissions-' + new Date().toISOString().slice(0, 10) + '.pdf');
+    setLoading(false); onClose();
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative bg-white rounded-lg border border-neutral-200 w-full max-w-sm p-6">
-        <h2 className="text-lg font-bold text-neutral-900 mb-2">Export CSV</h2>
-        <p className="text-sm text-neutral-500 mb-4">Export {allData.length} submission{allData.length !== 1 ? 's' : ''} to CSV</p>
-        <div className="flex gap-2 justify-end">
-          <button onClick={onClose} className="px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-600 hover:bg-neutral-50 transition-colors">Cancel</button>
-          <button onClick={doExport} disabled={loading}
+      <div className="relative bg-white rounded-lg border border-neutral-200 w-full max-w-md max-h-[85vh] flex flex-col">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 shrink-0">
+          <div><h2 className="text-lg font-bold text-neutral-900">Export {type.toUpperCase()}</h2><p className="text-xs text-neutral-400">Choose filters for the report</p></div>
+          <button onClick={onClose} className="p-1 hover:bg-neutral-100 rounded-lg transition-colors"><FiX className="w-5 h-5 text-neutral-400" /></button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">Date Range</label>
+            <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setCustomStart(''); setCustomEnd(''); }}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500">
+              <option value="all">All Time</option><option value="today">Today</option><option value="custom">Custom Range</option>
+            </select>
+          </div>
+          {dateFilter === 'custom' && (
+            <div className="flex gap-2">
+              <div className="flex-1"><label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">From</label>
+                <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" /></div>
+              <div className="flex-1"><label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">To</label>
+                <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" /></div>
+            </div>
+          )}
+        </div>
+        <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-between shrink-0">
+          <span className="text-xs text-neutral-400">{filtered.length} submission{filtered.length !== 1 ? 's' : ''}</span>
+          <button onClick={type === 'pdf' ? exportPDF : exportCSV} disabled={loading || filtered.length === 0}
             className="flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50">
             {loading ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiDownload className="w-4 h-4" />}
-            {loading ? 'Exporting...' : 'Export'}
+            {loading ? 'Exporting...' : 'Export ' + type.toUpperCase()}
           </button>
         </div>
       </div>

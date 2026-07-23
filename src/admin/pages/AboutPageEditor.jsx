@@ -4,39 +4,53 @@ import { useQueryClient } from '@tanstack/react-query';
 import * as LuIcons from 'react-icons/lu';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiChevronUp, FiChevronDown, FiChevronRight } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove } from 'react-icons/fi';
 
 const LUCIDE_ICON_NAMES = Object.keys(LuIcons).filter(k => k.startsWith('Lu')).map(k => k.slice(2)).sort();
 
 const SECTION_TYPES = [
-  { value: 'text', label: 'Text' },
-  { value: 'stats_row', label: 'Stats Row' },
-  { value: 'team_grid', label: 'Team Grid' },
-  { value: 'feature_grid', label: 'Feature Grid' },
-  { value: 'content_media_list', label: 'Content Media List' },
-  { value: 'cta', label: 'Call to Action' },
+  { value: 'text', label: 'Text', desc: 'Heading + body paragraphs' },
+  { value: 'text_stats', label: 'Text + Stats', desc: 'Heading, paragraphs, and stat cards combined' },
+  { value: 'stats_row', label: 'Stats Row', desc: 'Number + label cards (4-column)' },
+  { value: 'feature_grid', label: 'Feature Grid', desc: 'Icon + title + description cards (4-column)' },
 ];
 
-const IMAGE_EXT_RE = /\.(jpe?g|png|webp|gif)(\?.*)?$/i;
-
 function createEmptySection(type) {
-  const base = { section_type: type, heading: '' };
+  const base = { section_type: type, heading: '', headingAlign: 'center', hidden: false };
   switch (type) {
     case 'text':
-      return { ...base, content: '' };
+      return { ...base, content: '', contentAlign: 'center' };
+    case 'text_stats':
+      return { ...base, content: '', contentAlign: 'center', items: [] };
     case 'stats_row':
       return { ...base, items: [] };
-    case 'team_grid':
-      return { ...base, items: [] };
     case 'feature_grid':
-      return { ...base, subheading: '', items: [] };
-    case 'content_media_list':
-      return { ...base, content: '', image_url: '', list_items: [] };
-    case 'cta':
-      return { ...base, content: '', image_url: '' };
+      return { ...base, subheading: '', subheadingAlign: 'center', items: [] };
     default:
       return base;
   }
+}
+
+function AlignButtons({ value, onChange }) {
+  const options = [
+    { value: 'left', icon: FiAlignLeft },
+    { value: 'center', icon: FiAlignCenter },
+    { value: 'right', icon: FiAlignRight },
+  ];
+  return (
+    <div className="flex items-center gap-1 p-1 bg-neutral-100 rounded-lg w-fit">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={`p-1.5 rounded-md transition-colors cursor-pointer ${value === opt.value ? 'bg-white text-accent-700 shadow-sm' : 'text-neutral-400 hover:text-neutral-600'}`}
+        >
+          <opt.icon className="w-4 h-4" />
+        </button>
+      ))}
+    </div>
+  );
 }
 
 function ImageUploader({ value, onChange, label }) {
@@ -87,21 +101,6 @@ function TextArea({ value, onChange, placeholder, label, rows, required }) {
       {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
       <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={rows || 3}
         className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all" placeholder={placeholder} />
-    </div>
-  );
-}
-
-function PlainUrlInput({ value, onChange, placeholder, label }) {
-  const warn = value && !IMAGE_EXT_RE.test(value) && value.startsWith('http');
-  return (
-    <div>
-      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}</label>}
-      <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all" placeholder={placeholder} />
-      {warn && <p className="text-xs text-amber-600 mt-1">Warning: URL does not end in a common image extension (jpg, jpeg, png, webp, gif)</p>}
-      {value && IMAGE_EXT_RE.test(value) && (
-        <img src={value} alt="" className="mt-2 h-28 w-full object-cover rounded-lg border border-neutral-200" onError={(e) => { e.target.style.display = 'none'; }} />
-      )}
     </div>
   );
 }
@@ -208,13 +207,68 @@ function SubEditor({ section, onChange }) {
     case 'text':
       return (
         <div className="space-y-3">
-          <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
+          <div className="flex items-start gap-4">
+            <div className="flex-1">
+              <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
+            </div>
+            <div className="pt-5">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
+              <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
+            </div>
+          </div>
           <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Content..." label="Content" required />
+          <div className="flex items-center justify-end gap-3">
+            <span className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Content Align</span>
+            <AlignButtons value={section.contentAlign || 'center'} onChange={(v) => set({ contentAlign: v })} />
+          </div>
+        </div>
+      );
+    case 'text_stats':
+      return (
+        <div className="space-y-3">
+          <div className="flex items-start gap-4">
+            <div className="flex-1">
+              <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
+            </div>
+            <div className="pt-5">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
+              <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
+            </div>
+          </div>
+          <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Content..." label="Content" required />
+          <div className="flex items-center justify-end gap-3">
+            <span className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Content Align</span>
+            <AlignButtons value={section.contentAlign || 'center'} onChange={(v) => set({ contentAlign: v })} />
+          </div>
+          <hr className="border-neutral-200" />
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
+            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Stat</AdminButton>
+          </div>
+          <ReorderableList
+            items={section.items || []}
+            onChange={(v) => set({ items: v })}
+            renderItem={(item, i, onItemChange) => (
+              <div className="flex items-center gap-3">
+                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+              </div>
+            )}
+          />
         </div>
       );
     case 'stats_row':
       return (
         <div>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="flex-1">
+              <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
+            </div>
+            <div className="pt-5">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
+              <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
+            </div>
+          </div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
             <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Stat</AdminButton>
@@ -259,8 +313,26 @@ function SubEditor({ section, onChange }) {
       return (
         <div>
           <div className="space-y-3 mb-4">
-            <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
-            <TextArea value={section.subheading} onChange={(v) => set({ subheading: v })} placeholder="Subheading (optional)" label="Subheading" rows={2} />
+            <div className="flex items-start gap-4">
+              <div className="flex-1">
+                <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
+              </div>
+              <div className="pt-5">
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
+                <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <TextArea value={section.subheading} onChange={(v) => set({ subheading: v })} placeholder="Subheading (optional)" label="Subheading" rows={2} />
+                </div>
+                <div className="pt-5">
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
+                  <AlignButtons value={section.subheadingAlign || 'center'} onChange={(v) => set({ subheadingAlign: v })} />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Feature Items</span>
@@ -279,36 +351,6 @@ function SubEditor({ section, onChange }) {
               </div>
             )}
           />
-        </div>
-      );
-    case 'content_media_list':
-      return (
-        <div>
-          <div className="space-y-3 mb-4">
-            <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
-            <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Content..." label="Content" rows={3} />
-            <PlainUrlInput value={section.image_url} onChange={(v) => set({ image_url: v })} placeholder="https://example.com/image.jpg" label="Image URL" />
-          </div>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">List Items</span>
-            <AdminButton type="button" onClick={() => set({ list_items: [...(section.list_items || []), ''] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Item</AdminButton>
-          </div>
-          <ReorderableList
-            items={section.list_items || []}
-            onChange={(v) => set({ list_items: v })}
-            renderItem={(item, i, onItemChange) => (
-              <TextInput value={item} onChange={(v) => onItemChange(v)} placeholder="List item text..." />
-            )}
-            getKey={(_, i) => i}
-          />
-        </div>
-      );
-    case 'cta':
-      return (
-        <div className="space-y-3">
-          <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Heading" label="Heading" />
-          <TextInput value={section.content} onChange={(v) => set({ content: v })} placeholder="Subtext" label="Subtext" />
-          <TextInput value={section.image_url} onChange={(v) => set({ image_url: v })} placeholder="/contact or https://..." label="Button Link URL" />
         </div>
       );
     default:
@@ -332,12 +374,14 @@ export default function AboutPageEditor() {
   const [saveError, setSaveError] = useState('');
   const [validationErrors, setValidationErrors] = useState([]);
   const [expandedIdx, setExpandedIdx] = useState(null);
+  const [dragIdx, setDragIdx] = useState(null);
   const navItemIdRef = useRef(null);
   const savingRef = useRef(false);
 
-  const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '' });
+  const [hero, setHero] = useState({ hero_image: '' });
   const [sections, setSections] = useState([]);
   const [newType, setNewType] = useState('text');
+  const [showHeroImage, setShowHeroImage] = useState(false);
 
   useEffect(() => {
     async function resolve() {
@@ -366,7 +410,8 @@ export default function AboutPageEditor() {
         const page = pages?.[0] || null;
         if (page) {
           setPageId(page.id);
-          setHero({ heading: page.heading || '', subheading: page.subheading || '', hero_image: page.hero_image || '' });
+          setHero({ hero_image: page.hero_image || '' });
+          setShowHeroImage(!!page.hero_image);
           setSections(page.sections || []);
         }
       }
@@ -401,6 +446,30 @@ export default function AboutPageEditor() {
     setSections(next);
   }
 
+  function toggleVisibility(idx) {
+    const next = [...sections];
+    next[idx] = { ...next[idx], hidden: !next[idx].hidden };
+    setSections(next);
+  }
+
+  function handleDragStart(i) {
+    setDragIdx(i);
+  }
+
+  function handleDragOver(e, i) {
+    e.preventDefault();
+    if (dragIdx === null || dragIdx === i) return;
+    const next = [...sections];
+    const [removed] = next.splice(dragIdx, 1);
+    next.splice(i, 0, removed);
+    setSections(next);
+    setDragIdx(i);
+  }
+
+  function handleDragEnd() {
+    setDragIdx(null);
+  }
+
   function validate() {
     const errors = [];
     sections.forEach((sec, i) => {
@@ -427,8 +496,8 @@ export default function AboutPageEditor() {
 
     const payload = {
       nav_item_id: navItemId || navItemIdRef.current,
-      heading: hero.heading,
-      subheading: hero.subheading,
+      heading: '',
+      subheading: '',
       hero_image: hero.hero_image || null,
       sections,
       is_published: true,
@@ -476,40 +545,68 @@ export default function AboutPageEditor() {
       )}
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">Hero Section</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+          <h2 className="font-semibold text-neutral-900 mb-4">Hero Image</h2>
+          <div className="mt-2">
+            {showHeroImage ? (
+              <div>
+                <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+                <button type="button" onClick={() => { setShowHeroImage(false); setHero({ ...hero, hero_image: '' }); }} className="mt-2 text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => setShowHeroImage(true)} className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-neutral-300 rounded-lg text-sm text-neutral-500 hover:border-accent-500 hover:text-accent-600 transition-colors cursor-pointer">
+                <FiUpload className="w-4 h-4" /> Add Hero Image
+              </button>
+            )}
           </div>
-          <div className="mt-4"><ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" /></div>
         </div>
 
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-neutral-900">Sections</h2>
             <div className="flex items-center gap-2">
-              <select value={newType} onChange={(e) => setNewType(e.target.value)}
-                className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
-                {SECTION_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-              <AdminButton type="button" onClick={addSection} variant="primary" size="sm"><FiPlus className="w-4 h-4" /> Add Section</AdminButton>
+              <div className="relative">
+                <select value={newType} onChange={(e) => setNewType(e.target.value)}
+                  className="w-44 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white appearance-none cursor-pointer">
+                  {SECTION_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+              </div>
+              <AdminButton type="button" onClick={addSection} variant="primary" size="sm"><FiPlus className="w-4 h-4" /> Add</AdminButton>
             </div>
           </div>
+          {SECTION_TYPES.find(t => t.value === newType)?.desc && (
+            <p className="text-xs text-neutral-400 -mt-3 mb-4">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
+          )}
           {sections.length === 0 && (
-            <p className="text-sm text-neutral-400 text-center py-8">No sections yet. Click "Add Section" to get started.</p>
+            <p className="text-sm text-neutral-400 text-center py-8">No sections yet. Select a type above and click "Add".</p>
           )}
           <div className="space-y-3">
             {sections.map((sec, i) => (
-              <div key={i} className="border border-neutral-200 rounded-lg overflow-hidden">
+              <div
+                key={i}
+                draggable
+                onDragStart={() => handleDragStart(i)}
+                onDragOver={(e) => handleDragOver(e, i)}
+                onDragEnd={handleDragEnd}
+                className={`border border-neutral-200 rounded-lg overflow-hidden transition-shadow ${dragIdx === i ? 'shadow-lg ring-2 ring-accent-500' : ''} ${sec.hidden ? 'opacity-50' : ''}`}
+              >
                 <div className="flex items-center justify-between px-4 py-3 bg-neutral-50 cursor-pointer" onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}>
                   <div className="flex items-center gap-3">
+                    <span className="text-neutral-300 hover:text-neutral-500 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+                      <FiMove className="w-4 h-4" />
+                    </span>
                     <span className="text-xs font-bold text-neutral-400">{i + 1}</span>
                     <span className="text-sm font-medium text-neutral-700">{SECTION_TYPE_LABELS[sec.section_type] || sec.section_type}</span>
                     {sec.heading && <span className="text-xs text-neutral-400 max-w-48 truncate">— {sec.heading}</span>}
+                    {sec.hidden && <span className="text-xs text-amber-500 font-medium">Hidden</span>}
                   </div>
                   <div className="flex items-center gap-1">
+                    <button type="button" onClick={(e) => { e.stopPropagation(); toggleVisibility(i); }}
+                      className="p-1 text-neutral-400 hover:text-neutral-700 cursor-pointer" title={sec.hidden ? 'Show section' : 'Hide section'}>
+                      {sec.hidden ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
+                    </button>
                     <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, -1); }} disabled={i === 0}
                       className="p-1 text-neutral-400 hover:text-neutral-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
                     <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, 1); }} disabled={i === sections.length - 1}

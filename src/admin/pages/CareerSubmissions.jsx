@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import { FiDownload, FiSearch, FiEye, FiX, FiChevronLeft, FiChevronRight, FiRefreshCw, FiFileText, FiLoader, FiChevronDown, FiCheck } from 'react-icons/fi';
+import { FiDownload, FiSearch, FiEye, FiX, FiChevronLeft, FiChevronRight, FiRefreshCw, FiFileText, FiLoader, FiChevronDown, FiCheck, FiSend } from 'react-icons/fi';
+import ReplyModal from '../components/ReplyModal';
 
 const PAGE_OPTIONS = [10, 20, 30, 40, 50, 100];
 const DEPARTMENTS = ['Engineering', 'Marketing', 'Sales', 'Human Resources', 'Finance', 'Operations', 'Design', 'Content', 'Other'];
@@ -81,6 +82,7 @@ export default function CareerSubmissions() {
   const [customEnd, setCustomEnd] = useState('');
   const [selected, setSelected] = useState(null);
   const [exportModal, setExportModal] = useState(null);
+  const [replyTo, setReplyTo] = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -277,10 +279,15 @@ export default function CareerSubmissions() {
                       </td>
                       <td className="px-4 py-3 text-neutral-500 text-xs whitespace-nowrap">{new Date(s.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                       <td className="px-4 py-3 text-right">
-                        <button onClick={() => setSelected(s)}
-                          className="p-1.5 text-neutral-400 hover:text-accent-700 hover:bg-accent-100 rounded-lg transition-all">
-                          <FiEye className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => setReplyTo(s)} className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-all" title="Reply">
+                            <FiSend className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => setSelected(s)}
+                            className="p-1.5 text-neutral-400 hover:text-accent-700 hover:bg-accent-100 rounded-lg transition-all">
+                            <FiEye className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -337,6 +344,8 @@ export default function CareerSubmissions() {
         />
       )}
 
+      {replyTo && <ReplyModal submission={replyTo} type="career" onClose={() => setReplyTo(null)} />}
+
       {/* Detail Modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelected(null)}>
@@ -368,6 +377,12 @@ export default function CareerSubmissions() {
                 </div>
               )}
               <DetailRow label="Submitted At" value={new Date(selected.created_at).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })} />
+              <div className="pt-2">
+                <button onClick={() => { const s = selected; setSelected(null); setTimeout(() => setReplyTo(s), 100); }}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-accent-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
+                  <FiSend className="w-4 h-4" /> Reply
+                </button>
+              </div>
             </div>
           </div>
         </div>

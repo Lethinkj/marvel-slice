@@ -5,7 +5,22 @@ import Button from './Button';
 import Card from './Card';
 import AccordionItem from './AccordionItem';
 import Reveal, { Stagger, StaggerItem } from './Reveal';
-import ContactForm from './ContactForm';
+import ContactSection from './ContactSection';
+
+function safeParse(val) {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try { const p = JSON.parse(val); return Array.isArray(p) ? p : []; } catch { return []; }
+  }
+  if (val && typeof val === 'object' && !Array.isArray(val)) return [val];
+  return [];
+}
+
+function safeString(val) {
+  if (typeof val === 'string') return val;
+  if (val && typeof val === 'object') return String(val);
+  return val || '';
+}
 
 function DynamicIcon({ name, className }) {
   if (!name) return null;
@@ -35,13 +50,47 @@ function FaqListSection({ section }) {
 
 export default function SectionRenderer({ section }) {
   switch (section.section_type) {
-    case 'text':
+    case 'text': {
+      const paragraphs = safeParse(section.content);
+      const content = Array.isArray(paragraphs) && paragraphs.length > 0
+        ? paragraphs.join('\n\n')
+        : safeString(section.content);
+      const ha = section.headingAlign || 'center';
+      const ca = section.contentAlign || 'center';
       return (
-        <Reveal className="max-w-3xl mx-auto">
-          {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-4">{section.heading}</h2>}
-          {section.content && <div className="text-text-gray text-base leading-relaxed whitespace-pre-line">{section.content}</div>}
+        <Reveal className={`py-16 max-w-4xl mx-auto text-${ca}`}>
+          {section.heading && <h2 className={`text-3xl sm:text-4xl font-bold text-blue-700 mb-6 text-${ha}`}>{section.heading}</h2>}
+          {content && <div className="text-gray-700 text-base leading-relaxed">{content}</div>}
         </Reveal>
       );
+    }
+    case 'text_stats': {
+      const paragraphs = safeParse(section.content);
+      const content = Array.isArray(paragraphs) && paragraphs.length > 0
+        ? paragraphs.join('\n\n')
+        : safeString(section.content);
+      const items = safeParse(section.items);
+      const ha = section.headingAlign || 'center';
+      const ca = section.contentAlign || 'center';
+      return (
+        <div className="py-16">
+          <div className={`max-w-4xl mx-auto text-${ca}`}>
+            {section.heading && <h2 className={`text-3xl sm:text-4xl font-bold text-blue-700 mb-6 text-${ha}`}>{section.heading}</h2>}
+            {content && <div className="text-gray-700 text-base leading-relaxed mb-10">{content}</div>}
+          </div>
+          {items.length > 0 && (
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {items.map((stat, i) => (
+                <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default">
+                  <div className="text-3xl sm:text-4xl font-bold text-orange-500">{stat.number}</div>
+                  <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
     case 'image':
       return (
         <Reveal className="max-w-4xl mx-auto text-center">
@@ -80,25 +129,32 @@ export default function SectionRenderer({ section }) {
           </Stagger>
         </div>
       );
-    case 'stats_row':
+    case 'stats_row': {
+      const items = safeParse(section.items);
+      if (items.length === 0) return null;
+      const ha = section.headingAlign || 'center';
       return (
-        <Reveal className="py-16 sm:py-20">
-          <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8">
-            {(section.items || []).map((stat, i) => (
-              <div key={i} className="text-center px-6 py-8 bg-white rounded-lg shadow-sm border border-gray-100">
-                <div className="text-[32px] sm:text-[36px] leading-tight font-extrabold text-brand-orange">{stat.number}</div>
-                <div className="text-sm text-text-gray mt-2">{stat.label}</div>
+        <Reveal className="py-16">
+          {section.heading && <h2 className={`text-3xl sm:text-4xl font-bold text-dark-navy mb-8 text-${ha}`}>{section.heading}</h2>}
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {items.map((stat, i) => (
+              <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default">
+                <div className="text-3xl sm:text-4xl font-bold text-orange-500">{stat.number}</div>
+                <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
               </div>
             ))}
           </div>
         </Reveal>
       );
-    case 'team_grid':
+    }
+    case 'team_grid': {
+      const items = safeParse(section.items);
+      if (items.length === 0) return null;
       return (
         <div>
           {section.heading && <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-8 text-center">{section.heading}</Reveal>}
           <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {(section.items || []).map((member, i) => (
+            {items.map((member, i) => (
               <StaggerItem key={i} className="h-full">
                 <Card className="p-6 text-center h-full">
                   <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-brand-blue to-brand-orange flex items-center justify-center text-white text-2xl font-bold mb-3 overflow-hidden">
@@ -113,6 +169,7 @@ export default function SectionRenderer({ section }) {
           </Stagger>
         </div>
       );
+    }
     case 'contact_info':
       return (
         <Reveal className="max-w-lg mx-auto">
@@ -185,31 +242,37 @@ export default function SectionRenderer({ section }) {
           )}
         </Reveal>
       );
-    case 'feature_grid':
-      if (!section.items?.length) return null;
+    case 'feature_grid': {
+      const items = safeParse(section.items);
+      if (items.length === 0) return null;
+      const circleBgColors = ['bg-orange-100', 'bg-blue-100', 'bg-green-100', 'bg-purple-100'];
+      const iconColors = ['text-orange-500', 'text-blue-500', 'text-green-500', 'text-purple-500'];
+      const ha = section.headingAlign || 'center';
+      const sa = section.subheadingAlign || 'center';
+      const barMargin = ha === 'center' ? 'mx-auto' : ha === 'right' ? 'ml-auto' : 'mr-auto';
       return (
-        <div className="bg-bg-light py-16 sm:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="py-16">
+          <div className="max-w-6xl mx-auto px-4">
             {section.heading && (
-              <Reveal as="div" className="text-center mb-6">
-                <h2 className="text-[32px] sm:text-[36px] font-bold text-dark-navy">{section.heading}</h2>
-                <div className="w-[60px] h-[3px] bg-brand-orange rounded-full mx-auto mt-3" />
+              <Reveal as="div" className={`mb-4 text-${ha}`}>
+                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">{section.heading}</h2>
+                <div className={`w-16 h-1 bg-orange-500 mt-2 ${barMargin}`} />
               </Reveal>
             )}
             {section.subheading && (
-              <Reveal as="p" className="text-text-gray text-base text-center max-w-[700px] mx-auto leading-relaxed">
+              <Reveal as="p" className={`text-gray-500 text-base max-w-2xl leading-relaxed text-${sa} ${sa === 'center' ? 'mx-auto' : ''}`}>
                 {section.subheading}
               </Reveal>
             )}
-            <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 sm:mt-16">
-              {section.items.map((item, i) => (
+            <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+              {items.map((item, i) => (
                 <StaggerItem key={i} className="h-full">
-                  <Card className="p-8 text-center h-full rounded-xl border border-gray-100 shadow-sm">
-                    <div className="w-16 h-16 rounded-full bg-brand-orange/10 flex items-center justify-center mx-auto mb-4">
-                      <DynamicIcon name={item.icon} className="w-7 h-7 text-brand-orange" />
+                  <Card className="p-6 text-center h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div className={`w-16 h-16 rounded-full ${circleBgColors[i % 4]} flex items-center justify-center mx-auto mb-4`}>
+                      <DynamicIcon name={item.icon} className={`w-7 h-7 ${iconColors[i % 4]}`} />
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-dark-navy mb-2">{item.title}</h3>
-                    <p className="text-sm text-text-gray leading-[1.5]">{item.description}</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">{item.description}</p>
                   </Card>
                 </StaggerItem>
               ))}
@@ -217,16 +280,18 @@ export default function SectionRenderer({ section }) {
           </div>
         </div>
       );
-    case 'content_media_list':
+    }
+    case 'content_media_list': {
+      const listItems = safeParse(section.list_items);
       return (
         <Reveal>
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
               {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-4">{section.heading}</h2>}
               {section.content && <p className="text-text-gray text-base leading-relaxed mb-4">{section.content}</p>}
-              {section.list_items?.length > 0 && (
+              {listItems.length > 0 && (
                 <ul className="space-y-2">
-                  {section.list_items.map((item, i) => (
+                  {listItems.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <FiCheckCircle className="w-5 h-5 text-brand-orange shrink-0 mt-0.5" />
                       <span className="text-text-gray">{item}</span>
@@ -243,8 +308,9 @@ export default function SectionRenderer({ section }) {
           </div>
         </Reveal>
       );
+    }
     case 'contact_form':
-      return <ContactForm />;
+      return <ContactSection section={section} />;
     default:
       return null;
   }

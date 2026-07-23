@@ -38,6 +38,21 @@ function ImageUploader({ value, onChange, label }) {
 
 const PAGE_PATH = '/contact';
 
+const DEFAULT_CONTACT_CONTENT = {
+  left_heading: 'Get in Touch',
+  left_subtitle: "We'd love to hear from you. Reach out to us and we'll get back to you as soon as possible.",
+  address: '',
+  display_phone: '',
+  tel_link: '',
+  email: '',
+  business_hours: '',
+  gradient_start: '#0B2D6B',
+  gradient_end: '#1E56C7',
+  show_shadow: true,
+  section_bg_color: '#F5F6F8',
+  success_message: 'Thank you! Your message has been received. Our team will contact you soon.',
+};
+
 export default function ContactPageEditor() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -52,21 +67,19 @@ export default function ContactPageEditor() {
   const savingRef = useRef(false);
 
   const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '' });
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [mapSrc, setMapSrc] = useState('');
+  const [contactContent, setContactContent] = useState(DEFAULT_CONTACT_CONTENT);
+  const [showContactSection, setShowContactSection] = useState(true);
   const [faqs, setFaqs] = useState([]);
-  const [showContactForm, setShowContactForm] = useState(false);
+
+  function updateContent(field, value) {
+    setContactContent((prev) => ({ ...prev, [field]: value }));
+  }
 
   useEffect(() => {
     async function resolve() {
-      console.log('resolve: looking for nav_item with path', PAGE_PATH);
-      let { data: items, error: findErr } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).eq('is_active', true).order('id').limit(1);
-      console.log('resolve: active query result', { items, findErr });
+      let { data: items } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).eq('is_active', true).order('id').limit(1);
       let item = items?.[0] || null;
       if (!item) {
-        console.log('resolve: no active item, looking for inactive');
         const { data: inactiveItems } = await supabase.from('nav_items').select('*').eq('path', PAGE_PATH).order('id').limit(1);
         item = inactiveItems?.[0] || null;
         if (item) {
@@ -75,15 +88,13 @@ export default function ContactPageEditor() {
         }
       }
       if (!item) {
-        console.log('resolve: creating new nav_item');
-        const { data: newItem, error: createErr } = await supabase.from('nav_items').insert({ label: 'Contact', path: PAGE_PATH, is_active: true, sort_order: 99 }).select('*').single();
-        if (createErr) { console.error('create nav_item failed:', createErr); }
+        const { data: newItem } = await supabase.from('nav_items').insert({ label: 'Contact', path: PAGE_PATH, is_active: true, sort_order: 99 }).select('*').single();
         item = newItem || null;
       }
-      console.log('resolve: final item', item);
       setNavItem(item);
       setNavItemId(item?.id);
       navItemIdRef.current = item?.id;
+
       if (item?.id) {
         const { data: pages } = await supabase.from('nav_pages').select('*').eq('nav_item_id', item.id).order('id').limit(1);
         const page = pages?.[0] || null;
@@ -91,18 +102,28 @@ export default function ContactPageEditor() {
           setPageId(page.id);
           setHero({ heading: page.heading || '', subheading: page.subheading || '', hero_image: page.hero_image || '' });
           const secs = page.sections || [];
-          const contactSec = secs.find(s => s.section_type === 'contact_info');
-          if (contactSec) {
-            setAddress(contactSec.address || '');
-            setPhone(contactSec.phone || '');
-            setEmail(contactSec.email || '');
+
+          const contactFormSec = secs.find(s => s.section_type === 'contact_form');
+          if (contactFormSec) {
+            setShowContactSection(true);
+            setContactContent({ ...DEFAULT_CONTACT_CONTENT, ...contactFormSec.content });
+          } else {
+            const contactInfoSec = secs.find(s => s.section_type === 'contact_info');
+            if (contactInfoSec) {
+              setShowContactSection(true);
+              setContactContent((prev) => ({
+                ...prev,
+                left_heading: contactInfoSec.heading || prev.left_heading,
+                address: contactInfoSec.address || prev.address,
+                display_phone: contactInfoSec.phone || prev.display_phone,
+                tel_link: contactInfoSec.phone || prev.tel_link,
+                email: contactInfoSec.email || prev.email,
+              }));
+            }
           }
-          const mapSec = secs.find(s => s.section_type === 'map_embed');
-          if (mapSec) setMapSrc(mapSec.content || '');
+
           const faqSec = secs.find(s => s.section_type === 'faq_list');
           if (faqSec?.items) setFaqs(faqSec.items);
-          const contactFormSec = secs.find(s => s.section_type === 'contact_form');
-          if (contactFormSec) setShowContactForm(true);
         }
       }
       setLoading(false);
@@ -116,10 +137,9 @@ export default function ContactPageEditor() {
     savingRef.current = true;
     setSaving(true);
     setSaveError('');
+
     const sections = [
-      { section_type: 'contact_info', heading: 'Get in Touch', address, phone, email },
-      showContactForm ? { section_type: 'contact_form' } : null,
-      mapSrc ? { section_type: 'map_embed', heading: 'Find Us', content: mapSrc } : null,
+      showContactSection ? { section_type: 'contact_form', content: contactContent } : null,
       faqs.length > 0 ? { section_type: 'faq_list', heading: 'Frequently Asked Questions', items: faqs } : null,
     ].filter(Boolean);
 
@@ -149,6 +169,9 @@ export default function ContactPageEditor() {
 
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-accent-600 border-t-transparent rounded-full animate-spin" /></div>;
 
+  const inputCls = "w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500";
+  const labelCls = "block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider";
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center gap-4 mb-8">
@@ -160,43 +183,124 @@ export default function ContactPageEditor() {
       </div>
       {saveError && <div className="mb-6 p-4 bg-destructive-50 border border-destructive-200 rounded-lg flex items-center gap-2 text-destructive-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
       <form onSubmit={handleSave} className="space-y-6">
+        {/* Hero Section */}
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <h2 className="font-semibold text-neutral-900 mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputCls} />
+            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className={inputCls} />
           </div>
           <div className="mt-4"><ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" /></div>
         </div>
 
+        {/* Contact Section Toggle */}
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">Contact Details</h2>
-          <div className="space-y-3">
+          <div className="flex items-center justify-between">
             <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Address</label>
-              <textarea value={address} onChange={(e) => setAddress(e.target.value)} rows={2} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="Full address" />
+              <h2 className="font-semibold text-neutral-900">Contact Section</h2>
+              <p className="text-xs text-neutral-500 mt-0.5">Split-screen layout: company details on the left, contact form on the right.</p>
             </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Phone</label>
-                <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="+91 6380957390" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" placeholder="sales@marvelslice.com" />
-              </div>
-            </div>
+            <button type="button" onClick={() => setShowContactSection(!showContactSection)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${showContactSection ? 'bg-accent-600' : 'bg-neutral-300'}`}>
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showContactSection ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">Map Embed</h2>
-          <textarea value={mapSrc} onChange={(e) => setMapSrc(e.target.value)} rows={2}
-            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
-            placeholder="Google Maps embed src URL (e.g. https://www.google.com/maps/embed?pb=...)" />
-          <p className="text-xs text-neutral-400 mt-1.5">Paste the embed src from Google Maps share &rarr; embed.</p>
-        </div>
+        {/* Left Side: Company Details */}
+        {showContactSection && (
+          <>
+            <div className="bg-white rounded-lg border border-neutral-200 p-6">
+              <h2 className="font-semibold text-neutral-900 mb-4">Left Side — Company Details</h2>
+              <div className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelCls}>Heading</label>
+                    <input type="text" value={contactContent.left_heading} onChange={(e) => updateContent('left_heading', e.target.value)} className={inputCls} placeholder="Get in Touch" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Subtitle</label>
+                    <input type="text" value={contactContent.left_subtitle} onChange={(e) => updateContent('left_subtitle', e.target.value)} className={inputCls} placeholder="Short welcome text" />
+                  </div>
+                </div>
+                <div>
+                  <label className={labelCls}>Address</label>
+                  <textarea value={contactContent.address} onChange={(e) => updateContent('address', e.target.value)} rows={2} className={inputCls} placeholder="Full street address" />
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelCls}>Display Phone</label>
+                    <input type="text" value={contactContent.display_phone} onChange={(e) => updateContent('display_phone', e.target.value)} className={inputCls} placeholder="+1 (555) 019-2834" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Tel Link Phone</label>
+                    <input type="tel" value={contactContent.tel_link} onChange={(e) => updateContent('tel_link', e.target.value)} className={inputCls} placeholder="15550192834" />
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelCls}>Company Email</label>
+                    <input type="email" value={contactContent.email} onChange={(e) => updateContent('email', e.target.value)} className={inputCls} placeholder="contact@marvelslice.com" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Business Hours</label>
+                    <input type="text" value={contactContent.business_hours} onChange={(e) => updateContent('business_hours', e.target.value)} className={inputCls} placeholder="Mon-Fri: 9AM-6PM" />
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            {/* Right Side: Form Settings */}
+            <div className="bg-white rounded-lg border border-neutral-200 p-6">
+              <h2 className="font-semibold text-neutral-900 mb-4">Right Side — Form Settings</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelCls}>Success Message</label>
+                  <input type="text" value={contactContent.success_message} onChange={(e) => updateContent('success_message', e.target.value)} className={inputCls} placeholder="Thank you! Your message has been received." />
+                </div>
+              </div>
+            </div>
+
+            {/* Style Settings */}
+            <div className="bg-white rounded-lg border border-neutral-200 p-6">
+              <h2 className="font-semibold text-neutral-900 mb-4">Style Settings</h2>
+              <div className="space-y-4">
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className={labelCls}>Gradient Start</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={contactContent.gradient_start} onChange={(e) => updateContent('gradient_start', e.target.value)} className="w-10 h-10 rounded-lg border border-neutral-300 cursor-pointer" />
+                      <input type="text" value={contactContent.gradient_start} onChange={(e) => updateContent('gradient_start', e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Gradient End</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={contactContent.gradient_end} onChange={(e) => updateContent('gradient_end', e.target.value)} className="w-10 h-10 rounded-lg border border-neutral-300 cursor-pointer" />
+                      <input type="text" value={contactContent.gradient_end} onChange={(e) => updateContent('gradient_end', e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Background Color</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={contactContent.section_bg_color} onChange={(e) => updateContent('section_bg_color', e.target.value)} className="w-10 h-10 rounded-lg border border-neutral-300 cursor-pointer" />
+                      <input type="text" value={contactContent.section_bg_color} onChange={(e) => updateContent('section_bg_color', e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button type="button" onClick={() => updateContent('show_shadow', !contactContent.show_shadow)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${contactContent.show_shadow ? 'bg-accent-600' : 'bg-neutral-300'}`}>
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${contactContent.show_shadow ? 'translate-x-6' : 'translate-x-1'}`} />
+                  </button>
+                  <label className="text-sm text-neutral-700">Card Shadow</label>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* FAQs */}
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-neutral-900">FAQs</h2>
@@ -209,29 +313,11 @@ export default function ContactPageEditor() {
                   <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
                   <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
-                <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className="w-full mt-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className={inputCls} />
+                <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className={`${inputCls} mt-2`} />
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-semibold text-neutral-900">Contact Form</h2>
-              <p className="text-xs text-neutral-500 mt-0.5">Show a contact form (Name, Email, Phone) on the page. Submissions appear in Admin &rarr; Submissions &rarr; Contact Submissions.</p>
-            </div>
-            <button type="button" onClick={() => setShowContactForm(!showContactForm)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${showContactForm ? 'bg-accent-600' : 'bg-neutral-300'}`}>
-              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showContactForm ? 'translate-x-6' : 'translate-x-1'}`} />
-            </button>
-          </div>
-          {showContactForm && (
-            <div className="mt-4 p-4 bg-accent-50 rounded-lg border border-accent-100">
-              <p className="text-xs text-accent-700">Contact form is enabled. It will be rendered on the public contact page below the contact info section.</p>
-            </div>
-          )}
         </div>
 
         <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">
