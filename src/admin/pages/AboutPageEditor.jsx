@@ -14,6 +14,7 @@ const SECTION_TYPES = [
   { value: 'text_stats', label: 'Text + Stats', desc: 'Heading, paragraphs, and stat cards combined' },
   { value: 'stats_row', label: 'Stats Row', desc: 'Number + label cards (4-column)' },
   { value: 'feature_grid', label: 'Feature Grid', desc: 'Icon + title + description cards (4-column)' },
+  { value: 'cta', label: 'CTA Banner', desc: 'Call-to-action banner with button link' },
 ];
 
 function createEmptySection(type) {
@@ -352,6 +353,14 @@ function SubEditor({ section, onChange }) {
               </div>
             )}
           />
+        </div>
+      );
+    case 'cta':
+      return (
+        <div className="space-y-3">
+          <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Ready to get started?" label="Heading" />
+          <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Short description..." label="Description" rows={2} />
+          <TextInput value={section.cta_link} onChange={(v) => set({ cta_link: v })} placeholder="/contact" label="Button Link" />
         </div>
       );
     default:

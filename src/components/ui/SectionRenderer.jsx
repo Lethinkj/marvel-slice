@@ -232,15 +232,33 @@ export default function SectionRenderer({ section }) {
       );
     case 'cta':
       return (
-        <Reveal variant="scale" className="bg-gradient-to-r from-brand-blue to-brand-orange rounded-xl p-6 sm:p-8 text-center text-white">
-          {section.heading && <h2 className="text-xl sm:text-2xl font-bold mb-3">{section.heading}</h2>}
-          {section.content && <p className="text-white/80 text-base mb-6">{section.content}</p>}
-          {section.image_url && (
-            <Button to={section.image_url} variant="outline" size="lg">
-              {section.heading || 'Learn More'}
-            </Button>
-          )}
-        </Reveal>
+        <section className="relative overflow-hidden" style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
+          <div className="absolute inset-0 bg-[#0B2D6B]">
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0B2D6B 0%, #1642a0 25%, #1a8a7d 65%, #2ec4b6 100%)' }} />
+            <div className="absolute top-[-60px] right-[10%] w-48 h-48 rounded-full border-[3px] border-white/10" />
+            <div className="absolute top-[20px] right-[5%] w-28 h-28 rounded-full border-[2px] border-white/8" />
+            <div className="absolute bottom-[-40px] left-[15%] w-36 h-36 rounded-full border-[3px] border-white/10" />
+            <div className="absolute bottom-[30px] left-[8%] w-20 h-20 rounded-full border-[2px] border-white/8" />
+            <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1.5px, transparent 1.5px)', backgroundSize: '28px 28px' }} />
+            <div className="absolute top-0 left-[30%] w-[350px] h-[350px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(23,92,221,0.3) 0%, transparent 60%)' }} />
+            <div className="absolute bottom-0 right-[20%] w-[300px] h-[300px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(46,196,182,0.25) 0%, transparent 60%)' }} />
+          </div>
+          <Reveal variant="scale">
+            <div className="relative max-w-7xl mx-auto px-10 sm:px-16 lg:px-20 py-16 sm:py-20">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
+                <div className="flex-1 text-center lg:text-left">
+                  {section.heading && <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-tight text-white">{section.heading}</h2>}
+                  {section.content && <p className="mt-5 text-base sm:text-lg text-white/80 leading-relaxed max-w-xl mx-auto lg:mx-0">{section.content}</p>}
+                </div>
+                <div className="shrink-0">
+                  <Button to={section.cta_link || '/contact'} variant="outline" size="lg" className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20">
+                    {section.heading || 'Get in Touch'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </section>
       );
     case 'feature_grid': {
       const items = safeParse(section.items);

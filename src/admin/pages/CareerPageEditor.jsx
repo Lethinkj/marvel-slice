@@ -416,23 +416,37 @@ export default function CareerPageEditor() {
               placeholder="Subheading" className={inputClass} />
           </div>
           <div className="mt-4">
-            <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Hero Image</label>
+              <button type="button" onClick={() => {
+                if (hero.hero_image) {
+                  setHero({ ...hero, hero_image: '' });
+                }
+              }}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${hero.hero_image ? 'bg-accent-600' : 'bg-neutral-300'}`}>
+                <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${hero.hero_image ? 'translate-x-4' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
+            {hero.hero_image ? (
+              <div className="relative">
+                <img src={hero.hero_image} alt="" className="w-full h-32 object-cover rounded-lg" />
+                <button type="button" onClick={() => setHero({ ...hero, hero_image: '' })}
+                  className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-lg shadow-sm transition-colors cursor-pointer">
+                  <FiX className="w-4 h-4 text-neutral-600" />
+                </button>
+              </div>
+            ) : (
+              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Upload Hero Image" />
+            )}
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <h2 className="font-semibold text-neutral-900 mb-4">"We're Hiring!" Header</h2>
-          <div className="grid sm:grid-cols-2 gap-4 mb-3">
-            <div>
-              <label className="block text-xs font-medium text-neutral-500 mb-1">Badge Text</label>
-              <input type="text" value={section1.badgeText} onChange={(e) => setSection1({ ...section1, badgeText: e.target.value })}
-                placeholder="WE'RE HIRING!" className={inputClass} />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-neutral-500 mb-1">Headline</label>
-              <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
-                placeholder="We're Hiring!" className={inputClass} />
-            </div>
+          <div className="mb-3">
+            <label className="block text-xs font-medium text-neutral-500 mb-1">Headline</label>
+            <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
+              placeholder="We're Hiring!" className={`${inputClass} w-full`} />
           </div>
           <div className="mb-3">
             <label className="block text-xs font-medium text-neutral-500 mb-1">Subtitle</label>

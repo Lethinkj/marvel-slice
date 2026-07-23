@@ -452,12 +452,14 @@ export default function Career() {
             </div>
           </div>
         </div>
-      ) : (
+      ) : (pageContent?.hero_heading || pageContent?.hero_subheading) ? (
         <div className="bg-gradient-to-br from-dark-navy to-brand-blue py-16 sm:py-20">
           <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4">
-              {pageContent?.hero_heading || fc.headline || "We're Hiring!"}
-            </h1>
+            {pageContent?.hero_heading && (
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4">
+                {pageContent.hero_heading}
+              </h1>
+            )}
             {pageContent?.hero_subheading && (
               <p className="text-white/80 text-lg sm:text-xl max-w-2xl mx-auto">
                 {pageContent.hero_subheading}
@@ -465,29 +467,24 @@ export default function Career() {
             )}
           </Reveal>
         </div>
-      )}
+      ) : null}
 
       <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
-        {fc.badgeText && (
-          <span className="inline-block px-4 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-blue-50 text-blue-600">
-            {fc.badgeText}
-          </span>
-        )}
-
         {fc.headline && (
-          <h2 className="text-4xl font-extrabold text-blue-600 mt-3">
+          <h2 className="text-4xl font-extrabold text-blue-600">
             {fc.headline}
           </h2>
         )}
+        <div className="w-16 h-0.5 bg-brand-orange mx-auto rounded-full mt-3" />
 
         {fc.subtitle && (
-          <p className="text-xl font-bold text-slate-800 mt-2">
+          <p className="text-xl font-bold text-brand-orange mt-8">
             {fc.subtitle}
           </p>
         )}
 
         {fc.description && (
-          <p className="text-slate-500 text-sm max-w-xl mx-auto mt-2">
+          <p className="text-slate-500 text-sm max-w-xl mx-auto mt-3">
             {fc.description}
           </p>
         )}
@@ -590,7 +587,7 @@ export default function Career() {
                         </span>
                       ) : <span />}
                       <button onClick={() => { setSelectedJob(job); setShowForm(true); }}
-                        className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition-all cursor-pointer">
+                        className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
                         Apply Now <FiArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
