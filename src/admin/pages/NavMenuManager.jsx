@@ -378,7 +378,7 @@ export default function NavMenuManager() {
                           >
                             {item.is_active !== false ? "On" : "Off"}
                           </span>
-                          <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center gap-1 shrink-0 opacity-100">
                             <button
                               onClick={() => openEdit(item)}
                               className="px-2 py-0.5 text-[11px] font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded transition-colors"

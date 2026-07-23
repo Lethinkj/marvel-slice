@@ -107,7 +107,7 @@ export default function BlogCategoriesManager() {
                   <p className="text-sm font-medium text-neutral-900">{cat.name}</p>
                   <p className="text-xs text-neutral-400">/{cat.slug}</p>
                 </div>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-2 opacity-100">
                   <button onClick={() => startEdit(cat)}
                     className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors">
                     Edit

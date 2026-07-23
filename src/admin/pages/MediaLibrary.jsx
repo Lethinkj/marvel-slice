@@ -296,7 +296,7 @@ export default function MediaLibrary() {
                     {bucket === 'all' && (
                       <p className="text-[10px] text-accent-600/70 mt-0.5 truncate">{file._bucket}</p>
                     )}
-                    <div className="flex items-center gap-1 mt-2 pt-1.5 border-t border-neutral-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-1 mt-2 pt-1.5 border-t border-neutral-100 opacity-100">
                       <button onClick={() => copyUrl(file)}
                         className="flex-1 text-[11px] text-accent-600 hover:bg-accent-50 rounded px-1.5 py-1 transition-colors flex items-center justify-center gap-1">
                         {copied === file._path ? <FiCheck className="w-3 h-3 text-success-500" /> : <FiCopy className="w-3 h-3" />}
@@ -329,7 +329,7 @@ export default function MediaLibrary() {
                       {bucket === 'all' && <span> &middot; <span className="text-accent-600">{file._bucket}</span></span>}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                  <div className="flex items-center gap-1 opacity-100 shrink-0">
                     <button onClick={() => copyUrl(file)} className="p-2 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-colors" title="Copy URL">
                       {copied === file._path ? <FiCheck className="w-4 h-4 text-success-500" /> : <FiCopy className="w-4 h-4" />}
                     </button>

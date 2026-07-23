@@ -142,7 +142,7 @@ export default function BlogManager() {
                     {post.is_published ? 'Published' : 'Draft'}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-2 opacity-100">
                   <Link
                     to={`/admin/blog/${post.id}`}
                     className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors"

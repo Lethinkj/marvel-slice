@@ -59,7 +59,7 @@ function ImageUploader({ value, onChange, label }) {
         <div className="mt-2 relative group rounded-lg overflow-hidden border border-neutral-200">
           <img src={value} alt="" className="h-32 w-full object-cover" />
           <button type="button" onClick={() => onChange('')}
-            className="absolute top-2 right-2 p-1.5 bg-destructive-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+            className="absolute top-2 right-2 p-1.5 bg-destructive-500 text-white rounded-full opacity-100 shadow-lg">
             <FiTrash2 className="w-3.5 h-3.5" />
           </button>
         </div>

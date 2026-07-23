@@ -265,11 +265,11 @@ export default function AdminUsersManager() {
                 {((ROLE_RANK[u.role] || 0) < userRank || currentUser?.role === 'master_admin') && currentUser?.id !== u.id && (
                   <>
                     <button onClick={() => startEdit(u)}
-                      className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors opacity-0 group-hover:opacity-100">
+                      className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors">
                       Edit
                     </button>
                     <button onClick={() => deleteUser(u.id)}
-                      className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors opacity-0 group-hover:opacity-100">
+                      className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">
                       Delete
                     </button>
                   </>
