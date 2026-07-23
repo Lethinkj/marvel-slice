@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
 import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -83,6 +84,8 @@ export default function BlogPostEditor() {
   const [allTags, setAllTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [loading, setLoading] = useState(!isNew);
   const [slugStatus, setSlugStatus] = useState('idle');
   const [slugSuggestion, setSlugSuggestion] = useState('');
@@ -188,7 +191,7 @@ export default function BlogPostEditor() {
         insertError = true;
         savingRef.current = false;
         setSaving(false);
-        alert('Failed to save post: ' + error.message);
+        setSaveError('Failed to save post: ' + error.message);
         return;
       } else if (data) {
         postId = data.id;
@@ -211,8 +214,13 @@ export default function BlogPostEditor() {
     queryClient.invalidateQueries({ queryKey: ['blogPost', form.slug] });
     queryClient.invalidateQueries({ queryKey: ['recentPosts'] });
     queryClient.invalidateQueries({ queryKey: ['popularTags'] });
+    setSaved(true);
     setSaving(false);
-    navigate('/admin/blog');
+    savingRef.current = false;
+    setTimeout(() => {
+      setSaved(false);
+      navigate('/admin/blog');
+    }, 1500);
   }
 
   if (loading) {
@@ -236,6 +244,8 @@ export default function BlogPostEditor() {
           <h1 className="text-2xl font-bold text-neutral-900">{isNew ? 'New Post' : 'Edit Post'}</h1>
         </div>
       </div>
+
+      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" top />
 
       <form ref={formRef} onSubmit={handleSave} className="bg-white rounded-lg border border-neutral-200 p-6 space-y-8">
         <div>
@@ -423,10 +433,7 @@ export default function BlogPostEditor() {
               <FiExternalLink className="w-4 h-4" /> View Post
             </AdminButton>
           )}
-          <AdminButton type="submit" variant="primary" size="md" disabled={saving}>
-            <FiSave className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Post'}
-          </AdminButton>
+          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" />
         </div>
       </form>
     </div>

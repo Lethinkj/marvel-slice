@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import * as LuIcons from 'react-icons/lu';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove } from 'react-icons/fi';
 
 const LUCIDE_ICON_NAMES = Object.keys(LuIcons).filter(k => k.startsWith('Lu')).map(k => k.slice(2)).sort();
@@ -534,7 +535,7 @@ export default function AboutPageEditor() {
           <Link to="/about" target="_blank" className="text-sm text-accent-600 hover:underline inline-flex items-center gap-1 mt-0.5"><FiExternalLink className="w-3.5 h-3.5" /> /about</Link>
         </div>
       </div>
-      {saveError && <div className="mb-6 p-4 bg-destructive-50 border border-destructive-200 rounded-lg flex items-center gap-2 text-destructive-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
+      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       {validationErrors.length > 0 && (
         <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <p className="text-sm font-semibold text-amber-800 mb-1">Validation warnings</p>
@@ -625,9 +626,7 @@ export default function AboutPageEditor() {
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">
-          <AdminButton type="submit" disabled={saving} variant="primary" size="md"><FiSave className="w-4 h-4" /> {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Page'}</AdminButton>
-        </div>
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
       </form>
     </div>
   );

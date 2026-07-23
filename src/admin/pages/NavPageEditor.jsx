@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import { useNavPage } from '../../hooks/useSupabase';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
 import { FiPlus, FiTrash2, FiChevronUp, FiChevronDown, FiArrowLeft, FiUpload, FiExternalLink, FiSave, FiCheck, FiFileText, FiSearch, FiBookOpen } from 'react-icons/fi';
 
 const sectionTypes = [
@@ -78,6 +79,8 @@ export default function NavPageEditor() {
   const [heroImage, setHeroImage] = useState('');
   const [sections, setSections] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [generatedPath, setGeneratedPath] = useState('');
   const savingRef = useRef(false);
   const [linkedCourseIds, setLinkedCourseIds] = useState(new Set());
@@ -158,6 +161,7 @@ export default function NavPageEditor() {
     if (savingRef.current) return;
     savingRef.current = true;
     setSaving(true);
+    setSaveError('');
 
     const path = navItem?.path || generatedPath;
     if (!navItem?.path && generatedPath) {
@@ -172,10 +176,18 @@ export default function NavPageEditor() {
       sections,
       is_published: true,
     };
+    let res;
     if (page?.id) {
-      await supabase.from('nav_pages').update(payload).eq('id', page.id);
+      res = await supabase.from('nav_pages').update(payload).eq('id', page.id);
     } else {
-      await supabase.from('nav_pages').insert(payload);
+      res = await supabase.from('nav_pages').insert(payload).select('id').single();
+    }
+
+    if (res?.error) {
+      setSaveError(res.error.message);
+      savingRef.current = false;
+      setSaving(false);
+      return;
     }
 
     if (courseChanges) {
@@ -193,7 +205,13 @@ export default function NavPageEditor() {
     queryClient.invalidateQueries({ queryKey: ['navPage', id] });
     queryClient.invalidateQueries({ queryKey: ['navPageData'] });
     queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
-    navigate('/admin/nav-menu');
+    setSaved(true);
+    setSaving(false);
+    savingRef.current = false;
+    setTimeout(() => {
+      setSaved(false);
+      navigate('/admin/nav-menu');
+    }, 1500);
   }
 
   if (isLoading) {
@@ -233,6 +251,8 @@ export default function NavPageEditor() {
           </div>
         </div>
       </div>
+
+      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
 
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
@@ -361,12 +381,7 @@ export default function NavPageEditor() {
           )}
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">
-          <AdminButton type="submit" disabled={saving} variant="primary" size="md">
-            <FiSave className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Page'}
-          </AdminButton>
-        </div>
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
       </form>
     </div>
   );

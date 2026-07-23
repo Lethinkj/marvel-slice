@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { full_name, email, phone, department, category, description, file_url } = req.body;
+  const { full_name, email, phone, position, category, description, file_url } = req.body;
 
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!adminEmail || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
           ${row('Full Name', full_name)}
           ${row('Email', email)}
           ${row('Phone', phone)}
-          ${row('Department', department || '\u2014')}
+          ${row('Position', position || '\u2014')}
           ${row('Category', category || '\u2014')}
           ${row('Description', (description || '\u2014').replace(/\n/g, '<br>'))}
           ${row('Document', fileLink)}

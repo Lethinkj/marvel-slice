@@ -3,100 +3,32 @@ import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
 import EmptyState from '../components/EmptyState';
 import {
   FiSave, FiAlertCircle, FiPlus, FiTrash2, FiEdit2,
-  FiUpload, FiExternalLink, FiToggleRight, FiChevronDown,
-  FiChevronUp, FiEdit3, FiCheck, FiX, FiBriefcase,
+  FiUpload, FiExternalLink, FiCheck, FiX, FiBriefcase,
+  FiAlignLeft, FiAlignCenter, FiAlignRight,
 } from 'react-icons/fi';
 
-const FORM_FIELD_DEFAULTS = {
-  full_name: { key: 'full_name', label: 'Full Name', enabled: true, required: true, placeholder: 'John Doe', type: 'text' },
-  email: { key: 'email', label: 'Email Address', enabled: true, required: true, placeholder: 'john@example.com', type: 'email' },
-  phone: { key: 'phone', label: 'Phone Number', enabled: true, required: true, placeholder: '+1 234 567 890', type: 'tel' },
-  department: { key: 'department', label: 'Department', enabled: true, required: false, placeholder: 'Select department', type: 'select', options: ['Engineering', 'Marketing', 'Sales', 'Human Resources', 'Finance', 'Operations', 'Design', 'Content', 'Other'] },
-  category: { key: 'category', label: 'Category', enabled: true, required: false, placeholder: 'Select category', type: 'select', options: ['Full-time', 'Part-time', 'Internship', 'Contract', 'Freelance'] },
-  description: { key: 'description', label: 'Description', enabled: true, required: false, placeholder: 'Tell us about yourself...', type: 'textarea' },
-  file_upload: { key: 'file_upload', label: 'Upload Resume / Documents', enabled: true, required: false, type: 'file' },
-};
-
-function buildDefaultFormConfig() {
-  return {
-    enabled: true,
-    headline: 'Apply Now',
-    description: "Fill out the form below and we'll get back to you.",
-    cta: { text: 'Submit Application', variant: 'accent' },
-    fields: Object.fromEntries(
-      Object.entries(FORM_FIELD_DEFAULTS).map(([k, v]) => [k, { label: v.label, enabled: v.enabled, required: v.required, placeholder: v.placeholder, options: v.options || null }])
-    ),
-  };
-}
-
-function FormFieldsEditor({ fields, onChange }) {
-  const [expanded, setExpanded] = useState({});
-  const fieldKeys = Object.keys(FORM_FIELD_DEFAULTS);
+function AlignButtons({ value, onChange }) {
+  const options = [
+    { value: 'left', icon: FiAlignLeft },
+    { value: 'center', icon: FiAlignCenter },
+    { value: 'right', icon: FiAlignRight },
+  ];
   return (
-    <div>
-      <label className="block text-xs font-semibold text-neutral-700 mb-3 uppercase tracking-wider flex items-center gap-1.5">
-        <FiEdit3 className="w-3.5 h-3.5" />
-        Form Fields
-      </label>
-      <div className="space-y-2">
-        {fieldKeys.map((key) => {
-          const def = FORM_FIELD_DEFAULTS[key];
-          const cfg = fields?.[key] || {};
-          const isOpen = expanded[key] || false;
-          return (
-            <div key={key} className="border border-neutral-200 rounded-lg overflow-hidden">
-              <button type="button" onClick={() => setExpanded({ ...expanded, [key]: !isOpen })}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-neutral-50 transition-colors">
-                <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.enabled !== false ? 'bg-green-500' : 'bg-neutral-300'}`} />
-                <span className="flex-1 text-sm font-medium text-neutral-900">{cfg.label || def.label}</span>
-                <span className="text-xs text-neutral-400 capitalize">{def.type}</span>
-                {isOpen ? <FiChevronUp className="w-4 h-4 text-neutral-400" /> : <FiChevronDown className="w-4 h-4 text-neutral-400" />}
-              </button>
-              {isOpen && (
-                <div className="px-4 pb-4 space-y-3 border-t border-neutral-100 pt-3">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Enabled</label>
-                    <button type="button" onClick={() => onChange({ ...fields, [key]: { ...cfg, enabled: cfg.enabled === false ? true : false } })}
-                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${cfg.enabled !== false ? 'bg-accent-600' : 'bg-neutral-300'}`}>
-                      <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${cfg.enabled !== false ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                    </button>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-neutral-500 mb-1">Label</label>
-                    <input type="text" value={cfg.label || def.label} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, label: e.target.value } })}
-                      className="w-full px-3 py-1.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                  </div>
-                  {def.type !== 'file' && (
-                    <div className="flex items-center gap-3">
-                      <label className="flex items-center gap-2 text-sm text-neutral-600 cursor-pointer">
-                        <input type="checkbox" checked={cfg.required !== false} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, required: e.target.checked } })} className="rounded border-neutral-300 text-accent-600 focus:ring-accent-500" />
-                        Required
-                      </label>
-                    </div>
-                  )}
-                  {def.placeholder !== undefined && (
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">Placeholder</label>
-                      <input type="text" value={cfg.placeholder || def.placeholder || ''} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, placeholder: e.target.value } })}
-                        className="w-full px-3 py-1.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                    </div>
-                  )}
-                  {def.options && (
-                    <div>
-                      <label className="block text-xs text-neutral-500 mb-1">Options (one per line)</label>
-                      <textarea value={(cfg.options || def.options).join('\n')} onChange={(e) => onChange({ ...fields, [key]: { ...cfg, options: e.target.value.split('\n').filter(Boolean) } })}
-                        rows={4} className="w-full px-3 py-1.5 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono" />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+    <div className="flex items-center gap-1 p-1 bg-neutral-100 rounded-lg w-fit">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={`p-1.5 rounded-md transition-colors cursor-pointer ${value === opt.value ? 'bg-white text-accent-700 shadow-sm' : 'text-neutral-400 hover:text-neutral-600'}`}
+        >
+          <opt.icon className="w-4 h-4" />
+        </button>
+      ))}
     </div>
   );
 }
@@ -132,6 +64,28 @@ function ImageUploader({ value, onChange, label }) {
   );
 }
 
+const FORM_FIELD_DEFAULTS = {
+  full_name: { key: 'full_name', label: 'Full Name', enabled: true, required: true, placeholder: 'John Doe', type: 'text' },
+  email: { key: 'email', label: 'Email Address', enabled: true, required: true, placeholder: 'john@example.com', type: 'email' },
+  phone: { key: 'phone', label: 'Phone Number', enabled: true, required: true, placeholder: '+1 234 567 890', type: 'tel' },
+  department: { key: 'department', label: 'Department', enabled: true, required: false, placeholder: 'Select department', type: 'select', options: ['Engineering', 'Marketing', 'Sales', 'Human Resources', 'Finance', 'Operations', 'Design', 'Content', 'Other'] },
+  category: { key: 'category', label: 'Category', enabled: true, required: false, placeholder: 'Select category', type: 'select', options: ['Full-time', 'Part-time', 'Internship', 'Contract', 'Freelance'] },
+  description: { key: 'description', label: 'Description', enabled: true, required: false, placeholder: 'Tell us about yourself...', type: 'textarea' },
+  file_upload: { key: 'file_upload', label: 'Upload Resume / Documents', enabled: true, required: false, type: 'file' },
+};
+
+function buildDefaultFormConfig() {
+  return {
+    enabled: true,
+    heading: 'Apply Now',
+    description: "Fill out the form below and we'll get back to you.",
+    cta: { text: 'Submit Application', variant: 'accent' },
+    fields: Object.fromEntries(
+      Object.entries(FORM_FIELD_DEFAULTS).map(([k, v]) => [k, { label: v.label, enabled: v.enabled, required: v.required, placeholder: v.placeholder, options: v.options || null }])
+    ),
+  };
+}
+
 const defaultJobForm = {
   title: '',
   role_category_id: '',
@@ -140,6 +94,7 @@ const defaultJobForm = {
   experience: '',
   salary: '',
   description: '',
+  apply_url: '',
   is_active: true,
   sort_order: 0,
 };
@@ -153,14 +108,16 @@ export default function CareerPageEditor() {
   const [pageId, setPageId] = useState(null);
 
   const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '' });
-  const [culture, setCulture] = useState('');
-  const [cultureHeading, setCultureHeading] = useState('Company Culture');
-  const [benefits, setBenefits] = useState([]);
-  const [benefitsHeading, setBenefitsHeading] = useState('Benefits & Perks');
-  const [section1, setSection1] = useState({ heading: 'We\'re Hiring', subheading: '', description: '' });
-  const [section2, setSection2] = useState({ heading: 'Job Openings', subheading: '' });
+  const [section1, setSection1] = useState({
+    badgeText: 'WE\'RE HIRING!',
+    headline: 'We\'re Hiring!',
+    subtitle: 'Find Your Role. Find Your Fit.',
+    description: 'Join a team that\'s passionate about innovation, collaboration, and making a real impact. Your dream role is waiting.',
+    categoriesHeading: 'Explore Opportunities',
+    categoriesSubtitle: 'Find the role that fits you best',
+  });
+  const [section2, setSection2] = useState({ heading: 'Job Openings', subheading: '', heading_align: 'center', subheading_align: 'center', eyebrow: 'CAREER OPPORTUNITIES' });
   const [formConfig, setFormConfig] = useState(buildDefaultFormConfig());
-  const [carouselEnabled, setCarouselEnabled] = useState(false);
 
   const [openings, setOpenings] = useState([]);
   const [roleCategories, setRoleCategories] = useState([]);
@@ -185,15 +142,21 @@ export default function CareerPageEditor() {
       if (content) {
         setPageId(content.id);
         setHero({ heading: content.hero_heading || '', subheading: content.hero_subheading || '', hero_image: content.hero_image || '' });
-        setCulture(content.culture || '');
-        setCultureHeading(content.culture_heading || 'Company Culture');
-        setBenefits(content.benefits || []);
-        setBenefitsHeading(content.benefits_heading || 'Benefits & Perks');
-        setSection1({ heading: content.section1_heading || 'We\'re Hiring', subheading: content.section1_subheading || '', description: content.section1_description || '' });
-        setSection2({ heading: content.section2_heading || 'Job Openings', subheading: content.section2_subheading || '' });
-        if (content.form_config && typeof content.form_config === 'object' && Object.keys(content.form_config).length > 0) {
+        const fc = content.form_config || {};
+        setSection1({
+          badgeText: fc.badgeText || 'WE\'RE HIRING!',
+          headline: fc.headline || content.section1_heading || 'We\'re Hiring!',
+          subtitle: fc.subtitle || content.section1_subheading || 'Find Your Role. Find Your Fit.',
+          description: fc.description || content.section1_description || '',
+          categoriesHeading: fc.categoriesHeading || 'Explore Opportunities',
+          categoriesSubtitle: fc.categoriesSubtitle || 'Find the role that fits you best',
+        });
+        setSection2({ heading: content.section2_heading || 'Job Openings', subheading: content.section2_subheading || '', heading_align: fc.section2_heading_align || 'center', subheading_align: fc.section2_subheading_align || 'center', eyebrow: fc.section2_eyebrow || 'CAREER OPPORTUNITIES' });
+        const rawForm = fc.form || {};
+        if (rawForm.enabled !== undefined || Object.keys(rawForm).length > 0) {
+          setFormConfig({ ...buildDefaultFormConfig(), ...rawForm });
+        } else if (content.form_config && typeof content.form_config === 'object' && content.form_config.enabled !== undefined) {
           setFormConfig({ ...buildDefaultFormConfig(), ...content.form_config });
-        setCarouselEnabled(content.carousel_enabled || false);
         }
       } else {
         const { data: navItems } = await supabase
@@ -215,14 +178,6 @@ export default function CareerPageEditor() {
           const page = pages?.[0] || null;
           if (page) {
             setHero({ heading: page.heading || '', subheading: page.subheading || '', hero_image: page.hero_image || '' });
-            const secs = page.sections || [];
-            const cult = secs.find(s => s.section_type === 'text');
-            if (cult) setCulture(cult.content || '');
-            const ben = secs.find(s => s.section_type === 'features');
-            if (ben?.items) setBenefits(ben.items);
-            if (page.form_config && typeof page.form_config === 'object' && Object.keys(page.form_config).length > 0) {
-              setFormConfig({ ...buildDefaultFormConfig(), ...page.form_config });
-            }
           }
         }
       }
@@ -255,17 +210,23 @@ export default function CareerPageEditor() {
       hero_heading: hero.heading,
       hero_subheading: hero.subheading,
       hero_image: hero.hero_image || null,
-      culture,
-      culture_heading: cultureHeading || 'Company Culture',
-      benefits,
-      benefits_heading: benefitsHeading || 'Benefits & Perks',
-      section1_heading: section1.heading || 'We\'re Hiring',
-      section1_subheading: section1.subheading,
+      section1_heading: section1.headline,
+      section1_subheading: section1.subtitle,
       section1_description: section1.description,
       section2_heading: section2.heading || 'Job Openings',
       section2_subheading: section2.subheading,
-      form_config: formConfig,
-      carousel_enabled: carouselEnabled,
+      form_config: {
+        badgeText: section1.badgeText,
+        headline: section1.headline,
+        subtitle: section1.subtitle,
+        description: section1.description,
+        categoriesHeading: section1.categoriesHeading,
+        categoriesSubtitle: section1.categoriesSubtitle,
+        section2_eyebrow: section2.eyebrow,
+        section2_heading_align: section2.heading_align || 'center',
+        section2_subheading_align: section2.subheading_align || 'center',
+        form: formConfig,
+      },
       is_published: true,
     };
 
@@ -323,6 +284,7 @@ export default function CareerPageEditor() {
       experience: jobForm.experience.trim() || null,
       salary: jobForm.salary.trim() || null,
       description: jobForm.description.trim() || null,
+      apply_url: jobForm.apply_url.trim() || null,
       is_active: jobForm.is_active,
       sort_order: jobForm.sort_order,
     };
@@ -442,13 +404,9 @@ export default function CareerPageEditor() {
         </div>
       </div>
 
-      {saveError && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm">
-          <FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}
-        </div>
-      )}
-
+      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
+
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <h2 className="font-semibold text-neutral-900 mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -463,60 +421,60 @@ export default function CareerPageEditor() {
         </div>
 
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">Company Culture</h2>
-          <input type="text" value={cultureHeading} onChange={(e) => setCultureHeading(e.target.value)}
-            placeholder="Section heading (e.g. Company Culture)" className="w-full mb-3 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-          <textarea value={culture} onChange={(e) => setCulture(e.target.value)} rows={4}
-            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
-            placeholder="Describe your company culture, values, and work environment..." />
+          <h2 className="font-semibold text-neutral-900 mb-4">"We're Hiring!" Header</h2>
+          <div className="grid sm:grid-cols-2 gap-4 mb-3">
+            <div>
+              <label className="block text-xs font-medium text-neutral-500 mb-1">Badge Text</label>
+              <input type="text" value={section1.badgeText} onChange={(e) => setSection1({ ...section1, badgeText: e.target.value })}
+                placeholder="WE'RE HIRING!" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-neutral-500 mb-1">Headline</label>
+              <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
+                placeholder="We're Hiring!" className={inputClass} />
+            </div>
+          </div>
+          <div className="mb-3">
+            <label className="block text-xs font-medium text-neutral-500 mb-1">Subtitle</label>
+            <input type="text" value={section1.subtitle} onChange={(e) => setSection1({ ...section1, subtitle: e.target.value })}
+              placeholder="Find Your Role. Find Your Fit." className={inputClass} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
+            <textarea value={section1.description} onChange={(e) => setSection1({ ...section1, description: e.target.value })}
+              rows={2} placeholder="Brief description about working at your company..." className={inputClass} />
+          </div>
         </div>
 
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <input type="text" value={benefitsHeading} onChange={(e) => setBenefitsHeading(e.target.value)}
-              placeholder="Section heading (e.g. Benefits & Perks)" className="flex-1 mr-4 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 font-semibold text-neutral-900" />
-            <AdminButton type="button" onClick={() => setBenefits([...benefits, { title: '', description: '' }])} variant="ghost" size="sm">
-              <FiPlus className="w-4 h-4" /> Add Benefit
-            </AdminButton>
-          </div>
-          <div className="space-y-3">
-            {benefits.map((b, i) => (
-              <div key={i} className="border border-neutral-200 rounded-lg p-4">
-                <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-neutral-500 uppercase">Benefit {i + 1}</span>
-                  <button type="button" onClick={() => setBenefits(benefits.filter((_, j) => j !== i))} className="p-1 text-red-400 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
-                </div>
-                <input type="text" value={b.title} onChange={(e) => { const u = [...benefits]; u[i] = { ...u[i], title: e.target.value }; setBenefits(u); }}
-                  placeholder="Title (e.g. Flexible Hours)" className={inputClass} />
-                <textarea value={b.description} onChange={(e) => { const u = [...benefits]; u[i] = { ...u[i], description: e.target.value }; setBenefits(u); }}
-                  rows={2} placeholder="Description..." className="w-full mt-2 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-              </div>
-            ))}
+          <h2 className="font-semibold text-neutral-900 mb-4">Categories Section</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-neutral-500 mb-1">Heading</label>
+              <input type="text" value={section1.categoriesHeading} onChange={(e) => setSection1({ ...section1, categoriesHeading: e.target.value })}
+                placeholder="Explore Opportunities" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-neutral-500 mb-1">Subtitle</label>
+              <input type="text" value={section1.categoriesSubtitle} onChange={(e) => setSection1({ ...section1, categoriesSubtitle: e.target.value })}
+                placeholder="Find the role that fits you best" className={inputClass} />
+            </div>
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-neutral-900">Role Categories</h2>
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm text-neutral-600 cursor-pointer">
-                <span>Carousel mode</span>
-                <button type="button" onClick={() => setCarouselEnabled(!carouselEnabled)}
-                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${carouselEnabled ? 'bg-accent-600' : 'bg-neutral-300'}`}>
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${carouselEnabled ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                </button>
-              </label>
-              <AdminButton type="button" onClick={openCategoryForm} variant="ghost" size="sm">
-                <FiPlus className="w-4 h-4" /> Add Category
-              </AdminButton>
-            </div>
+            <AdminButton type="button" onClick={openCategoryForm} variant="ghost" size="sm">
+              <FiPlus className="w-4 h-4" /> Add Category
+            </AdminButton>
           </div>
 
           {roleCategories.length === 0 ? (
             <EmptyState
               icon={FiBriefcase}
               title="No role categories yet"
-              description="Categories appear as carousel cards above the job listings."
+              description="Categories appear as interactive cards in the Explore Opportunities grid."
               action={{ onClick: openCategoryForm, icon: <FiPlus className="w-4 h-4" />, label: 'Add Role Category' }}
             />
           ) : (
@@ -537,7 +495,7 @@ export default function CareerPageEditor() {
                       <td className="px-3 py-2.5 text-center text-neutral-600">{cat.display_order}</td>
                       <td className="px-3 py-2.5 text-center">
                         <button type="button" onClick={() => toggleCategoryActive(cat)}
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                             cat.is_active
                               ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
                               : 'bg-neutral-100 text-neutral-400 hover:bg-neutral-200'
@@ -549,11 +507,11 @@ export default function CareerPageEditor() {
                       <td className="px-3 py-2.5 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button type="button" onClick={() => openEditCategory(cat)}
-                            className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-colors">
+                            className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-colors cursor-pointer">
                             <FiEdit2 className="w-4 h-4" />
                           </button>
                           <button type="button" onClick={() => deleteCategory(cat.id)}
-                            className="p-1.5 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            className="p-1.5 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
                             <FiTrash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -567,18 +525,6 @@ export default function CareerPageEditor() {
         </div>
 
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <h2 className="font-semibold text-neutral-900 mb-4">"We're Hiring" Section</h2>
-          <div className="grid sm:grid-cols-2 gap-4 mb-3">
-            <input type="text" value={section1.heading} onChange={(e) => setSection1({ ...section1, heading: e.target.value })}
-              placeholder="Section heading (e.g. We're Hiring)" className={inputClass} />
-            <input type="text" value={section1.subheading} onChange={(e) => setSection1({ ...section1, subheading: e.target.value })}
-              placeholder="Subheading" className={inputClass} />
-          </div>
-          <textarea value={section1.description} onChange={(e) => setSection1({ ...section1, description: e.target.value })}
-            rows={2} placeholder="Short description shown above the department filter grid" className={inputClass} />
-        </div>
-
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-neutral-900 flex items-center gap-2">
               <FiBriefcase className="w-5 h-5 text-accent-600" />
@@ -589,11 +535,23 @@ export default function CareerPageEditor() {
             </AdminButton>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 mb-6 pb-6 border-b border-neutral-100">
+          <div className="grid sm:grid-cols-3 gap-4 mb-3">
+            <input type="text" value={section2.eyebrow} onChange={(e) => setSection2({ ...section2, eyebrow: e.target.value })}
+              placeholder="Eyebrow text (e.g. CAREER OPPORTUNITIES)" className={inputClass} />
             <input type="text" value={section2.heading} onChange={(e) => setSection2({ ...section2, heading: e.target.value })}
               placeholder="Section heading (e.g. Job Openings)" className={inputClass} />
             <input type="text" value={section2.subheading} onChange={(e) => setSection2({ ...section2, subheading: e.target.value })}
               placeholder="Section subheading" className={inputClass} />
+          </div>
+          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-neutral-100">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-neutral-500">Heading align:</span>
+              <AlignButtons value={section2.heading_align || 'center'} onChange={(v) => setSection2({ ...section2, heading_align: v })} />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-neutral-500">Subheading align:</span>
+              <AlignButtons value={section2.subheading_align || 'center'} onChange={(v) => setSection2({ ...section2, subheading_align: v })} />
+            </div>
           </div>
 
           {openings.length === 0 ? (
@@ -625,7 +583,7 @@ export default function CareerPageEditor() {
                       <td className="px-3 py-2.5 text-neutral-600 hidden md:table-cell">{job.type || '—'}</td>
                       <td className="px-3 py-2.5 text-center">
                         <button type="button" onClick={() => toggleActive(job)}
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                             job.is_active
                               ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
                               : 'bg-neutral-100 text-neutral-400 hover:bg-neutral-200'
@@ -637,11 +595,11 @@ export default function CareerPageEditor() {
                       <td className="px-3 py-2.5 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button type="button" onClick={() => openEditJob(job)}
-                            className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-colors">
+                            className="p-1.5 text-neutral-400 hover:text-accent-600 hover:bg-accent-50 rounded-lg transition-colors cursor-pointer">
                             <FiEdit2 className="w-4 h-4" />
                           </button>
                           <button type="button" onClick={() => deleteJob(job.id)}
-                            className="p-1.5 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            className="p-1.5 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
                             <FiTrash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -654,55 +612,9 @@ export default function CareerPageEditor() {
           )}
         </div>
 
-        <div className="bg-white rounded-lg border border-neutral-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-neutral-900 flex items-center gap-2">
-              <FiToggleRight className="w-5 h-5 text-accent-600" />
-              Application Form Configuration
-            </h2>
-            <button type="button" onClick={() => setFormConfig({ ...formConfig, enabled: !formConfig.enabled })}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formConfig.enabled ? 'bg-accent-600' : 'bg-neutral-300'}`}>
-              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formConfig.enabled ? 'translate-x-6' : 'translate-x-1'}`} />
-            </button>
-          </div>
-          {formConfig.enabled && (
-            <div className="space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Button Variant</label>
-                  <select value={formConfig.cta?.variant || 'accent'} onChange={(e) => setFormConfig({ ...formConfig, cta: { ...formConfig.cta, variant: e.target.value } })}
-                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
-                    <option value="accent">Accent</option>
-                    <option value="primary">Primary</option>
-                    <option value="outline">Outline</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Headline</label>
-                <input type="text" value={formConfig.headline || ''} onChange={(e) => setFormConfig({ ...formConfig, headline: e.target.value })}
-                  className={inputClass} placeholder="Apply Now" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
-                <input type="text" value={formConfig.description || ''} onChange={(e) => setFormConfig({ ...formConfig, description: e.target.value })}
-                  className={inputClass} placeholder="Fill out the form below..." />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
-                <input type="text" value={formConfig.cta?.text || ''} onChange={(e) => setFormConfig({ ...formConfig, cta: { ...(formConfig.cta || {}), text: e.target.value } })}
-                  className={inputClass} placeholder="Submit Application" />
-              </div>
-              <FormFieldsEditor fields={formConfig.fields} onChange={(fields) => setFormConfig({ ...formConfig, fields })} />
-            </div>
-          )}
-        </div>
 
-        <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">
-          <AdminButton type="submit" disabled={saving} variant="primary" size="md">
-            <FiSave className="w-4 h-4" /> {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Page'}
-          </AdminButton>
-        </div>
+
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
       </form>
 
       {showJobForm && (
@@ -710,7 +622,7 @@ export default function CareerPageEditor() {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-neutral-100">
               <h2 className="text-base font-semibold text-neutral-900">{editingJob ? 'Edit Job Opening' : 'Add Job Opening'}</h2>
-              <button type="button" onClick={closeJobForm} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors">
+              <button type="button" onClick={closeJobForm} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors cursor-pointer">
                 <FiX className="w-5 h-5" />
               </button>
             </div>
@@ -757,6 +669,12 @@ export default function CareerPageEditor() {
                   <input name="salary" value={jobForm.salary} onChange={handleJobChange} placeholder="e.g. $80k–$120k" className={inputClass} />
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-xs font-medium text-neutral-600 mb-1">Application URL</label>
+                  <input name="apply_url" value={jobForm.apply_url} onChange={handleJobChange} placeholder="e.g. https://apply.example.com/position" className={inputClass} />
+                </div>
+              </div>
               <div>
                 <label className="block text-xs font-medium text-neutral-600 mb-1">Description</label>
                 <textarea name="description" value={jobForm.description} onChange={handleJobChange} rows={3}
@@ -776,11 +694,11 @@ export default function CareerPageEditor() {
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={closeJobForm}
-                  className="px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors">
+                  className="px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors cursor-pointer">
                   Cancel
                 </button>
                 <button type="submit" disabled={jobSaving}
-                  className="px-4 py-2 text-sm font-medium text-white bg-accent-600 hover:bg-accent-700 rounded-lg transition-colors disabled:opacity-50">
+                  className="px-4 py-2 text-sm font-medium text-white bg-accent-600 hover:bg-accent-700 rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
                   {jobSaving ? 'Saving...' : editingJob ? 'Update' : 'Create'}
                 </button>
               </div>
@@ -794,7 +712,7 @@ export default function CareerPageEditor() {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-neutral-100">
               <h2 className="text-base font-semibold text-neutral-900">{editingCategory ? 'Edit Role Category' : 'Add Role Category'}</h2>
-              <button type="button" onClick={closeCategoryForm} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors">
+              <button type="button" onClick={closeCategoryForm} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors cursor-pointer">
                 <FiX className="w-5 h-5" />
               </button>
             </div>
@@ -816,11 +734,11 @@ export default function CareerPageEditor() {
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={closeCategoryForm}
-                  className="px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors">
+                  className="px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors cursor-pointer">
                   Cancel
                 </button>
                 <button type="submit" disabled={categorySaving}
-                  className="px-4 py-2 text-sm font-medium text-white bg-accent-600 hover:bg-accent-700 rounded-lg transition-colors disabled:opacity-50">
+                  className="px-4 py-2 text-sm font-medium text-white bg-accent-600 hover:bg-accent-700 rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
                   {categorySaving ? 'Saving...' : editingCategory ? 'Update' : 'Create'}
                 </button>
               </div>

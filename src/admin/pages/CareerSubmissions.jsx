@@ -4,7 +4,6 @@ import { FiDownload, FiSearch, FiEye, FiX, FiChevronLeft, FiChevronRight, FiRefr
 import ReplyModal from '../components/ReplyModal';
 
 const PAGE_OPTIONS = [10, 20, 30, 40, 50, 100];
-const DEPARTMENTS = ['Engineering', 'Marketing', 'Sales', 'Human Resources', 'Finance', 'Operations', 'Design', 'Content', 'Other'];
 const CATEGORIES = ['Full-time', 'Part-time', 'Internship', 'Contract', 'Freelance'];
 
 function MultiSelect({ label, options, selected, onChange, className }) {
@@ -116,13 +115,13 @@ export default function CareerSubmissions() {
         (s.full_name || '').toLowerCase().includes(q) ||
         (s.email || '').toLowerCase().includes(q) ||
         (s.phone || '').includes(q) ||
-        (s.department || '').toLowerCase().includes(q) ||
+        (s.position || '').toLowerCase().includes(q) ||
         (s.category || '').toLowerCase().includes(q) ||
         (s.description || '').toLowerCase().includes(q)
       );
     }
     if (selectedDepartments.size > 0) {
-      result = result.filter((s) => selectedDepartments.has(s.department));
+      result = result.filter((s) => selectedDepartments.has(s.position));
     }
     if (selectedCategories.size > 0) {
       result = result.filter((s) => selectedCategories.has(s.category));
@@ -193,8 +192,8 @@ export default function CareerSubmissions() {
             </div>
           </div>
           <MultiSelect
-            label="Department"
-            options={DEPARTMENTS}
+            label="Position"
+            options={[...new Set(submissions.map(s => s.position).filter(Boolean))]}
             selected={selectedDepartments}
             onChange={(v) => { setSelectedDepartments(v); setPage(1); }}
           />
@@ -256,9 +255,9 @@ export default function CareerSubmissions() {
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Name</th>
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Email</th>
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Phone</th>
-                    <th className="text-left px-4 py-3 font-semibold text-neutral-600">Department</th>
+                    <th className="text-left px-4 py-3 font-semibold text-neutral-600">Position</th>
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Category</th>
-                    <th className="text-left px-4 py-3 font-semibold text-neutral-600">Document</th>
+                    <th className="text-left px-4 py-3 font-semibold text-neutral-600">Resume</th>
                     <th className="text-left px-4 py-3 font-semibold text-neutral-600">Date</th>
                     <th className="text-right px-4 py-3 font-semibold text-neutral-600">Actions</th>
                   </tr>
@@ -270,7 +269,7 @@ export default function CareerSubmissions() {
                       <td className="px-4 py-3 font-medium text-neutral-900">{s.full_name}</td>
                       <td className="px-4 py-3 text-neutral-600">{s.email}</td>
                       <td className="px-4 py-3 text-neutral-600">{s.phone}</td>
-                      <td className="px-4 py-3">{s.department ? <span className="inline-block px-2 py-0.5 bg-accent-50 text-accent-700 rounded-full text-xs font-medium">{s.department}</span> : <span className="text-neutral-400">&mdash;</span>}</td>
+                      <td className="px-4 py-3">{s.position ? <span className="inline-block px-2 py-0.5 bg-accent-50 text-accent-700 rounded-full text-xs font-medium">{s.position}</span> : <span className="text-neutral-400">&mdash;</span>}</td>
                       <td className="px-4 py-3">{s.category ? <span className="inline-block px-2 py-0.5 bg-success-50 text-success-700 rounded-full text-xs font-medium">{s.category}</span> : <span className="text-neutral-400">&mdash;</span>}</td>
                       <td className="px-4 py-3">
                         {s.file_url ? (
@@ -361,7 +360,7 @@ export default function CareerSubmissions() {
               <DetailRow label="Full Name" value={selected.full_name} />
               <DetailRow label="Email" value={selected.email} />
               <DetailRow label="Phone" value={selected.phone} />
-              <DetailRow label="Department" value={selected.department} />
+              <DetailRow label="Position" value={selected.position} />
               <DetailRow label="Category" value={selected.category} />
               <div>
                 <label className="block text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">Description</label>
@@ -411,7 +410,7 @@ function ExportDialog({ type, allData, onClose }) {
   const filtered = useMemo(() => {
     let result = allData;
     if (selectedDepartments.size > 0) {
-      result = result.filter((s) => selectedDepartments.has(s.department));
+      result = result.filter((s) => selectedDepartments.has(s.position));
     }
     if (selectedCategories.size > 0) {
       result = result.filter((s) => selectedCategories.has(s.category));
@@ -435,10 +434,10 @@ function ExportDialog({ type, allData, onClose }) {
     if (filtered.length === 0) return;
     setLoading(true);
     await new Promise((r) => setTimeout(r, 30));
-    const headers = ['ID', 'Full Name', 'Email', 'Phone', 'Department', 'Category', 'Description', 'Document Link', 'Submitted At'];
+    const headers = ['ID', 'Full Name', 'Email', 'Phone', 'Position', 'Category', 'Description', 'Document Link', 'Submitted At'];
     const rows = filtered.map((s) => [
       s.id,
-      s.full_name, s.email, s.phone, s.department || '', s.category || '',
+      s.full_name, s.email, s.phone, s.position || '', s.category || '',
       (s.description || '').replace(/"/g, '""'), s.file_url || '', s.created_at,
     ]);
     const csv = [headers.join(','), ...rows.map((r) => r.map((v) => '"' + v + '"').join(','))].join('\n');
@@ -463,11 +462,11 @@ function ExportDialog({ type, allData, onClose }) {
     ]);
     const pdf = new jsPDF('l', 'mm', 'a4');
     const rows = filtered.map((s) => [
-      s.full_name, s.email, s.phone, s.department || '—', s.category || '—',
+      s.full_name, s.email, s.phone, s.position || '—', s.category || '—',
       s.file_url || '—', new Date(s.created_at).toLocaleDateString(),
     ]);
     autoTable(pdf, {
-      head: [['Name', 'Email', 'Phone', 'Department', 'Category', 'Document Link', 'Date']],
+      head: [['Name', 'Email', 'Phone', 'Position', 'Category', 'Document Link', 'Date']],
       body: rows,
       styles: { fontSize: 8 },
       headStyles: { fillColor: ['#1e293b'] },
@@ -523,26 +522,29 @@ function ExportDialog({ type, allData, onClose }) {
             </div>
           )}
           <div>
-            <label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">Department</label>
+            <label className="block text-xs font-semibold text-neutral-600 mb-1 uppercase tracking-wider">Position</label>
             <div className="max-h-36 overflow-y-auto border border-neutral-200 rounded-lg divide-y divide-neutral-100">
               <label className="flex items-center gap-2 px-3 py-1.5 hover:bg-neutral-50 cursor-pointer text-sm font-medium text-neutral-600 bg-neutral-50/50">
                 <input type="checkbox"
-                  checked={selectedDepartments.size === DEPARTMENTS.length}
-                  onChange={() => setSelectedDepartments(selectedDepartments.size === DEPARTMENTS.length ? new Set() : new Set(DEPARTMENTS))}
+                  checked={selectedDepartments.size === [...new Set(allData.map(s => s.position).filter(Boolean))].length}
+                  onChange={() => {
+                    const allPositions = [...new Set(allData.map(s => s.position).filter(Boolean))];
+                    setSelectedDepartments(selectedDepartments.size === allPositions.length ? new Set() : new Set(allPositions));
+                  }}
                   className="w-4 h-4 rounded border-neutral-300 text-accent-600 focus:ring-accent-500" />
-                {selectedDepartments.size === DEPARTMENTS.length ? 'Deselect All' : 'Select All'}
+                {selectedDepartments.size === [...new Set(allData.map(s => s.position).filter(Boolean))].length ? 'Deselect All' : 'Select All'}
               </label>
-              {DEPARTMENTS.map((d) => (
-                <label key={d} className="flex items-center gap-2 px-3 py-1.5 hover:bg-neutral-50 cursor-pointer text-sm text-neutral-700">
-                  <input type="checkbox" checked={selectedDepartments.has(d)}
+              {[...new Set(allData.map(s => s.position).filter(Boolean))].map((p) => (
+                <label key={p} className="flex items-center gap-2 px-3 py-1.5 hover:bg-neutral-50 cursor-pointer text-sm text-neutral-700">
+                  <input type="checkbox" checked={selectedDepartments.has(p)}
                     onChange={() => {
                       const next = new Set(selectedDepartments);
-                      if (next.has(d)) next.delete(d);
-                      else next.add(d);
+                      if (next.has(p)) next.delete(p);
+                      else next.add(p);
                       setSelectedDepartments(next);
                     }}
                     className="w-4 h-4 rounded border-neutral-300 text-accent-600 focus:ring-accent-500" />
-                  {d}
+                  {p}
                 </label>
               ))}
             </div>

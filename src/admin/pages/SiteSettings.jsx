@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
 import { FiSave, FiUpload, FiTrash2, FiCheck, FiMail, FiPhone, FiGlobe } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -67,6 +68,7 @@ export default function SiteSettings() {
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [settingsId, setSettingsId] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -137,11 +139,7 @@ export default function SiteSettings() {
         <p className="text-sm text-neutral-500 mt-1">Contact info, social links, and logo</p>
       </div>
 
-      {saved && (
-        <div className="mb-6 p-4 bg-success-50 border border-success-200 rounded-lg flex items-center gap-2 text-success-700 text-sm">
-          <FiCheck className="w-4 h-4" /> Settings saved successfully!
-        </div>
-      )}
+      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
 
       <form onSubmit={handleSave} className="bg-white rounded-lg border border-neutral-200 p-6 space-y-6">
         <div>
@@ -196,12 +194,7 @@ export default function SiteSettings() {
           </div>
         </div>
 
-        <div className="border-t border-neutral-100 pt-6 flex justify-end">
-          <AdminButton type="submit" disabled={saving} variant="primary" size="md">
-            <FiSave className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Settings'}
-          </AdminButton>
-        </div>
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
       </form>
     </div>
   );

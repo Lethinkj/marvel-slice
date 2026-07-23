@@ -19,7 +19,7 @@ function row(label, value) {
 }
 
 async function handleCareer(body) {
-  const { full_name, email, phone, department, category, description, file_url } = body;
+  const { full_name, email, phone, position, category, description, file_url } = body;
   if (!full_name || !email || !phone) return { success: true };
   if (!process.env.ADMIN_EMAIL || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) return { success: true };
 
@@ -33,7 +33,7 @@ async function handleCareer(body) {
     </div>
     <div style="padding:24px 32px;">
       <table style="width:100%;border-collapse:collapse;">
-        ${row('Full Name', full_name)}${row('Email', email)}${row('Phone', phone)}${row('Department', department || '\u2014')}${row('Category', category || '\u2014')}${row('Description', (description || '\u2014').replace(/\n/g, '<br>'))}${row('Document', fileLink)}
+        ${row('Full Name', full_name)}${row('Email', email)}${row('Phone', phone)}${row('Position', position || '\u2014')}${row('Category', category || '\u2014')}${row('Description', (description || '\u2014').replace(/\n/g, '<br>'))}${row('Document', fileLink)}
       </table>
     </div>
     <div style="padding:16px 32px;background:#F5F6F8;font-size:12px;color:#5F6B7A;text-align:center;border-top:1px solid #e5e7eb;">Marvel Slice \u2014 Career Page</div>

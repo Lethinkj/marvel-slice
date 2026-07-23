@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
 import {
   FiPlus, FiTrash2, FiSave, FiUpload,
   FiHome, FiStar, FiAward, FiHelpCircle,
@@ -982,6 +983,7 @@ export default function HomePageEditor() {
   const [alumniData, setAlumniData] = useState({ companies: [] });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [loading, setLoading] = useState(true);
   const savingRef = useRef(false);
   const queryClient = useQueryClient();
@@ -1110,6 +1112,7 @@ export default function HomePageEditor() {
           <h2 className="text-lg font-semibold text-neutral-900">{selectedNav.label}</h2>
           <p className="text-sm text-neutral-500 mt-0.5">Edit the {selectedNav.label.toLowerCase()} section</p>
         </div>
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
         <div className="rounded-lg border border-neutral-200 p-6">
           {selectedNav.type === 'alumni' && <AlumniEditor data={alumniData} onChange={setAlumniData} />}
           {selectedNav.type === 'home_section' && (() => {
@@ -1118,11 +1121,7 @@ export default function HomePageEditor() {
             if (!def || !sec) return null;
             return <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />;
           })()}
-          <div className="flex justify-end mt-6 pt-4 border-t border-neutral-100">
-            <AdminButton onClick={handleSave} disabled={saving} variant="primary" size="md">
-              {saving ? 'Saving...' : saved ? 'Saved!' : 'Save All'}
-            </AdminButton>
-          </div>
+          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
         </div>
       </div>
     </div>

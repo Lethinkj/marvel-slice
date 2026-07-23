@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import AdminButton from "../components/AdminButton";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiSettings, FiFileText, FiTag, FiImage, FiHeart } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiSettings, FiFileText, FiTag, FiImage, FiHeart, FiAlertCircle, FiSave } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 function ListEditor({ items, onChange, fields, labelKey = "label" }) {
@@ -457,11 +457,18 @@ export default function TrainingEditor() {
       </div>
 
       {message && (
-        <p
-          className={`mb-4 text-sm ${message.includes("success") ? "text-green-600" : "text-destructive-600"}`}
-        >
-          {message}
-        </p>
+        <div className={`mb-6 p-4 rounded-lg flex items-center gap-2 text-sm ${
+          message.includes("successfully")
+            ? "bg-green-50 border border-green-200 text-green-700"
+            : "bg-red-50 border border-red-200 text-red-700"
+        }`}>
+          {message.includes("successfully") ? (
+            <FiCheck className="w-4 h-4 shrink-0" />
+          ) : (
+            <FiAlertCircle className="w-4 h-4 shrink-0" />
+          )}
+          <span>{message}</span>
+        </div>
       )}
 
       <div className="flex gap-6">
@@ -1604,6 +1611,12 @@ export default function TrainingEditor() {
               </div>
             </div>
           )}
+
+          <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">
+            <AdminButton onClick={handleSave} disabled={saving} variant="primary" size="md">
+              <FiSave className="w-4 h-4" /> {saving ? 'Saving...' : 'Save'}
+            </AdminButton>
+          </div>
         </div>
       </div>
     </div>

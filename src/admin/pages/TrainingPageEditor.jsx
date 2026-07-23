@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -144,7 +145,7 @@ export default function TrainingPageEditor() {
           <Link to="/training" target="_blank" className="text-sm text-accent-600 hover:underline inline-flex items-center gap-1 mt-0.5"><FiExternalLink className="w-3.5 h-3.5" /> /training</Link>
         </div>
       </div>
-      {saveError && <div className="mb-6 p-4 bg-destructive-50 border border-destructive-200 rounded-lg flex items-center gap-2 text-destructive-700 text-sm"><FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}</div>}
+      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-lg border border-neutral-200 p-6">
           <h2 className="font-semibold text-neutral-900 mb-4">Hero Section</h2>
@@ -217,9 +218,7 @@ export default function TrainingPageEditor() {
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">
-          <AdminButton type="submit" disabled={saving} variant="primary" size="md"><FiSave className="w-4 h-4" /> {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Page'}</AdminButton>
-        </div>
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
       </form>
     </div>
   );
