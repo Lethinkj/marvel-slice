@@ -122,9 +122,9 @@ const sectionDefs = [
   },
   {
     key: 'cta_banner', label: 'CTA Banner', icon: FiMessageSquare, color: 'from-teal-500 to-teal-600',
+    contentOnly: true,
     fields: [
       { name: 'heading', label: 'Heading', type: 'text' },
-      { name: 'subheading', label: 'Subheading', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'cta_text', label: 'CTA Button Text', type: 'text' },
       { name: 'cta_link', label: 'Phone Number (tel:)', type: 'text' },
@@ -804,20 +804,22 @@ function FieldEditor({ def, data, onChange }) {
   }
   return (
     <div className="space-y-4">
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
-          <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
-            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section heading" />
+      {!def.contentOnly && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
+            <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section heading" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+            <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
+              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section subheading" />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
-          <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
-            className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500" placeholder="Section subheading" />
-        </div>
-      </div>
+      )}
       {def.fields.map((f) => (
-        <RenderField key={f.name} field={f} value={content[f.name]} onChange={(v) => updateContent(f.name, v)} />
+        <RenderField key={f.name} field={f} value={def.contentOnly ? content[f.name] : (content[f.name] ?? '')} onChange={(v) => updateContent(f.name, v)} />
       ))}
       {def.hasList && !Array.isArray(def.hasList) && (
         <div className="border-t border-neutral-200 pt-4">

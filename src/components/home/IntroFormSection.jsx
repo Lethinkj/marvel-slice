@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiBookOpen, FiUsers, FiBriefcase, FiStar, FiClock, FiAward, FiTarget, FiSend, FiPhone, FiMail, FiUser, FiCheckCircle, FiLoader } from 'react-icons/fi';
+import { FiBookOpen, FiUsers, FiBriefcase, FiStar, FiClock, FiAward, FiCheckCircle, FiLoader, FiX } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -28,6 +29,7 @@ export default function IntroFormSection({ section }) {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formMsg, setFormMsg] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -60,7 +62,7 @@ export default function IntroFormSection({ section }) {
         phone: formPhone.trim(),
       }),
     }).catch(() => {});
-    setFormMsg({ type: 'success', text: 'Thank you! We will get back to you soon.' });
+    setShowSuccessModal(true);
     setFormName(''); setFormEmail(''); setFormPhone('');
     setAgreeTerms(false);
     setSubmitting(false);
@@ -153,11 +155,6 @@ export default function IntroFormSection({ section }) {
                     backgroundSize: '120px 120px',
                   }}
                 />
-                {formMsg && formMsg.text !== 'Please agree to the terms and conditions.' && (
-                  <div className={`relative z-10 p-2.5 mb-3 text-xs font-medium rounded ${formMsg.type === 'success' ? 'bg-green-500/20 text-white' : 'bg-red-500/20 text-white'}`}>
-                    {formMsg.text}
-                  </div>
-                )}
                 <form onSubmit={handleSubmit} className="relative z-10 space-y-3">
                   <input type="text" placeholder="Your Name" value={formName} onChange={(e) => setFormName(e.target.value)}
                     className="w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
@@ -204,6 +201,51 @@ export default function IntroFormSection({ section }) {
           </Reveal>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <AnimatePresence>
+        {showSuccessModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowSuccessModal(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', duration: 0.5 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="absolute top-4 right-4 p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+
+              <div className="w-16 h-16 mx-auto rounded-full bg-green-50 flex items-center justify-center mb-4">
+                <FiCheckCircle className="w-8 h-8 text-green-500" />
+              </div>
+
+              <h3 className="text-xl font-bold text-[#1A1A2E] mb-2">Successfully Submitted!</h3>
+              <p className="text-sm text-neutral-500 leading-relaxed mb-6">
+                Thank you for your interest. We will reach out to you shortly.
+              </p>
+
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="w-full py-3 rounded-lg bg-[#1E56C7] text-white font-semibold text-sm hover:bg-[#1642a0] transition-colors"
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

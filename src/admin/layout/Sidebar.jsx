@@ -45,6 +45,7 @@ const navGroups = [
     { to: "/admin/career-submissions", label: "Career Submissions" },
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
+    { to: "/admin/contact-submissions", label: "Contact Submissions" },
   ]},
   {
     label: "Courses", icon: FiBookOpen, items: [

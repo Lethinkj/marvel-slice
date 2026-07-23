@@ -57,6 +57,7 @@ export default function ContactPageEditor() {
   const [email, setEmail] = useState('');
   const [mapSrc, setMapSrc] = useState('');
   const [faqs, setFaqs] = useState([]);
+  const [showContactForm, setShowContactForm] = useState(false);
 
   useEffect(() => {
     async function resolve() {
@@ -100,6 +101,8 @@ export default function ContactPageEditor() {
           if (mapSec) setMapSrc(mapSec.content || '');
           const faqSec = secs.find(s => s.section_type === 'faq_list');
           if (faqSec?.items) setFaqs(faqSec.items);
+          const contactFormSec = secs.find(s => s.section_type === 'contact_form');
+          if (contactFormSec) setShowContactForm(true);
         }
       }
       setLoading(false);
@@ -115,6 +118,7 @@ export default function ContactPageEditor() {
     setSaveError('');
     const sections = [
       { section_type: 'contact_info', heading: 'Get in Touch', address, phone, email },
+      showContactForm ? { section_type: 'contact_form' } : null,
       mapSrc ? { section_type: 'map_embed', heading: 'Find Us', content: mapSrc } : null,
       faqs.length > 0 ? { section_type: 'faq_list', heading: 'Frequently Asked Questions', items: faqs } : null,
     ].filter(Boolean);
@@ -210,6 +214,24 @@ export default function ContactPageEditor() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-neutral-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-semibold text-neutral-900">Contact Form</h2>
+              <p className="text-xs text-neutral-500 mt-0.5">Show a contact form (Name, Email, Phone) on the page. Submissions appear in Admin &rarr; Submissions &rarr; Contact Submissions.</p>
+            </div>
+            <button type="button" onClick={() => setShowContactForm(!showContactForm)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${showContactForm ? 'bg-accent-600' : 'bg-neutral-300'}`}>
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showContactForm ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+          </div>
+          {showContactForm && (
+            <div className="mt-4 p-4 bg-accent-50 rounded-lg border border-accent-100">
+              <p className="text-xs text-accent-700">Contact form is enabled. It will be rendered on the public contact page below the contact info section.</p>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end pt-4 border-t border-neutral-100 mt-6">

@@ -34,6 +34,7 @@ import BrochureDownloads from './pages/BrochureDownloads';
 import NavItemChildren from './pages/NavItemChildren';
 import NavItemManager from './pages/NavItemManager';
 import FormSubmissions from './pages/FormSubmissions';
+import ContactSubmissions from './pages/ContactSubmissions';
 import ChatPanel from './pages/ChatPanel';
 import BlogManager from './pages/BlogManager';
 import BlogPostEditor from './pages/BlogPostEditor';
@@ -140,6 +141,7 @@ export default function Admin() {
           <Route path="career-submissions" element={<CareerSubmissions />} />
           <Route path="brochure-downloads" element={<BrochureDownloads />} />
           <Route path="form-submissions" element={<FormSubmissions />} />
+          <Route path="contact-submissions" element={<ContactSubmissions />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
           <Route path="chats" element={<ChatPanel />} />
           <Route path="blog" element={<BlogManager />} />

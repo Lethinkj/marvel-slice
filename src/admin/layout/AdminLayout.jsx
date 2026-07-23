@@ -30,6 +30,7 @@ function Breadcrumbs() {
     "services-page": "Services",
     "training-page": "Training",
     "form-submissions": "Form Submissions",
+    "contact-submissions": "Contact Submissions",
     "career-submissions": "Career Submissions",
   };
 

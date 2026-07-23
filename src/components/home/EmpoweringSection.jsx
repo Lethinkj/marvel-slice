@@ -9,7 +9,7 @@ export default function EmpoweringSection({ section }) {
   if (!heading && !description) return null;
 
   return (
-    <section className="py-16">
+    <section className="pb-0 pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="text-center">

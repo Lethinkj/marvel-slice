@@ -5,6 +5,7 @@ import Button from './Button';
 import Card from './Card';
 import AccordionItem from './AccordionItem';
 import Reveal, { Stagger, StaggerItem } from './Reveal';
+import ContactForm from './ContactForm';
 
 function DynamicIcon({ name, className }) {
   if (!name) return null;
@@ -242,6 +243,8 @@ export default function SectionRenderer({ section }) {
           </div>
         </Reveal>
       );
+    case 'contact_form':
+      return <ContactForm />;
     default:
       return null;
   }

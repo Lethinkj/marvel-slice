@@ -49,7 +49,7 @@ export default function HeroSection({ section }) {
     <section className="relative overflow-hidden">
       {bannerImage && (
         <div className="relative w-full overflow-hidden">
-          <img src={bannerImage} alt="" className="w-full h-72 sm:h-96 object-cover" />
+          <img src={bannerImage} alt="" className="w-full" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
           {(bannerHeading || bannerDescription) && (
             <div className="absolute inset-0 flex items-center">
@@ -161,8 +161,8 @@ export default function HeroSection({ section }) {
 
                 {studentImageUrl && (
                   <Reveal variant="right" className="flex self-center">
-                    <div className="w-full h-96 rounded-2xl overflow-hidden bg-white/10">
-                      <img src={studentImageUrl} alt="Students" className="w-full h-full object-cover" />
+                    <div className="w-full rounded-2xl overflow-hidden bg-white/10">
+                      <img src={studentImageUrl} alt="Students" className="w-full" />
                     </div>
                   </Reveal>
                 )}
