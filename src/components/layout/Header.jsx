@@ -27,7 +27,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[60px] lg:h-[68px]">
         <Link to="/" className="flex items-center gap-3 shrink-0">
           {settings?.logo_url && (
-            <img src={settings.logo_url} alt="Marvel Slice" className="h-8 lg:h-10 w-auto object-contain" />
+            <img src={settings.logo_url} alt="Marvel Slice" className="h-10 lg:h-14 w-auto object-contain" />
           )}
           <span className="text-xl lg:text-2xl font-extrabold text-brand-blue">
             Marvel <span className="text-brand-orange">Slice</span>

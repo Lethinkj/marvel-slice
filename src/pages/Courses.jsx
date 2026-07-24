@@ -522,11 +522,11 @@ export default function Courses() {
 
   return (
     <div className="bg-white">
-      <div className={`flex w-full ${listOnly ? "" : "h-[calc(100vh-68px)]"}`}>
+      <div className="flex w-full min-h-screen">
         {/* Left Sidebar — hidden in list-only mode */}
         {!listOnly && (
           <aside
-            className="w-[270px] shrink-0 hidden lg:flex lg:flex-col bg-gray-50/60 border-r border-gray-200 overflow-hidden"
+            className="w-[270px] shrink-0 hidden lg:flex lg:flex-col bg-[#f1f3f6] border-r border-gray-200 overflow-y-auto sticky top-0"
             aria-label="Course categories"
           >
             {/* Toggle at top — flush with header */}
@@ -541,7 +541,7 @@ export default function Courses() {
                       className={`flex-1 py-3 text-sm font-medium text-center transition-all cursor-pointer ${
                         active
                           ? "bg-[#F97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.4)]"
-                          : "bg-white text-gray-500 hover:text-gray-800"
+                          : "bg-[#EEEEEE] text-gray-500 hover:text-gray-800"
                       }`}
                     >
                       {p.displayLabel}
@@ -562,7 +562,7 @@ export default function Courses() {
           className={`flex-1 min-w-0 bg-white ${
             listOnly
               ? "max-w-[1400px] mx-auto pt-6"
-              : "max-w-[1600px] pt-6 overflow-y-auto h-[calc(100vh-68px)]"
+              : "max-w-[1600px] pt-6"
           }`}
         >
           {/* Mobile sidebar (dropdown) — hidden in list-only mode */}

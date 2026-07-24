@@ -275,6 +275,7 @@ create table if not exists career_submissions (
   category text,
   description text,
   file_url text,
+  is_read boolean default false,
   created_at timestamptz default now()
 );
 
@@ -639,6 +640,7 @@ create table if not exists form_submissions (
   full_name text not null,
   email text not null,
   phone text not null,
+  is_read boolean default false,
   created_at timestamptz default now()
 );
 

@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabaseClient";
 import AdminButton from "../components/AdminButton";
 import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
+import DataTable from "../components/ui/DataTable";
 import { FiPlus, FiBookOpen, FiSearch } from "react-icons/fi";
 
 export default function CoursesList() {
@@ -76,6 +77,49 @@ export default function CoursesList() {
     }
   );
 
+  const columns = [
+    {
+      header: 'ID',
+      className: 'w-20',
+      cell: (row) => <span className="text-sm text-neutral-400 font-mono">{row.id.slice(0, 8)}...</span>,
+    },
+    {
+      header: 'Title',
+      cell: (row) => (
+        <Link to={`/admin/courses/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-accent-600 transition-colors">
+          {row.title || 'Untitled'}
+        </Link>
+      ),
+    },
+    {
+      header: 'Slug',
+      className: 'hidden sm:table-cell',
+      cell: (row) => <span className="text-sm text-neutral-400">/{row.slug}</span>,
+    },
+    {
+      header: 'Status',
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" checked={row.is_published} onChange={() => togglePublish(row.id, row.is_published)} className="sr-only peer" />
+            <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+          </label>
+          <Badge variant={row.is_published ? 'published' : 'draft'}>{row.is_published ? 'Published' : 'Draft'}</Badge>
+        </div>
+      ),
+    },
+    {
+      header: 'Actions',
+      className: 'w-24 text-right',
+      cell: (row) => (
+        <div className="flex items-center justify-end gap-2">
+          <Link to={`/admin/courses/${row.id}`} className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors">Edit</Link>
+          <button onClick={() => handleDelete(row.id, row.title)} className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">Delete</button>
+        </div>
+      ),
+    },
+  ];
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -143,84 +187,7 @@ export default function CoursesList() {
                   ({grouped[cat].length})
                 </span>
               </div>
-              <div className="border border-neutral-200 rounded-lg overflow-hidden">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-neutral-200">
-                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 w-20">
-                        ID
-                      </th>
-                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">
-                        Title
-                      </th>
-                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 hidden sm:table-cell">
-                        Slug
-                      </th>
-                      <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">
-                        Status
-                      </th>
-                      <th className="sticky top-0 bg-neutral-50 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 w-24">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {grouped[cat].map((course) => (
-                      <tr
-                        key={course.id}
-                        className="group border-b border-neutral-100 last:border-0 hover:bg-neutral-50 transition-colors"
-                      >
-                        <td className="px-4 py-3 text-sm text-neutral-400 font-mono">
-                          {course.id.slice(0, 8)}...
-                        </td>
-                        <td className="px-4 py-3">
-                          <Link
-                            to={`/admin/courses/${course.id}`}
-                            className="text-sm font-medium text-neutral-900 hover:text-accent-600 transition-colors"
-                          >
-                            {course.title || "Untitled"}
-                          </Link>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-neutral-400 hidden sm:table-cell">
-                          /{course.slug}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <label className="relative inline-flex items-center cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={course.is_published}
-                                onChange={() => togglePublish(course.id, course.is_published)}
-                                className="sr-only peer"
-                              />
-                              <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
-                            </label>
-                            <Badge variant={course.is_published ? "published" : "draft"}>
-                              {course.is_published ? "Published" : "Draft"}
-                            </Badge>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <div className="flex items-center justify-end gap-2 opacity-100">
-                            <Link
-                              to={`/admin/courses/${course.id}`}
-                              className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors"
-                            >
-                              Edit
-                            </Link>
-                            <button
-                              onClick={() => handleDelete(course.id, course.title)}
-                              className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                <DataTable columns={columns} data={grouped[cat]} searchable={false} />
             </div>
           ))}
         </div>

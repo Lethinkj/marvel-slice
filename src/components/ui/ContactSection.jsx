@@ -103,31 +103,30 @@ export default function ContactSection({ section }) {
   }
 
   return (
-    <Reveal>
-      <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 max-w-6xl mx-auto bg-white">
-        <div className="grid lg:grid-cols-5 min-h-[520px]">
-          {/* Left: Details */}
-          <div
-            className="relative p-8 sm:p-10 flex flex-col justify-center lg:col-span-2 rounded-l-2xl"
-            style={{ background: `linear-gradient(135deg, ${c.gradient_start || '#0B2D6B'}, ${c.gradient_end || '#1E56C7'})` }}
-          >
-            <FloatingCircles />
-            <div className="relative z-10 space-y-7">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">{leftHeading}</h2>
-                <p className="text-white/70 text-sm leading-relaxed">{leftSubtitle}</p>
-              </div>
-              <div className="space-y-5">
-                {address && <ContactDetailItem icon={FiMapPin} label="Address" value={address} />}
-                {displayPhone && <ContactDetailItem icon={FiPhone} label="Phone" value={displayPhone} href={`tel:${telLink}`} />}
-                {companyEmail && <ContactDetailItem icon={FiMail} label="Email" value={companyEmail} href={`mailto:${companyEmail}`} />}
-                {businessHours && <ContactDetailItem icon={FiClock} label="Business Hours" value={businessHours} />}
-              </div>
-            </div>
+    <div className="rounded-2xl shadow-lg">
+      <div className="grid lg:grid-cols-5 min-h-[520px] rounded-2xl overflow-hidden">
+      {/* Left: Details */}
+      <div
+        className="relative p-8 sm:p-10 flex flex-col justify-center lg:col-span-2"
+        style={{ background: `linear-gradient(135deg, ${c.gradient_start || '#0B2D6B'}, ${c.gradient_end || '#1E56C7'})` }}
+      >
+        <FloatingCircles />
+        <div className="relative z-10 space-y-7">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">{leftHeading}</h2>
+            <p className="text-white/70 text-sm leading-relaxed">{leftSubtitle}</p>
           </div>
+          <div className="space-y-5">
+            {address && <ContactDetailItem icon={FiMapPin} label="Address" value={address} />}
+            {displayPhone && <ContactDetailItem icon={FiPhone} label="Phone" value={displayPhone} href={`tel:${telLink}`} />}
+            {companyEmail && <ContactDetailItem icon={FiMail} label="Email" value={companyEmail} href={`mailto:${companyEmail}`} />}
+            {businessHours && <ContactDetailItem icon={FiClock} label="Business Hours" value={businessHours} />}
+          </div>
+        </div>
+      </div>
 
-          {/* Right: Form */}
-          <div className="bg-white p-8 sm:p-10 flex flex-col justify-center lg:col-span-3 rounded-r-2xl">
+      {/* Right: Form */}
+      <div className="bg-white p-8 sm:p-10 flex flex-col justify-center lg:col-span-3">
             <h3 className="text-xl sm:text-2xl font-bold text-[#0B2D6B] mb-1">Send us a Message</h3>
             <p className="text-sm text-neutral-500 mb-6">Fill out the form below and we'll get back to you shortly.</p>
 
@@ -160,9 +159,10 @@ export default function ContactSection({ section }) {
                 >
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Full Name</label>
+                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Full Name <span className="text-red-400">*</span></label>
                       <input
                         type="text"
+                        required
                         value={form.full_name}
                         onChange={(e) => handleChange('full_name', e.target.value)}
                         placeholder="John Doe"
@@ -173,9 +173,10 @@ export default function ContactSection({ section }) {
                       {errors.full_name && <p className="text-xs text-red-500 mt-1">{errors.full_name}</p>}
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Email Address</label>
+                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Email Address <span className="text-red-400">*</span></label>
                       <input
                         type="email"
+                        required
                         value={form.email}
                         onChange={(e) => handleChange('email', e.target.value)}
                         placeholder="john@example.com"
@@ -188,9 +189,10 @@ export default function ContactSection({ section }) {
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Phone Number</label>
+                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Phone Number <span className="text-red-400">*</span></label>
                       <input
                         type="tel"
+                        required
                         value={form.phone}
                         onChange={(e) => handleChange('phone', e.target.value)}
                         placeholder="+1 (555) 019-2834"
@@ -201,9 +203,10 @@ export default function ContactSection({ section }) {
                       {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Subject</label>
+                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Subject <span className="text-red-400">*</span></label>
                       <input
                         type="text"
+                        required
                         value={form.subject}
                         onChange={(e) => handleChange('subject', e.target.value)}
                         placeholder="How can we help you?"
@@ -215,9 +218,10 @@ export default function ContactSection({ section }) {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Message</label>
+                    <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Message <span className="text-red-400">*</span></label>
                     <textarea
                       value={form.message}
+                      required
                       onChange={(e) => handleChange('message', e.target.value)}
                       rows={4}
                       placeholder="Write your message here..."
@@ -227,10 +231,11 @@ export default function ContactSection({ section }) {
                     />
                     {errors.message && <p className="text-xs text-red-500 mt-1">{errors.message}</p>}
                   </div>
-                  <button
+                  <div className="flex justify-center">
+                    <button
                     type="submit"
                     disabled={status === 'submitting'}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-[#1E56C7] text-white font-semibold text-sm hover:bg-[#1642a0] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-[#1E56C7] text-white font-semibold text-sm hover:bg-[#1642a0] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {status === 'submitting' ? (
                       <>
@@ -241,6 +246,7 @@ export default function ContactSection({ section }) {
                       'Send Message'
                     )}
                   </button>
+                  </div>
                   {status === 'error' && (
                     <p className="text-xs text-red-500 text-center">Something went wrong. Please try again.</p>
                   )}
@@ -248,8 +254,7 @@ export default function ContactSection({ section }) {
               )}
             </AnimatePresence>
           </div>
-        </div>
       </div>
-    </Reveal>
+    </div>
   );
 }

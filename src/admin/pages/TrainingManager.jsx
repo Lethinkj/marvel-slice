@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
+import DataTable from '../components/ui/DataTable';
 import {
   FiPlus, FiEdit2, FiCopy, FiTrash2, FiExternalLink, FiSearch, FiFilter, FiBookOpen,
 } from 'react-icons/fi';
@@ -83,6 +84,77 @@ export default function TrainingManager() {
     }
     return true;
   });
+
+  const columns = [
+    {
+      header: 'Title',
+      cell: (row) => (
+        <Link to={`/admin/training/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-accent-600 transition-colors">
+          {row.title || 'Untitled'}
+        </Link>
+      ),
+    },
+    {
+      header: 'Category',
+      className: 'hidden md:table-cell',
+      cell: (row) => <span className="text-sm text-neutral-600">{row.training_categories?.name || '-'}</span>,
+    },
+    {
+      header: 'Badge',
+      className: 'hidden lg:table-cell',
+      cell: (row) => row.badge ? <Badge variant="default">{row.badge}</Badge> : <span className="text-sm text-neutral-400">-</span>,
+    },
+    {
+      header: 'Status',
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" checked={row.status === 'published'} onChange={() => togglePublish(row.id, row.status)} className="sr-only peer" disabled={row.status === 'archived'} />
+            <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+          </label>
+          <Badge variant={statusColors[row.status] || 'default'}>
+            {row.status ? row.status.charAt(0).toUpperCase() + row.status.slice(1) : 'Draft'}
+          </Badge>
+        </div>
+      ),
+    },
+    {
+      header: 'Featured',
+      className: 'hidden sm:table-cell',
+      cell: (row) => (
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" checked={!!row.is_featured} onChange={() => toggleFeatured(row.id, row.is_featured)} className="sr-only peer" />
+          <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-accent-600 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+        </label>
+      ),
+    },
+    {
+      header: 'Sort',
+      accessor: 'sort_order',
+      className: 'hidden lg:table-cell',
+    },
+    {
+      header: 'Created',
+      className: 'hidden xl:table-cell',
+      cell: (row) => (
+        <span className="text-sm text-neutral-400 whitespace-nowrap">
+          {row.created_at ? new Date(row.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      className: 'w-32 text-right',
+      cell: (row) => (
+        <div className="flex items-center justify-end gap-1">
+          {row.slug && <Link to={`/training/${row.slug}`} target="_blank" className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors" title="Preview"><FiExternalLink className="w-4 h-4" /></Link>}
+          <Link to={`/admin/training/${row.id}`} className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors" title="Edit"><FiEdit2 className="w-4 h-4" /></Link>
+          <button onClick={() => handleDuplicate(row)} className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors" title="Duplicate"><FiCopy className="w-4 h-4" /></button>
+          <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-destructive-500 hover:text-destructive-700 rounded-md hover:bg-destructive-50 transition-colors" title="Delete"><FiTrash2 className="w-4 h-4" /></button>
+        </div>
+      ),
+    },
+  ];
 
   if (loading) {
     return (
@@ -165,140 +237,7 @@ export default function TrainingManager() {
           />
         </div>
       ) : (
-        <div className="border border-neutral-200 rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-neutral-200">
-                <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">
-                  Title
-                </th>
-                <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 hidden md:table-cell">
-                  Category
-                </th>
-                <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 hidden lg:table-cell">
-                  Badge
-                </th>
-                <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">
-                  Status
-                </th>
-                <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 hidden sm:table-cell">
-                  Featured
-                </th>
-                <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 hidden lg:table-cell">
-                  Sort
-                </th>
-                <th className="sticky top-0 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 hidden xl:table-cell">
-                  Created
-                </th>
-                <th className="sticky top-0 bg-neutral-50 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider px-4 py-3 w-32">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((program) => (
-                <tr
-                  key={program.id}
-                  className="group border-b border-neutral-100 last:border-0 hover:bg-neutral-50 transition-colors"
-                >
-                  <td className="px-4 py-3">
-                    <Link
-                      to={`/admin/training/${program.id}`}
-                      className="text-sm font-medium text-neutral-900 hover:text-accent-600 transition-colors"
-                    >
-                      {program.title || 'Untitled'}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-neutral-600 hidden md:table-cell">
-                    {program.training_categories?.name || '-'}
-                  </td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    {program.badge ? (
-                      <Badge variant="default">{program.badge}</Badge>
-                    ) : (
-                      <span className="text-sm text-neutral-400">-</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={program.status === 'published'}
-                          onChange={() => togglePublish(program.id, program.status)}
-                          className="sr-only peer"
-                          disabled={program.status === 'archived'}
-                        />
-                        <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
-                      </label>
-                      <Badge variant={statusColors[program.status] || 'default'}>
-                        {program.status ? program.status.charAt(0).toUpperCase() + program.status.slice(1) : 'Draft'}
-                      </Badge>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 hidden sm:table-cell">
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={!!program.is_featured}
-                        onChange={() => toggleFeatured(program.id, program.is_featured)}
-                        className="sr-only peer"
-                      />
-                      <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-accent-600 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
-                    </label>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-neutral-600 hidden lg:table-cell">
-                    {program.sort_order ?? '-'}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-neutral-400 hidden xl:table-cell whitespace-nowrap">
-                    {program.created_at
-                      ? new Date(program.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })
-                      : '-'}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1 opacity-100">
-                      {program.slug && (
-                        <Link
-                          to={`/training/${program.slug}`}
-                          target="_blank"
-                          className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors"
-                          title="Preview"
-                        >
-                          <FiExternalLink className="w-4 h-4" />
-                        </Link>
-                      )}
-                      <Link
-                        to={`/admin/training/${program.id}`}
-                        className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors"
-                        title="Edit"
-                      >
-                        <FiEdit2 className="w-4 h-4" />
-                      </Link>
-                      <button
-                        onClick={() => handleDuplicate(program)}
-                        className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors"
-                        title="Duplicate"
-                      >
-                        <FiCopy className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(program.id, program.title)}
-                        className="p-1.5 text-destructive-500 hover:text-destructive-700 rounded-md hover:bg-destructive-50 transition-colors"
-                        title="Delete"
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable columns={columns} data={filtered} searchable={false} />
       )}
     </div>
   );

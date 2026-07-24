@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
+import DataTable from '../components/ui/DataTable';
 import { FiPlus, FiFileText, FiSearch, FiChevronRight, FiCalendar } from 'react-icons/fi';
 
 export default function BlogManager() {
@@ -39,6 +40,51 @@ export default function BlogManager() {
   const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(search.toLowerCase())
   );
+
+  const cardsColumns = [
+    {
+      cell: (row) => (
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center shrink-0">
+            <FiFileText className="w-5 h-5 text-accent-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <Link to={`/admin/blog/${row.id}`} className="font-semibold text-neutral-900 hover:text-accent-600 transition-colors">
+              {row.title}
+            </Link>
+            <div className="flex items-center gap-3 mt-0.5 text-xs text-neutral-400">
+              <span className="flex items-center gap-1">
+                <FiCalendar className="w-3 h-3" />
+                {row.published_at ? new Date(row.published_at).toLocaleDateString() : 'Not published'}
+              </span>
+              {row.blog_categories && <span className="px-2 py-0.5 bg-accent-50 text-accent-600 rounded-full">{row.blog_categories.name}</span>}
+              {row.is_featured && <Badge variant="featured">Featured</Badge>}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" checked={row.is_published} onChange={() => togglePublish(row.id, row.is_published)} className="sr-only peer" />
+            <div className="w-9 h-5 bg-neutral-200 rounded-full peer-checked:bg-accent-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4" />
+          </label>
+          <Badge variant={row.is_published ? 'published' : 'draft'}>{row.is_published ? 'Published' : 'Draft'}</Badge>
+        </div>
+      ),
+    },
+    {
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <Link to={`/admin/blog/${row.id}`} className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors">Edit</Link>
+          <button onClick={() => handleDelete(row.id, row.title)} className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">Delete</button>
+          <FiChevronRight className="w-4 h-4 text-neutral-300 transition-colors shrink-0" />
+        </div>
+      ),
+    },
+  ];
 
   if (loading) {
     return (
@@ -94,73 +140,7 @@ export default function BlogManager() {
           />
         )
       ) : (
-        <div className="grid gap-3">
-          {filteredPosts.map((post) => (
-            <div
-              key={post.id}
-              className="bg-white rounded-lg border border-neutral-200 p-4 hover:border-accent-200 transition-all group"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-accent-50 rounded-xl flex items-center justify-center shrink-0">
-                  <FiFileText className="w-5 h-5 text-accent-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Link
-                    to={`/admin/blog/${post.id}`}
-                    className="font-semibold text-neutral-900 hover:text-accent-600 transition-colors"
-                  >
-                    {post.title}
-                  </Link>
-                  <div className="flex items-center gap-3 mt-0.5 text-xs text-neutral-400">
-                    <span className="flex items-center gap-1">
-                      <FiCalendar className="w-3 h-3" />
-                      {post.published_at
-                        ? new Date(post.published_at).toLocaleDateString()
-                        : 'Not published'}
-                    </span>
-                    {post.blog_categories && (
-                      <span className="px-2 py-0.5 bg-accent-50 text-accent-600 rounded-full">
-                        {post.blog_categories.name}
-                      </span>
-                    )}
-                    {post.is_featured && (
-                      <Badge variant="featured">Featured</Badge>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={post.is_published}
-                      onChange={() => togglePublish(post.id, post.is_published)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-neutral-200 rounded-full peer-checked:bg-accent-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4" />
-                  </label>
-                  <Badge variant={post.is_published ? 'published' : 'draft'}>
-                    {post.is_published ? 'Published' : 'Draft'}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2 opacity-100">
-                  <Link
-                    to={`/admin/blog/${post.id}`}
-                    className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(post.id, post.title)}
-                    className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-                <FiChevronRight className="w-4 h-4 text-neutral-200 group-hover:text-accent-600 transition-colors shrink-0" />
-              </div>
-            </div>
-          ))}
-        </div>
+        <DataTable columns={cardsColumns} data={filteredPosts} searchable={false} variant="cards" />
       )}
     </div>
   );

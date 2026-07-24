@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiGlobe, FiSettings, FiSearch, FiMessageCircle, FiServer, FiZap } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiGlobe, FiSettings, FiMessageCircle, FiServer, FiZap } from "react-icons/fi";
 
 const navGroups = [
   { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
@@ -100,8 +100,22 @@ function isActive(pathname, item) {
   return false;
 }
 
+const STORAGE_KEY = 'admin_sidebar_groups';
+
+function loadGroupState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : {};
+  } catch { return {}; }
+}
+
+function saveGroupState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+}
+
 function useGroupOpen(pathname) {
-  const [openIndex, setOpenIndex] = useState(() => {
+  const [groupState, setGroupState] = useState(() => {
+    const saved = loadGroupState();
     const idx = navGroups.findIndex((g) =>
       g.items.some((item) => {
         if (item.to) return isActive(pathname, item);
@@ -109,7 +123,15 @@ function useGroupOpen(pathname) {
         return false;
       })
     );
-    return idx >= 0 ? idx : null;
+    const next = {};
+    navGroups.forEach((_, i) => { next[String(i)] = false; });
+    if (idx >= 0) next[String(idx)] = true;
+    else if (saved) {
+      const firstOpen = Object.keys(saved).find((k) => saved[k]);
+      if (firstOpen) next[firstOpen] = true;
+    }
+    saveGroupState(next);
+    return next;
   });
 
   useEffect(() => {
@@ -120,10 +142,31 @@ function useGroupOpen(pathname) {
         return false;
       })
     );
-    if (idx >= 0) setOpenIndex(idx);
+    setGroupState((prev) => {
+      if (idx >= 0 && prev[String(idx)]) return prev;
+      const next = {};
+      navGroups.forEach((_, i) => { next[String(i)] = false; });
+      if (idx >= 0) next[String(idx)] = true;
+      saveGroupState(next);
+      return next;
+    });
   }, [pathname]);
 
-  return [openIndex, setOpenIndex];
+  const toggleGroup = useCallback((idx) => {
+    setGroupState((prev) => {
+      const key = String(idx);
+      const currentlyOpen = prev[key];
+      const next = {};
+      navGroups.forEach((_, i) => { next[String(i)] = false; });
+      if (!currentlyOpen) next[key] = true;
+      saveGroupState(next);
+      return next;
+    });
+  }, []);
+
+  const isOpen = useCallback((idx) => !!groupState[String(idx)], [groupState]);
+
+  return [isOpen, toggleGroup];
 }
 
 function NestedNavGroup({ item, pathname, onNavigate }) {
@@ -142,7 +185,7 @@ function NestedNavGroup({ item, pathname, onNavigate }) {
         <div className="ml-3 pl-2 border-l border-neutral-200 mt-0.5 mb-1 space-y-0.5">
           {item.children.map((child) => (
             <NavLink key={child.to} to={child.to} onClick={onNavigate} end className={({ isActive: act }) =>
-              `relative block px-3 py-1.5 rounded-md text-sm transition-colors ${act ? "text-accent-600 font-semibold bg-accent-50 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.5 before:bg-accent-500 before:rounded-full" : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"}`
+              `block px-3 py-1.5 rounded-lg text-sm transition-colors ${act ? "text-accent-600 font-semibold bg-accent-50" : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100"}`
             }>
               {child.label}
             </NavLink>
@@ -153,12 +196,94 @@ function NestedNavGroup({ item, pathname, onNavigate }) {
   );
 }
 
-export default function Sidebar({ mobileOpen, onMobileClose }) {
-  const { pathname } = useLocation();
-  const [openIndex, setOpenIndex] = useGroupOpen(pathname);
+function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
+  const Icon = group.icon;
+  const groupActive = group.items.some((item) => {
+    if (item.to) return isActive(pathname, item);
+    if (item.children) return item.children.some((c) => isActive(pathname, c));
+    return false;
+  });
+  const opened = isOpen(idx);
 
-  // Dashboard is always expanded if active (it has no items to collapse)
-  // For single-item groups like Dashboard, don't show the expand button
+  if (group.items.length === 1 && group.items[0].to) {
+    return (
+      <NavLink to={group.items[0].to} end onClick={onNavigate}
+        className={({ isActive: act }) =>
+          `w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${act ? 'text-accent-600 font-semibold bg-accent-50' : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-100'}`
+        }
+      >
+        <Icon className="w-4 h-4 shrink-0" />
+        <span>{group.label}</span>
+      </NavLink>
+    );
+  }
+
+  if (group.parentTo) {
+    return (
+      <>
+        <div className="flex items-center">
+          <NavLink to={group.parentTo} end onClick={onNavigate}
+            className={`flex-1 flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${groupActive ? 'text-accent-600 font-semibold bg-accent-50' : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-100'}`}
+          >
+            <Icon className="w-4 h-4 shrink-0" />
+            <span>{group.label}</span>
+          </NavLink>
+          <button onClick={() => onToggle(idx)}
+            className="p-2 mr-1 text-neutral-400 hover:text-neutral-600 rounded-md hover:bg-neutral-100 transition-colors"
+          >
+            <FiChevronDown className={`w-3.5 h-3.5 transition-transform ${opened ? '' : '-rotate-90'}`} />
+          </button>
+        </div>
+        {opened && (
+          <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
+            {group.items.map((item) => {
+              if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onNavigate} />;
+              const act = isActive(pathname, item);
+              return (
+                <Link key={item.to} to={item.to} onClick={onNavigate}
+                  className={`block px-3 py-1.5 rounded-lg text-sm transition-colors ${act ? 'text-accent-600 font-semibold bg-accent-50' : 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100'}`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <button onClick={() => onToggle(idx)}
+        className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${groupActive ? 'text-accent-600 font-semibold bg-accent-50' : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-100'}`}
+      >
+        <Icon className="w-4 h-4 shrink-0" />
+        <span className="flex-1 text-left">{group.label}</span>
+        <FiChevronDown className={`w-3.5 h-3.5 text-neutral-400 transition-transform ${opened ? '' : '-rotate-90'}`} />
+      </button>
+      {opened && (
+        <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
+          {group.items.map((item) => {
+            if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onNavigate} />;
+            const act = isActive(pathname, item);
+            return (
+              <Link key={item.to} to={item.to} onClick={onNavigate}
+                className={`block px-3 py-1.5 rounded-lg text-sm transition-colors ${act ? 'text-accent-600 font-semibold bg-accent-50' : 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100'}`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
+}
+
+export default function Sidebar({ mobileOpen, onMobileClose, onSearchOpen }) {
+  const { pathname } = useLocation();
+  const [isOpen, toggleGroup] = useGroupOpen(pathname);
 
   const content = (
     <div className="flex flex-col h-full bg-white">
@@ -178,106 +303,11 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
         </button>
       </div>
 
-      {/* Command palette trigger */}
-      <div className="px-3 pt-3 pb-1">
-        <button className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md border border-neutral-200 text-sm text-neutral-400 hover:text-neutral-600 hover:border-neutral-300 transition-colors bg-neutral-50">
-          <FiSearch className="w-3.5 h-3.5" />
-          <span className="flex-1 text-left">Search pages...</span>
-          <kbd className="text-[10px] text-neutral-400 bg-white border border-neutral-200 rounded px-1.5 py-0.5 font-mono">⌘K</kbd>
-        </button>
-      </div>
-
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-2 px-2 space-y-0.5 admin-scrollbar">
-        {navGroups.map((group, idx) => {
-          const Icon = group.icon;
-          const groupActive = group.items.some((item) => {
-            if (item.to) return isActive(pathname, item);
-            if (item.children) return item.children.some((c) => isActive(pathname, c));
-            return false;
-          });
-          const isOpen = openIndex === idx;
-
-          return (
-            <div key={group.label}>
-              {/* Dashboard and other single-page groups render as direct links */}
-              {group.items.length === 1 && group.items[0].to ? (
-                <NavLink
-                  to={group.items[0].to}
-                  end
-                  onClick={onMobileClose}
-                  className={({ isActive: act }) =>
-                    `w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors ${act ? "text-accent-600 font-semibold bg-accent-50" : "text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50"}`
-                  }
-                >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span>{group.label}</span>
-                </NavLink>
-              ) : group.parentTo ? (
-                <>
-                  <div className="flex items-center">
-                    <NavLink
-                      to={group.parentTo}
-                      end
-                      onClick={onMobileClose}
-                      className={`flex-1 flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors ${groupActive ? "text-accent-600 font-semibold bg-accent-50" : "text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50"}`}
-                    >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span>{group.label}</span>
-                    </NavLink>
-                    <button
-                      onClick={() => setOpenIndex(isOpen ? null : idx)}
-                      className="p-2 mr-1 text-neutral-400 hover:text-neutral-600 rounded-md hover:bg-neutral-100 transition-colors"
-                    >
-                      <FiChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
-                    </button>
-                  </div>
-                  {isOpen && (
-                    <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
-                      {group.items.map((item) => {
-                        if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onMobileClose} />;
-                        const act = isActive(pathname, item);
-                        return (
-                          <Link key={item.to} to={item.to} onClick={onMobileClose}
-                            className={`relative block px-3 py-1.5 rounded-md text-sm transition-colors ${act ? "text-accent-600 font-semibold bg-accent-50 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.5 before:bg-accent-500 before:rounded-full" : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"}`}
-                          >
-                            {item.label}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setOpenIndex(isOpen ? null : idx)}
-                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors ${groupActive ? "text-accent-600 font-semibold bg-accent-50" : "text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50"}`}
-                  >
-                    <Icon className="w-4 h-4 shrink-0" />
-                    <span className="flex-1 text-left">{group.label}</span>
-                    <FiChevronDown className={`w-3.5 h-3.5 text-neutral-400 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
-                  </button>
-                  {isOpen && (
-                    <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
-                      {group.items.map((item) => {
-                        if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onMobileClose} />;
-                        const act = isActive(pathname, item);
-                        return (
-                          <Link key={item.to} to={item.to} onClick={onMobileClose}
-                            className={`relative block px-3 py-1.5 rounded-md text-sm transition-colors ${act ? "text-accent-600 font-semibold bg-accent-50 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.5 before:bg-accent-500 before:rounded-full" : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"}`}
-                          >
-                            {item.label}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5 admin-scrollbar">
+        {navGroups.map((group, idx) => (
+          <SidebarNav key={group.label} group={group} idx={idx} pathname={pathname} isOpen={isOpen} onToggle={toggleGroup} onNavigate={onMobileClose} />
+        ))}
       </nav>
 
       {/* Bottom */}

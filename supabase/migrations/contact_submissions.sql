@@ -5,6 +5,7 @@ create table if not exists contact_submissions (
   phone text,
   subject text,
   message text,
+  is_read boolean default false,
   created_at timestamptz default now()
 );
 

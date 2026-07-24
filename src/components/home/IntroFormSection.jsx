@@ -124,7 +124,7 @@ export default function IntroFormSection({ section }) {
           </Reveal>
 
           <Reveal variant="right" className="lg:col-span-2 self-start">
-            <p className="text-red-500 text-base font-semibold text-center mb-2">Book Your Demo Now!</p>
+            <p className="text-red-500 text-base font-[600] text-center mb-2">Book Your Demo Now!</p>
             <div className="rounded-2xl shadow-lg overflow-hidden max-w-sm w-full lg:ml-auto" style={{ backgroundColor: '#74a916' }}>
               {/* diagonal header: white left / orange right */}
               <div className="relative h-16" style={{ backgroundColor: '#ff8415' }}>
@@ -174,7 +174,7 @@ export default function IntroFormSection({ section }) {
                       <a href="/privacy" className="text-blue-300 underline hover:text-blue-200">Privacy Policy</a>.
                     </span>
                   </label>
-                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-[30px] py-[15px] bg-[#ff8415] text-white font-bold rounded hover:bg-[#ff8415]/90 transition-colors disabled:opacity-70 text-sm">
+                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-[30px] py-[15px] bg-[#ff8415] text-white font-semibold rounded hover:bg-[#ff8415]/90 transition-colors disabled:opacity-70 text-sm">
                     {submitting ? <FiLoader className="w-4 h-4 animate-spin" /> : null}
                     {submitting ? 'Submitting...' : 'Send Message'}
                   </button>
