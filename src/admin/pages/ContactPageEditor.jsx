@@ -50,8 +50,8 @@ const DEFAULT_CONTACT_CONTENT = {
   gradient_start: '#0B2D6B',
   gradient_end: '#1E56C7',
   show_shadow: true,
-  section_bg_color: '#F5F6F8',
   success_message: 'Thank you! Your message has been received. Our team will contact you soon.',
+  map_embed_url: '',
 };
 
 export default function ContactPageEditor() {
@@ -125,6 +125,13 @@ export default function ContactPageEditor() {
 
           const faqSec = secs.find(s => s.section_type === 'faq_list');
           if (faqSec?.items) setFaqs(faqSec.items);
+
+          const mapSec = secs.find(s => s.section_type === 'map_embed');
+          if (mapSec?.content) {
+            const raw = mapSec.content;
+            const match = raw.match(/src="([^"]+)"/);
+            updateContent('map_embed_url', match ? match[1] : raw);
+          }
         }
       }
       setLoading(false);
@@ -142,6 +149,7 @@ export default function ContactPageEditor() {
     const sections = [
       showContactSection ? { section_type: 'contact_form', content: contactContent } : null,
       faqs.length > 0 ? { section_type: 'faq_list', heading: 'Frequently Asked Questions', items: faqs } : null,
+      contactContent.map_embed_url ? { section_type: 'map_embed', content: contactContent.map_embed_url } : null,
     ].filter(Boolean);
 
     if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); savingRef.current = false; return; }
@@ -281,13 +289,6 @@ export default function ContactPageEditor() {
                       <input type="text" value={contactContent.gradient_end} onChange={(e) => updateContent('gradient_end', e.target.value)} className={inputCls} />
                     </div>
                   </div>
-                  <div>
-                    <label className={labelCls}>Background Color</label>
-                    <div className="flex items-center gap-2">
-                      <input type="color" value={contactContent.section_bg_color} onChange={(e) => updateContent('section_bg_color', e.target.value)} className="w-10 h-10 rounded-lg border border-neutral-300 cursor-pointer" />
-                      <input type="text" value={contactContent.section_bg_color} onChange={(e) => updateContent('section_bg_color', e.target.value)} className={inputCls} />
-                    </div>
-                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <button type="button" onClick={() => updateContent('show_shadow', !contactContent.show_shadow)}
@@ -300,6 +301,21 @@ export default function ContactPageEditor() {
             </div>
           </>
         )}
+
+        {/* Map Embed */}
+        <div className="bg-white rounded-lg border border-neutral-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-semibold text-neutral-900">Map Embed</h2>
+              <p className="text-xs text-neutral-500 mt-0.5">Embed a Google Maps location below the contact section.</p>
+            </div>
+          </div>
+          <div className="mt-4">
+            <label className={labelCls}>Map Embed URL</label>
+            <input type="text" value={contactContent.map_embed_url || ''} onChange={(e) => updateContent('map_embed_url', e.target.value)} className={inputCls} placeholder="https://www.google.com/maps/embed?pb=..." />
+            <p className="text-xs text-neutral-400 mt-1">Paste the <strong>src</strong> URL from a Google Maps embed iframe. Leave empty to hide the map.</p>
+          </div>
+        </div>
 
         {/* FAQs */}
         <div className="bg-white rounded-lg border border-neutral-200 p-6">

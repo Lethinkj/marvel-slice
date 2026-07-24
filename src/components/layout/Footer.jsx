@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiArrowUp, FiPhone, FiMail, FiMapPin } from 'react-icons/fi';
+import { FiArrowUp, FiPhone, FiMail, FiMapPin, FiClock } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSiteSettings } from '../../hooks/useSupabase';
 import { topNav } from './Header';
@@ -10,7 +10,7 @@ function NavColumn({ parentLabel }) {
   const { data: children } = useNavChildren(parentLabel);
   if (!children || children.length === 0) return null;
   return (
-    <div>
+    <div className="lg:pt-10">
       <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 text-white/80">
         {parentLabel}
       </h4>
@@ -55,15 +55,11 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-8">
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex justify-center mb-3">
               {settings?.logo_url && (
-                <img src={settings.logo_url} alt="Marvel Slice" className="h-8 w-auto object-contain" />
+                <img src={settings.logo_url} alt="Marvel Slice" className="h-[100px] w-auto object-contain" />
               )}
-              <h3 className="text-lg font-bold text-brand-orange">Marvel Slice</h3>
             </div>
-            <p className="text-sm text-gray-400 mb-4 leading-relaxed">
-              Empowering careers through expert-led training and hands-on learning experiences.
-            </p>
             <div className="space-y-2 text-sm text-gray-400">
               <p className="flex items-start gap-2">
                 <FiMapPin className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
@@ -80,7 +76,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div>
+          <div className="lg:pt-10">
             <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 text-white/80">Quick Links</h4>
             <ul className="space-y-2">
               {linkItems.map((item, i) => (
@@ -96,6 +92,26 @@ export default function Footer() {
           {columnItems.map((item) => (
             <NavColumn key={item.label} parentLabel={item.label} />
           ))}
+
+          <div className="lg:pt-10">
+            <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 text-white/80">Working Hours</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li className="flex items-start gap-2">
+                <FiClock className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
+                <div>
+                  <p className="text-white/80 font-medium">Monday - Friday</p>
+                  <p>10:00 AM - 7:00 PM</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-2">
+                <FiClock className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
+                <div>
+                  <p className="text-white/80 font-medium">Saturday</p>
+                  <p>10:00 AM - 3:00 PM</p>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 

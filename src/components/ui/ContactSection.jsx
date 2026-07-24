@@ -47,10 +47,6 @@ export default function ContactSection({ section }) {
   const companyEmail = c.email || '';
   const businessHours = c.business_hours || '';
 
-  const gradientStart = c.gradient_start || '#0B2D6B';
-  const gradientEnd = c.gradient_end || '#1E56C7';
-  const showShadow = c.show_shadow !== false;
-  const bgColor = c.section_bg_color || '#F5F6F8';
   const successMessage = c.success_message || 'Thank you! Your message has been received. Our team will contact you soon.';
 
   const [form, setForm] = useState({ full_name: '', email: '', phone: '', subject: '', message: '' });
@@ -108,15 +104,12 @@ export default function ContactSection({ section }) {
 
   return (
     <Reveal>
-      <div
-        className={`rounded-2xl overflow-hidden ${showShadow ? 'shadow-xl' : 'shadow-sm'} border border-gray-100 max-w-6xl mx-auto`}
-        style={{ background: bgColor }}
-      >
+      <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 max-w-6xl mx-auto bg-white">
         <div className="grid lg:grid-cols-5 min-h-[520px]">
           {/* Left: Details */}
           <div
-            className="relative p-8 sm:p-10 flex flex-col justify-center lg:col-span-2"
-            style={{ background: `linear-gradient(135deg, ${gradientStart}, ${gradientEnd})` }}
+            className="relative p-8 sm:p-10 flex flex-col justify-center lg:col-span-2 rounded-l-2xl"
+            style={{ background: `linear-gradient(135deg, ${c.gradient_start || '#0B2D6B'}, ${c.gradient_end || '#1E56C7'})` }}
           >
             <FloatingCircles />
             <div className="relative z-10 space-y-7">
@@ -134,7 +127,7 @@ export default function ContactSection({ section }) {
           </div>
 
           {/* Right: Form */}
-          <div className="bg-white p-8 sm:p-10 flex flex-col justify-center lg:col-span-3">
+          <div className="bg-white p-8 sm:p-10 flex flex-col justify-center lg:col-span-3 rounded-r-2xl">
             <h3 className="text-xl sm:text-2xl font-bold text-[#0B2D6B] mb-1">Send us a Message</h3>
             <p className="text-sm text-neutral-500 mb-6">Fill out the form below and we'll get back to you shortly.</p>
 

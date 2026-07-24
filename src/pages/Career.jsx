@@ -398,7 +398,7 @@ export default function Career() {
 
             <div className="sm:col-span-2 pt-1">
               <button type="submit" disabled={submitting || uploading}
-                className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold py-3 px-6 rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                className="w-fit mx-auto bg-brand-orange hover:bg-brand-orange/90 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                 {uploading ? (
                   <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Uploading...</>
                 ) : submitting ? (
@@ -555,11 +555,11 @@ export default function Career() {
                     className="bg-white rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl shrink-0">
+                      <div className="bg-brand-orange/10 text-brand-orange p-2.5 rounded-xl shrink-0">
                         <FiBriefcase className="w-5 h-5" />
                       </div>
                       <h3 className="flex-1 font-bold text-slate-800 text-lg leading-tight">{job.title}</h3>
-                      <FiBookmark className="w-5 h-5 text-blue-400 hover:text-blue-600 cursor-pointer shrink-0 transition-colors" />
+                      <FiBookmark className="w-5 h-5 text-brand-orange/60 hover:text-brand-orange cursor-pointer shrink-0 transition-colors" />
                     </div>
                     {(job.experience || job.salary) && (
                       <div className="flex items-center gap-4 border-y border-slate-100 py-2.5 px-3 my-3 rounded-lg bg-slate-50/60 text-sm text-slate-600">
@@ -587,7 +587,7 @@ export default function Career() {
                         </span>
                       ) : <span />}
                       <button onClick={() => { setSelectedJob(job); setShowForm(true); }}
-                        className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
+                        className="inline-flex items-center gap-1.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
                         Apply Now <FiArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -646,13 +646,13 @@ export default function Career() {
             className="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-slate-100"
             onClick={e => e.stopPropagation()}
           >
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 text-white relative">
-              <button onClick={() => { setShowForm(false); setSelectedJob(null); }} className="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all cursor-pointer" aria-label="Close">
-                <FiX className="w-5 h-5" />
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 text-white relative">
+              <button onClick={() => { setShowForm(false); setSelectedJob(null); }} className="absolute top-3 right-3 bg-white shadow-md text-slate-600 hover:text-slate-800 p-1.5 rounded-full transition-all cursor-pointer border border-slate-200 z-10" aria-label="Close">
+                <FiX className="w-4 h-4" />
               </button>
-              <h2 className="text-2xl font-bold tracking-tight text-white">{formCfg.heading || 'Apply Now'}</h2>
+              <h2 className="text-xl font-bold tracking-tight text-white">{formCfg.heading || 'Apply Now'}</h2>
               {selectedJob && (
-                <span className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-blue-50 mt-1.5 border border-white/10">
+                <span className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-md px-3 py-0.5 rounded-full text-xs font-medium text-blue-50 mt-1 border border-white/10">
                   Applying for: <span className="font-semibold">{selectedJob.title}</span>
                 </span>
               )}
