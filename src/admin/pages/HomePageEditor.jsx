@@ -990,9 +990,10 @@ export default function HomePageEditor() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (section && !loading) {
+    if (!loading) {
       const validKeys = ['hero', 'intro_form', 'empowering', 'featured_courses', 'services', 'cta_banner', 'faqs'];
-      if (!validKeys.includes(section)) navigate('/admin/home/hero', { replace: true });
+      if (!section) navigate('/admin/home/hero', { replace: true });
+      else if (!validKeys.includes(section)) navigate('/admin/home/hero', { replace: true });
     }
   }, [section, loading, navigate]);
 

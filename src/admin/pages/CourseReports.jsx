@@ -25,7 +25,7 @@ export default function CourseReports() {
           .from('courses')
           .select('*, highlights(*), overview_faqs(*), course_fees(*), projects(*), certifications(*), course_tabs(*)')
           .order('id', { ascending: false }),
-        supabase.from('nav_items').select('id, label, parent_label').eq('is_active', true).order('sort_order'),
+        supabase.from('nav_items').select('id, label, parent_label, parent_id').order('sort_order'),
       ]);
       setCourses(coursesRes.data || []);
       setNavItems(navRes.data || []);
@@ -36,8 +36,14 @@ export default function CourseReports() {
 
   function getCourseCategory(course) {
     if (!course.nav_item_id) return null;
-    const item = navItems.find((n) => n.id === course.nav_item_id);
-    return item?.parent_label || null;
+    let current = navItems.find((n) => n.id === course.nav_item_id);
+    if (!current) return null;
+    while (current.parent_id) {
+      const parent = navItems.find((n) => n.id === current.parent_id);
+      if (!parent) break;
+      current = parent;
+    }
+    return current.parent_label || null;
   }
 
   return (
@@ -147,157 +153,182 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
     setGenerating(true);
     await new Promise((r) => setTimeout(r, 100));
 
-    const { default: html2canvas } = await import('html2canvas');
     const { default: jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
 
-    const courseBlocks = target.map((course, ci) => {
-      const tabsHTML = (course.course_tabs || []).map((tab) => `
-        <div style="margin-bottom:12px;">
-          <h3 style="font-size:14px;font-weight:700;color:#1e293b;margin:0 0 4px;">${tab.label || tab.tab_label || ''}</h3>
-          <p style="font-size:12px;color:#475569;margin:0;line-height:1.6;">${(tab.content || '').replace(/\n/g, '<br/>')}</p>
-        </div>
-      `).join('');
-
-      const highlightsHTML = (course.highlights || []).map((h) => `
-        <span style="display:inline-block;background:#eff6ff;color:#2563eb;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin:2px;">${h.label || ''}</span>
-      `).join('');
-
-      const faqsHTML = (course.overview_faqs || []).map((faq, i) => `
-        <div style="margin-bottom:8px;">
-          <p style="font-size:12px;font-weight:700;color:#1e293b;margin:0 0 2px;">${i + 1}. ${faq.question || ''}</p>
-          <p style="font-size:11px;color:#475569;margin:0;line-height:1.5;">${(faq.answer || '').replace(/\n/g, '<br/>')}</p>
-        </div>
-      `).join('');
-
-      const feesHTML = (course.course_fees || []).map((plan) => `
-        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-bottom:6px;display:inline-block;width:170px;margin-right:6px;vertical-align:top;">
-          <p style="font-size:11px;font-weight:700;color:#1e293b;margin:0 0 3px;">${plan.plan_name || ''}</p>
-          <p style="font-size:16px;font-weight:800;color:#2563eb;margin:0;">₹${plan.price || ''}</p>
-          <p style="font-size:10px;color:#64748b;margin:3px 0 0;">${plan.duration || ''}</p>
-        </div>
-      `).join('');
-
-      const projectsHTML = (course.projects || []).map((p) => `
-        <div style="margin-bottom:6px;">
-          <p style="font-size:12px;font-weight:600;color:#1e293b;margin:0 0 2px;">${p.title || p.name || ''}</p>
-          <p style="font-size:11px;color:#475569;margin:0;line-height:1.5;">${(p.description || '').replace(/\n/g, '<br/>')}</p>
-        </div>
-      `).join('');
-
-      const certsHTML = (course.certifications || []).map((c) => `
-        <div style="margin-bottom:4px;">
-          <p style="font-size:11px;font-weight:600;color:#1e293b;margin:0;">${c.title || c.name || ''}</p>
-          ${c.description ? `<p style="font-size:10px;color:#475569;margin:2px 0 0;">${c.description}</p>` : ''}
-        </div>
-      `).join('');
-
-      const checklist = (course.checklist_items || []).map((item) => {
-        const text = typeof item === 'string' ? item : (item.text || item.label || '');
-        return `<li style="font-size:11px;color:#475569;margin-bottom:3px;">${text}</li>`;
-      }).join('');
-
-      return `
-        <div style="${ci > 0 ? 'page-break-before:always;' : ''}padding:20px 0;">
-          <div style="text-align:center;padding-bottom:14px;border-bottom:2px solid #2563eb;margin-bottom:18px;">
-            <h1 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 4px;">${course.title || ''}</h1>
-            ${course.subtitle ? `<p style="font-size:13px;color:#475569;margin:0;">${course.subtitle}</p>` : ''}
-          </div>
-          ${course.description ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">About the Course</h2>
-              <p style="font-size:12px;color:#475569;margin:0;line-height:1.6;">${course.description.replace(/\n/g, '<br/>')}</p>
-            </div>
-          ` : ''}
-          ${checklist ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">Key Highlights</h2>
-              <ul style="margin:0;padding-left:18px;">${checklist}</ul>
-            </div>
-          ` : ''}
-          ${highlightsHTML ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">Highlights</h2>
-              <div>${highlightsHTML}</div>
-            </div>
-          ` : ''}
-          ${tabsHTML ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 8px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">Course Content</h2>
-              ${tabsHTML}
-            </div>
-          ` : ''}
-          ${projectsHTML ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">Projects</h2>
-              ${projectsHTML}
-            </div>
-          ` : ''}
-          ${feesHTML ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 8px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">Pricing Plans</h2>
-              <div>${feesHTML}</div>
-            </div>
-          ` : ''}
-          ${certsHTML ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">Certifications</h2>
-              ${certsHTML}
-            </div>
-          ` : ''}
-          ${faqsHTML ? `
-            <div style="margin-bottom:18px;">
-              <h2 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 6px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">FAQs</h2>
-              ${faqsHTML}
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }).join('');
-
-    const html = `
-      <div style="max-width:720px;margin:0 auto;padding:20px 0;">
-        <div style="text-align:center;padding:30px 20px;margin-bottom:20px;background:linear-gradient(135deg,#1e40af,#2563eb);border-radius:12px;color:#fff;">
-          <h1 style="font-size:32px;font-weight:800;margin:0 0 6px;">Course Brochure</h1>
-          <p style="font-size:14px;margin:0;opacity:0.9;">${target.length} course${target.length > 1 ? 's' : ''} · Generated on ${new Date().toLocaleDateString()}</p>
-        </div>
-        ${courseBlocks}
-        <div style="text-align:center;padding-top:16px;border-top:1px solid #e2e8f0;margin-top:16px;">
-          <p style="font-size:10px;color:#94a3b8;margin:0;">Marvel Slice · Admin Portal</p>
-        </div>
-      </div>
-    `;
-
-    const el = document.createElement('div');
-    el.innerHTML = html;
-    el.style.position = 'fixed';
-    el.style.left = '-9999px';
-    el.style.top = '0';
-    el.style.width = '800px';
-    el.style.background = '#fff';
-    el.style.fontFamily = 'Roboto, Montserrat, system-ui, sans-serif';
-    el.style.color = '#111';
-    document.body.appendChild(el);
-
-    const canvas = await html2canvas(el, { scale: 2, useCORS: true, logging: false, width: 800 });
-    document.body.removeChild(el);
-
-    const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfW = 210;
-    const pdfH = 297;
-    const imgW = pdfW - 20;
-    const imgH = (canvas.height * imgW) / canvas.width;
-    let heightLeft = imgH;
-    let position = 10;
+    const pageW = 190;
+    let y = 20;
 
-    pdf.addImage(imgData, 'PNG', 10, position, imgW, imgH);
-    heightLeft -= pdfH - 20;
-    while (heightLeft > 0) {
-      position = heightLeft - imgH + 10;
-      pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 10, position, imgW, imgH);
-      heightLeft -= pdfH - 20;
+    function addText(text, size, style, color, indent) {
+      if (!text) return;
+      const lines = pdf.splitTextToSize(String(text), pageW - (indent || 0) * 5);
+      pdf.setFontSize(size);
+      pdf.setTextColor(color || '#1e293b');
+      if (style === 'bold') pdf.setFont('Helvetica', 'bold');
+      else pdf.setFont('Helvetica', 'normal');
+      const lineH = size * 0.3528;
+      if (y + lines.length * lineH > 280) { pdf.addPage(); y = 20; }
+      pdf.text(lines, 10 + (indent || 0) * 5, y);
+      y += lines.length * lineH + 2;
     }
+
+    target.forEach((course, ci) => {
+      if (ci > 0) { pdf.addPage(); y = 20; }
+
+      pdf.setFontSize(18);
+      pdf.setTextColor('#0f172a');
+      pdf.setFont('Helvetica', 'bold');
+      pdf.text(String(course.title || ''), 10, y);
+      y += 8;
+
+      if (course.subtitle) {
+        pdf.setFontSize(11);
+        pdf.setTextColor('#475569');
+        pdf.setFont('Helvetica', 'normal');
+        pdf.text(String(course.subtitle), 10, y);
+        y += 6;
+      }
+
+      y += 2;
+
+      if (course.description) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('About the Course', 10, y);
+        y += 5;
+        addText(course.description, 10, 'normal', '#475569');
+        y += 2;
+      }
+
+      if (course.checklist_items && course.checklist_items.length > 0) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('Key Highlights', 10, y);
+        y += 5;
+        course.checklist_items.forEach((item) => {
+          const text = typeof item === 'string' ? item : (item.text || item.label || '');
+          addText('• ' + text, 10, 'normal', '#475569', 1);
+        });
+        y += 2;
+      }
+
+      if (course.highlights && course.highlights.length > 0) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('Highlights', 10, y);
+        y += 5;
+        const labels = course.highlights.map((h) => String(h.label || '')).filter(Boolean);
+        if (labels.length > 0) {
+          pdf.setFontSize(10);
+          pdf.setTextColor('#2563eb');
+          pdf.setFont('Helvetica', 'normal');
+          const line = labels.join('  •  ');
+          const wrapped = pdf.splitTextToSize(line, pageW);
+          if (y + wrapped.length * 4 > 280) { pdf.addPage(); y = 20; }
+          pdf.text(wrapped, 10, y);
+          y += wrapped.length * 4 + 2;
+        }
+      }
+
+      if (course.course_tabs && course.course_tabs.length > 0) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('Course Content', 10, y);
+        y += 5;
+        course.course_tabs.forEach((tab) => {
+          const label = tab.label || tab.tab_label || '';
+          if (y > 275) { pdf.addPage(); y = 20; }
+          pdf.setFontSize(11);
+          pdf.setTextColor('#1e293b');
+          pdf.setFont('Helvetica', 'bold');
+          pdf.text(String(label), 10, y);
+          y += 5;
+          const c = tab.content || {};
+          if (c.heading) addText(c.heading, 11, 'bold', '#0f172a', 1);
+          if (c.subheading) addText(c.subheading, 10, 'normal', '#334155', 1);
+          const body = c.text || c.paragraph || '';
+          if (body) addText(body, 10, 'normal', '#475569', 1);
+          if (c.qa && Array.isArray(c.qa)) {
+            c.qa.forEach((qa) => {
+              if (qa.question) addText('Q: ' + String(qa.question), 10, 'bold', '#0f172a', 1);
+              if (qa.answers && Array.isArray(qa.answers)) {
+                qa.answers.forEach((ans) => {
+                  if (ans) addText('• ' + String(ans), 9, 'normal', '#475569', 2);
+                });
+              }
+            });
+          }
+          y += 2;
+        });
+      }
+
+      if (course.projects && course.projects.length > 0) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('Projects', 10, y);
+        y += 5;
+        course.projects.forEach((p) => {
+          const title = p.title || p.name || '';
+          if (title) addText(title, 10, 'bold', '#1e293b', 1);
+          if (p.description) addText(p.description, 10, 'normal', '#475569', 1);
+          y += 1;
+        });
+      }
+
+      if (course.course_fees && course.course_fees.length > 0) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('Pricing Plans', 10, y);
+        y += 5;
+        const headers = [['Plan', 'Price', 'Duration']];
+        const rows = course.course_fees.map((plan) => [
+          String(plan.plan_name || ''),
+          '₹' + String(plan.price || ''),
+          String(plan.duration || ''),
+        ]);
+        if (y + rows.length * 8 > 280) { pdf.addPage(); y = 20; }
+        autoTable(pdf, {
+          head: headers, body: rows, startY: y,
+          styles: { fontSize: 9, cellPadding: 2 },
+          headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] },
+        });
+        y = pdf.lastAutoTable.finalY + 6;
+      }
+
+      if (course.certifications && course.certifications.length > 0) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('Certifications', 10, y);
+        y += 5;
+        course.certifications.forEach((cert) => {
+          const name = cert.title || cert.name || '';
+          if (name) addText(name, 10, 'bold', '#1e293b', 1);
+          if (cert.description) addText(cert.description, 9, 'normal', '#475569', 1);
+          y += 1;
+        });
+      }
+
+      if (course.overview_faqs && course.overview_faqs.length > 0) {
+        pdf.setFontSize(12);
+        pdf.setTextColor('#0f172a');
+        pdf.setFont('Helvetica', 'bold');
+        pdf.text('FAQs', 10, y);
+        y += 5;
+        course.overview_faqs.forEach((faq, i) => {
+          if (faq.question) addText((i + 1) + '. ' + String(faq.question), 10, 'bold', '#1e293b', 1);
+          if (faq.answer) addText(String(faq.answer), 10, 'normal', '#475569', 1);
+          y += 1;
+        });
+      }
+    });
 
     let label = 'course-brochure';
     if (selectedCategories.size > 0) {
