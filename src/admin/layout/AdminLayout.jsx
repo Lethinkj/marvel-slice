@@ -32,6 +32,7 @@ function Breadcrumbs() {
     "training-page": "Training",
     "form-submissions": "Form Submissions",
     "contact-submissions": "Contact Submissions",
+    "chat-submissions": "Chat Submissions",
     "career-submissions": "Career Submissions",
   };
 

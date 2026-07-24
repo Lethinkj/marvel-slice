@@ -104,10 +104,10 @@ export default function ContactSection({ section }) {
 
   return (
     <div className="rounded-2xl shadow-lg">
-      <div className="grid lg:grid-cols-5 min-h-[520px] rounded-2xl overflow-hidden">
+      <div className="grid lg:grid-cols-2 min-h-[520px] rounded-2xl overflow-hidden">
       {/* Left: Details */}
       <div
-        className="relative p-8 sm:p-10 flex flex-col justify-center lg:col-span-2"
+        className="relative p-8 sm:p-10 flex flex-col justify-center"
         style={{ background: `linear-gradient(135deg, ${c.gradient_start || '#0B2D6B'}, ${c.gradient_end || '#1E56C7'})` }}
       >
         <FloatingCircles />
@@ -126,7 +126,7 @@ export default function ContactSection({ section }) {
       </div>
 
       {/* Right: Form */}
-      <div className="bg-white p-8 sm:p-10 flex flex-col justify-center lg:col-span-3">
+      <div className="bg-white p-8 sm:p-10 flex flex-col justify-center">
             <h3 className="text-xl sm:text-2xl font-bold text-[#0B2D6B] mb-1">Send us a Message</h3>
             <p className="text-sm text-neutral-500 mb-6">Fill out the form below and we'll get back to you shortly.</p>
 

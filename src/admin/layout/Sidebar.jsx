@@ -24,7 +24,10 @@ const navGroups = [
       { to: "/admin/contact-page", label: "Contact" },
     ],
   },
-  { label: "Live Chat", icon: FiMessageCircle, items: [{ to: "/admin/chats", label: "Chat" }] },
+  { label: "Chat", icon: FiMessageCircle, items: [
+    { to: "/admin/chats?tab=live", label: "Live Chat" },
+    { to: "/admin/chats?tab=history", label: "Chat History" },
+  ]},
   {
     label: "Services", icon: FiServer, parentTo: "/admin/services", items: [
       { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
@@ -46,6 +49,7 @@ const navGroups = [
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
     { to: "/admin/contact-submissions", label: "Contact Submissions" },
+    { to: "/admin/chat-submissions", label: "Chat Submissions" },
   ]},
   {
     label: "Courses", icon: FiBookOpen, items: [
@@ -82,13 +86,15 @@ const navGroups = [
 ];
 
 function isActive(pathname, item) {
-  const p = pathname.split("?")[0].replace(/\/$/, "") || "/";
-  const to = item.to.replace(/\/$/, "") || "/";
-  if (p === to) return true;
+  const fullPath = pathname.split("?")[0] || "/";
+  const fullSearch = pathname.includes("?") ? "?" + pathname.split("?").slice(1).join("?") : "";
+  const itemPath = (item.to.split("?")[0].replace(/\/$/, "") || "/");
+  const itemSearch = item.to.includes("?") ? "?" + item.to.split("?").slice(1).join("?") : "";
+  if (fullPath.replace(/\/$/, "") === itemPath && fullSearch === itemSearch) return true;
 
   // Parent items that catch sub-routes (e.g. /admin/courses catches /admin/courses/xxx)
-  if (item.catchSubRoutes && p.startsWith(to + "/")) {
-    const nextSeg = p.slice(to.length + 1).split("/")[0];
+  if (item.catchSubRoutes && fullPath.replace(/\/$/, "").startsWith(itemPath + "/")) {
+    const nextSeg = fullPath.replace(/\/$/, "").slice(itemPath.length + 1).split("/")[0];
     if (item.siblingRoutes) {
       for (const sib of item.siblingRoutes) {
         if (sib.split("/").filter(Boolean).pop() === nextSeg) return false;

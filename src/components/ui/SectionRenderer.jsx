@@ -189,18 +189,16 @@ export default function SectionRenderer({ section }) {
       return (
         <Reveal>
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
-          <div className="max-w-5xl mx-auto rounded-xl overflow-hidden shadow-sm border border-gray-200">
-            <div className="relative w-full aspect-[16/9] max-h-[450px]">
-              <iframe
-                src={mapSrc}
-                className="absolute inset-0 w-full h-full"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Map"
-              />
-            </div>
+          <div className="relative left-1/2 -translate-x-1/2 w-screen">
+            <iframe
+              src={mapSrc}
+              className="w-full aspect-[16/9] max-h-[450px]"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Map"
+            />
           </div>
         </Reveal>
       );

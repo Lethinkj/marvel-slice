@@ -218,7 +218,7 @@ function DetailRow({ label, value }) {
   );
 }
 
-export default function SubmissionsInbox({ table, title, columns, fetchQuery, detailFields, exportFilename, extraFilters }) {
+export default function SubmissionsInbox({ table, title, columns, fetchQuery, detailFields, exportFilename, extraFilters, disableReply }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -367,7 +367,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </div>
           </div>
 
-          <div>
+          {!disableReply && <div>
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
@@ -379,7 +379,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               </select>
               <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
             </div>
-          </div>
+          </div>}
 
           {extraFilters && extraFilters.map((f, i) => (
             <div key={i}>
@@ -461,36 +461,30 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                     {paged.map((row, idx) => (
                       <tr key={row.id}
                         onClick={() => { setSelected(selected?.id === row.id ? null : row); if (!row.is_read) markRead(row); }}
-                        className={`border-b border-neutral-50 last:border-0 cursor-pointer transition-colors ${selected?.id === row.id ? 'bg-accent-50' : 'hover:bg-neutral-50'} ${!row.is_read ? 'border-l-2 border-l-brand-orange bg-brand-orange/[0.03]' : ''}`}
+                        className={`border-b border-neutral-50 last:border-0 cursor-pointer transition-colors ${selected?.id === row.id ? 'bg-accent-50' : 'hover:bg-neutral-50'} ${!disableReply && !row.is_read ? 'border-l-2 border-l-brand-orange bg-brand-orange/[0.03]' : ''}`}
                       >
                         <td className="px-4 py-3 text-xs text-neutral-400 font-mono whitespace-nowrap">{(page - 1) * pageSize + idx + 1}</td>
                         {columns.map((col, i) => (
                           <td key={i} className={`px-4 py-3 text-sm ${col.className || ''}`}>
-                            <div className={!row.is_read ? 'font-semibold text-neutral-900' : 'text-neutral-700'}>
+                            <div className={!disableReply && !row.is_read ? 'font-semibold text-neutral-900' : 'text-neutral-700'}>
                               {col.cell ? col.cell(row) : row[col.accessor]}
                             </div>
                           </td>
                         ))}
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div className="flex items-center gap-1">
-                            <button onClick={e => { e.stopPropagation(); row.is_read ? markUnread(row, e) : markRead(row, e); }}
+                            {!disableReply && <button onClick={e => { e.stopPropagation(); row.is_read ? markUnread(row, e) : markRead(row, e); }}
                               className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${row.is_read ? 'bg-success-50 text-success-700' : 'bg-neutral-100 text-neutral-500'}`}
                               title={row.is_read ? 'Mark as unread' : 'Mark as read'}
                             >
                               {row.is_read ? <><FiCheck className="w-3 h-3" /><span className="hidden md:inline">Read</span></> : <><FiMail className="w-3 h-3" /><span className="hidden md:inline">Unread</span></>}
-                            </button>
-                            <button onClick={e => { e.stopPropagation(); row.is_read ? markUnread(row, e) : markRead(row, e); }}
-                              className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${!row.is_read ? 'bg-success-50 text-success-700 hover:bg-success-100' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
-                              title={row.is_read ? 'Mark as unread' : 'Mark as read'}
-                            >
-                              {row.is_read ? <><FiMail className="w-3 h-3" /><span className="hidden md:inline">Mark as Unread</span></> : <><FiCheck className="w-3 h-3" /><span className="hidden md:inline">Mark as Read</span></>}
-                            </button>
-                            <button onClick={e => { e.stopPropagation(); setReplyTo(row); }}
+                            </button>}
+                            {!disableReply && <button onClick={e => { e.stopPropagation(); setReplyTo(row); }}
                               className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-accent-50 text-accent-700 hover:bg-accent-100 transition-colors"
                               title="Reply"
                             >
                               <FiSend className="w-3 h-3" /><span className="hidden md:inline">Reply</span>
-                            </button>
+                            </button>}
                             <button onClick={e => { e.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }}
                               className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-yellow-50 text-yellow-700 hover:bg-yellow-100 transition-colors"
                               title="View details"
@@ -547,21 +541,21 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </div>
             <div className="flex items-center justify-between px-5 py-4 border-t border-neutral-100 bg-neutral-50/50">
               <div className="flex items-center gap-2">
-                <button onClick={() => selected.is_read ? markUnread(selected) : markRead(selected)}
+                {!disableReply && <button onClick={() => selected.is_read ? markUnread(selected) : markRead(selected)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${selected.is_read ? 'bg-success-50 text-success-700' : 'bg-neutral-100 text-neutral-500'}`}
                 >
                   {selected.is_read ? <><FiCheck className="w-3.5 h-3.5" /> Read</> : <><FiMail className="w-3.5 h-3.5" /> Unread</>}
-                </button>
-                <button onClick={() => selected.is_read ? markUnread(selected) : markRead(selected)}
+                </button>}
+                {!disableReply && <button onClick={() => selected.is_read ? markUnread(selected) : markRead(selected)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${!selected.is_read ? 'bg-success-50 text-success-700 hover:bg-success-100' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
                 >
                   {selected.is_read ? <><FiMail className="w-3.5 h-3.5" /> Mark as Unread</> : <><FiCheck className="w-3.5 h-3.5" /> Mark as Read</>}
-                </button>
-                <button onClick={() => setReplyTo(selected)}
+                </button>}
+                {!disableReply && <button onClick={() => setReplyTo(selected)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-accent-50 text-accent-700 hover:bg-accent-100 transition-colors"
                 >
                   <FiSend className="w-3.5 h-3.5" /> Reply
-                </button>
+                </button>}
               </div>
               <button onClick={() => remove(selected.id)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-destructive-500 hover:bg-destructive-50 transition-colors"
