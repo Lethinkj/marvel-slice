@@ -110,6 +110,9 @@ li {
   border-color: var(--color-accent-500);
 }
 
+label { cursor: pointer; }
+button:not(:disabled) { cursor: pointer; }
+
 /* Custom scrollbar for admin panels */
 .admin-scrollbar::-webkit-scrollbar {
   width: 6px;

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { FiMessageCircle, FiSend, FiLoader, FiSearch, FiChevronLeft, FiCheck, FiMail, FiPhone, FiCalendar, FiChevronDown, FiMessageSquare, FiList, FiX } from 'react-icons/fi';
+import PageShell from '../components/ui/PageShell';
 
 function relativeTime(dateStr) {
   if (!dateStr) return '';
@@ -356,8 +357,8 @@ function MessageViewer({ conversation, onClose }) {
   }, [conversation.id]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl mx-4 w-full max-w-2xl max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 cursor-pointer" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl mx-4 w-full max-w-2xl max-h-[80vh] flex flex-col cursor-pointer" onClick={(e) => e.stopPropagation()}>
         <div className="shrink-0 px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <div>
             <p className="font-semibold text-dark-navy text-sm">{conversation.user_name || 'Visitor'}</p>
@@ -601,12 +602,12 @@ export default function ChatPanel() {
   }
 
   return (
-    <div>
+    <PageShell title="Chats" maxWidth="max-w-none">
       {tab === 'live' ? (
         <LiveChat conversations={conversations} onConversationsChange={setConversations} />
       ) : (
         <SessionsTable conversations={conversations} />
       )}
-    </div>
+    </PageShell>
   );
 }

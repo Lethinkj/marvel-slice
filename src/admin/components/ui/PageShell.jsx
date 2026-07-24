@@ -1,25 +1,20 @@
-export default function PageShell({ title, breadcrumbs, actions, children }) {
+export default function PageShell({ title, subtitle, actions, children, maxWidth = 'max-w-[1600px]', className = '' }) {
   return (
-    <div className="animate-fade-in-up">
-      {breadcrumbs && (
-        <nav className="flex items-center gap-1.5 text-xs text-neutral-400 mb-2">
-          {breadcrumbs.map((cr, i) => (
-            <span key={i} className="flex items-center gap-1.5">
-              {i > 0 && <span className="text-neutral-300">/</span>}
-              {cr.href ? (
-                <a href={cr.href} className="hover:text-accent-600 transition-colors">{cr.label}</a>
-              ) : (
-                <span className="text-neutral-500">{cr.label}</span>
-              )}
-            </span>
-          ))}
-        </nav>
-      )}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-neutral-900">{title}</h1>
-        {actions && <div className="flex items-center gap-2">{actions}</div>}
+    <div className={`min-h-[calc(100vh-4rem)] bg-slate-50 p-6 lg:p-8 space-y-6 mx-auto ${maxWidth} ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
+          {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
+        </div>
+        {actions && (
+          <div className="flex items-center gap-3 self-start sm:self-auto">
+            {actions}
+          </div>
+        )}
       </div>
-      {children}
+      <div className="space-y-6">
+        {children}
+      </div>
     </div>
   );
 }

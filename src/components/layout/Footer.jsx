@@ -32,8 +32,10 @@ export default function Footer() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { data: settings } = useSiteSettings();
 
-  const phone = settings?.contact_phone || '+91 6380957390';
-  const email = settings?.contact_email || 'sales@marvelslice.com';
+  const phone = settings?.contact_phone || '';
+  const email = settings?.contact_email || '';
+  const address = settings?.address || '';
+  const hours = settings?.working_hours || {};
 
   useEffect(() => {
     function handleScroll() {
@@ -61,18 +63,24 @@ export default function Footer() {
               )}
             </div>
             <div className="space-y-2 text-sm text-gray-400">
-              <p className="flex items-start gap-2">
-                <FiMapPin className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
-                <span>123 Tech Park, Chennai, Tamil Nadu, India</span>
-              </p>
-              <a href={`tel:${phone}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
-                <FiPhone className="w-4 h-4 shrink-0 text-brand-orange" />
-                <span>{phone}</span>
-              </a>
-              <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
-                <FiMail className="w-4 h-4 shrink-0 text-brand-orange" />
-                <span>{email}</span>
-              </a>
+              {address && (
+                <p className="flex items-start gap-2">
+                  <FiMapPin className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
+                  <span>{address}</span>
+                </p>
+              )}
+              {phone && (
+                <a href={`tel:${phone}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
+                  <FiPhone className="w-4 h-4 shrink-0 text-brand-orange" />
+                  <span>{phone}</span>
+                </a>
+              )}
+              {email && (
+                <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
+                  <FiMail className="w-4 h-4 shrink-0 text-brand-orange" />
+                  <span>{email}</span>
+                </a>
+              )}
             </div>
           </div>
 
@@ -93,25 +101,31 @@ export default function Footer() {
             <NavColumn key={item.label} parentLabel={item.label} />
           ))}
 
-          <div className="lg:pt-10">
-            <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 text-white/80">Working Hours</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li className="flex items-start gap-2">
-                <FiClock className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
-                <div>
-                  <p className="text-white/80 font-medium">Monday - Friday</p>
-                  <p>10:00 AM - 7:00 PM</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-2">
-                <FiClock className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
-                <div>
-                  <p className="text-white/80 font-medium">Saturday</p>
-                  <p>10:00 AM - 3:00 PM</p>
-                </div>
-              </li>
-            </ul>
-          </div>
+          {(hours.weekday || hours.saturday) && (
+            <div className="lg:pt-10">
+              <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 text-white/80">Working Hours</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                {hours.weekday && (
+                  <li className="flex items-start gap-2">
+                    <FiClock className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
+                    <div>
+                      <p className="text-white/80 font-medium">Monday - Friday</p>
+                      <p>{hours.weekday}</p>
+                    </div>
+                  </li>
+                )}
+                {hours.saturday && (
+                  <li className="flex items-start gap-2">
+                    <FiClock className="w-4 h-4 mt-0.5 shrink-0 text-brand-orange" />
+                    <div>
+                      <p className="text-white/80 font-medium">Saturday</p>
+                      <p>{hours.saturday}</p>
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 

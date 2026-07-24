@@ -1,4 +1,5 @@
 import SubmissionsInbox from '../components/ui/SubmissionsInbox';
+import PageShell from '../components/ui/PageShell';
 
 const columns = [
   { header: 'Name', accessor: 'full_name', className: 'min-w-[140px]' },
@@ -14,12 +15,14 @@ const detailFields = [
 
 export default function FormSubmissions() {
   return (
-    <SubmissionsInbox
-      table="form_submissions"
-      title="Form Submissions"
-      columns={columns}
-      detailFields={detailFields}
-      exportFilename="form-submissions"
-    />
+    <PageShell title="Form Submissions">
+      <SubmissionsInbox
+        table="form_submissions"
+        title="Form Submissions"
+        columns={columns}
+        detailFields={detailFields}
+        exportFilename="form-submissions"
+      />
+    </PageShell>
   );
 }

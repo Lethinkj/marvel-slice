@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
+import PageShell from "../components/ui/PageShell";
 import AdminButton from '../components/AdminButton';
 import EmptyState from '../components/EmptyState';
 import { FiPlus, FiBriefcase } from 'react-icons/fi';
@@ -40,22 +41,16 @@ export default function AlumniCompaniesManager() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-lg font-semibold text-neutral-900">Alumni / Hiring Partners</h1>
-          <p className="text-sm text-neutral-500">Manage partner companies</p>
-        </div>
-      </div>
+    <PageShell title="Alumni / Hiring Partners" subtitle="Manage partner companies">
 
-      <div className="rounded-lg border border-neutral-200 bg-white p-5">
+      <div className="rounded-lg border border-slate-200 bg-white p-5">
         <div className="flex gap-2 mb-4">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Company name"
-            className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+            className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
             onKeyDown={(e) => e.key === 'Enter' && addCompany()}
           />
           <AdminButton onClick={addCompany} size="md">
@@ -75,9 +70,9 @@ export default function AlumniCompaniesManager() {
             {companies.map((company) => (
               <div
                 key={company.id}
-                className="inline-flex items-center gap-2 bg-neutral-100 px-3 py-1.5 rounded-full text-sm"
+                className="inline-flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full text-sm"
               >
-                <span className="font-medium text-neutral-900">{company.name}</span>
+                <span className="font-medium text-slate-900">{company.name}</span>
                 <button
                   onClick={() => deleteCompany(company.id)}
                   className="text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded px-2 py-0.5 transition-colors"
@@ -89,6 +84,6 @@ export default function AlumniCompaniesManager() {
           </div>
         )}
       </div>
-    </div>
+    </PageShell>
   );
 }

@@ -1,4 +1,5 @@
 import SubmissionsInbox from '../components/ui/SubmissionsInbox';
+import PageShell from '../components/ui/PageShell';
 
 const columns = [
   { header: 'Name', accessor: 'name', className: 'min-w-[140px]' },
@@ -14,12 +15,14 @@ const detailFields = [
 
 export default function BrochureDownloads() {
   return (
-    <SubmissionsInbox
-      table="brochure_downloads"
-      title="Brochure Downloads"
-      columns={columns}
-      detailFields={detailFields}
-      exportFilename="brochure-downloads"
-    />
+    <PageShell title="Brochure Downloads">
+      <SubmissionsInbox
+        table="brochure_downloads"
+        title="Brochure Downloads"
+        columns={columns}
+        detailFields={detailFields}
+        exportFilename="brochure-downloads"
+      />
+    </PageShell>
   );
 }

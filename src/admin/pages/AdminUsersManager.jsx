@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import PageShell from "../components/ui/PageShell";
 import AdminButton from "../components/AdminButton";
 import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
@@ -57,9 +58,9 @@ export default function AdminUsersManager() {
   if (userRank < 2) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center">
-          <h1 className="text-lg font-semibold text-neutral-900 mb-2">Access Denied</h1>
-          <p className="text-sm text-neutral-500">You do not have permission to access this page.</p>
+        <div className="rounded-lg border border-slate-200 bg-white p-8 text-center">
+          <h1 className="text-lg font-semibold text-slate-900 mb-2">Access Denied</h1>
+          <p className="text-sm text-slate-500">You do not have permission to access this page.</p>
         </div>
       </div>
     );
@@ -158,19 +159,13 @@ export default function AdminUsersManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-lg font-semibold text-neutral-900">Admin Users</h1>
-          <p className="text-sm text-neutral-500">Create and manage admin accounts with credentials</p>
-        </div>
-      </div>
+    <PageShell title="Admin Users" subtitle="Create and manage admin accounts with credentials">
 
       {saved && (
         <div className="mb-6 p-4 bg-success-50 border border-success-200 rounded-lg flex items-center gap-2 text-success-700 text-sm">
@@ -184,47 +179,47 @@ export default function AdminUsersManager() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="rounded-lg border border-neutral-200 bg-white p-5 mb-6">
-        <h3 className="text-sm font-semibold text-neutral-900 mb-4">
+      <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-5 mb-6">
+        <h3 className="text-sm font-semibold text-slate-900 mb-4">
           {editingId ? "Edit Admin" : "Add New Admin"}
         </h3>
         <div className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Email</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wider">Email</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 placeholder="admin@example.com" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Full Name</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wider">Full Name</label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
-                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 placeholder="John Doe" />
             </div>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Role</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wider">Role</label>
               <select value={role} onChange={(e) => setRole(e.target.value)}
-                className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all bg-white appearance-none cursor-pointer">
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white appearance-none cursor-pointer">
                 {availableRoles.map((r) => (
                   <option key={r.value} value={r.value}>{r.label} — {r.desc}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wider">
                 Password{" "}
-                {editingId && <span className="text-neutral-400 font-normal normal-case">(leave blank to keep)</span>}
+                {editingId && <span className="text-slate-400 font-normal normal-case">(leave blank to keep)</span>}
               </label>
               <div className="relative">
                 <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
                   minLength={editingId ? 0 : 6} required={!editingId}
-                  className="w-full px-3 py-2 pr-10 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all"
+                  className="w-full px-3 py-2 pr-10 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   placeholder={editingId ? "Leave blank to keep" : "Min 6 characters"} />
                 <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-neutral-400 hover:text-neutral-700 transition-colors">
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-slate-700 transition-colors">
                   {showPw ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                 </button>
               </div>
@@ -248,24 +243,24 @@ export default function AdminUsersManager() {
       {users.length === 0 ? (
         <EmptyState icon={FiUsers} title="No admin users yet" description="Add your first admin above" />
       ) : (
-        <div className="rounded-lg border border-neutral-200 bg-white overflow-hidden">
-          <div className="divide-y divide-neutral-100">
+        <div className="rounded-lg border border-slate-200 bg-white overflow-hidden">
+          <div className="divide-y divide-slate-100">
             {users.map((u) => (
-              <div key={u.id} className="flex items-center gap-4 px-5 py-4 hover:bg-neutral-50 transition-colors group">
-                <div className="w-9 h-9 bg-accent-100 rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-sm font-semibold text-accent-700">
+              <div key={u.id} className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors group">
+                <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+                  <span className="text-sm font-semibold text-indigo-700">
                     {(u.full_name || "?")[0].toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-neutral-900">{u.full_name}</p>
-                  <p className="text-xs text-neutral-400">{u.email}</p>
+                  <p className="text-sm font-medium text-slate-900">{u.full_name}</p>
+                  <p className="text-xs text-slate-400">{u.email}</p>
                 </div>
                 <Badge variant={u.role}>{u.role.replace('_', ' ')}</Badge>
                 {((ROLE_RANK[u.role] || 0) < userRank || currentUser?.role === 'master_admin') && currentUser?.id !== u.id && (
                   <>
                     <button onClick={() => startEdit(u)}
-                      className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors">
+                      className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors">
                       Edit
                     </button>
                     <button onClick={() => deleteUser(u.id)}
@@ -279,6 +274,6 @@ export default function AdminUsersManager() {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

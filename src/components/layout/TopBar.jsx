@@ -5,28 +5,32 @@ import { useSiteSettings } from '../../hooks/useSupabase';
 export default function TopBar() {
   const { data: settings } = useSiteSettings();
 
-  const email = settings?.contact_email || 'sales@marvelslice.com';
-  const phone = settings?.contact_phone || '+91 6380957390';
+  const email = settings?.contact_email || '';
+  const phone = settings?.contact_phone || '';
   const social = settings?.social_links || {};
 
   return (
     <div className="bg-brand-blue text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-[5px]">
         <div className="flex items-center gap-3">
-          <a
-            href={`mailto:${email}`}
-            className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
-          >
-            <FiMail className="w-3 h-3 shrink-0" />
-            <span className="hidden sm:inline">{email}</span>
-          </a>
-          <a
-            href={`tel:${phone}`}
-            className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
-          >
-            <FiPhone className="w-3 h-3 shrink-0" />
-            <span className="hidden sm:inline">{phone}</span>
-          </a>
+          {email && (
+            <a
+              href={`mailto:${email}`}
+              className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
+            >
+              <FiMail className="w-3 h-3 shrink-0" />
+              <span className="hidden sm:inline">{email}</span>
+            </a>
+          )}
+          {phone && (
+            <a
+              href={`tel:${phone}`}
+              className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
+            >
+              <FiPhone className="w-3 h-3 shrink-0" />
+              <span className="hidden sm:inline">{phone}</span>
+            </a>
+          )}
         </div>
         <div className="flex items-center gap-2 text-xs lg:text-sm">
           <a href="#" className="hover:underline">Login</a>

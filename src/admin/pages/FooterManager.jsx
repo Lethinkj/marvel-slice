@@ -3,16 +3,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiPlus, FiLink, FiChevronDown, FiChevronRight } from 'react-icons/fi';
+import PageShell from '../components/ui/PageShell';
 
 function LinkRow({ link, onUpdate, onDelete }) {
   return (
     <div className="flex items-center gap-2">
       <FiLink className="w-3 h-3 text-neutral-300 shrink-0" />
       <input type="text" value={link.label || ''} onChange={(e) => onUpdate('label', e.target.value)}
-        className="flex-1 px-2.5 py-1.5 border border-neutral-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+        className="flex-1 px-2.5 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-transparent"
         placeholder="Link label" />
       <input type="text" value={link.url || ''} onChange={(e) => onUpdate('url', e.target.value)}
-        className="flex-1 px-2.5 py-1.5 border border-neutral-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+        className="flex-1 px-2.5 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-transparent"
         placeholder="/path or https://..." />
       <button type="button" onClick={onDelete}
         className="px-2.5 py-1 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors shrink-0">
@@ -26,13 +27,13 @@ function ColumnCard({ column, onUpdate, onDelete, onAddLink, onUpdateLink, onDel
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden">
-      <div className="flex items-center gap-3 px-5 py-3.5 bg-neutral-50/80 border-b border-neutral-100">
+    <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div className="flex items-center gap-3 px-5 py-3.5 bg-slate-50/80 border-b border-neutral-100">
         <button type="button" onClick={() => setExpanded(!expanded)} className="p-0.5">
-          {expanded ? <FiChevronDown className="w-4 h-4 text-neutral-400" /> : <FiChevronRight className="w-4 h-4 text-neutral-400" />}
+          {expanded ? <FiChevronDown className="w-4 h-4 text-slate-400" /> : <FiChevronRight className="w-4 h-4 text-slate-400" />}
         </button>
         <input type="text" value={column.title || ''} onChange={(e) => onUpdate('title', e.target.value)}
-          className="flex-1 font-semibold text-neutral-900 bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 text-sm"
+          className="flex-1 font-semibold text-slate-900 bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 text-sm"
           placeholder="Column title" />
         <button type="button" onClick={onDelete}
           className="px-2.5 py-1 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">
@@ -42,7 +43,7 @@ function ColumnCard({ column, onUpdate, onDelete, onAddLink, onUpdateLink, onDel
       {expanded && (
         <div className="p-4 space-y-2">
           {(column.footer_links || []).length === 0 && (
-            <p className="text-xs text-neutral-400 italic text-center py-2">No links in this column</p>
+            <p className="text-xs text-slate-400 italic text-center py-2">No links in this column</p>
           )}
           {(column.footer_links || []).map((link, li) => (
             <LinkRow key={link.id || li}
@@ -51,7 +52,7 @@ function ColumnCard({ column, onUpdate, onDelete, onAddLink, onUpdateLink, onDel
               onDelete={() => onDeleteLink(li)} />
           ))}
           <button type="button" onClick={onAddLink}
-            className="flex items-center gap-1 text-xs font-medium text-accent-600 hover:text-accent-700 transition-colors pt-1">
+            className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-700 transition-colors pt-1">
             <FiPlus className="w-3 h-3" /> Add Link
           </button>
         </div>
@@ -149,27 +150,25 @@ export default function FooterManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Footer Manager</h1>
-          <p className="text-sm text-neutral-500 mt-1">Manage footer columns and their links</p>
-        </div>
+    <PageShell
+      title="Footer Manager"
+      subtitle="Manage footer columns and their links"
+      actions={
         <AdminButton onClick={addColumn} variant="primary" size="md">
           <FiPlus className="w-4 h-4" />
           Add Column
         </AdminButton>
-      </div>
-
+      }
+    >
       {columns.length === 0 ? (
-        <div className="bg-white rounded-lg border border-neutral-200 p-12 text-center">
-          <p className="text-sm text-neutral-400">No footer columns yet. Click "Add Column" to get started.</p>
+        <div className="bg-white rounded-lg border border-slate-200 p-12 text-center">
+          <p className="text-sm text-slate-400">No footer columns yet. Click "Add Column" to get started.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -184,6 +183,6 @@ export default function FooterManager() {
           ))}
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

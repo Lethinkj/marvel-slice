@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import PageShell from "../components/ui/PageShell";
 import { FiDownload, FiLoader, FiCheck, FiSearch, FiX } from 'react-icons/fi';
 
 const categories = [
@@ -40,15 +41,15 @@ export default function CourseReports() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col items-center justify-center text-center mb-8 pt-12">
-        <h1 className="text-2xl font-bold text-neutral-900">Course Reports</h1>
-        <p className="text-sm text-neutral-500 mt-1 mb-5">Generate combined brochure PDFs</p>
+    <PageShell
+      title="Course Reports"
+      subtitle="Generate combined brochure PDFs"
+      actions={
         <AdminButton onClick={() => setOpen(true)} variant="primary" size="md">
           <FiDownload className="w-4 h-4" />
           Download
         </AdminButton>
-      </div>
+      }>
 
       {open && (
         <GenerateDialog
@@ -61,10 +62,10 @@ export default function CourseReports() {
 
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }
 
@@ -317,7 +318,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40 cursor-pointer" onClick={onClose} />
       <div className="relative bg-white rounded-lg border border-neutral-200 w-full max-w-lg max-h-[85vh] flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 shrink-0">
           <div>
@@ -342,7 +343,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                     onClick={() => toggleCategory(cat)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all border ${
                       active
-                        ? 'bg-accent-600 text-white border-accent-600'
+                        ? 'bg-indigo-600 text-white border-indigo-600'
                         : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300'
                     }`}
                   >
@@ -365,7 +366,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
               <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Select Courses</p>
               <button
                 onClick={selectAll}
-                className="text-xs text-accent-600 font-medium hover:underline"
+                className="text-xs text-indigo-600 font-medium hover:underline"
               >
                 {selectedCourses.size === courses.length ? 'Deselect All' : 'Select All'}
               </button>
@@ -377,7 +378,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                 value={search}
                 placeholder="Search courses..."
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="w-full pl-9 pr-4 py-2 border border-neutral-200 rounded-lg text-sm outline-none ring-0 focus:ring-2 focus:ring-accent-500 bg-white"
+                className="w-full pl-9 pr-4 py-2 border border-neutral-200 rounded-lg text-sm outline-none ring-0 focus:ring-2 focus:ring-indigo-500 bg-white"
               />
             </div>
             <div className="max-h-52 overflow-y-auto border border-neutral-100 rounded-lg divide-y divide-neutral-50">
@@ -395,11 +396,11 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                       key={course.id}
                       onClick={() => toggleCourse(course.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-neutral-50 transition-colors ${
-                        selectedCourses.has(course.id) ? 'bg-accent-50' : ''
+                        selectedCourses.has(course.id) ? 'bg-indigo-50' : ''
                       }`}
                     >
                       <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${
-                        selectedCourses.has(course.id) ? 'bg-accent-600 border-accent-600' : 'border-neutral-300'
+                        selectedCourses.has(course.id) ? 'bg-indigo-600 border-indigo-600' : 'border-neutral-300'
                       }`}>
                         {selectedCourses.has(course.id) && <FiCheck className="w-2.5 h-2.5 text-white" />}
                       </div>
@@ -428,7 +429,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                       key={p}
                       onClick={() => setPage(p)}
                       className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
-                        p === page ? 'bg-accent-600 text-white' : 'text-neutral-500 hover:bg-neutral-100'
+                        p === page ? 'bg-indigo-600 text-white' : 'text-neutral-500 hover:bg-neutral-100'
                       }`}
                     >
                       {p}

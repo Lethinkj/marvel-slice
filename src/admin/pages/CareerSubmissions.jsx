@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import SubmissionsInbox from '../components/ui/SubmissionsInbox';
+import PageShell from '../components/ui/PageShell';
 
 const columns = [
   { header: 'Name', accessor: 'full_name', className: 'min-w-[140px]' },
@@ -19,7 +20,7 @@ const detailFields = [
   { label: 'Description', accessor: 'description' },
   {
     label: 'Resume',
-    value: (row) => row.resume_url ? <a href={row.resume_url} target="_blank" rel="noopener noreferrer" className="text-accent-600 hover:underline">View Resume</a> : 'N/A',
+    value: (row) => row.resume_url ? <a href={row.resume_url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">View Resume</a> : 'N/A',
   },
 ];
 
@@ -69,14 +70,16 @@ export default function CareerSubmissions() {
   }, [positionFilter, categoryFilter]);
 
   return (
-    <SubmissionsInbox
-      table="career_submissions"
-      title="Career Submissions"
-      columns={columns}
-      detailFields={detailFields}
-      exportFilename="career-submissions"
-      extraFilters={extraFilters}
-      fetchQuery={fetchQuery}
-    />
+    <PageShell title="Career Submissions">
+      <SubmissionsInbox
+        table="career_submissions"
+        title="Career Submissions"
+        columns={columns}
+        detailFields={detailFields}
+        exportFilename="career-submissions"
+        extraFilters={extraFilters}
+        fetchQuery={fetchQuery}
+      />
+    </PageShell>
   );
 }

@@ -43,8 +43,8 @@ function ReplyModal({ row, onClose, pageTitle }) {
 
   if (sent) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-lg w-full p-8 text-center" onClick={e => e.stopPropagation()}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose}>
+        <div className="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-lg w-full p-8 text-center cursor-pointer" onClick={e => e.stopPropagation()}>
           <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4"><FiCheck className="w-6 h-6 text-emerald-600" /></div>
           <h3 className="text-lg font-semibold text-slate-900 mb-1">Reply sent!</h3>
           <p className="text-sm text-slate-500 mb-6">Your email has been sent to {row.email}.</p>
@@ -55,8 +55,8 @@ function ReplyModal({ row, onClose, pageTitle }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-lg w-full" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose}>
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-lg w-full cursor-pointer" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div><h3 className="text-base font-semibold text-slate-900">Reply to {row.full_name || row.name || row.email}</h3><p className="text-xs text-slate-400 mt-0.5">{row.email}</p></div>
           <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"><FiX className="w-5 h-5" /></button>
@@ -162,9 +162,9 @@ function ExportDialog({ type, data, columns, exportFilename, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-xl border border-slate-200 shadow-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-pointer" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer" onClick={onClose} />
+      <div className="relative bg-white rounded-xl border border-slate-200 shadow-2xl w-full max-w-md cursor-pointer" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div><h2 className="text-base font-semibold text-slate-900">Export {type.toUpperCase()}</h2><p className="text-xs text-slate-400 mt-0.5">Choose date range for the report</p></div>
           <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"><FiX className="w-5 h-5" /></button>

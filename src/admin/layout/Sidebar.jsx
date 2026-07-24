@@ -1,24 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiGlobe, FiSettings, FiMessageCircle, FiServer, FiZap } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap } from "react-icons/fi";
 
 const navGroups = [
   { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
   {
     label: "Edit Pages", icon: FiFile,
     items: [
-      {
-        label: "Home", children: [
-          { to: "/admin/home/hero", label: "Hero Banner" },
-          { to: "/admin/home/intro_form", label: "Intro + Form" },
-          { to: "/admin/home/empowering", label: "Empowering Careers" },
-          { to: "/admin/home/featured_courses", label: "Feature Cards" },
-          { to: "/admin/home/services", label: "Featured Services" },
-          { to: "/admin/home/cta_banner", label: "CTA Banner" },
-          { to: "/admin/home/faqs", label: "FAQs" },
-          { to: "/admin/home/alumni", label: "Alumni Partners" },
-        ],
-      },
+      { to: "/admin/home", label: "Home", catchSubRoutes: true },
       { to: "/admin/about-page", label: "About" },
       { to: "/admin/career-page", label: "Career" },
       { to: "/admin/contact-page", label: "Contact" },
@@ -73,14 +62,10 @@ const navGroups = [
     { to: "/admin/nav-menu/manage", label: "Manage Sub-items" },
   ]},
   { label: "Appearance", icon: FiLayers, items: [
-    { to: "/admin/footer", label: "Footer" },
     { to: "/admin/media", label: "Media Library" },
   ]},
-  { label: "Social", icon: FiGlobe, items: [
-    { to: "/admin/site-settings", label: "Social Links" },
-  ]},
   { label: "Settings", icon: FiSettings, items: [
-    { to: "/admin/site-settings", label: "Site Settings" },
+    { to: "/admin/site-settings?section=general", label: "Site Settings" },
     { to: "/admin/admin-users", label: "Admin Users" },
   ]},
 ];
@@ -129,12 +114,12 @@ function useGroupOpen(pathname) {
       })
     );
     const next = {};
-    navGroups.forEach((_, i) => { next[String(i)] = false; });
-    if (idx >= 0) next[String(idx)] = true;
-    else if (saved) {
-      const firstOpen = Object.keys(saved).find((k) => saved[k]);
-      if (firstOpen) next[firstOpen] = true;
-    }
+      navGroups.forEach((_, i) => { next[String(i)] = false; });
+      if (idx >= 0) next[String(idx)] = true;
+      else if (saved) {
+        const firstOpen = Object.keys(saved).find((k) => saved[k]);
+        if (firstOpen) next[firstOpen] = true;
+      }
     saveGroupState(next);
     return next;
   });
@@ -182,7 +167,7 @@ function NestedNavGroup({ item, pathname, onNavigate }) {
 
   return (
     <div>
-      <button onClick={() => setOpen((p) => !p)} className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${item.children.some((c) => isActive(pathname, c)) ? "text-indigo-400 font-semibold" : "text-slate-400 hover:text-slate-200"}`}>
+      <button onClick={() => setOpen((p) => !p)} className={`cursor-pointer w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${item.children.some((c) => isActive(pathname, c)) ? "text-indigo-400 font-semibold" : "text-slate-400 hover:text-slate-200"}`}>
         <FiChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? "" : "-rotate-90"}`} />
         {item.label}
       </button>
@@ -190,7 +175,7 @@ function NestedNavGroup({ item, pathname, onNavigate }) {
         <div className="ml-3 pl-2 border-l border-slate-700/50 mt-0.5 mb-1 space-y-0.5 transition-all duration-200">
           {item.children.map((child) => (
             <NavLink key={child.to} to={child.to} onClick={onNavigate} end className={({ isActive: act }) =>
-              `block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? "text-indigo-400 font-semibold bg-indigo-500/10" : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/30"}`
+              `cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? "text-indigo-400 font-semibold bg-indigo-500/10" : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/30"}`
             }>
               {child.label}
             </NavLink>
@@ -214,7 +199,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
     return (
       <NavLink to={group.items[0].to} end onClick={onNavigate}
         className={({ isActive: act }) =>
-          `w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`
+          `cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`
         }
       >
         <Icon className="w-4 h-4 shrink-0" />
@@ -228,13 +213,13 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
       <>
         <div className="flex items-center">
           <NavLink to={group.parentTo} end onClick={onNavigate}
-            className={`flex-1 flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+            className={`cursor-pointer flex-1 flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
           >
             <Icon className="w-4 h-4 shrink-0" />
             <span>{group.label}</span>
           </NavLink>
           <button onClick={() => onToggle(idx)}
-            className="p-2 mr-1 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-700/30 transition-all duration-200"
+            className="cursor-pointer p-2 mr-1 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-700/30 transition-all duration-200"
           >
             <FiChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${opened ? '' : '-rotate-90'}`} />
           </button>
@@ -245,9 +230,9 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
               if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onNavigate} />;
               const act = isActive(pathname, item);
               return (
-                <Link key={item.to} to={item.to} onClick={onNavigate}
-                  className={`block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
-                >
+<Link key={item.to} to={item.to} onClick={onNavigate}
+          className={`cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+        >
                   {item.label}
                 </Link>
               );
@@ -261,7 +246,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
   return (
     <>
       <button onClick={() => onToggle(idx)}
-        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+        className={`cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
       >
         <Icon className="w-4 h-4 shrink-0" />
         <span className="flex-1 text-left">{group.label}</span>
@@ -274,7 +259,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
             const act = isActive(pathname, item);
             return (
               <Link key={item.to} to={item.to} onClick={onNavigate}
-                className={`block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+                className={`block cursor-pointer px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
               >
                 {item.label}
               </Link>
@@ -287,8 +272,9 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
 }
 
 export default function Sidebar({ mobileOpen, onMobileClose }) {
-  const { pathname } = useLocation();
-  const [isOpen, toggleGroup] = useGroupOpen(pathname);
+  const { pathname, search } = useLocation();
+  const fullPath = pathname + search;
+  const [isOpen, toggleGroup] = useGroupOpen(fullPath);
 
   const content = (
     <div className="flex flex-col h-full bg-slate-900">
@@ -309,7 +295,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
 
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5 admin-scrollbar">
         {navGroups.map((group, idx) => (
-          <SidebarNav key={group.label} group={group} idx={idx} pathname={pathname} isOpen={isOpen} onToggle={toggleGroup} onNavigate={onMobileClose} />
+          <SidebarNav key={group.label} group={group} idx={idx} pathname={fullPath} isOpen={isOpen} onToggle={toggleGroup} onNavigate={onMobileClose} />
         ))}
       </nav>
 
@@ -330,7 +316,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
       <aside className="hidden lg:flex lg:flex-col w-60 shrink-0 h-screen overflow-hidden bg-slate-900 transition-all duration-300">{content}</aside>
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onMobileClose} />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer" onClick={onMobileClose} />
           <aside className="fixed left-0 top-0 h-full w-72 shadow-2xl z-50 overflow-hidden bg-slate-900" role="dialog" aria-modal="true" aria-label="Sidebar navigation">{content}</aside>
         </div>
       )}

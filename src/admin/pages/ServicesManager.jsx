@@ -9,6 +9,7 @@ import DataTable from '../components/ui/DataTable';
 import {
   FiPlus, FiEdit2, FiCopy, FiTrash2, FiExternalLink, FiSearch, FiFilter, FiPackage,
 } from 'react-icons/fi';
+import PageShell from '../components/ui/PageShell';
 
 const statusColors = {
   published: 'published',
@@ -86,7 +87,7 @@ export default function ServicesManager() {
     {
       header: 'Title',
       cell: (row) => (
-        <Link to={`/admin/services/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-accent-600 transition-colors">
+        <Link to={`/admin/services/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-indigo-600 transition-colors">
           {row.title || 'Untitled'}
         </Link>
       ),
@@ -108,7 +109,7 @@ export default function ServicesManager() {
         <div className="flex items-center gap-2">
           <label className="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" checked={row.status === 'published'} onChange={() => togglePublish(row.id, row.status)} className="sr-only peer" disabled={row.status === 'archived'} />
-            <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+            <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
           </label>
           <Badge variant={statusColors[row.status] || 'default'}>
             {row.status ? row.status.charAt(0).toUpperCase() + row.status.slice(1) : 'Draft'}
@@ -122,7 +123,7 @@ export default function ServicesManager() {
       cell: (row) => (
         <label className="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" checked={!!row.is_featured} onChange={() => toggleFeatured(row.id, row.is_featured)} className="sr-only peer" />
-          <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-accent-600 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+          <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-indigo-600 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
         </label>
       ),
     },
@@ -145,9 +146,9 @@ export default function ServicesManager() {
       className: 'w-32 text-right',
       cell: (row) => (
         <div className="flex items-center justify-end gap-1">
-          {row.slug && <Link to={`/services/${row.slug}`} target="_blank" className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors" title="Preview"><FiExternalLink className="w-4 h-4" /></Link>}
-          <Link to={`/admin/services/${row.id}`} className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors" title="Edit"><FiEdit2 className="w-4 h-4" /></Link>
-          <button onClick={() => handleDuplicate(row)} className="p-1.5 text-neutral-400 hover:text-accent-600 rounded-md hover:bg-accent-50 transition-colors" title="Duplicate"><FiCopy className="w-4 h-4" /></button>
+          {row.slug && <Link to={`/services/${row.slug}`} target="_blank" className="p-1.5 text-neutral-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors" title="Preview"><FiExternalLink className="w-4 h-4" /></Link>}
+          <Link to={`/admin/services/${row.id}`} className="p-1.5 text-neutral-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors" title="Edit"><FiEdit2 className="w-4 h-4" /></Link>
+          <button onClick={() => handleDuplicate(row)} className="p-1.5 text-neutral-400 hover:text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors" title="Duplicate"><FiCopy className="w-4 h-4" /></button>
           <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-destructive-500 hover:text-destructive-700 rounded-md hover:bg-destructive-50 transition-colors" title="Delete"><FiTrash2 className="w-4 h-4" /></button>
         </div>
       ),
@@ -157,26 +158,24 @@ export default function ServicesManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-accent-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-lg font-semibold text-neutral-900">Services</h1>
-          <p className="text-sm text-neutral-500">
-            {services.length} service{services.length !== 1 ? 's' : ''} total
-          </p>
-        </div>
-        <AdminButton to="/admin/services/new" variant="primary" size="sm">
-          <FiPlus className="w-4 h-4" />
-          Add Service
-        </AdminButton>
-      </div>
-
+    <PageShell
+      title="Services"
+      subtitle={`${services.length} service${services.length !== 1 ? 's' : ''} total`}
+      actions={
+        services.length > 0 ? (
+          <AdminButton to="/admin/services/new" variant="primary" size="sm">
+            <FiPlus className="w-4 h-4" />
+            Add Service
+          </AdminButton>
+        ) : undefined
+      }
+    >
       {services.length > 0 && (
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-md">
@@ -186,7 +185,7 @@ export default function ServicesManager() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by title..."
-              className="w-full pl-10 pr-4 h-9 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 bg-white"
+              className="w-full pl-10 pr-4 h-9 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -194,7 +193,7 @@ export default function ServicesManager() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-9 px-3 border border-neutral-300 rounded-lg text-sm text-neutral-700 bg-white focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+              className="h-9 px-3 border border-neutral-300 rounded-lg text-sm text-neutral-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="All">All Status</option>
               <option value="published">Published</option>
@@ -205,7 +204,7 @@ export default function ServicesManager() {
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="h-9 px-3 border border-neutral-300 rounded-lg text-sm text-neutral-700 bg-white focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500"
+                className="h-9 px-3 border border-neutral-300 rounded-lg text-sm text-neutral-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="All">All Categories</option>
                 {categories.map((cat) => (
@@ -237,6 +236,6 @@ export default function ServicesManager() {
       ) : (
         <DataTable columns={columns} data={filtered} searchable={false} />
       )}
-    </div>
+    </PageShell>
   );
 }

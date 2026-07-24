@@ -6,6 +6,7 @@ import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
 import DataTable from "../components/ui/DataTable";
 import { FiPlus, FiBookOpen, FiSearch } from "react-icons/fi";
+import PageShell from '../components/ui/PageShell';
 
 export default function CoursesList() {
   const [courses, setCourses] = useState([]);
@@ -81,12 +82,12 @@ export default function CoursesList() {
     {
       header: 'ID',
       className: 'w-20',
-      cell: (row) => <span className="text-sm text-neutral-400 font-mono">{row.id.slice(0, 8)}...</span>,
+      cell: (row) => <span className="text-sm text-slate-400 font-mono">{row.id.slice(0, 8)}...</span>,
     },
     {
       header: 'Title',
       cell: (row) => (
-        <Link to={`/admin/courses/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-accent-600 transition-colors">
+        <Link to={`/admin/courses/${row.id}`} className="text-sm font-medium text-slate-900 hover:text-indigo-600 transition-colors">
           {row.title || 'Untitled'}
         </Link>
       ),
@@ -94,7 +95,7 @@ export default function CoursesList() {
     {
       header: 'Slug',
       className: 'hidden sm:table-cell',
-      cell: (row) => <span className="text-sm text-neutral-400">/{row.slug}</span>,
+      cell: (row) => <span className="text-sm text-slate-400">/{row.slug}</span>,
     },
     {
       header: 'Status',
@@ -102,7 +103,7 @@ export default function CoursesList() {
         <div className="flex items-center gap-2">
           <label className="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" checked={row.is_published} onChange={() => togglePublish(row.id, row.is_published)} className="sr-only peer" />
-            <div className="w-9 h-5 bg-neutral-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-accent-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
+            <div className="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:bg-success-500 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500 peer-focus-visible:ring-offset-2 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
           </label>
           <Badge variant={row.is_published ? 'published' : 'draft'}>{row.is_published ? 'Published' : 'Draft'}</Badge>
         </div>
@@ -113,7 +114,7 @@ export default function CoursesList() {
       className: 'w-24 text-right',
       cell: (row) => (
         <div className="flex items-center justify-end gap-2">
-          <Link to={`/admin/courses/${row.id}`} className="px-3 py-1.5 text-xs font-medium text-accent-600 bg-accent-50 hover:bg-accent-100 rounded-md transition-colors">Edit</Link>
+          <Link to={`/admin/courses/${row.id}`} className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors">Edit</Link>
           <button onClick={() => handleDelete(row.id, row.title)} className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">Delete</button>
         </div>
       ),
@@ -123,43 +124,41 @@ export default function CoursesList() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-accent-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-lg font-semibold text-neutral-900">All Courses</h1>
-          <p className="text-sm text-neutral-500">
-            {courses.length} course{courses.length !== 1 ? "s" : ""} total
-          </p>
-        </div>
-        <AdminButton to="/admin/courses/wizard" variant="primary" size="sm">
-          <FiPlus className="w-4 h-4" />
-          Add Course
-        </AdminButton>
-      </div>
-
+    <PageShell
+      title="All Courses"
+      subtitle={`${courses.length} course${courses.length !== 1 ? 's' : ''} total`}
+      actions={
+        courses.length > 0 ? (
+          <AdminButton to="/admin/courses/wizard" variant="primary" size="sm">
+            <FiPlus className="w-4 h-4" />
+            Add Course
+          </AdminButton>
+        ) : undefined
+      }
+    >
       {courses.length > 0 && (
         <div className="mb-6">
           <div className="relative max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search courses..."
-              className="w-full pl-10 pr-4 h-9 border border-neutral-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-accent-500 bg-white"
+              className="w-full pl-10 pr-4 h-9 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white"
             />
           </div>
         </div>
       )}
 
       {courses.length === 0 ? (
-        <div className="border border-neutral-200 rounded-lg">
+        <div className="border border-slate-200 rounded-lg">
           <EmptyState
             icon={FiBookOpen}
             title="No courses yet"
@@ -168,7 +167,7 @@ export default function CoursesList() {
           />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="border border-neutral-200 rounded-lg">
+        <div className="border border-slate-200 rounded-lg">
           <EmptyState
             icon={FiSearch}
             title={`No courses match "${search}"`}
@@ -180,10 +179,10 @@ export default function CoursesList() {
           {sortedCategories.map((cat) => (
             <div key={cat}>
               <div className="flex items-center gap-2 mb-3">
-                <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                   {cat}
                 </h2>
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-slate-400">
                   ({grouped[cat].length})
                 </span>
               </div>
@@ -192,6 +191,6 @@ export default function CoursesList() {
           ))}
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

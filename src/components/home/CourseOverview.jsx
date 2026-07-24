@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import AccordionItem from '../ui/AccordionItem';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
+import { useSiteSettings } from '../../hooks/useSupabase';
 
 export default function CourseOverview({ section }) {
   if (!section) return null;
+  const { data: settings } = useSiteSettings();
+  const phone = settings?.contact_phone || '';
 
   const heading = section.heading || 'Overview';
   const content = section.content || {};
@@ -51,26 +54,14 @@ export default function CourseOverview({ section }) {
             )}
           </div>
 
-          <Reveal variant="left" className="bg-gradient-to-br from-brand-blue to-brand-blue rounded-xl p-6 sm:p-8 text-white">
-            <h4 className="font-semibold text-lg sm:text-xl mb-3">Talk To Us</h4>
-            <a href="tel:+916380957390" className="text-brand-orange font-bold text-xl sm:text-2xl block mb-6 hover:underline">
-              +91 6380957390
-            </a>
-            <div className="space-y-4">
-              <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <p className="text-sm text-white/70">Angular Developer</p>
-                <p className="text-base mt-2 leading-relaxed">
-                  "Angular has been the most in-demand framework for enterprise applications."
-                </p>
-              </div>
-              <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <p className="text-sm text-white/70">Industry Report</p>
-                <p className="text-base mt-2 leading-relaxed">
-                  "Over 40% of Fortune 500 companies use Angular for their web platforms."
-                </p>
-              </div>
-            </div>
-          </Reveal>
+          {phone && (
+            <Reveal variant="left" className="bg-gradient-to-br from-brand-blue to-brand-blue rounded-xl p-6 sm:p-8 text-white">
+              <h4 className="font-semibold text-lg sm:text-xl mb-3">Talk To Us</h4>
+              <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="text-brand-orange font-bold text-xl sm:text-2xl block mb-6 hover:underline">
+                {phone}
+              </a>
+            </Reveal>
+          )}
         </div>
       </div>
     </section>

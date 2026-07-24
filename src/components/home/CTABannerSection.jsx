@@ -86,11 +86,11 @@ export default function CTABannerSection({ section }) {
                       {ctaText || 'Request a Call Back'}
                     </span>
                     <span className="mt-1.5 text-xl font-bold text-white tracking-wide">
-                      {phone || '+91 6380 957 390'}
+                      {phone || ''}
                     </span>
                   </div>
                   <motion.a
-                    href={`tel:${(phone || '+916380957390').replace(/[^0-9+]/g, '')}`}
+                      href={`tel:${(phone || '').replace(/[^0-9+]/g, '')}`}
                     className="flex items-center justify-center w-14 h-14 rounded-full bg-[#F7941D] text-white shrink-0 shadow-lg"
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}

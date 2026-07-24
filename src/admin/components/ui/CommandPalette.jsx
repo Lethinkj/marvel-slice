@@ -26,11 +26,11 @@ const routes = [
   { label: 'Navigation', to: '/admin/nav-menu', icon: FiMenu, category: 'Settings' },
   { label: 'Media Library', to: '/admin/media', icon: FiLayers, category: 'Settings' },
   { label: 'Footer', to: '/admin/footer', icon: FiLayers, category: 'Settings' },
-  { label: 'Site Settings', to: '/admin/site-settings', icon: FiSettings, category: 'Settings' },
+  { label: 'Site Settings', to: '/admin/site-settings?section=general', icon: FiSettings, category: 'Settings' },
   { label: 'Admin Users', to: '/admin/admin-users', icon: FiSettings, category: 'Settings' },
   { label: 'Live Chat', to: '/admin/chats?tab=live', icon: FiMessageCircle, category: 'Settings' },
   { label: 'Chat History', to: '/admin/chats?tab=history', icon: FiMessageCircle, category: 'Settings' },
-  { label: 'Social Links', to: '/admin/site-settings', icon: FiGlobe, category: 'Settings' },
+  { label: 'Social Links', to: '/admin/site-settings?section=social', icon: FiGlobe, category: 'Settings' },
 ];
 
 export default function CommandPalette({ open, onClose }) {
@@ -77,9 +77,9 @@ export default function CommandPalette({ open, onClose }) {
   const grouped = groupResults(results);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]" onClick={onClose}>
+    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] cursor-pointer" onClick={onClose}>
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden cursor-pointer" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 px-4 border-b border-slate-100">
           <FiSearch className="w-4 h-4 text-slate-400 shrink-0" />
           <input

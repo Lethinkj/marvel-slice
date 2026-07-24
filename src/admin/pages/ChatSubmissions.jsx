@@ -1,4 +1,5 @@
 import SubmissionsInbox from '../components/ui/SubmissionsInbox';
+import PageShell from '../components/ui/PageShell';
 
 const columns = [
   { header: 'Name', accessor: 'user_name', className: 'min-w-[140px]' },
@@ -27,13 +28,15 @@ const detailFields = [
 
 export default function ChatSubmissions() {
   return (
-    <SubmissionsInbox
-      table="conversations"
-      title="Chat Submissions"
-      columns={columns}
-      detailFields={detailFields}
-      exportFilename="chat-submissions"
-      disableReply
-    />
+    <PageShell title="Chat Submissions">
+      <SubmissionsInbox
+        table="conversations"
+        title="Chat Submissions"
+        columns={columns}
+        detailFields={detailFields}
+        exportFilename="chat-submissions"
+        disableReply
+      />
+    </PageShell>
   );
 }
