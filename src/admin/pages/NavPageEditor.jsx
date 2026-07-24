@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { useNavPage } from '../../hooks/useSupabase';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import useDirty from '../hooks/useDirty';
 import { FiPlus, FiTrash2, FiChevronUp, FiChevronDown, FiArrowLeft, FiUpload, FiExternalLink, FiSave, FiCheck, FiFileText, FiSearch, FiBookOpen } from 'react-icons/fi';
 
 const sectionTypes = [
@@ -87,6 +88,7 @@ export default function NavPageEditor() {
   const [allCourses, setAllCourses] = useState([]);
   const [courseSearch, setCourseSearch] = useState('');
   const [courseChanges, setCourseChanges] = useState(false);
+  const { dirty, reset } = useDirty([heading, subheading, heroImage, sections], isLoading);
 
   useEffect(() => {
     supabase.from('nav_items').select('label,path').eq('id', id).maybeSingle().then(({ data }) => {
@@ -206,6 +208,7 @@ export default function NavPageEditor() {
     queryClient.invalidateQueries({ queryKey: ['navPageData'] });
     queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
     setSaved(true);
+    reset();
     setSaving(false);
     savingRef.current = false;
     setTimeout(() => {
@@ -381,7 +384,7 @@ export default function NavPageEditor() {
           )}
         </div>
 
-        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
       </form>
     </div>
   );

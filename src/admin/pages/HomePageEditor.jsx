@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import useDirty from '../hooks/useDirty';
 import {
   FiPlus, FiTrash2, FiSave, FiUpload,
   FiHome, FiStar, FiAward, FiHelpCircle,
@@ -986,6 +987,7 @@ export default function HomePageEditor() {
   const [saveError, setSaveError] = useState('');
   const [loading, setLoading] = useState(true);
   const savingRef = useRef(false);
+  const { dirty, reset } = useDirty([sections, alumniData], loading);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -1065,6 +1067,7 @@ export default function HomePageEditor() {
     savingRef.current = false;
     setSaving(false);
     setSaved(true);
+    reset();
     queryClient.invalidateQueries({ queryKey: ['homeSections'] });
     queryClient.invalidateQueries({ queryKey: ['alumniCompanies'] });
     setTimeout(() => setSaved(false), 2000);
@@ -1121,7 +1124,7 @@ export default function HomePageEditor() {
             if (!def || !sec) return null;
             return <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />;
           })()}
-          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
+          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import useDirty from '../hooks/useDirty';
 import { FiSave, FiUpload, FiTrash2, FiCheck, FiMail, FiPhone, FiGlobe } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -71,6 +72,7 @@ export default function SiteSettings() {
   const [saveError, setSaveError] = useState('');
   const [settingsId, setSettingsId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { dirty, reset } = useDirty([form], loading);
 
   useEffect(() => {
     supabase
@@ -121,6 +123,7 @@ export default function SiteSettings() {
     queryClient.invalidateQueries({ queryKey: ['siteSettings'] });
     setSaving(false);
     setSaved(true);
+    reset();
     setTimeout(() => setSaved(false), 2000);
   }
 
@@ -194,7 +197,7 @@ export default function SiteSettings() {
           </div>
         </div>
 
-        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
       </form>
     </div>
   );

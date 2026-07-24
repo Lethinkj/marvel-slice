@@ -5,6 +5,7 @@ import * as LuIcons from 'react-icons/lu';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove } from 'react-icons/fi';
 
 const LUCIDE_ICON_NAMES = Object.keys(LuIcons).filter(k => k.startsWith('Lu')).map(k => k.slice(2)).sort();
@@ -392,6 +393,7 @@ export default function AboutPageEditor() {
   const [sections, setSections] = useState([]);
   const [newType, setNewType] = useState('text');
   const [showHeroImage, setShowHeroImage] = useState(false);
+  const { dirty, reset } = useDirty([hero, sections], loading);
 
   useEffect(() => {
     async function resolve() {
@@ -525,6 +527,7 @@ export default function AboutPageEditor() {
     } else {
       if (res.data?.id) setPageId(res.data.id);
       setSaved(true);
+      reset();
       queryClient.invalidateQueries({ queryKey: ['navPage', navItemId] });
       queryClient.invalidateQueries({ queryKey: ['navPageData'] });
       setTimeout(() => setSaved(false), 2000);
@@ -635,7 +638,7 @@ export default function AboutPageEditor() {
           </div>
         </div>
 
-        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
       </form>
     </div>
   );

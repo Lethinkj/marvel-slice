@@ -10,8 +10,8 @@ export function toast({ type = "success", message, duration = 3000 }) {
 
 const icons = { success: FiCheck, error: FiAlertCircle };
 const styles = {
-  success: "bg-success-50 border-success-500 text-success-700",
-  error: "bg-destructive-50 border-destructive-500 text-destructive-700",
+  success: "bg-emerald-50 border-emerald-500 text-emerald-700",
+  error: "bg-rose-50 border-rose-500 text-rose-700",
 };
 
 function ToastItem({ t, onDone }) {

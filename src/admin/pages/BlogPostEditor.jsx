@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import useDirty from '../hooks/useDirty';
 import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -89,6 +90,7 @@ export default function BlogPostEditor() {
   const [loading, setLoading] = useState(!isNew);
   const [slugStatus, setSlugStatus] = useState('idle');
   const [slugSuggestion, setSlugSuggestion] = useState('');
+  const { dirty, reset } = useDirty([form, selectedTags], loading);
 
   useEffect(() => {
     if (!form.slug || !isNew) { setSlugStatus('idle'); return; }
@@ -215,6 +217,7 @@ export default function BlogPostEditor() {
     queryClient.invalidateQueries({ queryKey: ['recentPosts'] });
     queryClient.invalidateQueries({ queryKey: ['popularTags'] });
     setSaved(true);
+    reset();
     setSaving(false);
     savingRef.current = false;
     setTimeout(() => {
@@ -433,7 +436,7 @@ export default function BlogPostEditor() {
               <FiExternalLink className="w-4 h-4" /> View Post
             </AdminButton>
           )}
-          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" />
+          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" dirty={dirty} />
         </div>
       </form>
     </div>

@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
 
 function ImageUploader({ value, onChange, label }) {
@@ -71,6 +72,7 @@ export default function ContactPageEditor() {
   const [contactContent, setContactContent] = useState(DEFAULT_CONTACT_CONTENT);
   const [showContactSection, setShowContactSection] = useState(true);
   const [faqs, setFaqs] = useState([]);
+  const { dirty, reset } = useDirty([hero, contactContent, faqs], loading);
 
   function updateContent(field, value) {
     setContactContent((prev) => ({ ...prev, [field]: value }));
@@ -168,6 +170,7 @@ export default function ContactPageEditor() {
     } else {
       if (res.data?.id) setPageId(res.data.id);
       setSaved(true);
+      reset();
       queryClient.invalidateQueries({ queryKey: ['navPage', navItemId] });
       queryClient.invalidateQueries({ queryKey: ['navPageData'] });
       setTimeout(() => setSaved(false), 2000);
@@ -337,7 +340,7 @@ export default function ContactPageEditor() {
           </div>
         </div>
 
-        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
       </form>
     </div>
   );

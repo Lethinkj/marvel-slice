@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import useDirty from '../hooks/useDirty';
 import EmptyState from '../components/EmptyState';
 import {
   FiSave, FiAlertCircle, FiPlus, FiTrash2, FiEdit2,
@@ -130,6 +131,8 @@ export default function CareerPageEditor() {
   const [jobForm, setJobForm] = useState(defaultJobForm);
   const [jobSaving, setJobSaving] = useState(false);
 
+  const { dirty, reset } = useDirty([hero, section1, section2, formConfig, openings], loading);
+
   useEffect(() => {
     async function load() {
       const { data: content } = await supabase
@@ -242,6 +245,7 @@ export default function CareerPageEditor() {
     } else {
       if (res.data?.id) setPageId(res.data.id);
       setSaved(true);
+      reset();
       queryClient.invalidateQueries({ queryKey: ['career-page-content'] });
       setTimeout(() => setSaved(false), 3000);
     }
@@ -628,7 +632,7 @@ export default function CareerPageEditor() {
 
 
 
-        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" />
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
       </form>
 
       {showJobForm && (
