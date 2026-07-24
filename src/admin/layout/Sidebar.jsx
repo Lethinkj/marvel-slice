@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap } from "react-icons/fi";
+import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
   { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
@@ -275,13 +276,20 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
   const { pathname, search } = useLocation();
   const fullPath = pathname + search;
   const [isOpen, toggleGroup] = useGroupOpen(fullPath);
+  const { data: settings } = useSiteSettings();
 
   const content = (
     <div className="flex flex-col h-full bg-gradient-to-b from-admin-600 to-admin-800">
       <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-white/20">
         <NavLink to="/admin" className="flex items-center gap-2.5 min-w-0 group">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center shrink-0 shadow-lg shadow-black/20">
-            <FiGrid className="w-3.5 h-3.5 text-white" />
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
+            {settings?.logo_url ? (
+              <img src={settings.logo_url} alt="Marvel Slice" className="h-9 w-auto object-contain" />
+            ) : (
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center">
+                <FiGrid className="w-4 h-4 text-white" />
+              </div>
+            )}
           </div>
           <div className="min-w-0">
             <span className="text-sm font-semibold text-white/90 block leading-tight">Marvel Slice</span>
@@ -303,7 +311,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
         <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl bg-white/10">
           <div className="w-6 h-6 rounded-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-[9px] font-bold text-white shrink-0 shadow-sm">M</div>
           <div className="min-w-0">
-            <p className="text-xs text-white/80 font-medium">Marvel Slice v2.0</p>
+            <p className="text-xs text-white/80 font-medium">Marvel Slice v1.0</p>
             <p className="text-[10px] text-white/50">Admin Panel</p>
           </div>
         </div>

@@ -256,10 +256,6 @@ function LiveChat({ conversations, onConversationsChange }) {
               </div>
               <div className="min-w-0">
                 <p className="font-semibold text-admin-900 text-sm truncate">{activeConv.user_name || 'Visitor'}</p>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className={`inline-block w-1.5 h-1.5 rounded-full ${userOnline ? 'bg-success-500' : 'bg-admin-300'}`} />
-                  <span className="text-xs text-admin-400">{userOnline ? 'Online' : 'Offline'}</span>
-                </div>
               </div>
             </div>
             <button onClick={() => setActiveConv(null)} className="p-1 text-admin-400 hover:text-admin-600 cursor-pointer">
@@ -267,34 +263,7 @@ function LiveChat({ conversations, onConversationsChange }) {
             </button>
           </div>
 
-          {(activeConv.user_email || activeConv.user_phone || activeConv.reason) && (
-            <div className="shrink-0 px-5 py-2 bg-white border-b border-admin-100 flex items-center gap-4 text-xs text-admin-500 flex-wrap">
-              {activeConv.user_email && (
-                <span className="flex items-center gap-1.5">
-                  <FiMail className="w-3.5 h-3.5 text-admin-400" />
-                  <a href={`mailto:${activeConv.user_email}`} className="text-admin-500 hover:underline">{activeConv.user_email}</a>
-                </span>
-              )}
-              {activeConv.user_phone && (
-                <span className="flex items-center gap-1.5">
-                  <FiPhone className="w-3.5 h-3.5 text-admin-400" />
-                  <a href={`tel:${activeConv.user_phone}`} className="text-admin-500 hover:underline">{activeConv.user_phone}</a>
-                </span>
-              )}
-              {activeConv.reason && (
-                <span className="flex items-center gap-1.5 text-admin-600">
-                  <FiMessageSquare className="w-3.5 h-3.5 text-admin-400" />
-                  Reason: {activeConv.reason}
-                </span>
-              )}
-              {activeConv.closed_at && (
-                <span className="flex items-center gap-1.5 ml-auto">
-                  <FiCalendar className="w-3.5 h-3.5 text-admin-400" />
-                  Closed {formatDate(activeConv.closed_at)}
-                </span>
-              )}
-            </div>
-          )}
+
 
           <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white">
             {messages.length === 0 && (
@@ -313,7 +282,7 @@ function LiveChat({ conversations, onConversationsChange }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your reply..."
-              className="flex-1 px-4 py-2.5 text-sm border border-admin-200 rounded-xl outline-none focus:ring-2 focus:ring-admin-500/30 focus:border-admin-500 placeholder-admin-400 resize-none"
+              className="flex-1 px-4 py-1.5 text-sm border border-admin-200 rounded-xl outline-none focus:ring-2 focus:ring-admin-500/30 focus:border-admin-500 placeholder-admin-400 resize-none"
               disabled={sending || activeConv.status === 'closed'}
             />
             <button
@@ -411,7 +380,7 @@ function SessionsTable({ conversations }) {
       || (c.user_email || '').toLowerCase().includes(q)
       || (c.user_phone || '').toLowerCase().includes(q)
       || (c.reason || '').toLowerCase().includes(q)
-      || (c.feedback || '').toLowerCase().includes(q);
+      ;
   });
 
   return (
@@ -460,9 +429,6 @@ function SessionsTable({ conversations }) {
               <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Email</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Phone</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Reason</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Rating</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Feedback</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Resolved</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Status</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Date</th>
               <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Closed</th>
@@ -471,7 +437,7 @@ function SessionsTable({ conversations }) {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={11} className="text-center py-16 text-admin-400">
+                <td colSpan={8} className="text-center py-16 text-admin-400">
                   <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-admin-200" />
                   <p>No chat sessions found</p>
                 </td>
@@ -505,15 +471,6 @@ function SessionsTable({ conversations }) {
                     ) : '-'}
                   </td>
                   <td className="px-5 py-4 text-admin-600 max-w-[200px] truncate">{conv.reason || '-'}</td>
-                  <td className="px-5 py-4">{conv.rating ? `${conv.rating}/5` : '-'}</td>
-                  <td className="px-5 py-4 text-admin-600 max-w-[200px] truncate">{conv.feedback || '-'}</td>
-                  <td className="px-5 py-4">
-                    {conv.issue_resolved === true ? (
-                      <span className="text-success-500 text-xs font-medium">Yes</span>
-                    ) : conv.issue_resolved === false ? (
-                      <span className="text-destructive-500 text-xs font-medium">No</span>
-                    ) : '-'}
-                  </td>
                   <td className="px-5 py-4">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                       conv.status === 'open'

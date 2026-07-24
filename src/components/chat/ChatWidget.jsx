@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { FiMessageCircle, FiX, FiSend, FiLoader, FiUser, FiCpu, FiMaximize2, FiMinimize2, FiMail, FiPhone, FiStar } from 'react-icons/fi';
+import { FiMessageCircle, FiX, FiSend, FiLoader, FiMaximize2, FiMinimize2 } from 'react-icons/fi';
 import { supabase } from '../../lib/supabaseClient';
 
 const USER_ID_KEY = 'chat_user_identifier';
@@ -138,106 +138,13 @@ function PreChatForm({ onSubmit, initial }) {
   );
 }
 
-function StarRating({ value, onChange }) {
-  return (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          type="button"
-          onClick={() => onChange(star)}
-          className="p-0.5 cursor-pointer"
-        >
-          <FiStar
-            className={`w-5 h-5 transition-colors ${
-              star <= value ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-            }`}
-          />
-        </button>
-      ))}
-    </div>
-  );
-}
-
 function CloseConfirm({ onConfirm, onCancel }) {
-  const [issueResolved, setIssueResolved] = useState(null);
-  const [rating, setRating] = useState(0);
-  const [feedback, setFeedback] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
-
-  function validate() {
-    const errs = {};
-    if (issueResolved === null) errs.resolved = 'Please select yes or no';
-    if (rating === 0) errs.rating = 'Please rate your session';
-    if (!feedback.trim()) errs.feedback = 'Please share your feedback';
-    return errs;
-  }
-
-  async function handleConfirm() {
-    const errs = validate();
-    setErrors(errs);
-    if (Object.keys(errs).length > 0) return;
-    setSubmitting(true);
-    await onConfirm({ issueResolved, rating, feedback: feedback.trim() });
-    setSubmitting(false);
-  }
-
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-2xl shadow-2xl mx-4 p-6 w-full max-w-sm">
-        <h3 className="text-sm font-bold text-dark-navy mb-4">How was your experience?</h3>
-
-        <div className="mb-4">
-          <p className="text-xs font-medium text-gray-600 mb-2">Did our admin help you resolve your issue? <span className="text-red-400">*</span></p>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => { setIssueResolved(true); setErrors((p) => ({ ...p, resolved: undefined })); }}
-              className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors cursor-pointer ${
-                issueResolved === true
-                  ? 'bg-green-50 border-green-400 text-green-700'
-                  : errors.resolved ? 'border-red-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'
-              }`}
-            >
-              Yes
-            </button>
-            <button
-              type="button"
-              onClick={() => { setIssueResolved(false); setErrors((p) => ({ ...p, resolved: undefined })); }}
-              className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors cursor-pointer ${
-                issueResolved === false
-                  ? 'bg-red-50 border-red-400 text-red-700'
-                  : errors.resolved ? 'border-red-400' : 'border-gray-200 text-gray-500 hover:border-gray-300'
-              }`}
-            >
-              No
-            </button>
-          </div>
-          {errors.resolved && <p className="text-xs text-red-500 mt-1">{errors.resolved}</p>}
-        </div>
-
-        <div className="mb-4">
-          <p className="text-xs font-medium text-gray-600 mb-2">Rate your session <span className="text-red-400">*</span></p>
-          <StarRating value={rating} onChange={(v) => { setRating(v); setErrors((p) => ({ ...p, rating: undefined })); }} />
-          {errors.rating && <p className="text-xs text-red-500 mt-1">{errors.rating}</p>}
-        </div>
-
-        <div className="mb-4">
-          <p className="text-xs font-medium text-gray-600 mb-2">Feedback <span className="text-red-400">*</span></p>
-          <textarea
-            value={feedback}
-            onChange={(e) => { setFeedback(e.target.value); if (errors.feedback) setErrors((p) => ({ ...p, feedback: undefined })); }}
-            placeholder="Share your feedback about this session..."
-            rows={3}
-            className={`w-full px-3 py-2 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green resize-none ${
-              errors.feedback ? 'border-red-400' : 'border-gray-300'
-            }`}
-          />
-          {errors.feedback && <p className="text-xs text-red-500 mt-1">{errors.feedback}</p>}
-        </div>
-
-        <div className="flex gap-2 justify-end pt-1">
+        <h3 className="text-sm font-bold text-dark-navy mb-2">Close Chat?</h3>
+        <p className="text-sm text-gray-500 mb-6">Are you sure you want to close? All chat messages will be lost.</p>
+        <div className="flex gap-2 justify-end">
           <button
             onClick={onCancel}
             className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
@@ -245,11 +152,10 @@ function CloseConfirm({ onConfirm, onCancel }) {
             Cancel
           </button>
           <button
-            onClick={handleConfirm}
-            disabled={submitting}
-            className="px-4 py-2 text-sm font-semibold text-white bg-brand-green rounded-lg hover:bg-brand-green/90 transition-colors disabled:opacity-60 cursor-pointer"
+            onClick={onConfirm}
+            className="px-4 py-2 text-sm font-semibold text-white bg-destructive-500 rounded-lg hover:bg-destructive-600 transition-colors cursor-pointer"
           >
-            {submitting ? 'Submitting...' : 'Submit & Close'}
+            Close Chat
           </button>
         </div>
       </div>
@@ -407,17 +313,11 @@ export default function ChatWidget() {
     }
   }
 
-  async function handleConfirmClose({ issueResolved, rating, feedback }) {
+  async function handleConfirmClose() {
     if (conversationId) {
       const { error } = await supabase
         .from('conversations')
-        .update({
-          status: 'closed',
-          closed_at: new Date().toISOString(),
-          issue_resolved: issueResolved,
-          rating,
-          feedback,
-        })
+        .update({ status: 'closed', closed_at: new Date().toISOString() })
         .eq('id', conversationId);
       if (error) console.error('Failed to close conversation:', error);
     }
@@ -459,7 +359,6 @@ export default function ChatWidget() {
                 <FiMessageCircle className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <p className="font-semibold text-xs">Live Chat</p>
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-300" />
                   <span className="text-[10px] text-white/80">Admin Online</span>
@@ -484,22 +383,10 @@ export default function ChatWidget() {
             <PreChatForm onSubmit={handlePreChatSubmit} initial={visitorInfo} />
           ) : (
             <>
-              {visitorInfo.name && (
-                <div className="shrink-0 px-4 py-2 bg-gray-50 border-b border-gray-100 flex items-center gap-3 text-xs text-gray-500">
-                  <span className="flex items-center gap-1"><FiUser className="w-3 h-3" />{visitorInfo.name}</span>
-                  {visitorInfo.email && <span className="flex items-center gap-1"><FiMail className="w-3 h-3" />{visitorInfo.email}</span>}
-                  {visitorInfo.phone && <span className="flex items-center gap-1"><FiPhone className="w-3 h-3" />{visitorInfo.phone}</span>}
-                </div>
-              )}
+
 
               <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50">
-                {messages.length === 0 && (
-                  <div className="text-center text-gray-400 text-sm py-8">
-                    <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-                    <p>Start a conversation with us!</p>
-                    <p className="text-xs mt-1">Ask about courses, pricing, or anything else.</p>
-                  </div>
-                )}
+
                 {messages.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
@@ -507,12 +394,7 @@ export default function ChatWidget() {
                         ? 'bg-gray-200 text-dark-navy rounded-br-md'
                         : 'bg-white border border-gray-200 text-dark-navy rounded-bl-md shadow-sm'
                     }`}>
-                      <div className="flex items-center gap-1.5 mb-1">
-                        {msg.sender === 'admin' && <FiCpu className="w-3 h-3 text-gray-500" />}
-                        <span className="text-[10px] font-medium opacity-70">
-                          {msg.sender === 'user' ? 'You' : 'Support'}
-                        </span>
-                      </div>
+
                       <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                       <p className="text-[10px] mt-1 opacity-60 text-right">{formatTime(msg.created_at)}</p>
                     </div>
