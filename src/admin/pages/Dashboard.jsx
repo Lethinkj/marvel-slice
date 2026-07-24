@@ -8,48 +8,52 @@ import Card from '../components/ui/Card';
 import { LoadingState } from '../components/ui/EmptyState';
 import {
   FiBookOpen, FiUsers, FiFileText, FiMenu, FiTag, FiMessageCircle,
-  FiExternalLink, FiPlusCircle, FiArrowRight, FiChevronRight, FiInbox, FiClock,
+  FiExternalLink, FiPlusCircle, FiArrowRight, FiChevronRight, FiInbox, FiImage,
+  FiSettings, FiBarChart2,
 } from 'react-icons/fi';
 
-function StatCard({ icon: Icon, label, value, link }) {
+const toneClasses = {
+  slate: 'bg-neutral-100 text-neutral-700',
+  rose: 'bg-rose-50 text-rose-600',
+  amber: 'bg-amber-50 text-amber-600',
+  emerald: 'bg-emerald-50 text-emerald-600',
+  violet: 'bg-violet-50 text-violet-600',
+  cyan: 'bg-cyan-50 text-cyan-600',
+  orange: 'bg-orange-50 text-orange-600',
+};
+
+function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
   return (
     <Link to={link} className="block bg-white rounded-xl border border-admin-200 shadow-sm p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
       <div className="flex items-start justify-between mb-2">
-        <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white text-admin-600">
+        <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${toneClasses[iconTone] || toneClasses.slate}`}>
           <Icon className="w-4 h-4" />
         </div>
-        <span className="text-xl font-semibold tabular-nums text-admin-900">{value}</span>
+        <span className="text-[1.375rem] font-semibold tabular-nums text-neutral-900 leading-none">{value}</span>
       </div>
-      <p className="text-sm font-medium text-admin-500">{label}</p>
+      <p className="text-[0.95rem] font-medium text-neutral-500">{label}</p>
     </Link>
   );
 }
 
-function QuickAction({ to, icon: Icon, label }) {
+function ActionTile({ to, icon: Icon, label, tone = 'slate' }) {
   return (
     <Link to={to} className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white rounded-xl border border-admin-200 shadow-sm hover:border-admin-300 hover:shadow-elevated transition-all text-center group">
-      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center group-hover:bg-admin-100 transition-colors">
-        <Icon className="w-4 h-4 text-admin-600" />
+      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${toneClasses[tone] || toneClasses.slate} group-hover:scale-105`}>
+        <Icon className="w-4 h-4" />
       </div>
-      <span className="text-xs font-medium text-admin-700">{label}</span>
+      <span className="text-sm font-medium text-neutral-700">{label}</span>
     </Link>
   );
 }
 
-const quickActions = [
-  { to: '/admin/courses/wizard', label: 'New Course', icon: FiPlusCircle },
-  { to: '/admin/blog', label: 'Blog Post', icon: FiFileText },
-  { to: '/admin/career-submissions', label: 'Submissions', icon: FiInbox },
-  { to: '/admin/media', label: 'Upload Media', icon: FiClock },
-];
-
-const statCardDefs = [
-  { label: 'Courses', key: 'courses', icon: FiBookOpen, link: '/admin/courses' },
-  { label: 'Blog Posts', key: 'blogPosts', icon: FiFileText, link: '/admin/blog' },
-  { label: 'Nav Items', key: 'navItems', icon: FiMenu, link: '/admin/nav-menu' },
-  { label: 'Alumni', key: 'companies', icon: FiUsers, link: '/admin/alumni' },
-  { label: 'Tags', key: 'tags', icon: FiTag, link: '/admin/tags' },
-  { label: 'FAQs', key: 'faqs', icon: FiMessageCircle, link: '/admin/courses' },
+const quickLinks = [
+  { to: '/admin/courses/wizard', label: 'New Course', icon: FiPlusCircle, tone: 'violet' },
+  { to: '/admin/blog', label: 'Blog Post', icon: FiFileText, tone: 'orange' },
+  { to: '/admin/media', label: 'Upload Media', icon: FiImage, tone: 'emerald' },
+  { to: '/admin/site-settings?section=general', label: 'Settings', icon: FiSettings, tone: 'slate' },
+  { to: '/admin/courses/reports', label: 'Reports', icon: FiBarChart2, tone: 'amber' },
+  { to: '/admin/chats?tab=live', label: 'Chat', icon: FiMessageCircle, tone: 'cyan' },
 ];
 
 export default function Dashboard() {
@@ -68,8 +72,7 @@ export default function Dashboard() {
         supabase.from('alumni_companies').select('*', { count: 'exact', head: true }),
         supabase.from('tags').select('*', { count: 'exact', head: true }),
         supabase.from('blog_posts').select('*', { count: 'exact', head: true }),
-        supabase.from('courses').select('id, title, created_at').order('created_at', { ascending: false }).limit(5),
-        supabase.from('blog_posts').select('id, title, created_at').order('created_at', { ascending: false }).limit(3),
+        supabase.from('courses').select('id, title, created_at').order('created_at', { ascending: false }).limit(6),
         supabase.from('career_submissions').select('*', { count: 'exact', head: true }),
         supabase.from('contact_submissions').select('*', { count: 'exact', head: true }),
         supabase.from('brochure_downloads').select('*', { count: 'exact', head: true }),
@@ -81,18 +84,10 @@ export default function Dashboard() {
         companies: getCount(results[3]), tags: getCount(results[4]), blogPosts: getCount(results[5]),
       });
       setPending({
-        career: getCount(results[8]), contact: getCount(results[9]), brochure: getCount(results[10]), form: getCount(results[11]),
+        career: getCount(results[7]), contact: getCount(results[8]), brochure: getCount(results[9]), form: getCount(results[10]),
       });
 
-      const recent = [];
-      if (results[6].status === 'fulfilled') {
-        for (const c of (results[6].value.data || [])) recent.push({ ...c, type: 'course', link: `/admin/courses/${c.id}` });
-      }
-      if (results[7].status === 'fulfilled') {
-        for (const p of (results[7].value.data || [])) recent.push({ ...p, type: 'blog', link: `/admin/blog/${p.id}` });
-      }
-      recent.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 8);
-      setRecentItems(recent);
+      setRecentItems(results[6].status === 'fulfilled' ? (results[6].value.data ?? []).slice(0, 6) : []);
       setLoading(false);
     }
     fetchData();
@@ -100,9 +95,20 @@ export default function Dashboard() {
 
   if (loading) return <LoadingState />;
 
-  const totalPending = pending.career + pending.contact + pending.brochure + pending.form;
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   const greeting = `Good ${new Date().getHours() < 12 ? 'morning' : 'afternoon'}, ${user?.name?.split(' ')[0] || 'Admin'}`;
+  const topCards = [
+    { label: 'Courses', value: stats.courses, icon: FiBookOpen, link: '/admin/courses', subtitle: 'Course library', iconTone: 'slate' },
+    { label: 'Blog Posts', value: stats.blogPosts, icon: FiFileText, link: '/admin/blog', subtitle: 'Articles & updates', iconTone: 'violet' },
+    { label: 'Nav Items', value: stats.navItems, icon: FiMenu, link: '/admin/nav-menu', subtitle: 'Menus & links', iconTone: 'cyan' },
+    { label: 'Alumni', value: stats.companies, icon: FiUsers, link: '/admin/alumni', subtitle: 'Partner companies', iconTone: 'emerald' },
+    { label: 'Tags', value: stats.tags, icon: FiTag, link: '/admin/tags', subtitle: 'Course categories', iconTone: 'amber' },
+    { label: 'FAQs', value: stats.faqs, icon: FiMessageCircle, link: '/admin/courses', subtitle: 'Help content', iconTone: 'rose' },
+    { label: 'Career', value: pending.career, icon: FiInbox, link: '/admin/career-submissions', subtitle: 'Submissions', iconTone: 'rose' },
+    { label: 'Contact', value: pending.contact, icon: FiInbox, link: '/admin/contact-submissions', subtitle: 'Submissions', iconTone: 'amber' },
+    { label: 'Brochure', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'emerald' },
+    { label: 'Form', value: pending.form, icon: FiInbox, link: '/admin/form-submissions', subtitle: 'Submissions', iconTone: 'violet' },
+  ];
 
   return (
     <PageShell
@@ -114,51 +120,42 @@ export default function Dashboard() {
         </AdminButton>
       }
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {statCardDefs.map((card, i) => (
-          <StatCard key={i} {...card} value={stats?.[card.key] || 0} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        {topCards.map((card, i) => (
+          <StatCard key={i} {...card} />
         ))}
-        <Link to="/admin/career-submissions" className="block bg-white rounded-xl border border-admin-200 shadow-sm p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
-          <div className="flex items-start justify-between mb-2">
-            <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-warning-50 text-warning-500">
-              <FiInbox className="w-4 h-4" />
-            </div>
-            <span className="text-xl font-semibold tabular-nums text-admin-900">{totalPending}</span>
-          </div>
-          <p className="text-sm font-medium text-admin-500">Pending Submissions</p>
-        </Link>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div>
-          <h2 className="text-xs font-semibold text-admin-500 uppercase tracking-wider mb-3">Quick Create</h2>
-          <div className="grid grid-cols-2 gap-2">
-            {quickActions.map((action, i) => <QuickAction key={i} {...action} />)}
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-1">
+          <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Quick Links</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {quickLinks.map((action, i) => <ActionTile key={i} {...action} />)}
           </div>
         </div>
 
         <div className="lg:col-span-2">
-          <h2 className="text-xs font-semibold text-admin-500 uppercase tracking-wider mb-3">Recent Activity</h2>
+          <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Recent Activity</h2>
           <Card>
             {recentItems.length === 0 ? (
-              <div className="py-8 text-center text-sm text-admin-400">No recent activity.</div>
+              <div className="py-8 text-center text-sm text-neutral-400">No recent activity.</div>
             ) : (
               <div className="divide-y divide-admin-100 -mx-5 -mb-5">
                 {recentItems.map((item) => (
-                  <Link key={`${item.type}-${item.id}`} to={item.link} className="flex items-center gap-3 px-5 py-2.5 hover:bg-white transition-colors group">
+                  <Link key={item.id} to={`/admin/courses/${item.id}`} className="flex items-center gap-3 px-5 py-2.5 hover:bg-white transition-colors group">
                     <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shrink-0">
-                      {item.type === 'course' ? <FiBookOpen className="w-3.5 h-3.5 text-admin-600" /> : <FiFileText className="w-3.5 h-3.5 text-admin-600" />}
+                      <FiBookOpen className="w-3.5 h-3.5 text-neutral-600" />
                     </div>
-                    <span className="flex-1 text-sm text-admin-700 truncate">{item.title}</span>
-                    <span className="text-xs text-admin-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
-                    <FiChevronRight className="w-3.5 h-3.5 text-admin-200 group-hover:text-admin-500 transition-colors shrink-0" />
+                    <span className="flex-1 text-[0.95rem] text-neutral-700 truncate">{item.title}</span>
+                    <span className="text-xs text-neutral-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
+                    <FiChevronRight className="w-3.5 h-3.5 text-neutral-200 group-hover:text-neutral-500 transition-colors shrink-0" />
                   </Link>
                 ))}
               </div>
             )}
           </Card>
           {recentItems.length > 0 && (
-            <Link to="/admin/courses" className="flex items-center justify-center gap-1 text-sm text-admin-600 hover:text-admin-700 transition-colors py-3">
+            <Link to="/admin/courses" className="flex items-center justify-center gap-1 text-sm text-neutral-600 hover:text-neutral-700 transition-colors py-3">
               View All Courses <FiArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}

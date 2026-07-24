@@ -92,7 +92,7 @@ export default function TrainingManager() {
     {
       header: 'Title',
       cell: (row) => (
-        <Link to={`/admin/training/${row.id}`} className="text-sm font-medium text-admin-900 hover:text-admin-600 transition-colors">
+        <Link to={`/admin/training/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-neutral-700 transition-colors">
           {row.title || 'Untitled'}
         </Link>
       ),
@@ -100,7 +100,7 @@ export default function TrainingManager() {
     {
       header: 'Category',
       className: 'hidden md:table-cell',
-      cell: (row) => <span className="text-sm text-admin-600">{row.training_categories?.name || '-'}</span>,
+      cell: (row) => <span className="text-sm text-neutral-600">{row.training_categories?.name || '-'}</span>,
     },
     {
       header: 'Badge',
@@ -140,7 +140,7 @@ export default function TrainingManager() {
       header: 'Created',
       className: 'hidden xl:table-cell',
       cell: (row) => (
-        <span className="text-sm text-admin-400 whitespace-nowrap">
+        <span className="text-sm text-neutral-400 whitespace-nowrap">
           {row.created_at ? new Date(row.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}
         </span>
       ),
@@ -150,9 +150,9 @@ export default function TrainingManager() {
       className: 'w-32 text-right',
       cell: (row) => (
         <div className="flex items-center justify-end gap-1">
-          {row.slug && <Link to={`/training/${row.slug}`} target="_blank" className="p-1.5 text-admin-400 hover:text-admin-600 rounded-md hover:bg-white transition-colors" title="Preview"><FiExternalLink className="w-4 h-4" /></Link>}
-          <Link to={`/admin/training/${row.id}`} className="p-1.5 text-admin-400 hover:text-admin-600 rounded-md hover:bg-white transition-colors" title="Edit"><FiEdit2 className="w-4 h-4" /></Link>
-          <button onClick={() => handleDuplicate(row)} className="p-1.5 text-admin-400 hover:text-admin-600 rounded-md hover:bg-white transition-colors" title="Duplicate"><FiCopy className="w-4 h-4" /></button>
+          {row.slug && <Link to={`/training/${row.slug}`} target="_blank" className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-md hover:bg-white transition-colors" title="Preview"><FiExternalLink className="w-4 h-4" /></Link>}
+          <Link to={`/admin/training/${row.id}`} className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-md hover:bg-white transition-colors" title="Edit"><FiEdit2 className="w-4 h-4" /></Link>
+          <button onClick={() => handleDuplicate(row)} className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-md hover:bg-white transition-colors" title="Duplicate"><FiCopy className="w-4 h-4" /></button>
           <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-destructive-500 hover:text-destructive-700 rounded-md hover:bg-destructive-50 transition-colors" title="Delete"><FiTrash2 className="w-4 h-4" /></button>
         </div>
       ),
@@ -183,21 +183,21 @@ export default function TrainingManager() {
       {programs.length > 0 && (
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1 max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by title..."
-              className="w-full pl-10 pr-4 h-9 border border-admin-300 rounded-lg text-sm text-admin-900 placeholder-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 bg-white"
+              className="w-full pl-10 pr-4 h-9 border border-admin-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 bg-white"
             />
           </div>
           <div className="flex items-center gap-2">
-            <FiFilter className="w-4 h-4 text-admin-400 shrink-0" />
+            <FiFilter className="w-4 h-4 text-neutral-400 shrink-0" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500"
+              className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-neutral-700 bg-white focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500"
             >
               <option value="All">All Status</option>
               <option value="published">Published</option>
@@ -208,7 +208,7 @@ export default function TrainingManager() {
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500"
+                className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-neutral-700 bg-white focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500"
               >
                 <option value="All">All Categories</option>
                 {categories.map((cat) => (

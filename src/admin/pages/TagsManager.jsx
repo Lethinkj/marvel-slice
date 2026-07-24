@@ -53,7 +53,7 @@ export default function TagsManager() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Tag name"
-            className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+            className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500"
             onKeyDown={(e) => e.key === 'Enter' && addTag()}
           />
           <AdminButton onClick={addTag} size="md">

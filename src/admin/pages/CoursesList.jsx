@@ -84,12 +84,12 @@ export default function CoursesList() {
     {
       header: 'ID',
       className: 'w-20',
-      cell: (row) => <span className="text-sm text-admin-400 font-mono">{row.id.slice(0, 8)}...</span>,
+      cell: (row) => <span className="text-sm text-neutral-400 font-mono">{row.id.slice(0, 8)}...</span>,
     },
     {
       header: 'Title',
       cell: (row) => (
-        <Link to={`/admin/courses/${row.id}`} className="text-sm font-medium text-admin-900 hover:text-admin-600 transition-colors">
+        <Link to={`/admin/courses/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-neutral-700 transition-colors">
           {row.title || 'Untitled'}
         </Link>
       ),
@@ -97,7 +97,7 @@ export default function CoursesList() {
     {
       header: 'Slug',
       className: 'hidden sm:table-cell',
-      cell: (row) => <span className="text-sm text-admin-400">/{row.slug}</span>,
+      cell: (row) => <span className="text-sm text-neutral-400">/{row.slug}</span>,
     },
     {
       header: 'Status',
@@ -147,13 +147,13 @@ export default function CoursesList() {
       {courses.length > 0 && (
         <div className="mb-6">
           <div className="relative max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search courses..."
-              className="w-full pl-10 pr-4 h-9 border border-admin-200 rounded-lg text-sm text-admin-900 placeholder-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+              className="w-full pl-10 pr-4 h-9 border border-admin-200 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 bg-white"
             />
           </div>
         </div>
@@ -181,10 +181,10 @@ export default function CoursesList() {
           {sortedCategories.map((cat) => (
             <div key={cat}>
               <div className="flex items-center gap-2 mb-3">
-                <h2 className="text-xs font-semibold text-admin-500 uppercase tracking-wider">
+                <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
                   {cat}
                 </h2>
-                <span className="text-xs text-admin-400">
+                <span className="text-xs text-neutral-400">
                   ({grouped[cat].length})
                 </span>
               </div>

@@ -37,19 +37,19 @@ function Breadcrumbs() {
   };
 
   return (
-    <nav className="flex items-center gap-1.5 text-xs text-admin-500">
-      <Link to="/admin" className="hover:text-admin-600 transition-colors font-medium">Dashboard</Link>
+    <nav className="flex items-center gap-1.5 text-xs text-neutral-500">
+      <Link to="/admin" className="hover:text-neutral-700 transition-colors font-medium">Dashboard</Link>
       {parts.map((part, i) => {
         const path = "/" + parts.slice(0, i + 1).join("/");
         const label = labels[part] || part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, " ");
         const isLast = i === parts.length - 1;
         return (
           <span key={path} className="flex items-center gap-1.5">
-            <FiChevronRight className="w-3 h-3 text-admin-300" />
+            <FiChevronRight className="w-3 h-3 text-neutral-300" />
             {isLast ? (
-              <span className="text-admin-700 font-medium truncate max-w-[200px]">{label}</span>
+              <span className="text-neutral-700 font-medium truncate max-w-[200px]">{label}</span>
             ) : (
-              <Link to={path} className="hover:text-admin-600 transition-colors truncate max-w-[150px] font-medium">{label}</Link>
+              <Link to={path} className="hover:text-neutral-700 transition-colors truncate max-w-[150px] font-medium">{label}</Link>
             )}
           </span>
         );
@@ -89,11 +89,11 @@ export default function AdminLayout() {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="sticky top-0 z-20 backdrop-blur-md bg-white/80 border-b border-admin-200/80 px-4 lg:px-6 flex items-center justify-between h-14 shrink-0 gap-4 transition-all">
           <div className="flex items-center gap-3 min-w-0">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 text-admin-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 text-neutral-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
               <FiMenu className="w-5 h-5" />
             </button>
             <div className="hidden lg:flex min-w-0"><Breadcrumbs /></div>
-            <Link to="/admin" className="flex items-center gap-2 text-sm font-semibold text-admin-900 lg:hidden">
+            <Link to="/admin" className="flex items-center gap-2 text-sm font-semibold text-neutral-900 lg:hidden">
               <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-admin-500 to-admin-800 flex items-center justify-center">
                 <FiGrid className="w-3 h-3 text-white" />
               </div>
@@ -103,39 +103,39 @@ export default function AdminLayout() {
 
           <div className="flex items-center gap-1">
             <button onClick={() => setSearchOpen(true)}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-admin-200 text-xs text-admin-400 hover:text-admin-600 hover:border-admin-300 transition-all duration-200 bg-white/50 min-w-[180px]"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-admin-200 text-xs text-neutral-400 hover:text-neutral-600 hover:border-admin-300 transition-all duration-200 bg-white/50 min-w-[180px]"
             >
               <FiSearch className="w-3.5 h-3.5" />
               <span className="flex-1 text-left">Search pages...</span>
-              <kbd className="text-[10px] text-admin-400 bg-white border border-admin-200 rounded px-1.5 py-0.5 font-mono shadow-sm">⌘K</kbd>
+              <kbd className="text-[10px] text-neutral-400 bg-white border border-admin-200 rounded px-1.5 py-0.5 font-mono shadow-sm">⌘K</kbd>
             </button>
-            <button className="lg:hidden p-2 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-all duration-200" onClick={() => setSearchOpen(true)}>
+            <button className="lg:hidden p-2 text-neutral-400 hover:text-neutral-600 hover:bg-admin-100 rounded-lg transition-all duration-200" onClick={() => setSearchOpen(true)}>
               <FiSearch className="w-4 h-4" />
             </button>
 
-            <button className="relative p-2 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
+            <button className="relative p-2 text-neutral-400 hover:text-neutral-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
               <FiBell className="w-4 h-4" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive-500 rounded-full ring-2 ring-white" />
             </button>
 
-            <Link to="/" target="_blank" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-admin-500 hover:text-admin-700 hover:bg-admin-100 transition-all duration-200">
+            <Link to="/" target="_blank" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-500 hover:text-neutral-700 hover:bg-admin-100 transition-all duration-200">
               <FiExternalLink className="w-4 h-4" />
               <span className="hidden sm:inline">View Site</span>
             </Link>
 
             <div className="relative" ref={menuRef}>
-              <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 ml-1 pl-3 pr-2 py-1.5 text-sm text-admin-600 hover:text-admin-900 hover:bg-admin-100 rounded-lg transition-all duration-200">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 ml-1 pl-3 pr-2 py-1.5 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-admin-100 rounded-lg transition-all duration-200">
                 <span className="w-6 h-6 rounded-full bg-gradient-to-br from-admin-500 to-admin-800 text-white flex items-center justify-center text-xs font-bold shadow-sm">{user?.name?.charAt(0)?.toUpperCase() || 'A'}</span>
                 <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || user?.email}</span>
               </button>
 
               {menuOpen && (
                 <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-2xl border border-admin-200 py-1 z-50">
-                  <div className="px-3 py-2 text-xs text-admin-500 border-b border-admin-100">
-                    <div className="font-medium text-admin-900">{user?.name}</div>
+                  <div className="px-3 py-2 text-xs text-neutral-500 border-b border-admin-100">
+                    <div className="font-medium text-neutral-900">{user?.name}</div>
                     <div className="truncate">{user?.email}</div>
                     <div className="capitalize mt-0.5">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white text-admin-700">{user?.role}</span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white text-neutral-700">{user?.role}</span>
                     </div>
                   </div>
                   <button onClick={() => { logout(); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive-500 hover:bg-destructive-50 transition-all duration-200">

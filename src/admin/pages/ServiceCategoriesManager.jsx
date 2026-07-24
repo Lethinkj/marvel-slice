@@ -76,7 +76,7 @@ export default function ServiceCategoriesManager() {
     <PageShell title="Service Categories" subtitle="Manage categories for services">
 
       <form onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-5 mb-6 space-y-4">
-        <h3 className="text-sm font-semibold text-admin-700">{editingId ? 'Edit Category' : 'Add Category'}</h3>
+        <h3 className="text-sm font-semibold text-neutral-900">{editingId ? 'Edit Category' : 'Add Category'}</h3>
 
         <div className="flex gap-3">
           <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editingId ? form.slug : slugify(e.target.value) })}
@@ -107,7 +107,7 @@ export default function ServiceCategoriesManager() {
               className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${form.status ? 'bg-white0' : 'bg-admin-300'}`}>
               <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${form.status ? 'translate-x-4' : 'translate-x-0'}`} />
             </div>
-            <span className="text-sm text-admin-700">Active</span>
+            <span className="text-sm text-neutral-700">Active</span>
           </label>
           <div className="flex gap-2 ml-auto">
             <AdminButton type="submit" variant="primary" size="sm" disabled={!form.name.trim()}>
@@ -125,26 +125,26 @@ export default function ServiceCategoriesManager() {
 
       {categories.length === 0 ? (
         <div className="bg-white rounded-lg border border-admin-200 p-12 text-center">
-          <FiServer className="w-12 h-12 text-admin-200 mx-auto mb-4" />
-          <p className="text-sm text-admin-400">No categories yet.</p>
+          <FiServer className="w-12 h-12 text-neutral-200 mx-auto mb-4" />
+          <p className="text-sm text-neutral-400">No categories yet.</p>
         </div>
       ) : (
         <div className="bg-white rounded-lg border border-admin-200 overflow-hidden">
           <div className="divide-y divide-admin-100">
             {categories.map((cat) => (
               <div key={cat.id} className="flex items-center gap-4 px-5 py-4 hover:bg-white transition-colors group">
-                <div className="w-9 h-9 bg-admin-100 rounded-xl flex items-center justify-center shrink-0">
-                  <FiServer className="w-4 h-4 text-admin-600" />
+                <div className="w-9 h-9 bg-cyan-50 rounded-xl flex items-center justify-center shrink-0">
+                  <FiServer className="w-4 h-4 text-cyan-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-admin-900">{cat.name}</p>
-                  <p className="text-xs text-admin-400">/{cat.slug}</p>
+                  <p className="text-sm font-medium text-neutral-900">{cat.name}</p>
+                  <p className="text-xs text-neutral-400">/{cat.slug}</p>
                   {cat.description && (
-                    <p className="text-xs text-admin-500 mt-0.5 truncate">{cat.description}</p>
+                    <p className="text-xs text-neutral-500 mt-0.5 truncate">{cat.description}</p>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cat.status ? 'bg-success-50 text-success-700' : 'bg-admin-100 text-admin-500'}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cat.status ? 'bg-success-50 text-success-700' : 'bg-neutral-100 text-neutral-500'}`}>
                     {cat.status ? 'Active' : 'Inactive'}
                   </span>
                 </div>

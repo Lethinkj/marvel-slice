@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX } from "react-icons/fi";
 import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
-  { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
+  { label: "Dashboard", icon: FiHome, iconColor: "#64748b", items: [{ to: "/admin", label: "Dashboard" }] },
   {
-    label: "Edit Pages", icon: FiFile,
+    label: "Edit Pages", icon: FiFile, iconColor: "#2563eb",
     items: [
       { to: "/admin/home", label: "Home", catchSubRoutes: true },
       { to: "/admin/about-page", label: "About" },
@@ -14,12 +14,12 @@ const navGroups = [
       { to: "/admin/contact-page", label: "Contact" },
     ],
   },
-  { label: "Chat", icon: FiMessageCircle, items: [
+  { label: "Chat", icon: FiMessageCircle, iconColor: "#059669", items: [
     { to: "/admin/chats?tab=live", label: "Live Chat" },
     { to: "/admin/chats?tab=history", label: "Chat History" },
   ]},
   {
-    label: "Services", icon: FiServer, parentTo: "/admin/services", items: [
+    label: "Services", icon: FiServer, iconColor: "#d97706", parentTo: "/admin/services", items: [
       { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
       { to: "/admin/services/new", label: "Add Service" },
       { to: "/admin/service-categories", label: "Categories" },
@@ -27,14 +27,14 @@ const navGroups = [
     ],
   },
   {
-    label: "Training", icon: FiZap, parentTo: "/admin/training", items: [
+    label: "Training", icon: FiZap, iconColor: "#7c3aed", parentTo: "/admin/training", items: [
       { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
       { to: "/admin/training/new", label: "Add Program" },
       { to: "/admin/training-categories", label: "Categories" },
       { to: "/admin/training-page", label: "Training Page" },
     ],
   },
-  { label: "Submissions", icon: FiInbox, items: [
+  { label: "Submissions", icon: FiInbox, iconColor: "#e11d48", items: [
     { to: "/admin/career-submissions", label: "Career Submissions" },
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
@@ -42,7 +42,7 @@ const navGroups = [
     { to: "/admin/chat-submissions", label: "Chat Submissions" },
   ]},
   {
-    label: "Courses", icon: FiBookOpen, items: [
+    label: "Courses", icon: FiBookOpen, iconColor: "#0891b2", items: [
       { to: "/admin/courses", label: "All Courses", catchSubRoutes: true, siblingRoutes: ["/admin/courses/wizard", "/admin/courses/reports"] },
       { to: "/admin/courses/wizard", label: "Add Course" },
       { to: "/admin/tags", label: "Tags" },
@@ -50,22 +50,22 @@ const navGroups = [
     ],
   },
   {
-    label: "Blog", icon: FiFileText, items: [
+    label: "Blog", icon: FiFileText, iconColor: "#ea580c", items: [
       { to: "/admin/blog", label: "All Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
       { to: "/admin/blog/categories", label: "Categories" },
     ],
   },
-  { label: "Navigation", icon: FiMenu, items: [
+  { label: "Navigation", icon: FiMenu, iconColor: "#0f766e", items: [
     { to: "/admin/nav-menu?section=Software%20Learning", label: "Software Learning" },
     { to: "/admin/nav-menu?section=Competitive%20Exam", label: "Competitive Exam" },
     { to: "/admin/nav-menu?section=Services", label: "Services" },
     { to: "/admin/nav-menu?section=Training", label: "Training" },
     { to: "/admin/nav-menu/manage", label: "Manage Sub-items" },
   ]},
-  { label: "Appearance", icon: FiLayers, items: [
+  { label: "Uploads", icon: FiLayers, iconColor: "#52525b", items: [
     { to: "/admin/media", label: "Media Library" },
   ]},
-  { label: "Settings", icon: FiSettings, items: [
+  { label: "Settings", icon: FiSettings, iconColor: "#475569", items: [
     { to: "/admin/site-settings?section=general", label: "Site Settings" },
     { to: "/admin/admin-users", label: "Admin Users" },
   ]},
@@ -92,6 +92,9 @@ function isActive(pathname, item) {
 }
 
 const STORAGE_KEY = 'admin_sidebar_groups';
+const activeLabelStyle = {
+  color: '#ffffff',
+};
 
 function loadGroupState() {
   try {
@@ -160,29 +163,67 @@ function useGroupOpen(pathname) {
   return [isOpen, toggleGroup];
 }
 
+// Shared animated wrapper for collapsible submenus.
+// grid-rows-[0fr]->[1fr] animates height without needing a fixed max-height,
+// so it works regardless of how many items a group has.
+function Collapsible({ open, children }) {
+  return (
+    <div
+      className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+        open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+      }`}
+    >
+      <div className="overflow-hidden">{children}</div>
+    </div>
+  );
+}
+
 function NestedNavGroup({ item, pathname, onNavigate }) {
   const [open, setOpen] = useState(() => item.children.some((c) => isActive(pathname, c)));
   useEffect(() => {
     if (item.children.some((c) => isActive(pathname, c))) setOpen(true);
   }, [pathname, item.children]);
 
+  const iconColor = '#707897';
+
+  const hasActiveChild = item.children.some((c) => isActive(pathname, c));
+
   return (
     <div>
-      <button onClick={() => setOpen((p) => !p)} className={`cursor-pointer w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${item.children.some((c) => isActive(pathname, c)) ? "text-white/70 font-semibold" : "text-white/70 hover:text-white"}`}>
-        <FiChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? "" : "-rotate-90"}`} />
-        {item.label}
+      <button
+        onClick={() => setOpen((p) => !p)}
+        className={`cursor-pointer w-full flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-all duration-200 ${
+          hasActiveChild ? "" : "text-[#939AB3] hover:text-white hover:bg-white/5 hover:translate-x-0.5"
+        }`}
+        style={hasActiveChild ? { color: '#ffffff' } : undefined}
+      >
+        <FiChevronDown
+          className={`w-3.5 h-3.5 transition-transform duration-300 ease-in-out ${open ? "" : "-rotate-90"}`}
+          style={{ color: iconColor }}
+        />
+        <span style={hasActiveChild ? activeLabelStyle : undefined}>{item.label}</span>
       </button>
-      {open && (
-        <div className="ml-3 pl-2 border-l border-white/20 mt-0.5 mb-1 space-y-0.5 transition-all duration-200">
-          {item.children.map((child) => (
-            <NavLink key={child.to} to={child.to} onClick={onNavigate} end className={({ isActive: act }) =>
-              `cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? "text-white/70 font-semibold bg-white/10" : "text-white/70 hover:text-white hover:bg-white/10"}`
-            }>
-              {child.label}
-            </NavLink>
-          ))}
+      <Collapsible open={open}>
+        <div className="ml-3 pl-2 mt-0.5 mb-1 space-y-0.5" style={{ borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
+          {item.children.map((child) => {
+            const act = isActive(pathname, child);
+            return (
+              <NavLink
+                key={child.to}
+                to={child.to}
+                onClick={onNavigate}
+                end
+                className={`cursor-pointer block px-3 py-1.5 text-sm rounded-md transition-all duration-200 ${
+                  act ? "" : "text-[#939AB3] hover:text-white hover:bg-white/5 hover:translate-x-0.5"
+                }`}
+                      style={act ? { color: '#ffffff' } : undefined}
+              >
+                      <span style={act ? activeLabelStyle : undefined}>{child.label}</span>
+              </NavLink>
+            );
+          })}
         </div>
-      )}
+      </Collapsible>
     </div>
   );
 }
@@ -195,16 +236,25 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
     return false;
   });
   const opened = isOpen(idx);
+  const iconColor = '#707897';
+  const groupIconColor = group.iconColor || iconColor;
 
   if (group.items.length === 1 && group.items[0].to) {
     return (
-      <NavLink to={group.items[0].to} end onClick={onNavigate}
-        className={({ isActive: act }) =>
-          `cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${act ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`
-        }
+      <NavLink
+        to={group.items[0].to}
+        end
+        onClick={onNavigate}
+        className={`cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 text-sm rounded-md transition-all duration-200 ${
+          groupActive ? "font-semibold" : "text-[#939AB3] hover:text-white hover:bg-white/5 hover:translate-x-0.5"
+        }`}
+          style={groupActive ? { color: '#ffffff' } : undefined}
       >
-        <Icon className="w-4 h-4 shrink-0" />
-        <span>{group.label}</span>
+        <Icon
+          className="w-4 h-4 shrink-0 transition-colors duration-200"
+          style={{ color: groupIconColor }}
+        />
+          <span style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
       </NavLink>
     );
   }
@@ -212,62 +262,97 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
   if (group.parentTo) {
     return (
       <>
-        <div className="flex items-center">
-          <NavLink to={group.parentTo} end onClick={onNavigate}
-            className={`cursor-pointer flex-1 flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
+        <div className="flex items-center rounded-md overflow-hidden">
+          <NavLink
+            to={group.parentTo}
+            end
+            onClick={onNavigate}
+            className={`cursor-pointer flex-1 flex items-center gap-2.5 px-3 py-2 text-sm rounded-md transition-all duration-200 ${
+              groupActive ? "font-semibold" : "text-[#939AB3] hover:text-white hover:bg-white/5"
+            }`}
+            style={groupActive ? { color: '#ffffff' } : undefined}
           >
-            <Icon className="w-4 h-4 shrink-0" />
-            <span>{group.label}</span>
+            <Icon
+              className="w-4 h-4 shrink-0 transition-colors duration-200"
+              style={{ color: groupIconColor }}
+            />
+            <span style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
           </NavLink>
-          <button onClick={() => onToggle(idx)}
-            className="cursor-pointer p-2 mr-1 text-white/50 hover:text-white/80 rounded-lg hover:bg-white/10 transition-all duration-200"
+          <button
+            onClick={() => onToggle(idx)}
+            className="cursor-pointer p-2 mr-1 rounded-md transition-all duration-200 hover:bg-white/5"
+            style={{ color: iconColor }}
           >
-            <FiChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${opened ? '' : '-rotate-90'}`} />
+            <FiChevronDown
+              className={`w-3.5 h-3.5 transition-transform duration-300 ease-in-out ${opened ? '' : '-rotate-90'}`}
+            />
           </button>
         </div>
-        {opened && (
-          <div className="ml-2 pl-2 mt-0.5 space-y-0.5 transition-all duration-200">
+        <Collapsible open={opened}>
+          <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
             {group.items.map((item) => {
               if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onNavigate} />;
               const act = isActive(pathname, item);
               return (
-<Link key={item.to} to={item.to} onClick={onNavigate}
-          className={`cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
-        >
-                  {item.label}
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={onNavigate}
+                  className={`cursor-pointer block px-3 py-1.5 text-sm rounded-md transition-all duration-200 ${
+                    act ? "font-semibold" : "text-[#939AB3] hover:text-white hover:bg-white/5 hover:translate-x-0.5"
+                  }`}
+                      style={act ? { color: '#ffffff' } : undefined}
+                >
+                      <span style={act ? activeLabelStyle : undefined}>{item.label}</span>
                 </Link>
               );
             })}
           </div>
-        )}
+        </Collapsible>
       </>
     );
   }
 
   return (
     <>
-      <button onClick={() => onToggle(idx)}
-        className={`cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
+      <button
+        onClick={() => onToggle(idx)}
+        className={`cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 text-sm rounded-md transition-all duration-200 ${
+          groupActive ? "font-semibold" : "text-[#939AB3] hover:text-white hover:bg-white/5"
+        }`}
+        style={groupActive ? { color: '#ffffff' } : undefined}
       >
-        <Icon className="w-4 h-4 shrink-0" />
-        <span className="flex-1 text-left">{group.label}</span>
-        <FiChevronDown className={`w-3.5 h-3.5 text-white/50 transition-transform duration-200 ${opened ? '' : '-rotate-90'}`} />
+        <Icon
+          className="w-4 h-4 shrink-0 transition-colors duration-200"
+          style={{ color: groupIconColor }}
+        />
+        <span className="flex-1 text-left" style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
+        <FiChevronDown
+          className={`w-3.5 h-3.5 transition-transform duration-300 ease-in-out ${opened ? '' : '-rotate-90'}`}
+          style={{ color: iconColor }}
+        />
       </button>
-      {opened && (
-        <div className="ml-2 pl-2 mt-0.5 space-y-0.5 transition-all duration-200">
+      <Collapsible open={opened}>
+        <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
           {group.items.map((item) => {
             if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onNavigate} />;
             const act = isActive(pathname, item);
             return (
-              <Link key={item.to} to={item.to} onClick={onNavigate}
-                className={`block cursor-pointer px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={onNavigate}
+                className={`cursor-pointer block px-3 py-1.5 text-sm rounded-md transition-all duration-200 ${
+                  act ? "font-semibold" : "text-[#939AB3] hover:text-white hover:bg-white/5 hover:translate-x-0.5"
+                }`}
+                      style={act ? { color: '#ffffff' } : undefined}
               >
-                {item.label}
+                      <span style={act ? activeLabelStyle : undefined}>{item.label}</span>
               </Link>
             );
           })}
         </div>
-      )}
+      </Collapsible>
     </>
   );
 }
@@ -279,25 +364,30 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
   const { data: settings } = useSiteSettings();
 
   const content = (
-    <div className="flex flex-col h-full bg-gradient-to-b from-admin-600 to-admin-800">
-      <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-white/20">
+    <div className="flex flex-col h-full" style={{ background: 'linear-gradient(to bottom, #0C1028, #0A0E20)' }}>
+      <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-white/10" style={{ background: 'white' }}>
         <NavLink to="/admin" className="flex items-center gap-2.5 min-w-0 group">
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
+          <div className="w-9 h-9 flex items-center justify-center shrink-0 overflow-hidden transition-transform duration-200 group-hover:scale-105">
             {settings?.logo_url ? (
               <img src={settings.logo_url} alt="Marvel Slice" className="h-9 w-auto object-contain" />
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center">
-                <FiGrid className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 flex items-center justify-center transition-transform duration-200" style={{ background: 'linear-gradient(to bottom right, rgba(91,80,236,0.3), rgba(91,80,236,0.05))' }}>
+                <FiGrid className="w-4 h-4" style={{ color: '#5B50EC' }} />
               </div>
             )}
           </div>
           <div className="min-w-0">
-            <span className="text-sm font-semibold text-white/90 block leading-tight">Marvel Slice</span>
-            <span className="text-[11px] text-white/50 font-medium">Management Portal</span>
+            <span className="text-sm font-semibold block leading-tight" style={{ color: '#0C1028' }}>Marvel Slice</span>
+            <span className="text-[11px] font-medium" style={{ color: '#6b7280' }}>Management Portal</span>
           </div>
         </NavLink>
-        <button onClick={onMobileClose} className="lg:hidden p-1.5 rounded-lg text-white/50 hover:text-white/80 hover:bg-white/10 transition-all duration-200">
-          <FiChevronDown className="w-4 h-4" />
+        <button
+          onClick={onMobileClose}
+          aria-label="Close sidebar"
+          className="lg:hidden p-1.5 rounded-md transition-all duration-200 hover:bg-black/5 active:scale-90"
+          style={{ color: '#707897' }}
+        >
+          <FiX className="w-4 h-4" />
         </button>
       </div>
 
@@ -307,12 +397,12 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
         ))}
       </nav>
 
-      <div className="px-4 py-3 shrink-0 border-t border-white/20">
-        <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl bg-white/10">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-[9px] font-bold text-white shrink-0 shadow-sm">M</div>
+      <div className="px-4 py-3 shrink-0 border-t border-white/10">
+        <div className="flex items-center gap-2.5 px-2 py-2 rounded-md transition-colors duration-200 hover:bg-white/[0.08]" style={{ background: 'rgba(255,255,255,0.05)' }}>
+          <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 shadow-sm" style={{ background: 'linear-gradient(to bottom right, rgba(91,80,236,0.4), rgba(91,80,236,0.05))', color: '#5B50EC' }}>M</div>
           <div className="min-w-0">
-            <p className="text-xs text-white/80 font-medium">Marvel Slice v1.0</p>
-            <p className="text-[10px] text-white/50">Admin Panel</p>
+            <p className="text-xs font-medium" style={{ color: '#939AB3' }}>Marvel Slice v1.0</p>
+            <p className="text-[10px]" style={{ color: '#707897' }}>Admin Panel</p>
           </div>
         </div>
       </div>
@@ -321,13 +411,28 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
 
   return (
     <>
-      <aside className="hidden lg:flex lg:flex-col w-60 shrink-0 h-screen overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800 rounded-r-[2rem] shadow-elevated transition-all duration-300">{content}</aside>
+      <aside className="hidden lg:flex lg:flex-col w-60 shrink-0 h-screen overflow-hidden shadow-elevated transition-all duration-300" style={{ background: 'linear-gradient(to bottom, #0C1028, #0A0E20)' }}>{content}</aside>
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer" onClick={onMobileClose} />
-          <aside className="fixed left-0 top-0 h-full w-72 shadow-elevated z-50 overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800 rounded-r-[2rem]" role="dialog" aria-modal="true" aria-label="Sidebar navigation">{content}</aside>
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer animate-[fadeIn_0.2s_ease-in-out]"
+            onClick={onMobileClose}
+          />
+          <aside
+            className="fixed left-0 top-0 h-full w-72 shadow-elevated z-50 overflow-hidden animate-[slideIn_0.25s_ease-out]"
+            style={{ background: 'linear-gradient(to bottom, #0C1028, #0A0E20)' }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Sidebar navigation"
+          >
+            {content}
+          </aside>
         </div>
       )}
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+      `}</style>
     </>
   );
 }

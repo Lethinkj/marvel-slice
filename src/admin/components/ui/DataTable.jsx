@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 
 function SearchIcon() {
   return (
-    <svg className="w-4 h-4 text-admin-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg className="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
   );
@@ -39,7 +39,7 @@ export default function DataTable({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="w-6 h-6 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-neutral-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -48,10 +48,10 @@ export default function DataTable({
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <div className="w-12 h-12 rounded-xl bg-admin-100 flex items-center justify-center mb-4">
-          <svg className="w-6 h-6 text-admin-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+          <svg className="w-6 h-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
         </div>
-        {emptyTitle && <h3 className="text-sm font-semibold text-admin-700 mb-1">{emptyTitle}</h3>}
-        {emptyDescription && <p className="text-xs text-admin-400 max-w-xs">{emptyDescription}</p>}
+        {emptyTitle && <h3 className="text-sm font-semibold text-neutral-700 mb-1">{emptyTitle}</h3>}
+        {emptyDescription && <p className="text-xs text-neutral-400 max-w-xs">{emptyDescription}</p>}
         {emptyAction && <div className="mt-4">{emptyAction}</div>}
       </div>
     );
@@ -66,7 +66,7 @@ export default function DataTable({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={searchPlaceholder}
-          className="w-full pl-9 pr-3 h-8 rounded-lg border border-admin-200 bg-white text-sm text-admin-900 placeholder:text-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all"
+          className="w-full pl-9 pr-3 h-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
         />
       </div>
     </div>
@@ -78,8 +78,8 @@ export default function DataTable({
   const renderNoResults = () =>
     filtered.length === 0 && search ? (
       <div className="flex flex-col items-center py-12 text-center">
-        <p className="text-sm text-admin-400">No results match your search.</p>
-        <button onClick={() => setSearch('')} className="mt-2 text-xs font-semibold text-admin-600 hover:text-admin-700 transition-colors">
+        <p className="text-sm text-neutral-400">No results match your search.</p>
+        <button onClick={() => setSearch('')} className="mt-2 text-xs font-semibold text-neutral-600 hover:text-neutral-700 transition-colors">
           Clear search
         </button>
       </div>
@@ -118,7 +118,7 @@ export default function DataTable({
           <thead>
             <tr className="border-b border-admin-100 bg-white/50">
               {columns.map((col, i) => (
-                <th key={i} className={`text-left text-xs font-semibold text-admin-500 uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>
+                <th key={i} className={`text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>
                   {col.header}
                 </th>
               ))}
@@ -132,7 +132,7 @@ export default function DataTable({
                 className={`border-b border-admin-50 last:border-0 transition-colors ${onRowClick ? 'cursor-pointer hover:bg-white/80' : 'hover:bg-white/50'}`}
               >
                 {columns.map((col, i) => (
-                  <td key={i} className={`px-4 py-3 text-sm text-admin-700 ${col.className || ''}`}>
+                  <td key={i} className={`px-4 py-3 text-sm text-neutral-700 ${col.className || ''}`}>
                     {renderCell(row, col)}
                   </td>
                 ))}

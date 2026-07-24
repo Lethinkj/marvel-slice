@@ -29,14 +29,14 @@ function ImageUploader({ value, onChange, label }) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
+          className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
           placeholder="Paste image URL or upload..." />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors">
+        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-neutral-500 hover:border-neutral-500 hover:text-neutral-700 transition-colors">
           {uploading ? (
-            <span className="w-4 h-4 border-2 border-admin-500 border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-neutral-500 border-t-transparent rounded-full animate-spin" />
           ) : (
             <FiUpload className="w-4 h-4" />
           )}
@@ -163,22 +163,22 @@ export default function SiteSettings() {
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-admin-700 mb-4 flex items-center gap-2">
-            <FiMail className="w-4 h-4 text-admin-600" /> Contact Information
+          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+            <FiMail className="w-4 h-4 text-cyan-600" /> Contact Information
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Email</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Email</label>
               <input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
-                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
                 placeholder="sales@marvelslice.com" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Phone</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Phone</label>
               <div className="relative">
-                <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
+                <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
                 <input type="text" value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
-                  className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
+                  className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
                   placeholder="+91 6380957390" />
               </div>
             </div>
@@ -186,8 +186,8 @@ export default function SiteSettings() {
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-admin-700 mb-4 flex items-center gap-2">
-            <FiGlobe className="w-4 h-4 text-admin-600" /> Social Links
+          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+            <FiGlobe className="w-4 h-4 text-violet-500" /> Social Links
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
@@ -197,9 +197,9 @@ export default function SiteSettings() {
               { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/...' },
             ].map((s) => (
               <div key={s.key}>
-                <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{s.label}</label>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{s.label}</label>
                 <input type="url" value={form[s.key]} onChange={(e) => setForm({ ...form, [s.key]: e.target.value })}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
+                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
                   placeholder={s.placeholder} />
               </div>
             ))}
@@ -207,32 +207,32 @@ export default function SiteSettings() {
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-admin-700 mb-4 flex items-center gap-2">
-            <FiMapPin className="w-4 h-4 text-admin-600" /> Address
+          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+            <FiMapPin className="w-4 h-4 text-amber-500" /> Address
           </h3>
           <div>
-            <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Full Address</label>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Full Address</label>
             <input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })}
-              className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
+              className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
               placeholder="123 Tech Park, Chennai, Tamil Nadu, India" />
           </div>
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-admin-700 mb-4 flex items-center gap-2">
-            <FiClock className="w-4 h-4 text-admin-600" /> Working Hours
+          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+            <FiClock className="w-4 h-4 text-cyan-500" /> Working Hours
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Weekdays</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Weekdays</label>
               <input type="text" value={form.hours_weekday} onChange={(e) => setForm({ ...form, hours_weekday: e.target.value })}
-                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
                 placeholder="10:00 AM - 7:00 PM" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Saturday</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Saturday</label>
               <input type="text" value={form.hours_saturday} onChange={(e) => setForm({ ...form, hours_saturday: e.target.value })}
-                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
                 placeholder="10:00 AM - 3:00 PM" />
             </div>
           </div>
