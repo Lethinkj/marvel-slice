@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiCopy, FiTrash2, FiUpload, FiSearch, FiCheck, FiX, FiGrid, FiList, FiFolder, FiFile, FiExternalLink, FiLayers } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import useConfirm from '../hooks/useConfirm';
 
 const BUCKETS = ['hero-images', 'course-thumbnails', 'certificates', 'company-logos', 'nav-icons', 'pages'];
 
@@ -77,6 +78,7 @@ function PreviewModal({ file, onClose }) {
 }
 
 export default function MediaLibrary() {
+  const [confirm, confirmDialog] = useConfirm();
   const [bucket, setBucket] = useState('all');
   const [files, setFiles] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -164,7 +166,7 @@ export default function MediaLibrary() {
   }
 
   async function deleteFile(file) {
-    if (!window.confirm(`Delete "${file.name}"?`)) return;
+    if (!(await confirm(`Delete "${file.name}"?`))) return;
     await supabase.storage.from(file._bucket).remove([file._path]);
     loadFiles();
   }
@@ -349,6 +351,7 @@ export default function MediaLibrary() {
       </div>
 
       {preview && <PreviewModal file={preview} onClose={() => setPreview(null)} />}
+      {confirmDialog}
     </PageShell>
   );
 }

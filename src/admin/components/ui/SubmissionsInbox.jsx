@@ -6,6 +6,7 @@ import {
   FiSearch, FiEye, FiX, FiChevronLeft, FiChevronRight, FiChevronDown, FiRefreshCw,
   FiDownload, FiLoader, FiFileText, FiSend, FiTrash2, FiCheck, FiMail,
 } from 'react-icons/fi';
+import useConfirm from '../../hooks/useConfirm';
 
 const PAGE_OPTIONS = [10, 20, 30, 50, 100];
 
@@ -45,7 +46,7 @@ function ReplyModal({ row, onClose, pageTitle }) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose}>
         <div className="bg-white rounded-xl border border-admin-200 shadow-2xl max-w-lg w-full p-8 text-center cursor-pointer" onClick={e => e.stopPropagation()}>
-          <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4"><FiCheck className="w-6 h-6 text-emerald-600" /></div>
+          <div className="w-12 h-12 rounded-full bg-success-50 flex items-center justify-center mx-auto mb-4"><FiCheck className="w-6 h-6 text-success-500" /></div>
           <h3 className="text-lg font-semibold text-admin-900 mb-1">Reply sent!</h3>
           <p className="text-sm text-admin-500 mb-6">Your email has been sent to {row.email}.</p>
           <button onClick={onClose} className="px-5 py-2 rounded-lg bg-admin-600 text-white text-sm font-medium hover:bg-admin-700 transition-all shadow-sm">Done</button>
@@ -74,7 +75,7 @@ function ReplyModal({ row, onClose, pageTitle }) {
               className="w-full px-3 py-2.5 rounded-lg border border-admin-200 bg-white text-sm text-admin-900 placeholder:text-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all resize-none"
             />
           </div>
-          {error && <p className="text-xs text-rose-600 bg-rose-50 px-3 py-2 rounded-lg">{error}</p>}
+          {error && <p className="text-xs text-destructive-500 bg-destructive-50 px-3 py-2 rounded-lg">{error}</p>}
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-admin-100 bg-white/50">
           <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-admin-600 hover:bg-white transition-all">Cancel</button>
@@ -230,6 +231,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
   const [replyTo, setReplyTo] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [exportModal, setExportModal] = useState(null);
+  const [confirm, confirmDialog] = useConfirm();
   const searchRef = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -255,7 +257,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
   }
 
   async function remove(id) {
-    if (!confirm('Delete this submission?')) return;
+    if (!(await confirm('Delete this submission?'))) return;
     await supabase.from(table).delete().eq('id', id);
     setData(prev => prev.filter(s => s.id !== id));
     if (selected?.id === id) setSelected(null);
@@ -456,7 +458,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                     {paged.map((row, idx) => (
                       <tr key={row.id}
                         onClick={() => { setSelected(selected?.id === row.id ? null : row); if (!row.is_read) markRead(row); }}
-                        className={`border-b border-admin-50 last:border-0 cursor-pointer transition-colors ${selected?.id === row.id ? 'bg-white' : 'hover:bg-white'} ${!disableReply && !row.is_read ? 'border-l-2 border-l-amber-500 bg-amber-50/30' : ''}`}
+                        className={`border-b border-admin-50 last:border-0 cursor-pointer transition-colors ${selected?.id === row.id ? 'bg-white' : 'hover:bg-white'} ${!disableReply && !row.is_read ? 'border-l-2 border-l-warning-500 bg-warning-50/30' : ''}`}
                       >
                         <td className="px-4 py-3 text-xs text-admin-400 font-mono whitespace-nowrap">{(page - 1) * pageSize + idx + 1}</td>
                         {columns.map((col, i) => (
@@ -469,7 +471,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div className="flex items-center gap-1">
                             {!disableReply && <button onClick={e => { e.stopPropagation(); row.is_read ? markUnread(row, e) : markRead(row, e); }}
-                              className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-all ${row.is_read ? 'bg-emerald-50 text-emerald-700' : 'bg-admin-100 text-admin-500'}`}
+                              className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-all ${row.is_read ? 'bg-success-50 text-success-700' : 'bg-admin-100 text-admin-500'}`}
                               title={row.is_read ? 'Mark as unread' : 'Mark as read'}
                             >
                               {row.is_read ? <><FiCheck className="w-3 h-3" /><span className="hidden md:inline">Read</span></> : <><FiMail className="w-3 h-3" /><span className="hidden md:inline">Unread</span></>}
@@ -481,7 +483,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                               <FiSend className="w-3 h-3" /><span className="hidden md:inline">Reply</span>
                             </button>}
                             <button onClick={e => { e.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }}
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-warning-50 text-warning-700 hover:bg-warning-50 transition-all"
                               title="View details"
                             >
                               <FiEye className="w-3.5 h-3.5" /><span className="hidden md:inline">View</span>
@@ -535,12 +537,12 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             <div className="flex items-center justify-between px-5 py-4 border-t border-admin-100 bg-white/50">
               <div className="flex items-center gap-2">
                 {!disableReply && <button onClick={() => selected.is_read ? markUnread(selected) : markRead(selected)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${selected.is_read ? 'bg-emerald-50 text-emerald-700' : 'bg-admin-100 text-admin-500'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${selected.is_read ? 'bg-success-50 text-success-700' : 'bg-admin-100 text-admin-500'}`}
                 >
                   {selected.is_read ? <><FiCheck className="w-3.5 h-3.5" /> Read</> : <><FiMail className="w-3.5 h-3.5" /> Unread</>}
                 </button>}
                 {!disableReply && <button onClick={() => selected.is_read ? markUnread(selected) : markRead(selected)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${!selected.is_read ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'bg-admin-100 text-admin-600 hover:bg-admin-200'}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${!selected.is_read ? 'bg-success-50 text-success-700 hover:bg-success-50' : 'bg-admin-100 text-admin-600 hover:bg-admin-200'}`}
                 >
                   {selected.is_read ? <><FiMail className="w-3.5 h-3.5" /> Mark as Unread</> : <><FiCheck className="w-3.5 h-3.5" /> Mark as Read</>}
                 </button>}
@@ -551,7 +553,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                 </button>}
               </div>
               <button onClick={() => remove(selected.id)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-600 hover:bg-rose-50 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-destructive-500 hover:bg-destructive-50 transition-all"
               >
                 <FiTrash2 className="w-3.5 h-3.5" /> Delete
               </button>
@@ -562,6 +564,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
       {replyTo && <ReplyModal row={replyTo} pageTitle={title} onClose={() => setReplyTo(null)} />}
       {exportModal && <ExportDialog type={exportModal} data={filtered} columns={columns} exportFilename={exportFilename} onClose={() => setExportModal(null)} />}
+      {confirmDialog}
     </div>
   );
 }

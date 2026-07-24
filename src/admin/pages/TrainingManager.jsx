@@ -10,6 +10,7 @@ import {
   FiPlus, FiEdit2, FiCopy, FiTrash2, FiExternalLink, FiSearch, FiFilter, FiBookOpen,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import useConfirm from '../hooks/useConfirm';
 
 const statusColors = {
   published: 'published',
@@ -18,6 +19,7 @@ const statusColors = {
 };
 
 export default function TrainingManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [programs, setPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -57,7 +59,7 @@ export default function TrainingManager() {
   }
 
   async function handleDelete(id, title) {
-    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (!(await confirm(`Delete "${title}"? This cannot be undone.`))) return;
     await supabase.from('training_programs').delete().eq('id', id);
     setPrograms((prev) => prev.filter((p) => p.id !== id));
     queryClient.invalidateQueries({ queryKey: ['trainingPrograms'] });
@@ -238,6 +240,7 @@ export default function TrainingManager() {
       ) : (
         <DataTable columns={columns} data={filtered} searchable={false} />
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

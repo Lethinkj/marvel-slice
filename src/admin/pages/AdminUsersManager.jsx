@@ -13,6 +13,7 @@ import {
   FiEyeOff,
   FiX,
 } from "react-icons/fi";
+import useConfirm from "../hooks/useConfirm";
 
 const ALL_ROLES = [
   { value: "master_admin", label: "Master Admin", desc: "Full access — can create all roles", rank: 4 },
@@ -24,6 +25,7 @@ const ALL_ROLES = [
 const ROLE_RANK = Object.fromEntries(ALL_ROLES.map((r) => [r.value, r.rank]));
 
 export default function AdminUsersManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const { user: currentUser } = useAuth();
   const userRank = ROLE_RANK[currentUser?.role] || 0;
   const availableRoles = currentUser?.role === 'master_admin' ? ALL_ROLES : ALL_ROLES.filter((r) => r.rank < userRank);
@@ -148,7 +150,7 @@ export default function AdminUsersManager() {
   }
 
   async function deleteUser(id) {
-    if (!window.confirm("Remove this admin?")) return;
+    if (!(await confirm("Remove this admin?"))) return;
     await supabase.rpc("delete_admin", {
       p_creator_id: currentUser.id,
       p_target_id: id,
@@ -274,6 +276,7 @@ export default function AdminUsersManager() {
           </div>
         </div>
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

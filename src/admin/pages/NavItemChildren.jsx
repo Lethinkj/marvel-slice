@@ -3,8 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { FiPlus, FiEdit2, FiTrash2, FiArrowLeft, FiBookOpen, FiX, FiCheck, FiChevronDown } from 'react-icons/fi';
 import PageShell from "../components/ui/PageShell";
+import useConfirm from '../hooks/useConfirm';
 
 export default function NavItemChildren() {
+  const [confirm, confirmDialog] = useConfirm();
   const { id } = useParams();
   const [parentItem, setParentItem] = useState(null);
   const [items, setItems] = useState([]);
@@ -103,7 +105,7 @@ export default function NavItemChildren() {
   }
 
   async function handleDelete(item) {
-    if (!window.confirm(`Delete "${item.label}"?`)) return;
+    if (!(await confirm(`Delete "${item.label}"?`))) return;
     const linked = courses.filter(c => c.nav_item_id === item.id);
     if (linked.length > 0) {
       await supabase.from('courses').update({ nav_item_id: null }).in('id', linked.map(c => c.id));
@@ -224,7 +226,7 @@ export default function NavItemChildren() {
                         <FiEdit2 className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleDelete(item)}
-                        className="p-1.5 text-admin-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        className="p-1.5 text-admin-400 hover:text-destructive-500 hover:bg-destructive-50 rounded-lg transition-colors">
                         <FiTrash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -248,6 +250,7 @@ export default function NavItemChildren() {
           </div>
         )}
       </div>
+      {confirmDialog}
     </PageShell>
   );
 }

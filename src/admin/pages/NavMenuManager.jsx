@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from "../components/ui/PageShell";
+import useConfirm from '../hooks/useConfirm';
 
 const sections = [
   { label: "Software Learning", path: null },
@@ -24,6 +25,7 @@ const sections = [
 ];
 
 export default function NavMenuManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const { user: currentUser } = useAuth();
   const queryClient = useQueryClient();
 
@@ -247,7 +249,7 @@ export default function NavMenuManager() {
   }
 
   async function handleDelete(item) {
-    if (!window.confirm(`Delete "${item.label}"?`)) return;
+    if (!(await confirm(`Delete "${item.label}"?`))) return;
     await supabase.from("nav_items").delete().eq("id", item.id);
     queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
     fetchItems();
@@ -680,6 +682,7 @@ export default function NavMenuManager() {
           )}
         </div>
       </div>
+      {confirmDialog}
     </PageShell>
   );
 }

@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import { FiPlus, FiLink, FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import useConfirm from '../hooks/useConfirm';
 
 function LinkRow({ link, onUpdate, onDelete }) {
   return (
@@ -62,6 +63,7 @@ function ColumnCard({ column, onUpdate, onDelete, onAddLink, onUpdateLink, onDel
 }
 
 export default function FooterManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -103,7 +105,7 @@ export default function FooterManager() {
 
   async function deleteColumn(idx) {
     const col = columns[idx];
-    if (!window.confirm(`Delete column "${col.title}" and all its links?`)) return;
+    if (!(await confirm(`Delete column "${col.title}" and all its links?`))) return;
     await supabase.from('footer_columns').delete().eq('id', col.id);
     queryClient.invalidateQueries({ queryKey: ['footer'] });
     setColumns(columns.filter((_, i) => i !== idx));
@@ -183,6 +185,7 @@ export default function FooterManager() {
           ))}
         </div>
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

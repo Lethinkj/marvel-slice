@@ -7,8 +7,10 @@ import EmptyState from "../components/EmptyState";
 import DataTable from "../components/ui/DataTable";
 import { FiPlus, FiBookOpen, FiSearch } from "react-icons/fi";
 import PageShell from '../components/ui/PageShell';
+import useConfirm from '../hooks/useConfirm';
 
 export default function CoursesList() {
+  const [confirm, confirmDialog] = useConfirm();
   const [courses, setCourses] = useState([]);
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ export default function CoursesList() {
   }
 
   async function handleDelete(id, title) {
-    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (!(await confirm(`Delete "${title}"? This cannot be undone.`))) return;
     await supabase.from("courses").delete().eq("id", id);
     setCourses((prev) => prev.filter((c) => c.id !== id));
   }
@@ -191,6 +193,7 @@ export default function CoursesList() {
           ))}
         </div>
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

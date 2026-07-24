@@ -4,8 +4,10 @@ import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
 import AdminButton from '../components/AdminButton';
 import { FiFolder } from 'react-icons/fi';
+import useConfirm from '../hooks/useConfirm';
 
 export default function BlogCategoriesManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +51,7 @@ export default function BlogCategoriesManager() {
   }
 
   async function deleteCategory(id) {
-    if (!window.confirm('Delete this category?')) return;
+    if (!(await confirm('Delete this category?'))) return;
     await supabase.from('blog_categories').delete().eq('id', id);
     queryClient.invalidateQueries({ queryKey: ['blogCategories'] });
     setCategories(categories.filter((c) => c.id !== id));
@@ -119,6 +121,7 @@ export default function BlogCategoriesManager() {
           </div>
         </div>
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

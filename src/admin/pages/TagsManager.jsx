@@ -6,8 +6,10 @@ import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
 import { FiPlus, FiTag } from 'react-icons/fi';
 import PageShell from "../components/ui/PageShell";
+import useConfirm from '../hooks/useConfirm';
 
 export default function TagsManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [tags, setTags] = useState([]);
   const [name, setName] = useState('');
@@ -35,7 +37,7 @@ export default function TagsManager() {
   }
 
   async function deleteTag(id) {
-    if (!window.confirm('Delete this tag?')) return;
+    if (!(await confirm('Delete this tag?'))) return;
     await supabase.from('tags').delete().eq('id', id);
     queryClient.invalidateQueries({ queryKey: ['popularTags'] });
     setTags(tags.filter((t) => t.id !== id));
@@ -82,6 +84,7 @@ export default function TagsManager() {
           </div>
         )}
       </div>
+      {confirmDialog}
     </PageShell>
   );
 }

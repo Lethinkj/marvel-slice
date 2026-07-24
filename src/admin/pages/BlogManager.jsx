@@ -7,8 +7,10 @@ import EmptyState from '../components/EmptyState';
 import DataTable from '../components/ui/DataTable';
 import { FiPlus, FiFileText, FiSearch, FiChevronRight, FiCalendar } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import useConfirm from '../hooks/useConfirm';
 
 export default function BlogManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -33,7 +35,7 @@ export default function BlogManager() {
   }
 
   async function handleDelete(id, title) {
-    if (!window.confirm(`Delete "${title}"?`)) return;
+    if (!(await confirm(`Delete "${title}"?`))) return;
     await supabase.from('blog_posts').delete().eq('id', id);
     setPosts(posts.filter((p) => p.id !== id));
   }
@@ -139,6 +141,7 @@ export default function BlogManager() {
       ) : (
         <DataTable columns={cardsColumns} data={filteredPosts} searchable={false} variant="cards" />
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

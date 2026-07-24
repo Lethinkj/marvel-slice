@@ -10,6 +10,7 @@ import {
   FiPlus, FiEdit2, FiCopy, FiTrash2, FiExternalLink, FiSearch, FiFilter, FiPackage,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import useConfirm from '../hooks/useConfirm';
 
 const statusColors = {
   published: 'published',
@@ -18,6 +19,7 @@ const statusColors = {
 };
 
 export default function ServicesManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -57,7 +59,7 @@ export default function ServicesManager() {
   }
 
   async function handleDelete(id, title) {
-    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    if (!(await confirm(`Delete "${title}"? This cannot be undone.`))) return;
     await supabase.from('services').delete().eq('id', id);
     setServices((prev) => prev.filter((s) => s.id !== id));
     queryClient.invalidateQueries({ queryKey: ['services'] });
@@ -236,6 +238,7 @@ export default function ServicesManager() {
       ) : (
         <DataTable columns={columns} data={filtered} searchable={false} />
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

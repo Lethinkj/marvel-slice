@@ -5,8 +5,10 @@ import PageShell from "../components/ui/PageShell";
 import AdminButton from '../components/AdminButton';
 import EmptyState from '../components/EmptyState';
 import { FiPlus, FiBriefcase } from 'react-icons/fi';
+import useConfirm from '../hooks/useConfirm';
 
 export default function AlumniCompaniesManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [companies, setCompanies] = useState([]);
   const [name, setName] = useState('');
@@ -34,7 +36,7 @@ export default function AlumniCompaniesManager() {
   }
 
   async function deleteCompany(id) {
-    if (!window.confirm('Delete this company?')) return;
+    if (!(await confirm('Delete this company?'))) return;
     await supabase.from('alumni_companies').delete().eq('id', id);
     queryClient.invalidateQueries({ queryKey: ['alumniCompanies'] });
     setCompanies(companies.filter((c) => c.id !== id));
@@ -84,6 +86,7 @@ export default function AlumniCompaniesManager() {
           </div>
         )}
       </div>
+      {confirmDialog}
     </PageShell>
   );
 }

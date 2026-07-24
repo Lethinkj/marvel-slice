@@ -118,8 +118,8 @@ export default function ReplyModal({ submission, type, onClose }) {
 
         {sent ? (
           <div className="flex-1 flex flex-col items-center justify-center py-12 px-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4">
-              <FiSend className="w-7 h-7 text-green-500" />
+            <div className="w-16 h-16 rounded-full bg-success-50 flex items-center justify-center mb-4">
+              <FiSend className="w-7 h-7 text-success-500" />
             </div>
             <h3 className="text-lg font-bold text-admin-900 mb-2">Reply Sent!</h3>
             <p className="text-sm text-admin-500 max-w-xs">
@@ -160,7 +160,7 @@ export default function ReplyModal({ submission, type, onClose }) {
                             <FiFileText className="w-5 h-5 text-admin-600" />
                             <span className="text-sm text-admin-700 truncate max-w-[250px]">{uploadFile?.name || 'brochure.pdf'}</span>
                           </div>
-                          <button onClick={() => { setUploadUrl(''); setUploadFile(null); }} className="text-xs text-red-500 hover:underline">Remove</button>
+                          <button onClick={() => { setUploadUrl(''); setUploadFile(null); }} className="text-xs text-destructive-500 hover:underline">Remove</button>
                         </div>
                       ) : (
                         <label className="flex items-center justify-center gap-2 py-6 border-2 border-dashed border-admin-200 rounded-lg cursor-pointer hover:border-admin-500 transition-colors">
@@ -240,7 +240,7 @@ export default function ReplyModal({ submission, type, onClose }) {
               </div>
 
               {error && (
-                <p className="text-xs text-red-500 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+                <p className="text-xs text-destructive-500 bg-destructive-50 border border-destructive-500 rounded-lg px-3 py-2">{error}</p>
               )}
             </div>
 

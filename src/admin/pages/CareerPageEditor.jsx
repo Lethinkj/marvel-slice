@@ -12,6 +12,7 @@ import {
   FiAlignLeft, FiAlignCenter, FiAlignRight,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import useConfirm from '../hooks/useConfirm';
 
 function AlignButtons({ value, onChange }) {
   const options = [
@@ -102,6 +103,7 @@ const defaultJobForm = {
 };
 
 export default function CareerPageEditor() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -314,7 +316,7 @@ export default function CareerPageEditor() {
   }
 
   async function deleteJob(id) {
-    if (!window.confirm('Delete this job opening?')) return;
+    if (!(await confirm('Delete this job opening?'))) return;
     await supabase.from('job_openings').delete().eq('id', id);
     queryClient.invalidateQueries({ queryKey: ['job-openings'] });
     setOpenings(prev => prev.filter(j => j.id !== id));
@@ -382,7 +384,7 @@ export default function CareerPageEditor() {
   }
 
   async function deleteCategory(id) {
-    if (!window.confirm('Delete this role category?')) return;
+    if (!(await confirm('Delete this role category?'))) return;
     await supabase.from('role_categories').delete().eq('id', id);
     queryClient.invalidateQueries({ queryKey: ['role-categories'] });
     setRoleCategories(prev => prev.filter(c => c.id !== id));
@@ -515,7 +517,7 @@ export default function CareerPageEditor() {
                         <button type="button" onClick={() => toggleCategoryActive(cat)}
                           className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                             cat.is_active
-                              ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                              ? 'bg-success-50 text-success-500 hover:bg-success-50'
                               : 'bg-admin-100 text-admin-400 hover:bg-admin-200'
                           }`}>
                           {cat.is_active ? <FiCheck className="w-3 h-3" /> : <FiX className="w-3 h-3" />}
@@ -529,7 +531,7 @@ export default function CareerPageEditor() {
                             <FiEdit2 className="w-4 h-4" />
                           </button>
                           <button type="button" onClick={() => deleteCategory(cat.id)}
-                            className="p-1.5 text-admin-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
+                            className="p-1.5 text-admin-400 hover:text-destructive-500 hover:bg-destructive-50 rounded-lg transition-colors cursor-pointer">
                             <FiTrash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -603,7 +605,7 @@ export default function CareerPageEditor() {
                         <button type="button" onClick={() => toggleActive(job)}
                           className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                             job.is_active
-                              ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                              ? 'bg-success-50 text-success-500 hover:bg-success-50'
                               : 'bg-admin-100 text-admin-400 hover:bg-admin-200'
                           }`}>
                           {job.is_active ? <FiCheck className="w-3 h-3" /> : <FiX className="w-3 h-3" />}
@@ -617,7 +619,7 @@ export default function CareerPageEditor() {
                             <FiEdit2 className="w-4 h-4" />
                           </button>
                           <button type="button" onClick={() => deleteJob(job.id)}
-                            className="p-1.5 text-admin-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
+                            className="p-1.5 text-admin-400 hover:text-destructive-500 hover:bg-destructive-50 rounded-lg transition-colors cursor-pointer">
                             <FiTrash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -764,6 +766,7 @@ export default function CareerPageEditor() {
           </div>
         </div>
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

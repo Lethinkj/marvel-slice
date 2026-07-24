@@ -93,7 +93,7 @@ function IconPicker({ value, onChange }) {
 
 const sectionDefs = [
   {
-    key: 'hero', label: 'Hero Banner', icon: FiHome, color: 'from-brand-orange to-brand-orange/80',
+    key: 'hero', label: 'Hero Banner', icon: FiHome, color: 'from-admin-500 to-admin-500/80',
     isHero: true,
   },
   {
@@ -135,7 +135,7 @@ const sectionDefs = [
     ],
   },
   {
-    key: 'faqs', label: 'FAQs', icon: FiHelpCircle, color: 'from-brand-orange/80 to-brand-orange',
+    key: 'faqs', label: 'FAQs', icon: FiHelpCircle, color: 'from-admin-500/80 to-admin-500',
     isList: true,
     itemFields: [
       { name: 'question', label: 'Question', type: 'text' },

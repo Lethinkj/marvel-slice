@@ -94,7 +94,7 @@ export default function AdminLayout() {
             </button>
             <div className="hidden lg:flex min-w-0"><Breadcrumbs /></div>
             <Link to="/admin" className="flex items-center gap-2 text-sm font-semibold text-admin-900 lg:hidden">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-admin-500 to-violet-600 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-admin-500 to-admin-800 flex items-center justify-center">
                 <FiGrid className="w-3 h-3 text-white" />
               </div>
               Marvel Slice
@@ -115,7 +115,7 @@ export default function AdminLayout() {
 
             <button className="relative p-2 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
               <FiBell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive-500 rounded-full ring-2 ring-white" />
             </button>
 
             <Link to="/" target="_blank" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-admin-500 hover:text-admin-700 hover:bg-admin-100 transition-all duration-200">
@@ -125,7 +125,7 @@ export default function AdminLayout() {
 
             <div className="relative" ref={menuRef}>
               <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 ml-1 pl-3 pr-2 py-1.5 text-sm text-admin-600 hover:text-admin-900 hover:bg-admin-100 rounded-lg transition-all duration-200">
-                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-admin-500 to-violet-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">{user?.name?.charAt(0)?.toUpperCase() || 'A'}</span>
+                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-admin-500 to-admin-800 text-white flex items-center justify-center text-xs font-bold shadow-sm">{user?.name?.charAt(0)?.toUpperCase() || 'A'}</span>
                 <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || user?.email}</span>
               </button>
 
@@ -138,7 +138,7 @@ export default function AdminLayout() {
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white text-admin-700">{user?.role}</span>
                     </div>
                   </div>
-                  <button onClick={() => { logout(); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-all duration-200">
+                  <button onClick={() => { logout(); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive-500 hover:bg-destructive-50 transition-all duration-200">
                     <FiLogOut className="w-4 h-4" /> Sign Out
                   </button>
                 </div>

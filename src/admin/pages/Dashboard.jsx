@@ -120,7 +120,7 @@ export default function Dashboard() {
         ))}
         <Link to="/admin/career-submissions" className="block bg-white rounded-xl border border-admin-200 shadow-sm p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
           <div className="flex items-start justify-between mb-2">
-            <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+            <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-warning-50 text-warning-500">
               <FiInbox className="w-4 h-4" />
             </div>
             <span className="text-xl font-semibold tabular-nums text-admin-900">{totalPending}</span>

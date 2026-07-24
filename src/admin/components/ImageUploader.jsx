@@ -76,7 +76,7 @@ export default function ImageUploader({
         <button
           onClick={() => setShowUrlInput(!showUrlInput)}
           className={`flex items-center gap-1 text-sm px-3 py-2 rounded-md transition-colors ${
-            showUrlInput ? 'bg-brand-orange/10 text-brand-orange' : 'text-admin-500 hover:text-brand-orange'
+            showUrlInput ? 'bg-admin-500/10 text-admin-500' : 'text-admin-500 hover:text-admin-500'
           }`}
           title="Paste image URL"
         >
@@ -87,7 +87,7 @@ export default function ImageUploader({
           <>
             <button
               onClick={copyUrl}
-              className="flex items-center gap-1 text-sm text-admin-500 hover:text-brand-orange"
+              className="flex items-center gap-1 text-sm text-admin-500 hover:text-admin-500"
               title="Copy URL"
             >
               <FiCopy className="w-3.5 h-3.5" />
@@ -95,7 +95,7 @@ export default function ImageUploader({
             </button>
             <button
               onClick={remove}
-              className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700"
+              className="flex items-center gap-1 text-sm text-destructive-500 hover:text-destructive-700"
               title="Remove"
             >
               <FiX className="w-3.5 h-3.5" />
@@ -108,7 +108,7 @@ export default function ImageUploader({
       {showUrlInput && (
         <div className="space-y-2">
           {uploadError && (
-            <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+            <p className="text-xs text-warning-500 bg-warning-50 border border-warning-500 rounded-md px-3 py-2">
               {uploadError}
             </p>
           )}
@@ -117,7 +117,7 @@ export default function ImageUploader({
             value={value || ''}
             onChange={(e) => handleUrlChange(e.target.value)}
             placeholder="Paste image URL here..."
-            className="w-full px-3 py-2 border border-admin-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
+            className="w-full px-3 py-2 border border-admin-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-admin-500"
           />
         </div>
       )}

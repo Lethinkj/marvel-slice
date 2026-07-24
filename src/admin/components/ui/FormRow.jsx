@@ -7,12 +7,12 @@ export default function FormRow({ label, error, required, hint, children, classN
       {label && (
         <label className="block text-sm font-medium text-admin-700">
           {label}
-          {required && <span className="text-rose-500 ml-0.5">*</span>}
+          {required && <span className="text-destructive-500 ml-0.5">*</span>}
         </label>
       )}
       {children}
       {hint && !error && <p className="text-xs text-admin-400">{hint}</p>}
-      {error && <p className="text-xs text-rose-500">{error}</p>}
+      {error && <p className="text-xs text-destructive-500">{error}</p>}
     </div>
   );
 }

@@ -313,11 +313,11 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
 
   return (
     <>
-      <aside className="hidden lg:flex lg:flex-col w-60 shrink-0 h-screen overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800 transition-all duration-300">{content}</aside>
+      <aside className="hidden lg:flex lg:flex-col w-60 shrink-0 h-screen overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800 rounded-r-[2rem] shadow-elevated transition-all duration-300">{content}</aside>
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer" onClick={onMobileClose} />
-          <aside className="fixed left-0 top-0 h-full w-72 shadow-2xl z-50 overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800" role="dialog" aria-modal="true" aria-label="Sidebar navigation">{content}</aside>
+          <aside className="fixed left-0 top-0 h-full w-72 shadow-elevated z-50 overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800 rounded-r-[2rem]" role="dialog" aria-modal="true" aria-label="Sidebar navigation">{content}</aside>
         </div>
       )}
     </>

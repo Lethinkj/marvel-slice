@@ -136,7 +136,7 @@ function IconPicker({ value, onChange }) {
       <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Icon *</label>
       <button type="button" onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-2 px-3 py-2 border border-admin-200 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all cursor-pointer hover:border-admin-400">
-        {IconComp ? <IconComp className="w-5 h-5 text-brand-orange" /> : <div className="w-5 h-5" />}
+        {IconComp ? <IconComp className="w-5 h-5 text-admin-500" /> : <div className="w-5 h-5" />}
         <span className={`flex-1 ${value ? '' : 'text-admin-400'}`}>{value || 'Select an icon...'}</span>
         <FiChevronRight className={`w-4 h-4 text-admin-400 transition-transform ${open ? 'rotate-90' : ''}`} />
       </button>
@@ -156,7 +156,7 @@ function IconPicker({ value, onChange }) {
                 return (
                   <button key={name} type="button" onClick={() => { onChange(name); setOpen(false); setSearch(''); }}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left hover:bg-white transition-colors cursor-pointer ${value === name ? 'bg-white text-admin-700 font-medium' : 'text-admin-700'}`}>
-                    {Ic && <Ic className="w-5 h-5 text-brand-orange shrink-0" />}
+                    {Ic && <Ic className="w-5 h-5 text-admin-500 shrink-0" />}
                     <span>{name}</span>
                   </button>
                 );
@@ -555,9 +555,9 @@ export default function AboutPageEditor() {
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       {validationErrors.length > 0 && (
-        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <p className="text-sm font-semibold text-amber-800 mb-1">Validation warnings</p>
-          <ul className="list-disc pl-5 text-sm text-amber-700 space-y-0.5">
+        <div className="mb-6 p-4 bg-warning-50 border border-warning-500 rounded-lg">
+          <p className="text-sm font-semibold text-warning-700 mb-1">Validation warnings</p>
+          <ul className="list-disc pl-5 text-sm text-warning-700 space-y-0.5">
             {validationErrors.map((err, i) => <li key={i}>{err}</li>)}
           </ul>
         </div>
@@ -619,7 +619,7 @@ export default function AboutPageEditor() {
                     <span className="text-xs font-bold text-admin-400">{i + 1}</span>
                     <span className="text-sm font-medium text-admin-700">{SECTION_TYPE_LABELS[sec.section_type] || sec.section_type}</span>
                     {sec.heading && <span className="text-xs text-admin-400 max-w-48 truncate">— {sec.heading}</span>}
-                    {sec.hidden && <span className="text-xs text-amber-500 font-medium">Hidden</span>}
+                    {sec.hidden && <span className="text-xs text-warning-500 font-medium">Hidden</span>}
                   </div>
                   <div className="flex items-center gap-1">
                     <button type="button" onClick={(e) => { e.stopPropagation(); toggleVisibility(i); }}

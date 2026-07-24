@@ -4,8 +4,10 @@ import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
 import AdminButton from '../components/AdminButton';
 import { FiServer } from 'react-icons/fi';
+import useConfirm from '../hooks/useConfirm';
 
 export default function ServiceCategoriesManager() {
+  const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ export default function ServiceCategoriesManager() {
   }
 
   async function deleteCategory(id) {
-    if (!window.confirm('Delete this category?')) return;
+    if (!(await confirm('Delete this category?'))) return;
     await supabase.from('service_categories').delete().eq('id', id);
     queryClient.invalidateQueries({ queryKey: ['serviceCategories'] });
     setCategories(categories.filter((c) => c.id !== id));
@@ -142,7 +144,7 @@ export default function ServiceCategoriesManager() {
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cat.status ? 'bg-green-100 text-green-700' : 'bg-admin-100 text-admin-500'}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cat.status ? 'bg-success-50 text-success-700' : 'bg-admin-100 text-admin-500'}`}>
                     {cat.status ? 'Active' : 'Inactive'}
                   </span>
                 </div>
@@ -161,6 +163,7 @@ export default function ServiceCategoriesManager() {
           </div>
         </div>
       )}
+      {confirmDialog}
     </PageShell>
   );
 }

@@ -35,8 +35,8 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
     <div className="w-80 shrink-0 bg-white border-r border-admin-200 flex flex-col">
       <div className="shrink-0 px-4 pt-4 pb-3 border-b border-admin-100">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-dark-navy text-base flex items-center gap-2">
-            <FiMessageCircle className="w-4 h-4 text-brand-orange" />
+          <h2 className="font-bold text-admin-900 text-base flex items-center gap-2">
+            <FiMessageCircle className="w-4 h-4 text-admin-500" />
             Chats
           </h2>
         </div>
@@ -46,7 +46,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search conversations..."
-            className="w-full pl-9 pr-3 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 placeholder-admin-400"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-admin-500/30 placeholder-admin-400"
           />
         </div>
         <div className="flex gap-1 mt-3">
@@ -55,7 +55,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
               key={f}
               onClick={() => onFilterChange(f)}
               className={`px-3 py-1 text-xs font-medium rounded-full transition-colors cursor-pointer ${
-                filter === f ? 'bg-brand-orange text-white' : 'bg-admin-100 text-admin-500 hover:bg-admin-200'
+                filter === f ? 'bg-admin-600 text-white' : 'bg-admin-100 text-admin-500 hover:bg-admin-200'
               }`}
             >
               {f}
@@ -84,18 +84,18 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
                   key={conv.id}
                   onClick={() => onSelect(conv)}
                   className={`w-full text-left px-4 py-3 transition-colors cursor-pointer border-b border-admin-50 last:border-0 ${
-                    isActive ? 'bg-[#f0f0f5]' : 'hover:bg-white'
+                    isActive ? 'bg-admin-100' : 'hover:bg-white'
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 ${
-                      unread ? 'bg-brand-orange text-white' : 'bg-admin-200 text-admin-500'
+                      unread ? 'bg-admin-600 text-white' : 'bg-admin-200 text-admin-500'
                     }`}>
                       {(conv.user_name || 'V')[0].toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className={`text-sm truncate ${unread ? 'font-bold text-dark-navy' : 'font-semibold text-admin-800'}`}>
+                        <p className={`text-sm truncate ${unread ? 'font-bold text-admin-900' : 'font-semibold text-admin-800'}`}>
                           {conv.user_name || 'Visitor'}
                         </p>
                         <span className="text-[11px] text-admin-400 shrink-0">{relativeTime(conv.last_message_at)}</span>
@@ -107,8 +107,8 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
                       )}
                       {unread && (
                         <div className="flex items-center gap-1.5 mt-1.5">
-                          <span className="w-2 h-2 rounded-full bg-brand-orange" />
-                          <span className="text-[10px] text-brand-orange font-semibold">New message</span>
+                          <span className="w-2 h-2 rounded-full bg-admin-600" />
+                          <span className="text-[10px] text-admin-500 font-semibold">New message</span>
                         </div>
                       )}
                     </div>
@@ -129,8 +129,8 @@ function MessageBox({ msg }) {
     <div className={`flex ${isUser ? 'justify-start' : 'justify-end'}`}>
       <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
         isUser
-          ? 'bg-[#f1f1f5] text-dark-navy rounded-bl-md'
-          : 'bg-brand-orange text-white rounded-br-md'
+          ? 'bg-admin-100 text-admin-900 rounded-bl-md'
+          : 'bg-admin-600 text-white rounded-br-md'
       }`}>
         <p className="whitespace-pre-wrap break-words">{msg.content}</p>
         <div className={`flex items-center gap-1 mt-1 ${isUser ? 'justify-end' : 'justify-start'}`}>
@@ -255,9 +255,9 @@ function LiveChat({ conversations, onConversationsChange }) {
                 {(activeConv.user_name || 'V')[0].toUpperCase()}
               </div>
               <div className="min-w-0">
-                <p className="font-semibold text-dark-navy text-sm truncate">{activeConv.user_name || 'Visitor'}</p>
+                <p className="font-semibold text-admin-900 text-sm truncate">{activeConv.user_name || 'Visitor'}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className={`inline-block w-1.5 h-1.5 rounded-full ${userOnline ? 'bg-green-500' : 'bg-admin-300'}`} />
+                  <span className={`inline-block w-1.5 h-1.5 rounded-full ${userOnline ? 'bg-success-500' : 'bg-admin-300'}`} />
                   <span className="text-xs text-admin-400">{userOnline ? 'Online' : 'Offline'}</span>
                 </div>
               </div>
@@ -272,13 +272,13 @@ function LiveChat({ conversations, onConversationsChange }) {
               {activeConv.user_email && (
                 <span className="flex items-center gap-1.5">
                   <FiMail className="w-3.5 h-3.5 text-admin-400" />
-                  <a href={`mailto:${activeConv.user_email}`} className="text-brand-orange hover:underline">{activeConv.user_email}</a>
+                  <a href={`mailto:${activeConv.user_email}`} className="text-admin-500 hover:underline">{activeConv.user_email}</a>
                 </span>
               )}
               {activeConv.user_phone && (
                 <span className="flex items-center gap-1.5">
                   <FiPhone className="w-3.5 h-3.5 text-admin-400" />
-                  <a href={`tel:${activeConv.user_phone}`} className="text-brand-orange hover:underline">{activeConv.user_phone}</a>
+                  <a href={`tel:${activeConv.user_phone}`} className="text-admin-500 hover:underline">{activeConv.user_phone}</a>
                 </span>
               )}
               {activeConv.reason && (
@@ -296,7 +296,7 @@ function LiveChat({ conversations, onConversationsChange }) {
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-[#fafafa]">
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white">
             {messages.length === 0 && (
               <div className="text-center text-admin-400 text-sm py-16">
                 <p>No messages yet. Send a reply to start the conversation.</p>
@@ -313,20 +313,20 @@ function LiveChat({ conversations, onConversationsChange }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your reply..."
-              className="flex-1 px-4 py-2.5 text-sm border border-admin-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-orange/30 focus:border-brand-orange placeholder-admin-400 resize-none"
+              className="flex-1 px-4 py-2.5 text-sm border border-admin-200 rounded-xl outline-none focus:ring-2 focus:ring-admin-500/30 focus:border-admin-500 placeholder-admin-400 resize-none"
               disabled={sending || activeConv.status === 'closed'}
             />
             <button
               type="submit"
               disabled={!input.trim() || sending || activeConv.status === 'closed'}
-              className="w-10 h-10 rounded-full bg-brand-orange text-white flex items-center justify-center hover:bg-brand-orange/90 transition-colors disabled:opacity-40 shrink-0 cursor-pointer"
+              className="w-10 h-10 rounded-full bg-admin-600 text-white flex items-center justify-center hover:bg-admin-600/90 transition-colors disabled:opacity-40 shrink-0 cursor-pointer"
             >
               {sending ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
             </button>
           </form>
         </div>
       ) : (
-        <div className="flex-1 flex items-center justify-center bg-[#fafafa]">
+        <div className="flex-1 flex items-center justify-center bg-white">
           <div className="text-center">
             <FiMessageCircle className="w-16 h-16 mx-auto mb-4 text-admin-200" />
             <p className="text-lg font-medium text-admin-400">Select a conversation</p>
@@ -361,7 +361,7 @@ function MessageViewer({ conversation, onClose }) {
       <div className="bg-white rounded-2xl shadow-2xl mx-4 w-full max-w-2xl max-h-[80vh] flex flex-col cursor-pointer" onClick={(e) => e.stopPropagation()}>
         <div className="shrink-0 px-5 py-4 border-b border-admin-100 flex items-center justify-between">
           <div>
-            <p className="font-semibold text-dark-navy text-sm">{conversation.user_name || 'Visitor'}</p>
+            <p className="font-semibold text-admin-900 text-sm">{conversation.user_name || 'Visitor'}</p>
             <p className="text-xs text-admin-400">{conversation.user_email} {conversation.user_phone ? `| ${conversation.user_phone}` : ''}</p>
           </div>
           <button onClick={onClose} className="p-1.5 text-admin-400 hover:text-admin-600 cursor-pointer"><FiX className="w-5 h-5" /></button>
@@ -380,8 +380,8 @@ function MessageViewer({ conversation, onClose }) {
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-start' : 'justify-end'}`}>
                 <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                   msg.sender === 'user'
-                    ? 'bg-[#f1f1f5] text-dark-navy rounded-bl-md'
-                    : 'bg-brand-orange text-white rounded-br-md'
+                    ? 'bg-admin-100 text-admin-900 rounded-bl-md'
+                    : 'bg-admin-600 text-white rounded-br-md'
                 }`}>
                   <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                   <p className={`text-[10px] mt-1 ${msg.sender === 'user' ? 'text-admin-400 text-right' : 'text-white/70'}`}>{formatTime(msg.created_at)}</p>
@@ -418,8 +418,8 @@ function SessionsTable({ conversations }) {
     <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-admin-100 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
-          <h2 className="font-bold text-dark-navy text-base flex items-center gap-2">
-            <FiList className="w-4 h-4 text-brand-orange" />
+          <h2 className="font-bold text-admin-900 text-base flex items-center gap-2">
+            <FiList className="w-4 h-4 text-admin-500" />
             Chat Sessions
           </h2>
           <span className="text-xs text-admin-400 bg-admin-100 px-2 py-0.5 rounded-full">
@@ -433,14 +433,14 @@ function SessionsTable({ conversations }) {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, email, phone..."
-              className="w-64 pl-9 pr-3 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 placeholder-admin-400"
+              className="w-64 pl-9 pr-3 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-admin-500/30 placeholder-admin-400"
             />
           </div>
           <div className="relative">
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="appearance-none pl-3 pr-8 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 cursor-pointer"
+              className="appearance-none pl-3 pr-8 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-admin-500/30 cursor-pointer"
             >
               <option value="all">All</option>
               <option value="new">New</option>
@@ -485,12 +485,12 @@ function SessionsTable({ conversations }) {
                       <div className="w-8 h-8 rounded-full bg-admin-200 flex items-center justify-center text-xs font-bold text-admin-500 shrink-0">
                         {(conv.user_name || 'V')[0].toUpperCase()}
                       </div>
-                      <span className="font-medium text-dark-navy">{conv.user_name || 'Visitor'}</span>
+                      <span className="font-medium text-admin-900">{conv.user_name || 'Visitor'}</span>
                     </div>
                   </td>
                   <td className="px-5 py-4">
                     {conv.user_email ? (
-                      <a href={`mailto:${conv.user_email}`} className="text-brand-orange hover:underline flex items-center gap-1.5">
+                      <a href={`mailto:${conv.user_email}`} className="text-admin-500 hover:underline flex items-center gap-1.5">
                         <FiMail className="w-3.5 h-3.5 shrink-0" />
                         {conv.user_email}
                       </a>
@@ -498,7 +498,7 @@ function SessionsTable({ conversations }) {
                   </td>
                   <td className="px-5 py-4">
                     {conv.user_phone ? (
-                      <a href={`tel:${conv.user_phone}`} className="text-admin-600 hover:text-brand-orange flex items-center gap-1.5">
+                      <a href={`tel:${conv.user_phone}`} className="text-admin-600 hover:text-admin-500 flex items-center gap-1.5">
                         <FiPhone className="w-3.5 h-3.5 shrink-0" />
                         {conv.user_phone}
                       </a>
@@ -509,18 +509,18 @@ function SessionsTable({ conversations }) {
                   <td className="px-5 py-4 text-admin-600 max-w-[200px] truncate">{conv.feedback || '-'}</td>
                   <td className="px-5 py-4">
                     {conv.issue_resolved === true ? (
-                      <span className="text-green-600 text-xs font-medium">Yes</span>
+                      <span className="text-success-500 text-xs font-medium">Yes</span>
                     ) : conv.issue_resolved === false ? (
-                      <span className="text-red-500 text-xs font-medium">No</span>
+                      <span className="text-destructive-500 text-xs font-medium">No</span>
                     ) : '-'}
                   </td>
                   <td className="px-5 py-4">
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                       conv.status === 'open'
-                        ? 'bg-green-50 text-green-600'
+                        ? 'bg-success-50 text-success-500'
                         : 'bg-admin-100 text-admin-500'
                     }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${conv.status === 'open' ? 'bg-green-500' : 'bg-admin-400'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${conv.status === 'open' ? 'bg-success-500' : 'bg-admin-400'}`} />
                       {conv.status === 'open' ? 'New' : 'Closed'}
                     </span>
                   </td>
@@ -596,7 +596,7 @@ export default function ChatPanel() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-brand-orange border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-admin-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

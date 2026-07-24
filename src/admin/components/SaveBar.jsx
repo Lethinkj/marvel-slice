@@ -6,12 +6,12 @@ export default function SaveBar({ saving, saved, saveError, onSave, label = 'Sav
     return (
       <>
         {saveError && (
-          <div className="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-rose-700 text-sm shadow-sm">
+          <div className="mb-6 p-4 bg-destructive-50 border border-destructive-500 rounded-xl flex items-center gap-2 text-destructive-700 text-sm shadow-sm">
             <FiAlertCircle className="w-4 h-4 shrink-0" /> {saveError}
           </div>
         )}
         {saved && (
-          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-700 text-sm shadow-sm">
+          <div className="mb-6 p-4 bg-success-50 border border-success-500 rounded-xl flex items-center gap-2 text-success-700 text-sm shadow-sm">
             <FiCheck className="w-4 h-4 shrink-0" /> {label} saved successfully!
           </div>
         )}
