@@ -113,7 +113,7 @@ export default function NavItemChildren() {
   }
 
   if (loading) {
-    return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" /></div>;
+    return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
   }
 
   return (
@@ -121,110 +121,110 @@ export default function NavItemChildren() {
       title={parentItem ? `Children: ${parentItem.label}` : 'Nav Item Children'}
       subtitle={`${items.length} child item${items.length !== 1 ? 's' : ''}`}
       actions={
-        <Link to="/admin/nav-menu/manage" className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+        <Link to="/admin/nav-menu/manage" className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-colors">
           <FiArrowLeft className="w-5 h-5" />
         </Link>
       }>
 
       {!showForm && (
         <button onClick={openAdd}
-          className="flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+          className="flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium rounded-lg bg-admin-600 text-white hover:bg-admin-700 transition-colors">
           <FiPlus className="w-4 h-4" /> Add Child Item
         </button>
       )}
 
       {showForm && (
-        <form onSubmit={handleSave} className="p-5 mb-6 rounded-xl border border-slate-200 bg-white">
-          <p className="text-sm font-semibold text-slate-900 mb-4">
+        <form onSubmit={handleSave} className="p-5 mb-6 rounded-xl border border-admin-200 bg-white">
+          <p className="text-sm font-semibold text-admin-900 mb-4">
             {editing ? `Edit: ${editing.label}` : 'Add Child Item'}
           </p>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 sm:col-span-1">
-              <label className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wider">Label *</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Label *</label>
               <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" required />
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <label className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wider">Path</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Path</label>
               <input value={form.path} onChange={e => setForm(p => ({ ...p, path: e.target.value }))}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-admin-500" />
             </div>
             <div className="col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wider">Linked Courses ({form.course_ids.size} selected)</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Linked Courses ({form.course_ids.size} selected)</label>
               <div className="relative">
                 <button type="button" onClick={() => setCoursePickerOpen(!coursePickerOpen)}
-                  className="w-full flex items-center justify-between px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white hover:border-slate-400 transition-colors">
-                  <span className={form.course_ids.size > 0 ? 'text-slate-900' : 'text-slate-400'}>
+                  className="w-full flex items-center justify-between px-3 py-2 border border-admin-200 rounded-lg text-sm bg-white hover:border-admin-400 transition-colors">
+                  <span className={form.course_ids.size > 0 ? 'text-admin-900' : 'text-admin-400'}>
                     {form.course_ids.size > 0 ? `${form.course_ids.size} course${form.course_ids.size !== 1 ? 's' : ''} selected` : 'Select courses...'}
                   </span>
-                  <FiChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${coursePickerOpen ? 'rotate-180' : ''}`} />
+                  <FiChevronDown className={`w-4 h-4 text-admin-400 transition-transform ${coursePickerOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {coursePickerOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50 max-h-56 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-admin-200 rounded-lg shadow-lg z-50 max-h-56 overflow-y-auto">
                     {courses.map(c => {
                       const linkedToOther = c.nav_item_id && c.nav_item_id !== (editing?.id || null);
                       return (
-                        <label key={c.id} className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer transition-colors ${linkedToOther ? 'text-slate-300 cursor-not-allowed' : 'hover:bg-slate-50 text-slate-700'}`}>
+                        <label key={c.id} className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer transition-colors ${linkedToOther ? 'text-admin-300 cursor-not-allowed' : 'hover:bg-white text-admin-700'}`}>
                           <input type="checkbox" checked={form.course_ids.has(c.id)} disabled={linkedToOther}
                             onChange={() => { if (!linkedToOther) toggleCourse(c.id); }}
-                            className="w-4 h-4 rounded border-slate-200 text-indigo-600 focus:ring-indigo-500" />
+                            className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-admin-500" />
                           <span className="truncate">{c.title}</span>
-                          {linkedToOther && <span className="text-[10px] text-slate-400 ml-auto shrink-0">linked elsewhere</span>}
+                          {linkedToOther && <span className="text-[10px] text-admin-400 ml-auto shrink-0">linked elsewhere</span>}
                         </label>
                       );
                     })}
-                    {courses.length === 0 && <p className="px-3 py-4 text-sm text-slate-400 text-center">No courses available.</p>}
+                    {courses.length === 0 && <p className="px-3 py-4 text-sm text-admin-400 text-center">No courses available.</p>}
                   </div>
                 )}
               </div>
             </div>
             <div className="col-span-2 sm:col-span-1 flex items-end">
-              <label className="flex items-center gap-2.5 p-3 bg-slate-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors w-full">
-                <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? 'bg-indigo-500' : 'bg-slate-200'}`}>
+              <label className="flex items-center gap-2.5 p-3 bg-white rounded-lg border border-admin-200 cursor-pointer hover:bg-admin-100 transition-colors w-full">
+                <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? 'bg-white0' : 'bg-admin-200'}`}>
                   <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_active ? 'translate-x-4' : ''}`} />
                 </div>
-                <span className="text-sm font-medium text-slate-900">Active</span>
+                <span className="text-sm font-medium text-admin-900">Active</span>
               </label>
             </div>
           </div>
           <div className="flex gap-2 mt-4">
-            <button type="submit" className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+            <button type="submit" className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-admin-600 text-white hover:bg-admin-700 transition-colors">
               <FiCheck className="w-4 h-4" /> {editing ? 'Update' : 'Add'}
             </button>
             <button type="button" onClick={() => setShowForm(false)}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-admin-200 text-admin-700 hover:bg-white transition-colors">
               <FiX className="w-4 h-4" /> Cancel
             </button>
           </div>
         </form>
       )}
 
-      <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+      <div className="rounded-xl border border-admin-200 bg-white overflow-hidden">
         {items.length === 0 ? (
-          <div className="text-center py-16 text-slate-400 text-sm">
+          <div className="text-center py-16 text-admin-400 text-sm">
             {showForm ? '' : 'No child items yet. Click "Add Child Item" to create one.'}
           </div>
         ) : (
-          <div className="divide-y divide-neutral-100">
+          <div className="divide-y divide-admin-100">
             {items.map(item => {
               const linked = linkedCourses(item);
               return (
-                <div key={item.id} className="px-5 py-3 hover:bg-slate-50 transition-colors">
+                <div key={item.id} className="px-5 py-3 hover:bg-white transition-colors">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-slate-900 font-medium flex-1 truncate">{item.label}</span>
+                    <span className="text-sm text-admin-900 font-medium flex-1 truncate">{item.label}</span>
                     {item.path && (
-                      <span className="text-[11px] text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full truncate max-w-[100px] hidden sm:inline">{item.path}</span>
+                      <span className="text-[11px] text-admin-400 bg-white px-2 py-0.5 rounded-full truncate max-w-[100px] hidden sm:inline">{item.path}</span>
                     )}
                     <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium ${item.is_active !== false ? 'bg-success-50 text-success-700' : 'bg-destructive-50 text-destructive-700'}`}>
                       {item.is_active !== false ? 'On' : 'Off'}
                     </span>
                     <div className="flex items-center gap-1 shrink-0">
                       <button onClick={() => openEdit(item)}
-                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                        className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-white rounded-lg transition-colors">
                         <FiEdit2 className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleDelete(item)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        className="p-1.5 text-admin-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                         <FiTrash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -233,14 +233,14 @@ export default function NavItemChildren() {
                     <div className="flex flex-wrap gap-1.5 mt-2 ml-1">
                       {linked.map(c => (
                         <Link key={c.id} to={`/admin/courses/${c.id}`}
-                          className="inline-flex items-center gap-1 text-[11px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full hover:bg-indigo-100 transition-colors">
+                          className="inline-flex items-center gap-1 text-[11px] text-admin-700 bg-white px-2 py-0.5 rounded-full hover:bg-admin-100 transition-colors">
                           <FiBookOpen className="w-3 h-3" /> {c.title}
                         </Link>
                       ))}
                     </div>
                   )}
                   {linked.length === 0 && (
-                    <p className="text-[11px] text-slate-400 mt-1.5 ml-1">No courses linked</p>
+                    <p className="text-[11px] text-admin-400 mt-1.5 ml-1">No courses linked</p>
                   )}
                 </div>
               );

@@ -36,14 +36,14 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Marvel Slice</h1>
-          <p className="text-slate-500 text-sm mt-1">Sign in to the admin panel</p>
+          <h1 className="text-2xl font-bold text-admin-900">Marvel Slice</h1>
+          <p className="text-admin-500 text-sm mt-1">Sign in to the admin panel</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-admin-200 shadow-sm p-6 space-y-5">
           {error && (
             <div className="p-3 bg-destructive-50 border border-destructive-200 rounded-lg text-sm text-destructive-700">
               {error}
@@ -51,31 +51,31 @@ export default function Login() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-admin-700 mb-1.5">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoFocus
               placeholder="admin@marvelslice.com"
-              className="w-full h-10 px-3 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-shadow"
+              className="w-full h-10 px-3 border border-admin-200 rounded-lg text-sm text-admin-900 placeholder-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-shadow"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+            <label className="block text-sm font-medium text-admin-700 mb-1.5">Password</label>
             <div className="relative">
               <input
                 type={showPw ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="w-full h-10 px-3 pr-10 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-shadow"
+                className="w-full h-10 px-3 pr-10 border border-admin-200 rounded-lg text-sm text-admin-900 placeholder-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-shadow"
               />
               <button
                 type="button"
                 onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-admin-400 hover:text-admin-600 transition-colors"
               >
                 {showPw ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
               </button>

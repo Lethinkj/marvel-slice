@@ -167,15 +167,15 @@ function NestedNavGroup({ item, pathname, onNavigate }) {
 
   return (
     <div>
-      <button onClick={() => setOpen((p) => !p)} className={`cursor-pointer w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${item.children.some((c) => isActive(pathname, c)) ? "text-indigo-400 font-semibold" : "text-slate-400 hover:text-slate-200"}`}>
+      <button onClick={() => setOpen((p) => !p)} className={`cursor-pointer w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${item.children.some((c) => isActive(pathname, c)) ? "text-white/70 font-semibold" : "text-white/70 hover:text-white"}`}>
         <FiChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? "" : "-rotate-90"}`} />
         {item.label}
       </button>
       {open && (
-        <div className="ml-3 pl-2 border-l border-slate-700/50 mt-0.5 mb-1 space-y-0.5 transition-all duration-200">
+        <div className="ml-3 pl-2 border-l border-white/20 mt-0.5 mb-1 space-y-0.5 transition-all duration-200">
           {item.children.map((child) => (
             <NavLink key={child.to} to={child.to} onClick={onNavigate} end className={({ isActive: act }) =>
-              `cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? "text-indigo-400 font-semibold bg-indigo-500/10" : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/30"}`
+              `cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? "text-white/70 font-semibold bg-white/10" : "text-white/70 hover:text-white hover:bg-white/10"}`
             }>
               {child.label}
             </NavLink>
@@ -199,7 +199,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
     return (
       <NavLink to={group.items[0].to} end onClick={onNavigate}
         className={({ isActive: act }) =>
-          `cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`
+          `cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${act ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`
         }
       >
         <Icon className="w-4 h-4 shrink-0" />
@@ -213,13 +213,13 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
       <>
         <div className="flex items-center">
           <NavLink to={group.parentTo} end onClick={onNavigate}
-            className={`cursor-pointer flex-1 flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+            className={`cursor-pointer flex-1 flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
           >
             <Icon className="w-4 h-4 shrink-0" />
             <span>{group.label}</span>
           </NavLink>
           <button onClick={() => onToggle(idx)}
-            className="cursor-pointer p-2 mr-1 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-700/30 transition-all duration-200"
+            className="cursor-pointer p-2 mr-1 text-white/50 hover:text-white/80 rounded-lg hover:bg-white/10 transition-all duration-200"
           >
             <FiChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${opened ? '' : '-rotate-90'}`} />
           </button>
@@ -231,7 +231,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
               const act = isActive(pathname, item);
               return (
 <Link key={item.to} to={item.to} onClick={onNavigate}
-          className={`cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+          className={`cursor-pointer block px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
         >
                   {item.label}
                 </Link>
@@ -246,11 +246,11 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
   return (
     <>
       <button onClick={() => onToggle(idx)}
-        className={`cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+        className={`cursor-pointer w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${groupActive ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
       >
         <Icon className="w-4 h-4 shrink-0" />
         <span className="flex-1 text-left">{group.label}</span>
-        <FiChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${opened ? '' : '-rotate-90'}`} />
+        <FiChevronDown className={`w-3.5 h-3.5 text-white/50 transition-transform duration-200 ${opened ? '' : '-rotate-90'}`} />
       </button>
       {opened && (
         <div className="ml-2 pl-2 mt-0.5 space-y-0.5 transition-all duration-200">
@@ -259,7 +259,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
             const act = isActive(pathname, item);
             return (
               <Link key={item.to} to={item.to} onClick={onNavigate}
-                className={`block cursor-pointer px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-indigo-400 font-semibold bg-indigo-500/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/30'}`}
+                className={`block cursor-pointer px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${act ? 'text-white/70 font-semibold bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
               >
                 {item.label}
               </Link>
@@ -277,18 +277,18 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
   const [isOpen, toggleGroup] = useGroupOpen(fullPath);
 
   const content = (
-    <div className="flex flex-col h-full bg-slate-900">
-      <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-slate-800">
+    <div className="flex flex-col h-full bg-gradient-to-b from-admin-600 to-admin-800">
+      <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-white/20">
         <NavLink to="/admin" className="flex items-center gap-2.5 min-w-0 group">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center shrink-0 shadow-lg shadow-black/20">
             <FiGrid className="w-3.5 h-3.5 text-white" />
           </div>
           <div className="min-w-0">
-            <span className="text-sm font-semibold text-slate-100 block leading-tight">Marvel Slice</span>
-            <span className="text-[11px] text-slate-500 font-medium">Management Portal</span>
+            <span className="text-sm font-semibold text-white/90 block leading-tight">Marvel Slice</span>
+            <span className="text-[11px] text-white/50 font-medium">Management Portal</span>
           </div>
         </NavLink>
-        <button onClick={onMobileClose} className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-all duration-200">
+        <button onClick={onMobileClose} className="lg:hidden p-1.5 rounded-lg text-white/50 hover:text-white/80 hover:bg-white/10 transition-all duration-200">
           <FiChevronDown className="w-4 h-4" />
         </button>
       </div>
@@ -299,12 +299,12 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
         ))}
       </nav>
 
-      <div className="px-4 py-3 shrink-0 border-t border-slate-800">
-        <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl bg-slate-800/50">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-[9px] font-bold text-white shrink-0 shadow-sm">M</div>
+      <div className="px-4 py-3 shrink-0 border-t border-white/20">
+        <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl bg-white/10">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center text-[9px] font-bold text-white shrink-0 shadow-sm">M</div>
           <div className="min-w-0">
-            <p className="text-xs text-slate-300 font-medium">Marvel Slice v2.0</p>
-            <p className="text-[10px] text-slate-500">Admin Panel</p>
+            <p className="text-xs text-white/80 font-medium">Marvel Slice v2.0</p>
+            <p className="text-[10px] text-white/50">Admin Panel</p>
           </div>
         </div>
       </div>
@@ -313,11 +313,11 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
 
   return (
     <>
-      <aside className="hidden lg:flex lg:flex-col w-60 shrink-0 h-screen overflow-hidden bg-slate-900 transition-all duration-300">{content}</aside>
+      <aside className="hidden lg:flex lg:flex-col w-60 shrink-0 h-screen overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800 transition-all duration-300">{content}</aside>
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer" onClick={onMobileClose} />
-          <aside className="fixed left-0 top-0 h-full w-72 shadow-2xl z-50 overflow-hidden bg-slate-900" role="dialog" aria-modal="true" aria-label="Sidebar navigation">{content}</aside>
+          <aside className="fixed left-0 top-0 h-full w-72 shadow-2xl z-50 overflow-hidden bg-gradient-to-b from-admin-600 to-admin-800" role="dialog" aria-modal="true" aria-label="Sidebar navigation">{content}</aside>
         </div>
       )}
     </>

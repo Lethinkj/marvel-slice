@@ -106,12 +106,12 @@ export default function ReplyModal({ submission, type, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col cursor-pointer" onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-admin-200 shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Reply to {recipientName}</h2>
-            <p className="text-xs text-slate-500 mt-0.5">{recipientEmail}</p>
+            <h2 className="text-lg font-bold text-admin-900">Reply to {recipientName}</h2>
+            <p className="text-xs text-admin-500 mt-0.5">{recipientEmail}</p>
           </div>
-          <button onClick={onClose} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+          <button onClick={onClose} className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-colors">
             <FiX className="w-5 h-5" />
           </button>
         </div>
@@ -121,11 +121,11 @@ export default function ReplyModal({ submission, type, onClose }) {
             <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4">
               <FiSend className="w-7 h-7 text-green-500" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Reply Sent!</h3>
-            <p className="text-sm text-slate-500 max-w-xs">
+            <h3 className="text-lg font-bold text-admin-900 mb-2">Reply Sent!</h3>
+            <p className="text-sm text-admin-500 max-w-xs">
               Your reply has been sent to {recipientEmail}.
             </p>
-            <button onClick={onClose} className="mt-6 px-6 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
+            <button onClick={onClose} className="mt-6 px-6 py-2 bg-admin-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
               Done
             </button>
           </div>
@@ -136,40 +136,40 @@ export default function ReplyModal({ submission, type, onClose }) {
               {/* Brochure tabs */}
               {type === 'brochure' && (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wider">Attach Brochure</label>
+                  <label className="block text-xs font-semibold text-admin-600 mb-2 uppercase tracking-wider">Attach Brochure</label>
                   <div className="flex gap-2 mb-3">
                     <button
                       onClick={() => { setBrochureTab('upload'); setSelectedCourse(null); }}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${brochureTab === 'upload' ? 'bg-indigo-600 text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${brochureTab === 'upload' ? 'bg-admin-600 text-white' : 'border border-admin-200 text-admin-600 hover:bg-white'}`}
                     >
                       <FiUpload className="w-4 h-4" /> Upload
                     </button>
                     <button
                       onClick={() => { setBrochureTab('select'); loadCourses(); setUploadUrl(''); setUploadFile(null); }}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${brochureTab === 'select' ? 'bg-indigo-600 text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${brochureTab === 'select' ? 'bg-admin-600 text-white' : 'border border-admin-200 text-admin-600 hover:bg-white'}`}
                     >
                       <FiBookOpen className="w-4 h-4" /> Select Course
                     </button>
                   </div>
 
                   {brochureTab === 'upload' && (
-                    <div className="border border-slate-200 rounded-lg p-4 bg-slate-50">
+                    <div className="border border-admin-200 rounded-lg p-4 bg-white">
                       {uploadUrl ? (
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <FiFileText className="w-5 h-5 text-indigo-600" />
-                            <span className="text-sm text-slate-700 truncate max-w-[250px]">{uploadFile?.name || 'brochure.pdf'}</span>
+                            <FiFileText className="w-5 h-5 text-admin-600" />
+                            <span className="text-sm text-admin-700 truncate max-w-[250px]">{uploadFile?.name || 'brochure.pdf'}</span>
                           </div>
                           <button onClick={() => { setUploadUrl(''); setUploadFile(null); }} className="text-xs text-red-500 hover:underline">Remove</button>
                         </div>
                       ) : (
-                        <label className="flex items-center justify-center gap-2 py-6 border-2 border-dashed border-slate-200 rounded-lg cursor-pointer hover:border-indigo-500 transition-colors">
+                        <label className="flex items-center justify-center gap-2 py-6 border-2 border-dashed border-admin-200 rounded-lg cursor-pointer hover:border-admin-500 transition-colors">
                           {uploadingFile ? (
-                            <FiLoader className="w-5 h-5 animate-spin text-slate-400" />
+                            <FiLoader className="w-5 h-5 animate-spin text-admin-400" />
                           ) : (
                             <>
-                              <FiUpload className="w-5 h-5 text-slate-400" />
-                              <span className="text-sm text-slate-500">Click to upload a brochure PDF</span>
+                              <FiUpload className="w-5 h-5 text-admin-400" />
+                              <span className="text-sm text-admin-500">Click to upload a brochure PDF</span>
                             </>
                           )}
                           <input type="file" accept=".pdf" onChange={handleUploadFile} className="hidden" disabled={uploadingFile} />
@@ -179,30 +179,30 @@ export default function ReplyModal({ submission, type, onClose }) {
                   )}
 
                   {brochureTab === 'select' && (
-                    <div className="border border-slate-200 rounded-lg overflow-hidden">
-                      <div className="relative border-b border-slate-200">
-                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <div className="border border-admin-200 rounded-lg overflow-hidden">
+                      <div className="relative border-b border-admin-200">
+                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
                         <input
                           type="text"
                           value={courseSearch}
                           onChange={e => setCourseSearch(e.target.value)}
                           placeholder="Search courses..."
-                          className="w-full pl-9 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="w-full pl-9 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-admin-500"
                         />
                       </div>
-                      <div className="max-h-36 overflow-y-auto divide-y divide-slate-100">
+                      <div className="max-h-36 overflow-y-auto divide-y divide-admin-100">
                         {coursesLoading ? (
-                          <div className="flex items-center justify-center py-6"><FiLoader className="w-5 h-5 animate-spin text-slate-400" /></div>
+                          <div className="flex items-center justify-center py-6"><FiLoader className="w-5 h-5 animate-spin text-admin-400" /></div>
                         ) : filteredCourses.length === 0 ? (
-                          <p className="text-sm text-slate-400 text-center py-6">No courses found</p>
+                          <p className="text-sm text-admin-400 text-center py-6">No courses found</p>
                         ) : (
                           filteredCourses.map(c => (
                             <button
                               key={c.id}
                               onClick={() => setSelectedCourse(selectedCourse?.id === c.id ? null : c)}
-                              className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2 ${selectedCourse?.id === c.id ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-slate-700 hover:bg-slate-50'}`}
+                              className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2 ${selectedCourse?.id === c.id ? 'bg-white text-admin-700 font-medium' : 'text-admin-700 hover:bg-white'}`}
                             >
-                              <FiBookOpen className={`w-4 h-4 shrink-0 ${selectedCourse?.id === c.id ? 'text-indigo-600' : 'text-slate-400'}`} />
+                              <FiBookOpen className={`w-4 h-4 shrink-0 ${selectedCourse?.id === c.id ? 'text-admin-600' : 'text-admin-400'}`} />
                               {c.title}
                             </button>
                           ))
@@ -215,27 +215,27 @@ export default function ReplyModal({ submission, type, onClose }) {
 
               {/* Subject */}
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wider">
-                  Subject {type === 'career' && <span className="text-slate-400 normal-case">(optional — leave blank to use default)</span>}
+                <label className="block text-xs font-semibold text-admin-600 mb-1.5 uppercase tracking-wider">
+                  Subject {type === 'career' && <span className="text-admin-400 normal-case">(optional — leave blank to use default)</span>}
                 </label>
                 <input
                   type="text"
                   value={subject}
                   onChange={e => setSubject(e.target.value)}
                   placeholder="Enter subject..."
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-2.5 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500"
                 />
               </div>
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wider">Message</label>
+                <label className="block text-xs font-semibold text-admin-600 mb-1.5 uppercase tracking-wider">Message</label>
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   rows={6}
                   placeholder="Write your reply message here..."
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  className="w-full px-4 py-2.5 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500 resize-none"
                 />
               </div>
 
@@ -245,8 +245,8 @@ export default function ReplyModal({ submission, type, onClose }) {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 shrink-0">
-              <span className="text-xs text-slate-400">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-admin-200 shrink-0">
+              <span className="text-xs text-admin-400">
                 {type === 'brochure' && brochureTab === 'select' && selectedCourse
                   ? `Will send "${selectedCourse.title}" overview`
                   : type === 'brochure' && brochureTab === 'upload' && uploadUrl
@@ -256,7 +256,7 @@ export default function ReplyModal({ submission, type, onClose }) {
               <button
                 onClick={handleSend}
                 disabled={sending || !subject.trim() || !message.trim()}
-                className="flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2 bg-admin-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
               >
                 {sending ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
                 {sending ? 'Sending...' : 'Send Reply'}

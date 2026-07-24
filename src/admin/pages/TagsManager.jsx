@@ -44,14 +44,14 @@ export default function TagsManager() {
   return (
     <PageShell title="Tags" subtitle="Manage content tags">
 
-      <div className="rounded-lg border border-slate-200 bg-white p-5">
+      <div className="rounded-lg border border-admin-200 bg-white p-5">
         <div className="flex gap-2 mb-4">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Tag name"
-            className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
             onKeyDown={(e) => e.key === 'Enter' && addTag()}
           />
           <AdminButton onClick={addTag} size="md">

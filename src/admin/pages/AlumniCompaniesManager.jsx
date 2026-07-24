@@ -43,14 +43,14 @@ export default function AlumniCompaniesManager() {
   return (
     <PageShell title="Alumni / Hiring Partners" subtitle="Manage partner companies">
 
-      <div className="rounded-lg border border-slate-200 bg-white p-5">
+      <div className="rounded-lg border border-admin-200 bg-white p-5">
         <div className="flex gap-2 mb-4">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Company name"
-            className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
             onKeyDown={(e) => e.key === 'Enter' && addCompany()}
           />
           <AdminButton onClick={addCompany} size="md">
@@ -70,9 +70,9 @@ export default function AlumniCompaniesManager() {
             {companies.map((company) => (
               <div
                 key={company.id}
-                className="inline-flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full text-sm"
+                className="inline-flex items-center gap-2 bg-admin-100 px-3 py-1.5 rounded-full text-sm"
               >
-                <span className="font-medium text-slate-900">{company.name}</span>
+                <span className="font-medium text-admin-900">{company.name}</span>
                 <button
                   onClick={() => deleteCompany(company.id)}
                   className="text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded px-2 py-0.5 transition-colors"

@@ -20,7 +20,7 @@ const detailFields = [
   { label: 'Description', accessor: 'description' },
   {
     label: 'Resume',
-    value: (row) => row.resume_url ? <a href={row.resume_url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">View Resume</a> : 'N/A',
+    value: (row) => row.resume_url ? <a href={row.resume_url} target="_blank" rel="noopener noreferrer" className="text-admin-600 hover:underline">View Resume</a> : 'N/A',
   },
 ];
 

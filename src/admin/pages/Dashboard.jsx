@@ -13,25 +13,25 @@ import {
 
 function StatCard({ icon: Icon, label, value, link }) {
   return (
-    <Link to={link} className="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-elevated hover:border-slate-300 transition-all group">
+    <Link to={link} className="block bg-white rounded-xl border border-admin-200 shadow-sm p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
       <div className="flex items-start justify-between mb-2">
-        <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+        <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white text-admin-600">
           <Icon className="w-4 h-4" />
         </div>
-        <span className="text-xl font-semibold tabular-nums text-slate-900">{value}</span>
+        <span className="text-xl font-semibold tabular-nums text-admin-900">{value}</span>
       </div>
-      <p className="text-sm font-medium text-slate-500">{label}</p>
+      <p className="text-sm font-medium text-admin-500">{label}</p>
     </Link>
   );
 }
 
 function QuickAction({ to, icon: Icon, label }) {
   return (
-    <Link to={to} className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-elevated transition-all text-center group">
-      <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
-        <Icon className="w-4 h-4 text-indigo-600" />
+    <Link to={to} className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white rounded-xl border border-admin-200 shadow-sm hover:border-admin-300 hover:shadow-elevated transition-all text-center group">
+      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center group-hover:bg-admin-100 transition-colors">
+        <Icon className="w-4 h-4 text-admin-600" />
       </div>
-      <span className="text-xs font-medium text-slate-700">{label}</span>
+      <span className="text-xs font-medium text-admin-700">{label}</span>
     </Link>
   );
 }
@@ -118,47 +118,47 @@ export default function Dashboard() {
         {statCardDefs.map((card, i) => (
           <StatCard key={i} {...card} value={stats?.[card.key] || 0} />
         ))}
-        <Link to="/admin/career-submissions" className="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-elevated hover:border-slate-300 transition-all group">
+        <Link to="/admin/career-submissions" className="block bg-white rounded-xl border border-admin-200 shadow-sm p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
           <div className="flex items-start justify-between mb-2">
             <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-amber-50 text-amber-600">
               <FiInbox className="w-4 h-4" />
             </div>
-            <span className="text-xl font-semibold tabular-nums text-slate-900">{totalPending}</span>
+            <span className="text-xl font-semibold tabular-nums text-admin-900">{totalPending}</span>
           </div>
-          <p className="text-sm font-medium text-slate-500">Pending Submissions</p>
+          <p className="text-sm font-medium text-admin-500">Pending Submissions</p>
         </Link>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div>
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Quick Create</h2>
+          <h2 className="text-xs font-semibold text-admin-500 uppercase tracking-wider mb-3">Quick Create</h2>
           <div className="grid grid-cols-2 gap-2">
             {quickActions.map((action, i) => <QuickAction key={i} {...action} />)}
           </div>
         </div>
 
         <div className="lg:col-span-2">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Recent Activity</h2>
+          <h2 className="text-xs font-semibold text-admin-500 uppercase tracking-wider mb-3">Recent Activity</h2>
           <Card>
             {recentItems.length === 0 ? (
-              <div className="py-8 text-center text-sm text-slate-400">No recent activity.</div>
+              <div className="py-8 text-center text-sm text-admin-400">No recent activity.</div>
             ) : (
-              <div className="divide-y divide-slate-100 -mx-5 -mb-5">
+              <div className="divide-y divide-admin-100 -mx-5 -mb-5">
                 {recentItems.map((item) => (
-                  <Link key={`${item.type}-${item.id}`} to={item.link} className="flex items-center gap-3 px-5 py-2.5 hover:bg-slate-50 transition-colors group">
-                    <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                      {item.type === 'course' ? <FiBookOpen className="w-3.5 h-3.5 text-indigo-600" /> : <FiFileText className="w-3.5 h-3.5 text-indigo-600" />}
+                  <Link key={`${item.type}-${item.id}`} to={item.link} className="flex items-center gap-3 px-5 py-2.5 hover:bg-white transition-colors group">
+                    <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shrink-0">
+                      {item.type === 'course' ? <FiBookOpen className="w-3.5 h-3.5 text-admin-600" /> : <FiFileText className="w-3.5 h-3.5 text-admin-600" />}
                     </div>
-                    <span className="flex-1 text-sm text-slate-700 truncate">{item.title}</span>
-                    <span className="text-xs text-slate-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
-                    <FiChevronRight className="w-3.5 h-3.5 text-slate-200 group-hover:text-indigo-500 transition-colors shrink-0" />
+                    <span className="flex-1 text-sm text-admin-700 truncate">{item.title}</span>
+                    <span className="text-xs text-admin-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
+                    <FiChevronRight className="w-3.5 h-3.5 text-admin-200 group-hover:text-admin-500 transition-colors shrink-0" />
                   </Link>
                 ))}
               </div>
             )}
           </Card>
           {recentItems.length > 0 && (
-            <Link to="/admin/courses" className="flex items-center justify-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 transition-colors py-3">
+            <Link to="/admin/courses" className="flex items-center justify-center gap-1 text-sm text-admin-600 hover:text-admin-700 transition-colors py-3">
               View All Courses <FiArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}

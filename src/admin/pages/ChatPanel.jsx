@@ -32,8 +32,8 @@ const FILTERS = ['All', 'Open', 'Closed'];
 
 function ConversationList({ conversations, activeId, onSelect, filter, onFilterChange, search, onSearchChange }) {
   return (
-    <div className="w-80 shrink-0 bg-white border-r border-gray-200 flex flex-col">
-      <div className="shrink-0 px-4 pt-4 pb-3 border-b border-gray-100">
+    <div className="w-80 shrink-0 bg-white border-r border-admin-200 flex flex-col">
+      <div className="shrink-0 px-4 pt-4 pb-3 border-b border-admin-100">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-bold text-dark-navy text-base flex items-center gap-2">
             <FiMessageCircle className="w-4 h-4 text-brand-orange" />
@@ -41,12 +41,12 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
           </h2>
         </div>
         <div className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
           <input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search conversations..."
-            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 placeholder-gray-400"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 placeholder-admin-400"
           />
         </div>
         <div className="flex gap-1 mt-3">
@@ -55,7 +55,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
               key={f}
               onClick={() => onFilterChange(f)}
               className={`px-3 py-1 text-xs font-medium rounded-full transition-colors cursor-pointer ${
-                filter === f ? 'bg-brand-orange text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                filter === f ? 'bg-brand-orange text-white' : 'bg-admin-100 text-admin-500 hover:bg-admin-200'
               }`}
             >
               {f}
@@ -66,8 +66,8 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
 
       <div className="flex-1 overflow-y-auto admin-scrollbar">
         {conversations.length === 0 ? (
-          <div className="text-center text-gray-400 text-sm py-16 px-4">
-            <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-gray-200" />
+          <div className="text-center text-admin-400 text-sm py-16 px-4">
+            <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-admin-200" />
             <p>No conversations yet</p>
             <p className="text-xs mt-1">New messages will appear here.</p>
           </div>
@@ -83,25 +83,25 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
                 <button
                   key={conv.id}
                   onClick={() => onSelect(conv)}
-                  className={`w-full text-left px-4 py-3 transition-colors cursor-pointer border-b border-gray-50 last:border-0 ${
-                    isActive ? 'bg-[#f0f0f5]' : 'hover:bg-gray-50'
+                  className={`w-full text-left px-4 py-3 transition-colors cursor-pointer border-b border-admin-50 last:border-0 ${
+                    isActive ? 'bg-[#f0f0f5]' : 'hover:bg-white'
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 ${
-                      unread ? 'bg-brand-orange text-white' : 'bg-gray-200 text-gray-500'
+                      unread ? 'bg-brand-orange text-white' : 'bg-admin-200 text-admin-500'
                     }`}>
                       {(conv.user_name || 'V')[0].toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className={`text-sm truncate ${unread ? 'font-bold text-dark-navy' : 'font-semibold text-gray-800'}`}>
+                        <p className={`text-sm truncate ${unread ? 'font-bold text-dark-navy' : 'font-semibold text-admin-800'}`}>
                           {conv.user_name || 'Visitor'}
                         </p>
-                        <span className="text-[11px] text-gray-400 shrink-0">{relativeTime(conv.last_message_at)}</span>
+                        <span className="text-[11px] text-admin-400 shrink-0">{relativeTime(conv.last_message_at)}</span>
                       </div>
                       {preview && (
-                        <p className={`text-xs truncate mt-0.5 ${unread ? 'text-gray-600 font-medium' : 'text-gray-400'}`}>
+                        <p className={`text-xs truncate mt-0.5 ${unread ? 'text-admin-600 font-medium' : 'text-admin-400'}`}>
                           {preview}
                         </p>
                       )}
@@ -134,7 +134,7 @@ function MessageBox({ msg }) {
       }`}>
         <p className="whitespace-pre-wrap break-words">{msg.content}</p>
         <div className={`flex items-center gap-1 mt-1 ${isUser ? 'justify-end' : 'justify-start'}`}>
-          <span className={`text-[10px] ${isUser ? 'text-gray-400' : 'text-white/70'}`}>{formatTime(msg.created_at)}</span>
+          <span className={`text-[10px] ${isUser ? 'text-admin-400' : 'text-white/70'}`}>{formatTime(msg.created_at)}</span>
           {!isUser && <FiCheck className="w-3 h-3 text-white/70" />}
         </div>
       </div>
@@ -236,7 +236,7 @@ function LiveChat({ conversations, onConversationsChange }) {
   }
 
   return (
-    <div className="flex h-[calc(100vh-11rem)] bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div className="flex h-[calc(100vh-11rem)] bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
       <ConversationList
         conversations={filtered}
         activeId={activeConv?.id}
@@ -249,47 +249,47 @@ function LiveChat({ conversations, onConversationsChange }) {
 
       {activeConv ? (
         <div className="flex-1 flex flex-col min-w-0">
-          <div className="shrink-0 px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-white">
+          <div className="shrink-0 px-5 py-3 border-b border-admin-100 flex items-center justify-between bg-white">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 shrink-0">
+              <div className="w-10 h-10 rounded-full bg-admin-200 flex items-center justify-center text-sm font-bold text-admin-500 shrink-0">
                 {(activeConv.user_name || 'V')[0].toUpperCase()}
               </div>
               <div className="min-w-0">
                 <p className="font-semibold text-dark-navy text-sm truncate">{activeConv.user_name || 'Visitor'}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className={`inline-block w-1.5 h-1.5 rounded-full ${userOnline ? 'bg-green-500' : 'bg-gray-300'}`} />
-                  <span className="text-xs text-gray-400">{userOnline ? 'Online' : 'Offline'}</span>
+                  <span className={`inline-block w-1.5 h-1.5 rounded-full ${userOnline ? 'bg-green-500' : 'bg-admin-300'}`} />
+                  <span className="text-xs text-admin-400">{userOnline ? 'Online' : 'Offline'}</span>
                 </div>
               </div>
             </div>
-            <button onClick={() => setActiveConv(null)} className="p-1 text-gray-400 hover:text-gray-600 cursor-pointer">
+            <button onClick={() => setActiveConv(null)} className="p-1 text-admin-400 hover:text-admin-600 cursor-pointer">
               <FiX className="w-5 h-5" />
             </button>
           </div>
 
           {(activeConv.user_email || activeConv.user_phone || activeConv.reason) && (
-            <div className="shrink-0 px-5 py-2 bg-gray-50 border-b border-gray-100 flex items-center gap-4 text-xs text-gray-500 flex-wrap">
+            <div className="shrink-0 px-5 py-2 bg-white border-b border-admin-100 flex items-center gap-4 text-xs text-admin-500 flex-wrap">
               {activeConv.user_email && (
                 <span className="flex items-center gap-1.5">
-                  <FiMail className="w-3.5 h-3.5 text-gray-400" />
+                  <FiMail className="w-3.5 h-3.5 text-admin-400" />
                   <a href={`mailto:${activeConv.user_email}`} className="text-brand-orange hover:underline">{activeConv.user_email}</a>
                 </span>
               )}
               {activeConv.user_phone && (
                 <span className="flex items-center gap-1.5">
-                  <FiPhone className="w-3.5 h-3.5 text-gray-400" />
+                  <FiPhone className="w-3.5 h-3.5 text-admin-400" />
                   <a href={`tel:${activeConv.user_phone}`} className="text-brand-orange hover:underline">{activeConv.user_phone}</a>
                 </span>
               )}
               {activeConv.reason && (
-                <span className="flex items-center gap-1.5 text-gray-600">
-                  <FiMessageSquare className="w-3.5 h-3.5 text-gray-400" />
+                <span className="flex items-center gap-1.5 text-admin-600">
+                  <FiMessageSquare className="w-3.5 h-3.5 text-admin-400" />
                   Reason: {activeConv.reason}
                 </span>
               )}
               {activeConv.closed_at && (
                 <span className="flex items-center gap-1.5 ml-auto">
-                  <FiCalendar className="w-3.5 h-3.5 text-gray-400" />
+                  <FiCalendar className="w-3.5 h-3.5 text-admin-400" />
                   Closed {formatDate(activeConv.closed_at)}
                 </span>
               )}
@@ -298,7 +298,7 @@ function LiveChat({ conversations, onConversationsChange }) {
 
           <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-[#fafafa]">
             {messages.length === 0 && (
-              <div className="text-center text-gray-400 text-sm py-16">
+              <div className="text-center text-admin-400 text-sm py-16">
                 <p>No messages yet. Send a reply to start the conversation.</p>
               </div>
             )}
@@ -308,12 +308,12 @@ function LiveChat({ conversations, onConversationsChange }) {
             <div ref={messagesEnd} />
           </div>
 
-          <form onSubmit={handleSend} className="shrink-0 px-5 py-3 border-t border-gray-100 bg-white flex gap-2 items-end">
+          <form onSubmit={handleSend} className="shrink-0 px-5 py-3 border-t border-admin-100 bg-white flex gap-2 items-end">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your reply..."
-              className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-orange/30 focus:border-brand-orange placeholder-gray-400 resize-none"
+              className="flex-1 px-4 py-2.5 text-sm border border-admin-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-orange/30 focus:border-brand-orange placeholder-admin-400 resize-none"
               disabled={sending || activeConv.status === 'closed'}
             />
             <button
@@ -328,9 +328,9 @@ function LiveChat({ conversations, onConversationsChange }) {
       ) : (
         <div className="flex-1 flex items-center justify-center bg-[#fafafa]">
           <div className="text-center">
-            <FiMessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-200" />
-            <p className="text-lg font-medium text-gray-400">Select a conversation</p>
-            <p className="text-sm text-gray-300 mt-1">Choose a chat from the left panel to start replying.</p>
+            <FiMessageCircle className="w-16 h-16 mx-auto mb-4 text-admin-200" />
+            <p className="text-lg font-medium text-admin-400">Select a conversation</p>
+            <p className="text-sm text-admin-300 mt-1">Choose a chat from the left panel to start replying.</p>
           </div>
         </div>
       )}
@@ -359,19 +359,19 @@ function MessageViewer({ conversation, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 cursor-pointer" onClick={onClose}>
       <div className="bg-white rounded-2xl shadow-2xl mx-4 w-full max-w-2xl max-h-[80vh] flex flex-col cursor-pointer" onClick={(e) => e.stopPropagation()}>
-        <div className="shrink-0 px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="shrink-0 px-5 py-4 border-b border-admin-100 flex items-center justify-between">
           <div>
             <p className="font-semibold text-dark-navy text-sm">{conversation.user_name || 'Visitor'}</p>
-            <p className="text-xs text-gray-400">{conversation.user_email} {conversation.user_phone ? `| ${conversation.user_phone}` : ''}</p>
+            <p className="text-xs text-admin-400">{conversation.user_email} {conversation.user_phone ? `| ${conversation.user_phone}` : ''}</p>
           </div>
-          <button onClick={onClose} className="p-1.5 text-gray-400 hover:text-gray-600 cursor-pointer"><FiX className="w-5 h-5" /></button>
+          <button onClick={onClose} className="p-1.5 text-admin-400 hover:text-admin-600 cursor-pointer"><FiX className="w-5 h-5" /></button>
         </div>
-        <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50/50">
+        <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-white/50">
           {loading ? (
-            <div className="flex items-center justify-center py-10"><FiLoader className="w-6 h-6 text-gray-400 animate-spin" /></div>
+            <div className="flex items-center justify-center py-10"><FiLoader className="w-6 h-6 text-admin-400 animate-spin" /></div>
           ) : messages.length === 0 ? (
-            <div className="text-center text-gray-400 text-sm py-10">
-              <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-gray-200" />
+            <div className="text-center text-admin-400 text-sm py-10">
+              <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-admin-200" />
               <p>No messages in this session</p>
               <p className="text-xs mt-1">Messages are deleted after 7 days.</p>
             </div>
@@ -384,7 +384,7 @@ function MessageViewer({ conversation, onClose }) {
                     : 'bg-brand-orange text-white rounded-br-md'
                 }`}>
                   <p className="whitespace-pre-wrap break-words">{msg.content}</p>
-                  <p className={`text-[10px] mt-1 ${msg.sender === 'user' ? 'text-gray-400 text-right' : 'text-white/70'}`}>{formatTime(msg.created_at)}</p>
+                  <p className={`text-[10px] mt-1 ${msg.sender === 'user' ? 'text-admin-400 text-right' : 'text-white/70'}`}>{formatTime(msg.created_at)}</p>
                 </div>
               </div>
             ))
@@ -415,38 +415,38 @@ function SessionsTable({ conversations }) {
   });
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
+    <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
+      <div className="px-5 py-4 border-b border-admin-100 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
           <h2 className="font-bold text-dark-navy text-base flex items-center gap-2">
             <FiList className="w-4 h-4 text-brand-orange" />
             Chat Sessions
           </h2>
-          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+          <span className="text-xs text-admin-400 bg-admin-100 px-2 py-0.5 rounded-full">
             {filtered.length} session{filtered.length !== 1 ? 's' : ''}
           </span>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, email, phone..."
-              className="w-64 pl-9 pr-3 py-2 text-sm bg-gray-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 placeholder-gray-400"
+              className="w-64 pl-9 pr-3 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 placeholder-admin-400"
             />
           </div>
           <div className="relative">
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="appearance-none pl-3 pr-8 py-2 text-sm bg-gray-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 cursor-pointer"
+              className="appearance-none pl-3 pr-8 py-2 text-sm bg-admin-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-brand-orange/30 cursor-pointer"
             >
               <option value="all">All</option>
               <option value="new">New</option>
               <option value="closed">Closed</option>
             </select>
-            <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400 pointer-events-none" />
           </div>
         </div>
       </div>
@@ -454,35 +454,35 @@ function SessionsTable({ conversations }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-100">
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Reason</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Rating</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Feedback</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Resolved</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Closed</th>
+            <tr className="bg-white border-b border-admin-100">
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider w-12">#</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Name</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Email</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Phone</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Reason</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Rating</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Feedback</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Resolved</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Status</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Date</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-admin-500 uppercase tracking-wider">Closed</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={11} className="text-center py-16 text-gray-400">
-                  <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-gray-200" />
+                <td colSpan={11} className="text-center py-16 text-admin-400">
+                  <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-admin-200" />
                   <p>No chat sessions found</p>
                 </td>
               </tr>
             ) : (
               filtered.map((conv, i) => (
-                <tr key={conv.id} onClick={() => setViewingConv(conv)} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors cursor-pointer">
-                  <td className="px-5 py-4 text-gray-400 text-xs">{i + 1}</td>
+                <tr key={conv.id} onClick={() => setViewingConv(conv)} className="border-b border-admin-50 hover:bg-white/50 transition-colors cursor-pointer">
+                  <td className="px-5 py-4 text-admin-400 text-xs">{i + 1}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500 shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-admin-200 flex items-center justify-center text-xs font-bold text-admin-500 shrink-0">
                         {(conv.user_name || 'V')[0].toUpperCase()}
                       </div>
                       <span className="font-medium text-dark-navy">{conv.user_name || 'Visitor'}</span>
@@ -498,15 +498,15 @@ function SessionsTable({ conversations }) {
                   </td>
                   <td className="px-5 py-4">
                     {conv.user_phone ? (
-                      <a href={`tel:${conv.user_phone}`} className="text-gray-600 hover:text-brand-orange flex items-center gap-1.5">
+                      <a href={`tel:${conv.user_phone}`} className="text-admin-600 hover:text-brand-orange flex items-center gap-1.5">
                         <FiPhone className="w-3.5 h-3.5 shrink-0" />
                         {conv.user_phone}
                       </a>
                     ) : '-'}
                   </td>
-                  <td className="px-5 py-4 text-gray-600 max-w-[200px] truncate">{conv.reason || '-'}</td>
+                  <td className="px-5 py-4 text-admin-600 max-w-[200px] truncate">{conv.reason || '-'}</td>
                   <td className="px-5 py-4">{conv.rating ? `${conv.rating}/5` : '-'}</td>
-                  <td className="px-5 py-4 text-gray-600 max-w-[200px] truncate">{conv.feedback || '-'}</td>
+                  <td className="px-5 py-4 text-admin-600 max-w-[200px] truncate">{conv.feedback || '-'}</td>
                   <td className="px-5 py-4">
                     {conv.issue_resolved === true ? (
                       <span className="text-green-600 text-xs font-medium">Yes</span>
@@ -518,14 +518,14 @@ function SessionsTable({ conversations }) {
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                       conv.status === 'open'
                         ? 'bg-green-50 text-green-600'
-                        : 'bg-gray-100 text-gray-500'
+                        : 'bg-admin-100 text-admin-500'
                     }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${conv.status === 'open' ? 'bg-green-500' : 'bg-gray-400'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${conv.status === 'open' ? 'bg-green-500' : 'bg-admin-400'}`} />
                       {conv.status === 'open' ? 'New' : 'Closed'}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-gray-500 text-xs">{formatDate(conv.created_at)}</td>
-                  <td className="px-5 py-4 text-gray-500 text-xs">{conv.closed_at ? formatDate(conv.closed_at) : '-'}</td>
+                  <td className="px-5 py-4 text-admin-500 text-xs">{formatDate(conv.created_at)}</td>
+                  <td className="px-5 py-4 text-admin-500 text-xs">{conv.closed_at ? formatDate(conv.closed_at) : '-'}</td>
                 </tr>
               ))
             )}

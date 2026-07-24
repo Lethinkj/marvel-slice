@@ -61,7 +61,7 @@ export default function ImageUploader({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3">
-        <label className="cursor-pointer flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-sm px-4 py-2 rounded-md transition-colors">
+        <label className="cursor-pointer flex items-center gap-2 bg-admin-100 hover:bg-admin-200 text-sm px-4 py-2 rounded-md transition-colors">
           <FiUpload className="w-4 h-4" />
           {uploading ? 'Uploading...' : 'Upload'}
           <input
@@ -76,7 +76,7 @@ export default function ImageUploader({
         <button
           onClick={() => setShowUrlInput(!showUrlInput)}
           className={`flex items-center gap-1 text-sm px-3 py-2 rounded-md transition-colors ${
-            showUrlInput ? 'bg-brand-orange/10 text-brand-orange' : 'text-gray-500 hover:text-brand-orange'
+            showUrlInput ? 'bg-brand-orange/10 text-brand-orange' : 'text-admin-500 hover:text-brand-orange'
           }`}
           title="Paste image URL"
         >
@@ -87,7 +87,7 @@ export default function ImageUploader({
           <>
             <button
               onClick={copyUrl}
-              className="flex items-center gap-1 text-sm text-gray-500 hover:text-brand-orange"
+              className="flex items-center gap-1 text-sm text-admin-500 hover:text-brand-orange"
               title="Copy URL"
             >
               <FiCopy className="w-3.5 h-3.5" />
@@ -117,7 +117,7 @@ export default function ImageUploader({
             value={value || ''}
             onChange={(e) => handleUrlChange(e.target.value)}
             placeholder="Paste image URL here..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
+            className="w-full px-3 py-2 border border-admin-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange"
           />
         </div>
       )}
@@ -126,7 +126,7 @@ export default function ImageUploader({
         <img
           src={preview}
           alt="Preview"
-          className="w-40 h-28 object-cover rounded-md border border-gray-200"
+          className="w-40 h-28 object-cover rounded-md border border-admin-200"
         />
       )}
       {value && !preview && (

@@ -78,24 +78,24 @@ function IconPicker({ value, onChange }) {
   const selected = HIGHLIGHT_ICONS.find((o) => o.key === value);
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-medium text-slate-500 mb-1">Icon</label>
+      <label className="block text-xs font-medium text-admin-500 mb-1">Icon</label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 bg-white text-left"
+        className="w-full flex items-center gap-2 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white text-left"
       >
         {selected ? (
           <>
-            <selected.Icon className="w-4 h-4 text-indigo-600 shrink-0" />
+            <selected.Icon className="w-4 h-4 text-admin-600 shrink-0" />
             <span>{selected.label}</span>
           </>
         ) : (
-          <span className="text-slate-400">Select icon</span>
+          <span className="text-admin-400">Select icon</span>
         )}
-        <FiChevronUp className={`w-4 h-4 ml-auto text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <FiChevronUp className={`w-4 h-4 ml-auto text-admin-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-1 z-50 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute bottom-full left-0 right-0 mb-1 z-50 bg-white border border-admin-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {HIGHLIGHT_ICONS.map((opt) => (
             <button
               key={opt.key}
@@ -103,8 +103,8 @@ function IconPicker({ value, onChange }) {
               onClick={() => { onChange(opt.key); setOpen(false); }}
               className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
                 value === opt.key
-                  ? "bg-indigo-50 text-indigo-600"
-                  : "hover:bg-neutral-50 text-neutral-700"
+                  ? "bg-white text-admin-600"
+                  : "hover:bg-white text-admin-700"
               }`}
             >
               <opt.Icon className="w-4 h-4 shrink-0" />
@@ -230,9 +230,9 @@ export default function CourseWizard() {
   if (currentUser?.role !== "admin" && currentUser?.role !== "editor" && currentUser?.role !== "master_admin") {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg border border-slate-200 p-6 text-center">
-          <h1 className="text-2xl font-bold text-slate-900 mb-4">Access Denied</h1>
-          <p className="text-slate-500">You do not have permission to access this page.</p>
+        <div className="bg-white rounded-lg border border-admin-200 p-6 text-center">
+          <h1 className="text-2xl font-bold text-admin-900 mb-4">Access Denied</h1>
+          <p className="text-admin-500">You do not have permission to access this page.</p>
         </div>
       </div>
     );
@@ -383,7 +383,7 @@ export default function CourseWizard() {
       maxWidth="max-w-5xl"
       actions={
         <>
-          <Link to="/admin/courses" className="p-2 text-slate-400 hover:text-neutral-700 rounded-lg hover:bg-slate-100 transition-colors">
+          <Link to="/admin/courses" className="p-2 text-admin-400 hover:text-admin-700 rounded-lg hover:bg-admin-100 transition-colors">
             <FiArrowLeft className="w-5 h-5" />
           </Link>
           <AdminButton onClick={() => navigate("/admin/courses")} variant="ghost" size="md">Cancel</AdminButton>
@@ -423,7 +423,7 @@ export default function CourseWizard() {
               <div key={s.label} className="flex flex-col items-center flex-1 relative">
                 {i > 0 && (
                   <div
-                    className={`absolute top-[14px] right-1/2 w-full h-0.5 ${i <= step ? "bg-indigo-500" : "bg-slate-200"}`}
+                    className={`absolute top-[14px] right-1/2 w-full h-0.5 ${i <= step ? "bg-white0" : "bg-admin-200"}`}
                     style={{ transform: "translateX(50%)" }}
                   />
                 )}
@@ -433,16 +433,16 @@ export default function CourseWizard() {
                   onClick={() => handleStepClick(i)}
                   className={`relative z-10 w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold border-2 transition-colors ${
                     isCurrent
-                      ? "bg-indigo-500 border-indigo-500 text-white"
+                      ? "bg-white0 border-admin-500 text-white"
                       : isCompleted
-                      ? "bg-indigo-500 border-indigo-500 text-white cursor-pointer hover:bg-indigo-700"
-                      : "bg-white border-slate-200 text-slate-400"
+                      ? "bg-white0 border-admin-500 text-white cursor-pointer hover:bg-admin-700"
+                      : "bg-white border-admin-200 text-admin-400"
                   }`}
                 >
                   {isCompleted ? <FiCheck className="w-3.5 h-3.5" /> : <span>{i + 1}</span>}
                 </button>
                 <span className={`mt-2 text-xs font-medium text-center leading-tight ${
-                  isCurrent || isCompleted ? "text-indigo-600" : "text-slate-400"
+                  isCurrent || isCompleted ? "text-admin-600" : "text-admin-400"
                 }`}>
                   {s.label}
                 </span>
@@ -452,12 +452,12 @@ export default function CourseWizard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 p-6 sm:p-8">
+      <div className="bg-white rounded-lg border border-admin-200 p-6 sm:p-8">
         {step === 0 && (
           <div className="space-y-6">
             {categories.length > 0 && (
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-3">Category *</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-3">Category *</label>
                 <div className="flex flex-wrap gap-3">
                   {categories.map((cat) => (
                     <button
@@ -468,8 +468,8 @@ export default function CourseWizard() {
                       }}
                       className={`px-5 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
                         filterSection === cat
-                          ? "border-indigo-500 bg-indigo-50 text-indigo-600"
-                          : "border-slate-200 text-slate-500 hover:border-slate-200 hover:bg-neutral-50"
+                          ? "border-admin-500 bg-white text-admin-600"
+                          : "border-admin-200 text-admin-500 hover:border-admin-200 hover:bg-white"
                       }`}
                     >
                       {cat}
@@ -486,11 +486,11 @@ export default function CourseWizard() {
               function dd(label, items, val, setter) {
                 return (
                   <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-1">{label}</label>
+                    <label className="block text-sm font-semibold text-admin-900 mb-1">{label}</label>
                     <select
                       value={val}
                       onChange={(e) => setter(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 bg-white"
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
                     >
                       <option value="">— Select —</option>
                       {items.map((item) => (
@@ -511,53 +511,53 @@ export default function CourseWizard() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Course Title *</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-1">Course Title *</label>
                 <input
                   value={c.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   placeholder="e.g. Full Stack Web Development"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Slug *</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-1">Slug *</label>
                 <input
                   value={c.slug}
                   onChange={(e) => u("slug", slugify(e.target.value))}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 font-mono text-sm transition-all"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 font-mono text-sm transition-all"
                   placeholder="full-stack-web-development"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-1">Subtitle</label>
+              <label className="block text-sm font-semibold text-admin-900 mb-1">Subtitle</label>
               <input
                 value={c.subtitle || ""}
                 onChange={(e) => u("subtitle", e.target.value)}
-                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 placeholder="A short tagline for the course"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-1">Description</label>
+              <label className="block text-sm font-semibold text-admin-900 mb-1">Description</label>
               <textarea
                 value={c.description || ""}
                 onChange={(e) => u("description", e.target.value)}
                 rows={4}
-                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 placeholder="Detailed course description..."
               />
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Duration</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-1">Duration</label>
                 <select
                   value={c.duration}
                   onChange={(e) => u("duration", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 bg-white"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
                 >
                   {DURATIONS.map((d) => (
                     <option key={d} value={d}>{d}</option>
@@ -565,11 +565,11 @@ export default function CourseWizard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Mode</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-1">Mode</label>
                 <select
                   value={c.mode}
                   onChange={(e) => u("mode", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 bg-white"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
                 >
                   {MODES.map((m) => (
                     <option key={m} value={m}>{m}</option>
@@ -577,11 +577,11 @@ export default function CourseWizard() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Status</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-1">Status</label>
                 <select
                   value={c.status}
                   onChange={(e) => u("status", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 bg-white"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
                 >
                   <option value="Active">Active</option>
                   <option value="Coming Soon">Coming Soon</option>
@@ -590,74 +590,74 @@ export default function CourseWizard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-lg border border-slate-200">
-              <input type="checkbox" id="published" checked={c.is_published} onChange={(e) => u("is_published", e.target.checked)} className="w-4 h-4 rounded border-slate-200 text-indigo-600 focus:ring-indigo-500/20" />
-              <label htmlFor="published" className="text-sm font-medium text-slate-900 cursor-pointer">Published (visible on site)</label>
+            <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-admin-200">
+              <input type="checkbox" id="published" checked={c.is_published} onChange={(e) => u("is_published", e.target.checked)} className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-admin-500/20" />
+              <label htmlFor="published" className="text-sm font-medium text-admin-900 cursor-pointer">Published (visible on site)</label>
             </div>
           </div>
         )}
 
         {step === 1 && (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2"><FiMonitor className="w-5 h-5 text-indigo-600" /> Media</h2>
+            <h2 className="text-lg font-semibold text-admin-900 flex items-center gap-2"><FiMonitor className="w-5 h-5 text-admin-600" /> Media</h2>
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Hero / Banner Image</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-1">Hero / Banner Image</label>
                 <ImageUploader value={c.hero_image_url} onChange={(url) => u("hero_image_url", url)} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">Video Thumbnail</label>
+                <label className="block text-sm font-semibold text-admin-900 mb-1">Video Thumbnail</label>
                 <ImageUploader value={c.video_thumbnail_url} onChange={(url) => u("video_thumbnail_url", url)} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-1">Course Video (YouTube URL)</label>
+              <label className="block text-sm font-semibold text-admin-900 mb-1">Course Video (YouTube URL)</label>
               <input
                 value={c.video_url || ""}
                 onChange={(e) => u("video_url", e.target.value)}
-                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all"
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all"
                 placeholder="https://www.youtube.com/watch?v=..."
               />
             </div>
 
-            <hr className="border-slate-200" />
+            <hr className="border-admin-200" />
 
-            <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2"><FiBookOpen className="w-5 h-5 text-indigo-600" /> Content</h2>
+            <h2 className="text-lg font-semibold text-admin-900 flex items-center gap-2"><FiBookOpen className="w-5 h-5 text-admin-600" /> Content</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">CTA Left</label>
-                <input value={c.cta_left || ""} onChange={(e) => u("cta_left", e.target.value)} className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all" placeholder="Enroll Now" />
+                <label className="block text-sm font-semibold text-admin-900 mb-1">CTA Left</label>
+                <input value={c.cta_left || ""} onChange={(e) => u("cta_left", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-1">CTA Right</label>
-                <input value={c.cta_right || ""} onChange={(e) => u("cta_right", e.target.value)} className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all" placeholder="Download Brochure" />
+                <label className="block text-sm font-semibold text-admin-900 mb-1">CTA Right</label>
+                <input value={c.cta_right || ""} onChange={(e) => u("cta_right", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Download Brochure" />
               </div>
             </div>
 
-            <div className="border-t border-slate-200 pt-6 mt-2">
-              <h3 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">Call to Action Banner</h3>
+            <div className="border-t border-admin-200 pt-6 mt-2">
+              <h3 className="text-sm font-semibold text-admin-900 mb-4 flex items-center gap-2">Call to Action Banner</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-1">CTA Heading</label>
-                  <input value={c.cta_heading || ''} onChange={(e) => u("cta_heading", e.target.value)} className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all" placeholder="Ready to start your learning journey?" />
+                  <label className="block text-sm font-semibold text-admin-900 mb-1">CTA Heading</label>
+                  <input value={c.cta_heading || ''} onChange={(e) => u("cta_heading", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Ready to start your learning journey?" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-1">CTA Description</label>
-                  <textarea value={c.cta_description || ''} onChange={(e) => u("cta_description", e.target.value)} rows={2} className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all" placeholder="Enroll now and gain industry-ready skills with expert mentors." />
+                  <label className="block text-sm font-semibold text-admin-900 mb-1">CTA Description</label>
+                  <textarea value={c.cta_description || ''} onChange={(e) => u("cta_description", e.target.value)} rows={2} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll now and gain industry-ready skills with expert mentors." />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-1">Button Text</label>
-                    <input value={c.cta_text || ''} onChange={(e) => u("cta_text", e.target.value)} className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all" placeholder="Enroll Now" />
+                    <label className="block text-sm font-semibold text-admin-900 mb-1">Button Text</label>
+                    <input value={c.cta_text || ''} onChange={(e) => u("cta_text", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-1">Button Link (URL)</label>
-                    <input value={c.cta_link || ''} onChange={(e) => u("cta_link", e.target.value)} className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all" placeholder="/courses or https://..." />
+                    <label className="block text-sm font-semibold text-admin-900 mb-1">Button Link (URL)</label>
+                    <input value={c.cta_link || ''} onChange={(e) => u("cta_link", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="/courses or https://..." />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-1">Phone Number (tel:)</label>
-                  <input value={c.cta_phone || ''} onChange={(e) => u("cta_phone", e.target.value)} className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-sm transition-all" placeholder="+916380957390" />
+                  <label className="block text-sm font-semibold text-admin-900 mb-1">Phone Number (tel:)</label>
+                  <input value={c.cta_phone || ''} onChange={(e) => u("cta_phone", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="+916380957390" />
                 </div>
                 <div>
                   <ImageUploader value={c.cta_background_image || ''} onChange={(v) => u("cta_background_image", v)} label="Background Image" />
@@ -666,37 +666,37 @@ export default function CourseWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-1">What You'll Learn (one per line)</label>
+              <label className="block text-sm font-semibold text-admin-900 mb-1">What You'll Learn (one per line)</label>
               <textarea
                 value={(c.checklist_items || []).join("\n")}
                 onChange={(e) => u("checklist_items", e.target.value.split("\n"))}
                 rows={4}
-                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 placeholder="Live classes&#10;Industry mentors&#10;Placement assistance"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-900">Course Tabs</h3>
-                <AdminButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} variant="ghost" size="sm" className="text-indigo-600 font-semibold">
+                <h3 className="text-sm font-semibold text-admin-900">Course Tabs</h3>
+                <AdminButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} variant="ghost" size="sm" className="text-admin-600 font-semibold">
                   <FiPlus className="w-4 h-4" /> Add Tab
                 </AdminButton>
               </div>
               <div className="space-y-3">
                 {c.tabs.map((t, i) => (
-                  <div key={i} className="border border-slate-200 rounded-lg p-4 relative">
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
                     <button onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors">
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div className="grid sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-slate-500 mb-1">Label</label>
-                        <input value={t.label || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                        <label className="block text-xs font-medium text-admin-500 mb-1">Label</label>
+                        <input value={t.label || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-500 mb-1">Type</label>
-                        <select value={t.content_type || "overview"} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 bg-white">
+                        <label className="block text-xs font-medium text-admin-500 mb-1">Type</label>
+                        <select value={t.content_type || "overview"} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white">
                           <option value="overview">Overview</option>
                           <option value="syllabus">Syllabus</option>
                           <option value="pricing">Pricing</option>
@@ -708,39 +708,39 @@ export default function CourseWizard() {
                       t.content_type === "syllabus") && (
                       <div className="mt-3 space-y-4">
                         <div>
-                          <label className="block text-xs font-medium text-slate-500 mb-1">Heading (centered)</label>
-                          <input value={t.content?.heading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Main heading" />
+                          <label className="block text-xs font-medium text-admin-500 mb-1">Heading (centered)</label>
+                          <input value={t.content?.heading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Main heading" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-slate-500 mb-1">Paragraph</label>
-                          <textarea value={t.content?.paragraph || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }} rows={2} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Paragraph text" />
+                          <label className="block text-xs font-medium text-admin-500 mb-1">Paragraph</label>
+                          <textarea value={t.content?.paragraph || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }} rows={2} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Paragraph text" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-slate-500 mb-1">Sub Heading</label>
-                          <input value={t.content?.subheading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Sub heading" />
+                          <label className="block text-xs font-medium text-admin-500 mb-1">Sub Heading</label>
+                          <input value={t.content?.subheading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Sub heading" />
                         </div>
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <label className="text-xs font-medium text-slate-500">Q&A Items</label>
-                            <button onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-indigo-600 font-semibold hover:underline">+ Add Question</button>
+                            <label className="text-xs font-medium text-admin-500">Q&A Items</label>
+                            <button onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-admin-600 font-semibold hover:underline">+ Add Question</button>
                           </div>
                           <div className="space-y-3">
                             {(t.content?.qa || []).map((qa, qi) => (
-                              <div key={qi} className="border border-slate-200 rounded-lg p-3">
+                              <div key={qi} className="border border-admin-200 rounded-lg p-3">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-xs font-semibold text-slate-400">Question {qi + 1}</span>
+                                  <span className="text-xs font-semibold text-admin-400">Question {qi + 1}</span>
                                   <button onClick={() => { const n = [...c.tabs]; const qa = n[i].content.qa.filter((_, j) => j !== qi); n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-destructive-500 hover:underline">Remove</button>
                                 </div>
-                                <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 mb-2" placeholder="Question" />
+                                <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Question" />
                                 <div>
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs text-slate-400">Answers (one per line)</span>
-                                    <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-indigo-600 hover:underline">+ Add bullet</button>
+                                    <span className="text-xs text-admin-400">Answers (one per line)</span>
+                                    <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-admin-600 hover:underline">+ Add bullet</button>
                                   </div>
                                   {qa.answers.map((ans, ai) => (
                                     <div key={ai} className="flex items-center gap-2 mb-1">
-                                      <span className="text-xs text-neutral-300">•</span>
-                                      <input value={ans} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; const an = [...qa[qi].answers]; an[ai] = e.target.value; qa[qi] = { ...qa[qi], answers: an }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="flex-1 px-2 py-1 border border-slate-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Answer bullet" />
+                                      <span className="text-xs text-admin-300">•</span>
+                                      <input value={ans} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; const an = [...qa[qi].answers]; an[ai] = e.target.value; qa[qi] = { ...qa[qi], answers: an }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="flex-1 px-2 py-1 border border-admin-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Answer bullet" />
                                       <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-destructive-400 hover:text-destructive-600">×</button>
                                     </div>
                                   ))}
@@ -762,14 +762,14 @@ export default function CourseWizard() {
           <div className="space-y-8">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2"><FiLayers className="w-5 h-5 text-indigo-600" /> Curriculum / Modules</h2>
-                <AdminButton onClick={addModule} variant="ghost" size="sm" className="text-indigo-600 font-semibold"><FiPlus className="w-4 h-4" /> Add Module</AdminButton>
+                <h2 className="text-lg font-semibold text-admin-900 flex items-center gap-2"><FiLayers className="w-5 h-5 text-admin-600" /> Curriculum / Modules</h2>
+                <AdminButton onClick={addModule} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add Module</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.curriculum.map((mod, i) => (
-                  <div key={i} className="border border-slate-200 rounded-lg p-4">
+                  <div key={i} className="border border-admin-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Module {i + 1}</span>
+                      <span className="text-xs font-semibold text-admin-400 uppercase tracking-wider">Module {i + 1}</span>
                       <button onClick={() => removeModule(i)} className="p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors">
                         <FiTrash2 className="w-4 h-4" />
                       </button>
@@ -777,17 +777,17 @@ export default function CourseWizard() {
                     <input
                       value={mod.title}
                       onChange={(e) => updateModule(i, "title", e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 mb-3"
+                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-3"
                       placeholder="Module title (e.g. Introduction to HTML)"
                     />
                     <div className="space-y-2">
                       {mod.topics?.map((topic, j) => (
                         <div key={j} className="flex items-center gap-2">
-                          <span className="text-xs text-slate-400 w-5 text-right">{j + 1}.</span>
+                          <span className="text-xs text-admin-400 w-5 text-right">{j + 1}.</span>
                           <input
                             value={topic}
                             onChange={(e) => updateTopic(i, j, e.target.value)}
-                            className="flex-1 px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
                             placeholder="Topic"
                           />
                           <button onClick={() => removeTopic(i, j)} className="p-1 text-destructive-300 hover:text-destructive-500 transition-colors">
@@ -795,12 +795,12 @@ export default function CourseWizard() {
                           </button>
                         </div>
                       ))}
-                      <AdminButton onClick={() => addTopic(i)} variant="ghost" size="xs" className="text-indigo-600 font-semibold"><FiPlus className="w-3 h-3" /> Add Topic</AdminButton>
+                      <AdminButton onClick={() => addTopic(i)} variant="ghost" size="xs" className="text-admin-600 font-semibold"><FiPlus className="w-3 h-3" /> Add Topic</AdminButton>
                     </div>
                   </div>
                 ))}
                 {c.curriculum.length === 0 && (
-                  <div className="text-center py-8 text-slate-400 bg-neutral-50 rounded-lg border-2 border-dashed border-slate-200">
+                  <div className="text-center py-8 text-admin-400 bg-white rounded-lg border-2 border-dashed border-admin-200">
                     <FiLayers className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">No modules yet. Click "Add Module" to build your curriculum.</p>
                   </div>
@@ -808,45 +808,45 @@ export default function CourseWizard() {
               </div>
             </div>
 
-            <hr className="border-slate-200" />
+            <hr className="border-admin-200" />
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-900">Key Highlights</h3>
-                <AdminButton onClick={() => u("highlights", [...c.highlights, { icon: "", label: "" }])} variant="ghost" size="sm" className="text-indigo-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
+                <h3 className="text-sm font-semibold text-admin-900">Key Highlights</h3>
+                <AdminButton onClick={() => u("highlights", [...c.highlights, { icon: "", label: "" }])} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.highlights.map((h, i) => (
-                  <div key={i} className="flex items-center gap-3 border border-slate-200 rounded-lg p-3">
+                  <div key={i} className="flex items-center gap-3 border border-admin-200 rounded-lg p-3">
                     <div className="w-32">
                       <IconPicker
                         value={h.icon || ""}
                         onChange={(val) => { const n = [...c.highlights]; n[i] = { ...n[i], icon: val }; u("highlights", n); }}
                       />
                     </div>
-                    <input value={h.label || ""} onChange={(e) => { const n = [...c.highlights]; n[i] = { ...n[i], label: e.target.value }; u("highlights", n); }} className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Label" />
+                    <input value={h.label || ""} onChange={(e) => { const n = [...c.highlights]; n[i] = { ...n[i], label: e.target.value }; u("highlights", n); }} className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Label" />
                     <button onClick={() => u("highlights", c.highlights.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-lg border border-slate-200">
-              <input type="checkbox" id="show_pricing" checked={c.show_pricing} onChange={(e) => u("show_pricing", e.target.checked)} className="w-4 h-4 rounded border-slate-200 text-indigo-600 focus:ring-indigo-500/20" />
-              <label htmlFor="show_pricing" className="text-sm font-medium text-slate-900 cursor-pointer">Show pricing on page</label>
+            <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-admin-200">
+              <input type="checkbox" id="show_pricing" checked={c.show_pricing} onChange={(e) => u("show_pricing", e.target.checked)} className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-admin-500/20" />
+              <label htmlFor="show_pricing" className="text-sm font-medium text-admin-900 cursor-pointer">Show pricing on page</label>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-900">Projects</h3>
-                <AdminButton onClick={() => u("projects", [...c.projects, { title: "", description: "" }])} variant="ghost" size="sm" className="text-indigo-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
+                <h3 className="text-sm font-semibold text-admin-900">Projects</h3>
+                <AdminButton onClick={() => u("projects", [...c.projects, { title: "", description: "" }])} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.projects.map((p, i) => (
-                  <div key={i} className="border border-slate-200 rounded-lg p-4 relative">
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
                     <button onClick={() => u("projects", c.projects.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
-                    <input value={p.title || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], title: e.target.value }; u("projects", n); }} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 mb-2" placeholder="Project title" />
-                    <textarea value={p.description || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], description: e.target.value }; u("projects", n); }} rows={2} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Description..." />
+                    <input value={p.title || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], title: e.target.value }; u("projects", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Project title" />
+                    <textarea value={p.description || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], description: e.target.value }; u("projects", n); }} rows={2} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Description..." />
                   </div>
                 ))}
               </div>
@@ -858,22 +858,22 @@ export default function CourseWizard() {
           <div className="space-y-8">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-900">General FAQs</h3>
-                <AdminButton onClick={() => u("faqs", [...c.faqs, { question: "", answer: "" }])} variant="ghost" size="sm" className="text-indigo-600 font-semibold"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
+                <h3 className="text-sm font-semibold text-admin-900">General FAQs</h3>
+                <AdminButton onClick={() => u("faqs", [...c.faqs, { question: "", answer: "" }])} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
               </div>
               <div className="space-y-3">
                 {c.faqs.map((f, i) => (
-                  <div key={i} className="border border-slate-200 rounded-lg p-4 relative">
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
                     <button onClick={() => u("faqs", c.faqs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
-                    <input value={f.question || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], question: e.target.value }; u("faqs", n); }} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 mb-2" placeholder="Question" />
-                    <textarea value={f.answer || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], answer: e.target.value }; u("faqs", n); }} rows={2} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Answer..." />
+                    <input value={f.question || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], question: e.target.value }; u("faqs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Question" />
+                    <textarea value={f.answer || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], answer: e.target.value }; u("faqs", n); }} rows={2} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Answer..." />
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">Tags *</h3>
+              <h3 className="text-sm font-semibold text-admin-900 mb-3">Tags *</h3>
               {courseTags.length === 0 && (
                 <p className="text-xs text-destructive-500 mb-2">Select at least one tag to enable saving</p>
               )}
@@ -885,21 +885,21 @@ export default function CourseWizard() {
                       key={tag.id}
                       onClick={() => setCourseTags(sel ? courseTags.filter((t) => t !== tag.id) : [...courseTags, tag.id])}
                       className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                        sel ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-500 border-slate-200 hover:border-indigo-500 hover:text-indigo-600"
+                        sel ? "bg-admin-600 text-white border-admin-600" : "bg-white text-admin-500 border-admin-200 hover:border-admin-500 hover:text-admin-600"
                       }`}
                     >
                       {tag.name}
                     </button>
                   );
                 })}
-                {allTags.length === 0 && <p className="text-sm text-slate-400">No tags yet. Create some in the Tags page.</p>}
+                {allTags.length === 0 && <p className="text-sm text-admin-400">No tags yet. Create some in the Tags page.</p>}
               </div>
               <div className="flex items-center gap-2 mt-4">
                 <input
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleCreateTag()}
-                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
                   placeholder="New tag name..."
                 />
                 <AdminButton onClick={handleCreateTag} disabled={creatingTag || !newTagName.trim()} variant="primary" size="sm">
@@ -911,15 +911,15 @@ export default function CourseWizard() {
         )}
       </div>
 
-      <div className="flex items-center justify-between mt-6 bg-white rounded-lg border border-slate-200 p-4">
+      <div className="flex items-center justify-between mt-6 bg-white rounded-lg border border-admin-200 p-4">
         <AdminButton onClick={() => setStep((s) => s - 1)} disabled={step === 0} variant="ghost" size="md">
           <FiChevronLeft className="w-4 h-4" /> Back
         </AdminButton>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-slate-400">Step {step + 1} of {STEPS.length}</span>
+          <span className="text-sm text-admin-400">Step {step + 1} of {STEPS.length}</span>
           <div className="hidden sm:flex gap-1">
             {STEPS.map((_, i) => (
-              <div key={i} className={`w-2 h-2 rounded-full ${i <= step ? 'bg-indigo-500' : 'bg-slate-200'}`} />
+              <div key={i} className={`w-2 h-2 rounded-full ${i <= step ? 'bg-white0' : 'bg-admin-200'}`} />
             ))}
           </div>
         </div>

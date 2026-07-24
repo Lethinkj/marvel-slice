@@ -79,43 +79,43 @@ export default function CommandPalette({ open, onClose }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] cursor-pointer" onClick={onClose}>
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden cursor-pointer" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center gap-3 px-4 border-b border-slate-100">
-          <FiSearch className="w-4 h-4 text-slate-400 shrink-0" />
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-admin-200 overflow-hidden cursor-pointer" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-4 border-b border-admin-100">
+          <FiSearch className="w-4 h-4 text-admin-400 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search pages, content, settings..."
-            className="flex-1 h-12 text-sm text-slate-900 placeholder:text-slate-400 bg-transparent outline-none"
+            className="flex-1 h-12 text-sm text-admin-900 placeholder:text-admin-400 bg-transparent outline-none"
           />
-          <kbd className="text-[10px] text-slate-400 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5 font-mono shrink-0">ESC</kbd>
+          <kbd className="text-[10px] text-admin-400 bg-admin-100 border border-admin-200 rounded px-1.5 py-0.5 font-mono shrink-0">ESC</kbd>
         </div>
 
         <div className="max-h-[320px] overflow-y-auto py-2">
           {query.trim() && results.length === 0 && (
             <div className="flex flex-col items-center py-8 text-center">
-              <p className="text-sm text-slate-400">No results for "{query}"</p>
+              <p className="text-sm text-admin-400">No results for "{query}"</p>
             </div>
           )}
           {Object.entries(grouped).map(([category, items]) => (
             <div key={category}>
-              <div className="px-4 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{category}</div>
+              <div className="px-4 py-1.5 text-[11px] font-semibold text-admin-400 uppercase tracking-wider">{category}</div>
               {items.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.to}
                     onClick={() => handleSelect(item)}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors text-left"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-admin-700 hover:bg-white hover:text-admin-700 transition-colors text-left"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-                      <Icon className="w-3.5 h-3.5 text-slate-500" />
+                    <div className="w-7 h-7 rounded-lg bg-admin-100 flex items-center justify-center shrink-0">
+                      <Icon className="w-3.5 h-3.5 text-admin-500" />
                     </div>
                     <div>
                       <div className="font-medium">{item.label}</div>
-                      <div className="text-[11px] text-slate-400">{item.to}</div>
+                      <div className="text-[11px] text-admin-400">{item.to}</div>
                     </div>
                   </button>
                 );

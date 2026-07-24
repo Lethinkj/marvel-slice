@@ -30,18 +30,18 @@ function ImageUploader({ value, onChange, label }) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input
           type="text"
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+          className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
           placeholder="Paste image URL or upload..."
         />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-slate-200 rounded-lg text-sm text-slate-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors">
+        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors">
           {uploading ? (
-            <span className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-admin-500 border-t-transparent rounded-full animate-spin" />
           ) : (
             <FiUpload className="w-4 h-4" />
           )}
@@ -49,7 +49,7 @@ function ImageUploader({ value, onChange, label }) {
         </label>
       </div>
       {value && (
-        <div className="mt-2 relative group rounded-lg overflow-hidden border border-slate-200">
+        <div className="mt-2 relative group rounded-lg overflow-hidden border border-admin-200">
           <img src={value} alt="" className="h-40 w-full object-cover" />
           <button
             type="button"
@@ -230,7 +230,7 @@ export default function BlogPostEditor() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-admin-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -240,7 +240,7 @@ export default function BlogPostEditor() {
       <div className="flex items-center gap-4 mb-8">
         <Link
           to="/admin/blog"
-          className="p-2 text-slate-400 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+          className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors"
         >
           <FiArrowLeft className="w-5 h-5" />
         </Link>
@@ -248,23 +248,23 @@ export default function BlogPostEditor() {
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" top />
 
-      <form ref={formRef} onSubmit={handleSave} className="bg-white rounded-lg border border-slate-200 p-6 space-y-8">
+      <form ref={formRef} onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-6 space-y-8">
         <div>
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Basic Information</h2>
+          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Basic Information</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Title</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Title</label>
               <input
                 type="text"
                 value={form.title}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 placeholder="Post title"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Slug</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Slug</label>
               <div className="relative">
                 <input
                   type="text"
@@ -273,13 +273,13 @@ export default function BlogPostEditor() {
                   className={`w-full px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:border-transparent transition-all font-mono text-xs ${
                     slugStatus === 'taken' ? 'border-destructive-500 focus:ring-destructive-500 bg-destructive-50' :
                     slugStatus === 'available' ? 'border-success-500 focus:ring-success-500 bg-success-50' :
-                    'border-slate-200 focus:ring-indigo-500/20'
+                    'border-admin-200 focus:ring-admin-500/20'
                   }`}
                   placeholder="post-slug"
                 />
                 {slugStatus === 'checking' && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <span className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin block" />
+                    <span className="w-4 h-4 border-2 border-admin-500 border-t-transparent rounded-full animate-spin block" />
                   </span>
                 )}
               </div>
@@ -289,7 +289,7 @@ export default function BlogPostEditor() {
                   <button
                     type="button"
                     onClick={() => { setForm({ ...form, slug: slugSuggestion }); setSlugStatus('checking'); }}
-                    className="text-indigo-600 hover:underline font-medium"
+                    className="text-admin-600 hover:underline font-medium"
                   >
                     {slugSuggestion}
                   </button>
@@ -300,64 +300,64 @@ export default function BlogPostEditor() {
               )}
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Author</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Author</label>
               <input
                 type="text"
                 value={form.author}
                 onChange={(e) => setForm({ ...form, author: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 placeholder="Author name"
               />
             </div>
           </div>
         </div>
 
-        <div className="border-t border-neutral-100" />
+        <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Content</h2>
+          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Content</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Excerpt</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Excerpt</label>
               <textarea
                 value={form.excerpt}
                 onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
                 rows={2}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 placeholder="Short description shown in cards"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Content</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Content</label>
               <textarea
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
                 rows={12}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all font-mono text-xs"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500/20 transition-all font-mono text-xs"
                 placeholder="Full article content (HTML or markdown supported)"
               />
             </div>
           </div>
         </div>
 
-        <div className="border-t border-neutral-100" />
+        <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Featured Image</h2>
+          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Featured Image</h2>
           <ImageUploader value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} label="Image URL" />
         </div>
 
-        <div className="border-t border-neutral-100" />
+        <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Metadata</h2>
+          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Metadata</h2>
           <div className="grid sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Category</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Category</label>
               <select
                 value={form.category_id}
                 onChange={(e) => setForm({ ...form, category_id: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all bg-white"
+                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
               >
                 <option value="">No category</option>
                 {categories.map((cat) => (
@@ -366,7 +366,7 @@ export default function BlogPostEditor() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wider">Tags</label>
+              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Tags</label>
               <div className="flex flex-wrap gap-2 mt-1">
                 {allTags.map((tag) => {
                   const isSelected = selectedTags.includes(tag.id);
@@ -379,19 +379,19 @@ export default function BlogPostEditor() {
                       }
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                         isSelected
-                          ? 'bg-indigo-600 text-white ring-2 ring-indigo-600/30'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-admin-600 text-white ring-2 ring-admin-600/30'
+                          : 'bg-admin-100 text-admin-600 hover:bg-admin-200'
                       }`}
                     >
-                      <FiTag className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
+                      <FiTag className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-admin-400'}`} />
                       {tag.name}
                     </button>
                   );
                 })}
                 {allTags.length === 0 && (
-                  <p className="text-sm text-slate-400">
+                  <p className="text-sm text-admin-400">
                     No tags available. Create them in{' '}
-                    <Link to="/admin/tags" className="text-indigo-600 hover:underline">Tags Manager</Link>.
+                    <Link to="/admin/tags" className="text-admin-600 hover:underline">Tags Manager</Link>.
                   </p>
                 )}
               </div>
@@ -399,13 +399,13 @@ export default function BlogPostEditor() {
           </div>
         </div>
 
-        <div className="border-t border-neutral-100" />
+        <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Publishing</h2>
+          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Publishing</h2>
           <div className="flex items-center gap-6">
-            <label className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors">
-              <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_published ? 'bg-indigo-600' : 'bg-slate-300'}`}>
+            <label className="flex items-center gap-3 p-3 bg-white rounded-lg border border-admin-200 cursor-pointer hover:bg-admin-100 transition-colors">
+              <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_published ? 'bg-admin-600' : 'bg-admin-300'}`}>
                 <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_published ? 'translate-x-4' : ''}`} />
                 <input
                   type="checkbox"
@@ -414,21 +414,21 @@ export default function BlogPostEditor() {
                   className="sr-only"
                 />
               </div>
-              <span className="text-sm font-medium text-slate-900">Published</span>
+              <span className="text-sm font-medium text-admin-900">Published</span>
             </label>
-            <label className="flex items-center gap-2 p-3 bg-neutral-50 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors">
+            <label className="flex items-center gap-2 p-3 bg-white rounded-lg border border-admin-200 cursor-pointer hover:bg-admin-100 transition-colors">
               <input
                 type="checkbox"
                 checked={form.is_featured}
                 onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
-                className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500/20"
+                className="w-4 h-4 rounded text-admin-600 focus:ring-admin-500/20"
               />
-              <span className="text-sm font-medium text-slate-900">Featured</span>
+              <span className="text-sm font-medium text-admin-900">Featured</span>
             </label>
           </div>
         </div>
 
-        <div className="border-t border-neutral-100 pt-6 flex justify-end gap-3">
+        <div className="border-t border-admin-100 pt-6 flex justify-end gap-3">
           {!isNew && form.slug && (
             <AdminButton to={`/blog/${form.slug}`} target="_blank" variant="secondary" size="md">
               <FiExternalLink className="w-4 h-4" /> View Post

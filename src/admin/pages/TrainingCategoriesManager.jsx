@@ -65,7 +65,7 @@ export default function TrainingCategoriesManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-admin-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -73,39 +73,39 @@ export default function TrainingCategoriesManager() {
   return (
     <PageShell title="Training Categories" subtitle="Manage categories for trainings">
 
-      <form onSubmit={handleSave} className="bg-white rounded-lg border border-neutral-200 p-5 mb-6 space-y-4">
-        <h3 className="text-sm font-semibold text-neutral-700">{editingId ? 'Edit Category' : 'Add Category'}</h3>
+      <form onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-5 mb-6 space-y-4">
+        <h3 className="text-sm font-semibold text-admin-700">{editingId ? 'Edit Category' : 'Add Category'}</h3>
 
         <div className="flex gap-3">
           <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editingId ? form.slug : slugify(e.target.value) })}
             placeholder="Category name"
-            className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+            className="flex-1 px-3 py-2 border border-admin-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-transparent transition-all" />
           <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
             placeholder="slug"
-            className="w-40 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-mono text-xs" />
+            className="w-40 px-3 py-2 border border-admin-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-transparent transition-all font-mono text-xs" />
         </div>
 
         <div className="flex gap-3">
           <input type="text" value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })}
             placeholder="Icon name (e.g. FiGrid)"
-            className="flex-1 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+            className="flex-1 px-3 py-2 border border-admin-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-transparent transition-all" />
           <input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
             placeholder="Sort order"
-            className="w-24 px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+            className="w-24 px-3 py-2 border border-admin-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-transparent transition-all" />
         </div>
 
         <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
           placeholder="Description (optional)"
           rows={3}
-          className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none" />
+          className="w-full px-3 py-2 border border-admin-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-transparent transition-all resize-none" />
 
         <div className="flex items-center gap-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <div onClick={() => setForm({ ...form, status: !form.status })}
-              className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${form.status ? 'bg-indigo-500' : 'bg-neutral-300'}`}>
+              className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${form.status ? 'bg-white0' : 'bg-admin-300'}`}>
               <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${form.status ? 'translate-x-4' : 'translate-x-0'}`} />
             </div>
-            <span className="text-sm text-neutral-700">Active</span>
+            <span className="text-sm text-admin-700">Active</span>
           </label>
           <div className="flex gap-2 ml-auto">
             <AdminButton type="submit" variant="primary" size="sm" disabled={!form.name.trim()}>
@@ -113,7 +113,7 @@ export default function TrainingCategoriesManager() {
             </AdminButton>
             {editingId && (
               <button type="button" onClick={resetForm}
-                className="px-3 py-2 rounded-lg text-sm text-neutral-600 hover:bg-neutral-100 transition-colors">
+                className="px-3 py-2 rounded-lg text-sm text-admin-600 hover:bg-admin-100 transition-colors">
                 Cancel
               </button>
             )}
@@ -122,33 +122,33 @@ export default function TrainingCategoriesManager() {
       </form>
 
       {categories.length === 0 ? (
-        <div className="bg-white rounded-lg border border-neutral-200 p-12 text-center">
-          <FiGrid className="w-12 h-12 text-neutral-200 mx-auto mb-4" />
-          <p className="text-sm text-neutral-400">No categories yet.</p>
+        <div className="bg-white rounded-lg border border-admin-200 p-12 text-center">
+          <FiGrid className="w-12 h-12 text-admin-200 mx-auto mb-4" />
+          <p className="text-sm text-admin-400">No categories yet.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden">
-          <div className="divide-y divide-neutral-100">
+        <div className="bg-white rounded-lg border border-admin-200 overflow-hidden">
+          <div className="divide-y divide-admin-100">
             {categories.map((cat) => (
-              <div key={cat.id} className="flex items-center gap-4 px-5 py-4 hover:bg-neutral-50 transition-colors group">
-                <div className="w-9 h-9 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
-                  <FiGrid className="w-4 h-4 text-indigo-600" />
+              <div key={cat.id} className="flex items-center gap-4 px-5 py-4 hover:bg-white transition-colors group">
+                <div className="w-9 h-9 bg-admin-100 rounded-xl flex items-center justify-center shrink-0">
+                  <FiGrid className="w-4 h-4 text-admin-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-neutral-900">{cat.name}</p>
-                  <p className="text-xs text-neutral-400">/{cat.slug}</p>
+                  <p className="text-sm font-medium text-admin-900">{cat.name}</p>
+                  <p className="text-xs text-admin-400">/{cat.slug}</p>
                   {cat.description && (
-                    <p className="text-xs text-neutral-500 mt-0.5 truncate">{cat.description}</p>
+                    <p className="text-xs text-admin-500 mt-0.5 truncate">{cat.description}</p>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cat.status ? 'bg-green-100 text-green-700' : 'bg-neutral-100 text-neutral-500'}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cat.status ? 'bg-green-100 text-green-700' : 'bg-admin-100 text-admin-500'}`}>
                     {cat.status ? 'Active' : 'Inactive'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 opacity-100">
                   <button onClick={() => startEdit(cat)}
-                    className="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors">
+                    className="px-3 py-1.5 text-xs font-medium text-admin-600 bg-white hover:bg-admin-100 rounded-md transition-colors">
                     Edit
                   </button>
                   <button onClick={() => deleteCategory(cat.id)}
