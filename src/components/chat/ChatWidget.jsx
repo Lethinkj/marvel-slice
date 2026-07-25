@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { FiMessageCircle, FiX, FiSend, FiLoader, FiMaximize2, FiMinimize2 } from 'react-icons/fi';
 import { supabase } from '../../lib/supabaseClient';
+import { trackChat } from '../../lib/analytics';
 
 const USER_ID_KEY = 'chat_user_identifier';
 
@@ -268,6 +269,7 @@ export default function ChatWidget() {
       .single();
 
     if (conv) {
+      trackChat('started');
       setVisitorInfo(info);
       setShowPreChat(false);
       setMessages([]);
@@ -290,6 +292,7 @@ export default function ChatWidget() {
     });
 
     if (!error) {
+      trackChat('message_sent');
       await supabase
         .from('conversations')
         .update({ last_message: text, last_message_sender: 'user', last_message_at: new Date().toISOString(), notified: true })
@@ -321,6 +324,7 @@ export default function ChatWidget() {
         .eq('id', conversationId);
       if (error) console.error('Failed to close conversation:', error);
     }
+    trackChat('closed');
     setShowCloseConfirm(false);
     setOpen(false);
     setConversationId(null);
@@ -335,6 +339,7 @@ export default function ChatWidget() {
   }
 
   function handleOpen() {
+    trackChat('opened');
     setOpen(true);
     initChat(true);
   }

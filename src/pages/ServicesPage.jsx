@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fi';
 import { supabase } from '../lib/supabaseClient';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
+import { trackCtaClick } from '../lib/analytics';
 import { usePublishedServices } from '../hooks/useServices';
 import { staggerContainer, staggerItem } from '../lib/motion';
 
@@ -415,6 +416,7 @@ export default function ServicesPage() {
               >
                 <a
                   href={hero.cta_link || '#services-grid'}
+                  onClick={() => trackCtaClick(hero.cta_text || 'Explore Services', 'services_hero')}
                   className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-brand-orange text-white font-bold text-sm hover:brightness-110 transition-all shadow-lg shadow-brand-orange/30"
                 >
                   {hero.cta_text || 'Explore Services'}
@@ -422,6 +424,7 @@ export default function ServicesPage() {
                 </a>
                 <a
                   href={hero.secondary_cta_link || '/contact'}
+                  onClick={() => trackCtaClick(hero.secondary_cta_text || 'Get Free Consultation', 'services_hero')}
                   className="inline-flex items-center gap-2 px-7 py-3 rounded-full border-2 border-white/40 text-white font-semibold text-sm hover:bg-white/10 hover:border-white/60 transition-all"
                 >
                   {hero.secondary_cta_text || 'Get Free Consultation'}

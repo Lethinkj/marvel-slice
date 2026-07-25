@@ -3,6 +3,7 @@ import { FiMapPin, FiPhone, FiMail, FiClock, FiCheckCircle, FiLoader } from 'rea
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal from './Reveal';
 import { supabase } from '../../lib/supabaseClient';
+import { trackFormSubmit } from '../../lib/analytics';
 
 function FloatingCircles() {
   return (
@@ -87,6 +88,7 @@ export default function ContactSection({ section }) {
           subject: form.subject,
           message: form.message,
         });
+        trackFormSubmit('contact');
         setStatus('success');
         setForm({ full_name: '', email: '', phone: '', subject: '', message: '' });
       } else {

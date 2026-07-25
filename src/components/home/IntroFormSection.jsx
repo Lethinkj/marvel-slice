@@ -4,6 +4,7 @@ import { FiBookOpen, FiUsers, FiBriefcase, FiStar, FiClock, FiAward, FiCheckCirc
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
 import { supabase } from '../../lib/supabaseClient';
+import { trackFormSubmit } from '../../lib/analytics';
 
 function getStatIcon(label) {
   const l = (label || '').toLowerCase();
@@ -62,6 +63,7 @@ export default function IntroFormSection({ section }) {
         phone: formPhone.trim(),
       }),
     }).catch(() => {});
+    trackFormSubmit('demo_class');
     setShowSuccessModal(true);
     setFormName(''); setFormEmail(''); setFormPhone('');
     setAgreeTerms(false);

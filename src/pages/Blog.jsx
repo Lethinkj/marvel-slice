@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { trackSearch } from '../lib/analytics';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiSearch, FiArrowRight, FiChevronLeft, FiChevronRight, FiCalendar, FiUser, FiArrowUp, FiArrowLeft, FiTag } from 'react-icons/fi';
@@ -292,6 +293,7 @@ export default function Blog() {
   const gridPosts = featured ? posts.filter((p) => p.id !== featured.id) : posts;
 
   function handleSearch() {
+    if (search.trim()) trackSearch(search.trim());
     setSearchParams({});
   }
 

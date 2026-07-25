@@ -1,6 +1,7 @@
 import { FiMail, FiPhone } from 'react-icons/fi';
 import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { useSiteSettings } from '../../hooks/useSupabase';
+import { trackCtaClick } from '../../lib/analytics';
 
 export default function TopBar() {
   const { data: settings } = useSiteSettings();
@@ -33,9 +34,9 @@ export default function TopBar() {
           )}
         </div>
         <div className="flex items-center gap-2 text-xs lg:text-sm">
-          <a href="#" className="hover:underline">Login</a>
+          <a href="#" className="hover:underline" onClick={() => trackCtaClick('Login', 'topbar')}>Login</a>
           <span className="text-white/40">|</span>
-          <a href="#" className="hover:underline font-semibold">SIGN UP</a>
+          <a href="#" className="hover:underline font-semibold" onClick={() => trackCtaClick('Sign Up', 'topbar')}>SIGN UP</a>
           <span className="text-white/40">|</span>
           <div className="flex items-center gap-2">
             <a href={social.twitter || '#'} aria-label="Twitter"><FaTwitter className="w-3 h-3 hover:text-brand-orange transition-colors" /></a>

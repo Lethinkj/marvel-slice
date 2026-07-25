@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import TabBar from '../components/ui/TabBar';
+import { trackFormSubmit, trackDownload, trackCtaClick, trackVideoPlay } from '../lib/analytics';
 import CourseCard from '../components/ui/CourseCard';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
@@ -339,6 +340,8 @@ export default function CourseDetail() {
       body: JSON.stringify(payload),
     }).catch(() => {});
 
+    trackFormSubmit('brochure_download');
+    trackDownload(payload.course_title);
     setBrochureSubmitting(false);
     setBrochureDone(true);
   }
@@ -375,10 +378,10 @@ export default function CourseDetail() {
                 </ul>
               )}
               <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                <Button variant="accent" size="lg" to={course.cta_link || '#contact'} className="w-full sm:w-auto">
+                <Button variant="accent" size="lg" to={course.cta_link || '#contact'} onClick={() => trackCtaClick(course.cta_left || 'Talk to Advisor', 'course_hero')} className="w-full sm:w-auto">
                   {course.cta_left || 'Talk to Advisor'}
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => { setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setShowBrochure(true); }} className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" onClick={() => { trackCtaClick(course.cta_right || 'Download Brochure', 'course_hero'); setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setShowBrochure(true); }} className="w-full sm:w-auto">
                   {course.cta_right || 'Download Brochure'}
                 </Button>
               </div>
@@ -393,7 +396,7 @@ export default function CourseDetail() {
                       <FiBarChart2 className="w-16 h-16 text-gray-300" />
                     </div>
                   )}
-                  <button onClick={() => setVideoPlaying(true)} className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer">
+                  <button onClick={() => { setVideoPlaying(true); trackVideoPlay(course.title); }} className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer">
                     <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg hover:bg-white transition-colors">
                       <FiPlay className="w-7 h-7 text-brand-orange ml-0.5" />
                     </div>

@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import CommandPalette from "../components/ui/CommandPalette";
 import { ToastContainer } from "../components/Toast";
 import { FiMenu, FiExternalLink, FiLogOut, FiChevronRight, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock } from "react-icons/fi";
+import { trackLogout } from "../../lib/analytics";
 
 function Breadcrumbs() {
   const { pathname } = useLocation();
@@ -226,7 +227,7 @@ export default function AdminLayout() {
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white text-neutral-700">{user?.role}</span>
                     </div>
                   </div>
-                  <button onClick={() => { logout(); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive-500 hover:bg-destructive-50 transition-all duration-200">
+                  <button onClick={() => { trackLogout(); logout(); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive-500 hover:bg-destructive-50 transition-all duration-200">
                     <FiLogOut className="w-4 h-4" /> Sign Out
                   </button>
                 </div>

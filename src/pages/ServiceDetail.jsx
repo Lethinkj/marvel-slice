@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
+import { trackVideoPlay, trackCtaClick } from '../lib/analytics';
 import { useService, usePublishedServices } from '../hooks/useServices';
 import { supabase } from '../lib/supabaseClient';
 
@@ -234,7 +235,7 @@ function GallerySection({ images }) {
           {filtered.map((img, i) => (
             <StaggerItem key={img.id || i}>
               <button
-                onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
+                onClick={() => { setLightboxIndex(i); setLightboxOpen(true); if (img.type === 'video' || img.video_url) trackVideoPlay(img.title || 'service_gallery'); }}
                 className="group relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 cursor-pointer"
               >
                 {img.type === 'video' || img.video_url ? (
@@ -473,7 +474,7 @@ export default function ServiceDetail() {
             </Reveal>
             <Reveal variant="up" delay={0.25}>
               <div className="flex flex-wrap gap-3">
-                <Button variant="primary" size="lg" to="/contact" className="shadow-lg shadow-brand-orange/25">
+                <Button variant="primary" size="lg" to="/contact" onClick={() => trackCtaClick('Enroll Now', 'service_hero')} className="shadow-lg shadow-brand-orange/25">
                   Enroll Now <FiArrowRight className="w-4 h-4" />
                 </Button>
                 <Button variant="outline-white" size="lg" onClick={() => setEnquiryOpen(true)}>

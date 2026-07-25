@@ -5,6 +5,7 @@ import TopBar from './components/layout/TopBar';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ChatWidget from './components/chat/ChatWidget';
+import { trackPageView } from './lib/analytics';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
@@ -22,6 +23,12 @@ const Admin = lazy(() => import('./admin/Admin'));
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
+function PageTracker() {
+  const { pathname } = useLocation();
+  useEffect(() => { trackPageView(pathname); }, [pathname]);
   return null;
 }
 
@@ -151,6 +158,7 @@ function PublicLayout() {
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />
+      <PageTracker />
       <TopBar />
       <Header />
       <main className="flex-1">

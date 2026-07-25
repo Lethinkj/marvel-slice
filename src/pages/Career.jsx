@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
+import { trackFormSubmit, trackDownload } from '../lib/analytics';
 import Reveal from '../components/ui/Reveal';
 import {
   FiMapPin, FiClock, FiDollarSign,
@@ -241,6 +242,8 @@ export default function Career() {
       body: JSON.stringify({ ...form, file_url }),
     }).catch(() => {});
 
+    trackFormSubmit('career');
+    if (file_url) trackDownload('career_resume');
     setStatus({ type: 'success', message: 'Application submitted successfully! We will get back to you soon.' });
     setSubmitting(false);
   }

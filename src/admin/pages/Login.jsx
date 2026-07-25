@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { trackLogin } from '../../lib/analytics';
 import AdminButton from '../components/AdminButton';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 
@@ -28,6 +29,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(email.trim(), password);
+      trackLogin('admin');
       navigate('/admin', { replace: true });
     } catch (err) {
       setError(err.message);
