@@ -74,7 +74,7 @@ function ImageUploader({ value, onChange, label }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
           className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder="Paste URL or upload..." />
@@ -91,7 +91,7 @@ function ImageUploader({ value, onChange, label }) {
 function TextInput({ value, onChange, placeholder, label, required, error }) {
   return (
     <div>
-      {label && <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
+      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
       <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
         className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
       {error && <p className="text-xs text-destructive-500 mt-1">{error}</p>}
@@ -102,7 +102,7 @@ function TextInput({ value, onChange, placeholder, label, required, error }) {
 function TextArea({ value, onChange, placeholder, label, rows, required }) {
   return (
     <div>
-      {label && <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
+      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
       <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={rows || 3}
         className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
     </div>
@@ -133,7 +133,7 @@ function IconPicker({ value, onChange }) {
 
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Icon *</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Icon *</label>
       <button type="button" onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-2 px-3 py-2 border border-admin-200 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all cursor-pointer hover:border-admin-400">
         {IconComp ? <IconComp className="w-5 h-5 text-admin-500" /> : <div className="w-5 h-5" />}
@@ -149,7 +149,7 @@ function IconPicker({ value, onChange }) {
           </div>
           <div className="overflow-y-auto flex-1">
             {filtered.length === 0 ? (
-              <p className="p-3 text-sm text-admin-400 text-center">No icons found</p>
+              <p className="p-3 text-sm text-neutral-400 text-center">No icons found</p>
             ) : (
               filtered.map((name) => {
                 const Ic = LuIcons[`Lu${name}`];
@@ -186,13 +186,12 @@ function ReorderableList({ items, onChange, renderItem, getKey }) {
   return items.map((item, i) => (
     <div key={getKey ? getKey(item, i) : i} className="border border-admin-200 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Item {i + 1}</span>
+        <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Item {i + 1}</span>
         <div className="flex items-center gap-1">
           <button type="button" onClick={() => move(i, -1)} disabled={i === 0}
-            className="p-1 text-admin-400 hover:text-admin-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
+            className="p-1 text-emerald-500 hover:text-emerald-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
           <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1}
-            className="p-1 text-admin-400 hover:text-admin-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
-          <button type="button" onClick={() => remove(i)} className="p-1 text-destructive-400 hover:text-destructive-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
+            className="p-1 text-cyan-500 hover:text-cyan-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
         </div>
       </div>
       {renderItem(item, i, (updated) => {
@@ -216,13 +215,13 @@ function SubEditor({ section, onChange }) {
               <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
             </div>
             <div className="pt-5">
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Align</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
               <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
             </div>
           </div>
           <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Content..." label="Content" required />
           <div className="flex items-center justify-end gap-3">
-            <span className="text-xs font-semibold text-admin-700 uppercase tracking-wider">Content Align</span>
+            <span className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Content Align</span>
             <AlignButtons value={section.contentAlign || 'center'} onChange={(v) => set({ contentAlign: v })} />
           </div>
         </div>
@@ -235,18 +234,18 @@ function SubEditor({ section, onChange }) {
               <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
             </div>
             <div className="pt-5">
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Align</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
               <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
             </div>
           </div>
           <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Content..." label="Content" required />
           <div className="flex items-center justify-end gap-3">
-            <span className="text-xs font-semibold text-admin-700 uppercase tracking-wider">Content Align</span>
+            <span className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Content Align</span>
             <AlignButtons value={section.contentAlign || 'center'} onChange={(v) => set({ contentAlign: v })} />
           </div>
           <hr className="border-admin-200" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Stat Items</span>
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
             <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Stat</AdminButton>
           </div>
           <ReorderableList
@@ -269,12 +268,12 @@ function SubEditor({ section, onChange }) {
               <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
             </div>
             <div className="pt-5">
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Align</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
               <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
             </div>
           </div>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Stat Items</span>
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
             <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Stat</AdminButton>
           </div>
           <ReorderableList
@@ -294,7 +293,7 @@ function SubEditor({ section, onChange }) {
         <div>
           <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
           <div className="mt-3 flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Team Members</span>
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Team Members</span>
             <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { name: '', role: '', bio: '', image_url: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Member</AdminButton>
           </div>
           <ReorderableList
@@ -322,7 +321,7 @@ function SubEditor({ section, onChange }) {
                 <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
               </div>
               <div className="pt-5">
-                <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Align</label>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
                 <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
               </div>
             </div>
@@ -332,14 +331,14 @@ function SubEditor({ section, onChange }) {
                   <TextArea value={section.subheading} onChange={(v) => set({ subheading: v })} placeholder="Subheading (optional)" label="Subheading" rows={2} />
                 </div>
                 <div className="pt-5">
-                  <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Align</label>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
                   <AlignButtons value={section.subheadingAlign || 'center'} onChange={(v) => set({ subheadingAlign: v })} />
                 </div>
               </div>
             </div>
           </div>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Feature Items</span>
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Feature Items</span>
             <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { icon: '', title: '', description: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Feature</AdminButton>
           </div>
           <ReorderableList
@@ -564,7 +563,7 @@ export default function AboutPageEditor() {
       )}
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">Hero Image</h2>
+          <h2 className="font-semibold text-black mb-4">Hero Image</h2>
           <div className="mt-2">
             {showHeroImage ? (
               <div>
@@ -581,7 +580,7 @@ export default function AboutPageEditor() {
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900">Sections</h2>
+            <h2 className="font-semibold text-black">Sections</h2>
             <div className="flex items-center gap-2">
               <div className="relative">
                 <select value={newType} onChange={(e) => setNewType(e.target.value)}
@@ -596,10 +595,10 @@ export default function AboutPageEditor() {
             </div>
           </div>
           {SECTION_TYPES.find(t => t.value === newType)?.desc && (
-            <p className="text-xs text-admin-400 -mt-3 mb-4">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
+            <p className="text-xs text-neutral-400 -mt-3 mb-4">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
           )}
           {sections.length === 0 && (
-            <p className="text-sm text-admin-400 text-center py-8">No sections yet. Select a type above and click "Add".</p>
+            <p className="text-sm text-neutral-400 text-center py-8">No sections yet. Select a type above and click "Add".</p>
           )}
           <div className="space-y-3">
             {sections.map((sec, i) => (
@@ -613,23 +612,23 @@ export default function AboutPageEditor() {
               >
                 <div className="flex items-center justify-between px-4 py-3 bg-white cursor-pointer" onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}>
                   <div className="flex items-center gap-3">
-                    <span className="text-admin-300 hover:text-admin-500 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+                    <span className="text-neutral-300 hover:text-neutral-500 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
                       <FiMove className="w-4 h-4" />
                     </span>
-                    <span className="text-xs font-bold text-admin-400">{i + 1}</span>
-                    <span className="text-sm font-medium text-admin-700">{SECTION_TYPE_LABELS[sec.section_type] || sec.section_type}</span>
-                    {sec.heading && <span className="text-xs text-admin-400 max-w-48 truncate">— {sec.heading}</span>}
+                    <span className="text-xs font-bold text-neutral-400">{i + 1}</span>
+                    <span className="text-sm font-medium text-neutral-700">{SECTION_TYPE_LABELS[sec.section_type] || sec.section_type}</span>
+                    {sec.heading && <span className="text-xs text-neutral-400 max-w-48 truncate">— {sec.heading}</span>}
                     {sec.hidden && <span className="text-xs text-warning-500 font-medium">Hidden</span>}
                   </div>
                   <div className="flex items-center gap-1">
                     <button type="button" onClick={(e) => { e.stopPropagation(); toggleVisibility(i); }}
-                      className="p-1 text-admin-400 hover:text-admin-700 cursor-pointer" title={sec.hidden ? 'Show section' : 'Hide section'}>
+                      className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer" title={sec.hidden ? 'Show section' : 'Hide section'}>
                       {sec.hidden ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                     </button>
                     <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, -1); }} disabled={i === 0}
-                      className="p-1 text-admin-400 hover:text-admin-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
+                      className="p-1 text-emerald-500 hover:text-emerald-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
                     <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, 1); }} disabled={i === sections.length - 1}
-                      className="p-1 text-admin-400 hover:text-admin-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
+                      className="p-1 text-cyan-500 hover:text-cyan-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
                     <button type="button" onClick={(e) => { e.stopPropagation(); removeSection(i); }}
                       className="p-1 text-destructive-400 hover:text-destructive-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
                   </div>

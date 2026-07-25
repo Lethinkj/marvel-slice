@@ -74,7 +74,7 @@ export default function AlumniCompaniesManager() {
                 key={company.id}
                 className="inline-flex items-center gap-2 bg-admin-100 px-3 py-1.5 rounded-full text-sm"
               >
-                <span className="font-medium text-admin-900">{company.name}</span>
+                <span className="font-medium text-black">{company.name}</span>
                 <button
                   onClick={() => deleteCompany(company.id)}
                   className="text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded px-2 py-0.5 transition-colors"

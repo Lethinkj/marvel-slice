@@ -137,22 +137,22 @@ export default function NavItemChildren() {
 
       {showForm && (
         <form onSubmit={handleSave} className="p-5 mb-6 rounded-xl border border-admin-200 bg-white">
-          <p className="text-sm font-semibold text-admin-900 mb-4">
+          <p className="text-sm font-semibold text-black mb-4">
             {editing ? `Edit: ${editing.label}` : 'Add Child Item'}
           </p>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 sm:col-span-1">
-              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Label *</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Label *</label>
               <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))}
                 className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" required />
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Path</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Path</label>
               <input value={form.path} onChange={e => setForm(p => ({ ...p, path: e.target.value }))}
                 className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-admin-500" />
             </div>
             <div className="col-span-2">
-              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Linked Courses ({form.course_ids.size} selected)</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Linked Courses ({form.course_ids.size} selected)</label>
               <div className="relative">
                 <button type="button" onClick={() => setCoursePickerOpen(!coursePickerOpen)}
                   className="w-full flex items-center justify-between px-3 py-2 border border-admin-200 rounded-lg text-sm bg-white hover:border-admin-400 transition-colors">
@@ -171,11 +171,11 @@ export default function NavItemChildren() {
                             onChange={() => { if (!linkedToOther) toggleCourse(c.id); }}
                             className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-admin-500" />
                           <span className="truncate">{c.title}</span>
-                          {linkedToOther && <span className="text-[10px] text-admin-400 ml-auto shrink-0">linked elsewhere</span>}
+                          {linkedToOther && <span className="text-[10px] text-neutral-400 ml-auto shrink-0">linked elsewhere</span>}
                         </label>
                       );
                     })}
-                    {courses.length === 0 && <p className="px-3 py-4 text-sm text-admin-400 text-center">No courses available.</p>}
+                    {courses.length === 0 && <p className="px-3 py-4 text-sm text-neutral-400 text-center">No courses available.</p>}
                   </div>
                 )}
               </div>
@@ -185,7 +185,7 @@ export default function NavItemChildren() {
                 <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? 'bg-white0' : 'bg-admin-200'}`}>
                   <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_active ? 'translate-x-4' : ''}`} />
                 </div>
-                <span className="text-sm font-medium text-admin-900">Active</span>
+                <span className="text-sm font-medium text-black">Active</span>
               </label>
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function NavItemChildren() {
 
       <div className="rounded-xl border border-admin-200 bg-white overflow-hidden">
         {items.length === 0 ? (
-          <div className="text-center py-16 text-admin-400 text-sm">
+          <div className="text-center py-16 text-neutral-400 text-sm">
             {showForm ? '' : 'No child items yet. Click "Add Child Item" to create one.'}
           </div>
         ) : (
@@ -213,20 +213,20 @@ export default function NavItemChildren() {
               return (
                 <div key={item.id} className="px-5 py-3 hover:bg-white transition-colors">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-admin-900 font-medium flex-1 truncate">{item.label}</span>
+                    <span className="text-sm text-black font-medium flex-1 truncate">{item.label}</span>
                     {item.path && (
-                      <span className="text-[11px] text-admin-400 bg-white px-2 py-0.5 rounded-full truncate max-w-[100px] hidden sm:inline">{item.path}</span>
+                      <span className="text-[11px] text-neutral-400 bg-white px-2 py-0.5 rounded-full truncate max-w-[100px] hidden sm:inline">{item.path}</span>
                     )}
                     <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium ${item.is_active !== false ? 'bg-success-50 text-success-700' : 'bg-destructive-50 text-destructive-700'}`}>
                       {item.is_active !== false ? 'On' : 'Off'}
                     </span>
                     <div className="flex items-center gap-1 shrink-0">
                       <button onClick={() => openEdit(item)}
-                        className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-white rounded-lg transition-colors">
+                        className="p-1.5 text-amber-500 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors">
                         <FiEdit2 className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleDelete(item)}
-                        className="p-1.5 text-admin-400 hover:text-destructive-500 hover:bg-destructive-50 rounded-lg transition-colors">
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
                         <FiTrash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -235,14 +235,14 @@ export default function NavItemChildren() {
                     <div className="flex flex-wrap gap-1.5 mt-2 ml-1">
                       {linked.map(c => (
                         <Link key={c.id} to={`/admin/courses/${c.id}`}
-                          className="inline-flex items-center gap-1 text-[11px] text-admin-700 bg-white px-2 py-0.5 rounded-full hover:bg-admin-100 transition-colors">
+                          className="inline-flex items-center gap-1 text-[11px] text-neutral-700 bg-white px-2 py-0.5 rounded-full hover:bg-neutral-100 transition-colors">
                           <FiBookOpen className="w-3 h-3" /> {c.title}
                         </Link>
                       ))}
                     </div>
                   )}
                   {linked.length === 0 && (
-                    <p className="text-[11px] text-admin-400 mt-1.5 ml-1">No courses linked</p>
+                    <p className="text-[11px] text-neutral-400 mt-1.5 ml-1">No courses linked</p>
                   )}
                 </div>
               );

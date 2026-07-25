@@ -61,8 +61,8 @@ export default function AdminUsersManager() {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="rounded-lg border border-admin-200 bg-white p-8 text-center">
-          <h1 className="text-lg font-semibold text-admin-900 mb-2">Access Denied</h1>
-          <p className="text-sm text-admin-500">You do not have permission to access this page.</p>
+          <h1 className="text-lg font-semibold text-black mb-2">Access Denied</h1>
+          <p className="text-sm text-neutral-500">You do not have permission to access this page.</p>
         </div>
       </div>
     );
@@ -182,19 +182,19 @@ export default function AdminUsersManager() {
       )}
 
       <form onSubmit={handleSubmit} className="rounded-lg border border-admin-200 bg-white p-5 mb-6">
-        <h3 className="text-sm font-semibold text-admin-900 mb-4">
+        <h3 className="text-sm font-semibold text-black mb-4">
           {editingId ? "Edit Admin" : "Add New Admin"}
         </h3>
         <div className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Email</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Email</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                 className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all"
                 placeholder="admin@example.com" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Full Name</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Full Name</label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
                 className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all"
                 placeholder="John Doe" />
@@ -202,7 +202,7 @@ export default function AdminUsersManager() {
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">Role</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Role</label>
               <select value={role} onChange={(e) => setRole(e.target.value)}
                 className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all bg-white appearance-none cursor-pointer">
                 {availableRoles.map((r) => (
@@ -211,9 +211,9 @@ export default function AdminUsersManager() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
                 Password{" "}
-                {editingId && <span className="text-admin-400 font-normal normal-case">(leave blank to keep)</span>}
+                {editingId && <span className="text-neutral-400 font-normal normal-case">(leave blank to keep)</span>}
               </label>
               <div className="relative">
                 <input type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
@@ -250,13 +250,13 @@ export default function AdminUsersManager() {
             {users.map((u) => (
               <div key={u.id} className="flex items-center gap-4 px-5 py-4 hover:bg-white transition-colors group">
                 <div className="w-9 h-9 bg-admin-100 rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-sm font-semibold text-admin-700">
+                  <span className="text-sm font-semibold text-neutral-700">
                     {(u.full_name || "?")[0].toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-admin-900">{u.full_name}</p>
-                  <p className="text-xs text-admin-400">{u.email}</p>
+                  <p className="text-sm font-medium text-black">{u.full_name}</p>
+                  <p className="text-xs text-neutral-400">{u.email}</p>
                 </div>
                 <Badge variant={u.role}>{u.role.replace('_', ' ')}</Badge>
                 {((ROLE_RANK[u.role] || 0) < userRank || currentUser?.role === 'master_admin') && currentUser?.id !== u.id && (

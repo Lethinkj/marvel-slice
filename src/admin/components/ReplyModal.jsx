@@ -108,8 +108,8 @@ export default function ReplyModal({ submission, type, onClose }) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-admin-200 shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-admin-900">Reply to {recipientName}</h2>
-            <p className="text-xs text-admin-500 mt-0.5">{recipientEmail}</p>
+            <h2 className="text-lg font-bold text-black">Reply to {recipientName}</h2>
+            <p className="text-xs text-neutral-500 mt-0.5">{recipientEmail}</p>
           </div>
           <button onClick={onClose} className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-colors">
             <FiX className="w-5 h-5" />
@@ -121,8 +121,8 @@ export default function ReplyModal({ submission, type, onClose }) {
             <div className="w-16 h-16 rounded-full bg-success-50 flex items-center justify-center mb-4">
               <FiSend className="w-7 h-7 text-success-500" />
             </div>
-            <h3 className="text-lg font-bold text-admin-900 mb-2">Reply Sent!</h3>
-            <p className="text-sm text-admin-500 max-w-xs">
+            <h3 className="text-lg font-bold text-black mb-2">Reply Sent!</h3>
+            <p className="text-sm text-neutral-500 max-w-xs">
               Your reply has been sent to {recipientEmail}.
             </p>
             <button onClick={onClose} className="mt-6 px-6 py-2 bg-admin-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all">
@@ -136,7 +136,7 @@ export default function ReplyModal({ submission, type, onClose }) {
               {/* Brochure tabs */}
               {type === 'brochure' && (
                 <div>
-                  <label className="block text-xs font-semibold text-admin-600 mb-2 uppercase tracking-wider">Attach Brochure</label>
+                  <label className="block text-xs font-semibold text-neutral-500 mb-2 uppercase tracking-wider">Attach Brochure</label>
                   <div className="flex gap-2 mb-3">
                     <button
                       onClick={() => { setBrochureTab('upload'); setSelectedCourse(null); }}
@@ -158,7 +158,7 @@ export default function ReplyModal({ submission, type, onClose }) {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <FiFileText className="w-5 h-5 text-admin-600" />
-                            <span className="text-sm text-admin-700 truncate max-w-[250px]">{uploadFile?.name || 'brochure.pdf'}</span>
+                            <span className="text-sm text-neutral-700 truncate max-w-[250px]">{uploadFile?.name || 'brochure.pdf'}</span>
                           </div>
                           <button onClick={() => { setUploadUrl(''); setUploadFile(null); }} className="text-xs text-destructive-500 hover:underline">Remove</button>
                         </div>
@@ -169,7 +169,7 @@ export default function ReplyModal({ submission, type, onClose }) {
                           ) : (
                             <>
                               <FiUpload className="w-5 h-5 text-admin-400" />
-                              <span className="text-sm text-admin-500">Click to upload a brochure PDF</span>
+                              <span className="text-sm text-neutral-500">Click to upload a brochure PDF</span>
                             </>
                           )}
                           <input type="file" accept=".pdf" onChange={handleUploadFile} className="hidden" disabled={uploadingFile} />
@@ -194,7 +194,7 @@ export default function ReplyModal({ submission, type, onClose }) {
                         {coursesLoading ? (
                           <div className="flex items-center justify-center py-6"><FiLoader className="w-5 h-5 animate-spin text-admin-400" /></div>
                         ) : filteredCourses.length === 0 ? (
-                          <p className="text-sm text-admin-400 text-center py-6">No courses found</p>
+                          <p className="text-sm text-neutral-400 text-center py-6">No courses found</p>
                         ) : (
                           filteredCourses.map(c => (
                             <button
@@ -215,8 +215,8 @@ export default function ReplyModal({ submission, type, onClose }) {
 
               {/* Subject */}
               <div>
-                <label className="block text-xs font-semibold text-admin-600 mb-1.5 uppercase tracking-wider">
-                  Subject {type === 'career' && <span className="text-admin-400 normal-case">(optional — leave blank to use default)</span>}
+                <label className="block text-xs font-semibold text-neutral-500 mb-1.5 uppercase tracking-wider">
+                  Subject {type === 'career' && <span className="text-neutral-400 normal-case">(optional — leave blank to use default)</span>}
                 </label>
                 <input
                   type="text"
@@ -229,7 +229,7 @@ export default function ReplyModal({ submission, type, onClose }) {
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-semibold text-admin-600 mb-1.5 uppercase tracking-wider">Message</label>
+                <label className="block text-xs font-semibold text-neutral-500 mb-1.5 uppercase tracking-wider">Message</label>
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
@@ -246,7 +246,7 @@ export default function ReplyModal({ submission, type, onClose }) {
 
             {/* Footer */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-admin-200 shrink-0">
-              <span className="text-xs text-admin-400">
+              <span className="text-xs text-neutral-400">
                 {type === 'brochure' && brochureTab === 'select' && selectedCourse
                   ? `Will send "${selectedCourse.title}" overview`
                   : type === 'brochure' && brochureTab === 'upload' && uploadUrl

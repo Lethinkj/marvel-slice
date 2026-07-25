@@ -5,13 +5,13 @@ export default function FormRow({ label, error, required, hint, children, classN
   return (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-admin-700">
+        <label className="block text-sm font-medium text-neutral-700">
           {label}
           {required && <span className="text-destructive-500 ml-0.5">*</span>}
         </label>
       )}
       {children}
-      {hint && !error && <p className="text-xs text-admin-400">{hint}</p>}
+      {hint && !error && <p className="text-xs text-neutral-400">{hint}</p>}
       {error && <p className="text-xs text-destructive-500">{error}</p>}
     </div>
   );
@@ -20,7 +20,7 @@ export default function FormRow({ label, error, required, hint, children, classN
 export function Input({ className = '', ...props }) {
   return (
     <input
-      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-white text-sm text-admin-900 placeholder:text-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-admin-400 ${className}`}
+      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-admin-400 ${className}`}
       {...props}
     />
   );
@@ -29,7 +29,7 @@ export function Input({ className = '', ...props }) {
 export function Select({ className = '', children, ...props }) {
   return (
     <select
-      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-white text-sm text-admin-900 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-admin-400 appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")] bg-[length:12px] bg-[right_12px_center] bg-no-repeat ${className}`}
+      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-white text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-neutral-400 appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")] bg-[length:12px] bg-[right_12px_center] bg-no-repeat ${className}`}
       {...props}
     >
       {children}
@@ -40,7 +40,7 @@ export function Select({ className = '', children, ...props }) {
 export function Textarea({ className = '', ...props }) {
   return (
     <textarea
-      className={`w-full px-3 py-2 rounded-lg border border-admin-300 bg-white text-sm text-admin-900 placeholder:text-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-admin-400 resize-y min-h-[80px] ${className}`}
+      className={`w-full px-3 py-2 rounded-lg border border-admin-300 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-neutral-400 resize-y min-h-[80px] ${className}`}
       {...props}
     />
   );
@@ -78,7 +78,7 @@ export function ImageUpload({ value, onChange, label }) {
 
   return (
     <div>
-      {label && <label className="block text-sm font-medium text-admin-700 mb-1.5">{label}</label>}
+      {label && <label className="block text-sm font-medium text-neutral-700 mb-1.5">{label}</label>}
       <div className="flex gap-2">
         <input
           type="text"

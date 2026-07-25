@@ -52,7 +52,7 @@ function IconPicker({ value, onChange }) {
   const selected = ICON_LIST.find((o) => o.key === value);
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-medium text-admin-600 mb-1">Icon</label>
+      <label className="block text-xs font-medium text-black mb-1">Icon</label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -164,7 +164,7 @@ function ImageUploader({ value, onChange, label }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
           className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all"
@@ -210,7 +210,7 @@ function ListEditor({ def, data, onChange }) {
       {items.map((item, i) => (
         <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">{def.listLabel || 'Item'} {i + 1}</span>
+            <span className="text-xs font-semibold text-black uppercase tracking-wider">{def.listLabel || 'Item'} {i + 1}</span>
             <button type="button" onClick={() => removeItem(i)}
               className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors">
               <FiTrash2 className="w-4 h-4" />
@@ -223,13 +223,13 @@ function ListEditor({ def, data, onChange }) {
                   <ImageUploader value={item[f.name] || ''} onChange={(v) => updateItem(i, f.name, v)} label={f.label} />
                 ) : f.type === 'textarea' ? (
                   <>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">{f.label}</label>
+                    <label className="block text-xs font-medium text-black mb-1">{f.label}</label>
                     <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
                   </>
                 ) : (
                   <>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">{f.label}</label>
+                    <label className="block text-xs font-medium text-black mb-1">{f.label}</label>
                     <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
                   </>
@@ -277,52 +277,52 @@ function FeatureCardsEditor({ data, onChange }) {
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={data?.heading || ''} onChange={(e) => onChange({ ...data, heading: e.target.value })}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" placeholder="Section heading" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={data?.subheading || ''} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" placeholder="Section subheading" />
         </div>
       </div>
       <div className="border-t border-admin-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold text-admin-700">Cards</h4>
+          <h4 className="text-sm font-semibold text-black">Cards</h4>
           <AdminButton type="button" onClick={addCard} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Card</AdminButton>
         </div>
-        {cards.length === 0 && <p className="text-sm text-admin-400 italic">No cards yet.</p>}
+        {cards.length === 0 && <p className="text-sm text-neutral-400 italic">No cards yet.</p>}
         <div className="space-y-3">
           {cards.map((card, i) => (
             <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Card {i + 1}</span>
+                <span className="text-xs font-semibold text-black uppercase tracking-wider">Card {i + 1}</span>
                 <button type="button" onClick={() => removeCard(i)}
                   className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Heading</label>
+                    <label className="block text-xs font-medium text-black mb-1">Heading</label>
                     <input type="text" value={card.heading || ''} onChange={(e) => updateCard(i, 'heading', e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Button Text</label>
+                    <label className="block text-xs font-medium text-black mb-1">Button Text</label>
                     <input type="text" value={card.button_text || 'View More'} onChange={(e) => updateCard(i, 'button_text', e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+                  <label className="block text-xs font-medium text-black mb-1">Description</label>
                   <textarea value={card.description || ''} onChange={(e) => updateCard(i, 'description', e.target.value)} rows={3}
                     className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                 </div>
                 <ImageUploader value={card.image_url} onChange={(v) => updateCard(i, 'image_url', v)} label="Image" />
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-medium text-admin-600">Bullet Points</label>
+                    <label className="block text-xs font-medium text-black">Bullet Points</label>
                     <button type="button" onClick={() => addBullet(i)}
                       className="text-xs text-admin-600 hover:text-admin-700 font-medium flex items-center gap-0.5">
                       <FiPlus className="w-3 h-3" /> Add
@@ -331,7 +331,7 @@ function FeatureCardsEditor({ data, onChange }) {
                   <div className="space-y-1.5">
                     {(card.bullets || []).map((b, j) => (
                       <div key={j} className="flex items-center gap-1.5">
-                        <span className="text-admin-400">•</span>
+                        <span className="text-neutral-400">•</span>
                         <input type="text" value={b} onChange={(e) => updateBullet(i, j, e.target.value)}
                           className="flex-1 px-2.5 py-1.5 border border-admin-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
                           placeholder="Bullet point" />
@@ -343,7 +343,7 @@ function FeatureCardsEditor({ data, onChange }) {
                 </div>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Button Link</label>
+                    <label className="block text-xs font-medium text-black mb-1">Button Link</label>
                     <input type="text" value={card.button_link || '#'} onChange={(e) => updateCard(i, 'button_link', e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                   </div>
@@ -380,62 +380,62 @@ function ServicesEditor({ data, onChange }) {
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={data?.heading || ''} onChange={(e) => onChange({ ...data, heading: e.target.value })}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={data?.subheading || ''} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Intro Paragraph</label>
+        <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Intro Paragraph</label>
         <textarea value={content.intro || ''} onChange={(e) => updateContent('intro', e.target.value)} rows={3}
           className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Left Column Heading</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Left Column Heading</label>
           <input type="text" value={content.left_heading || ''} onChange={(e) => updateContent('left_heading', e.target.value)}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">CTA Button Text</label>
           <input type="text" value={content.cta_text || ''} onChange={(e) => updateContent('cta_text', e.target.value)}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Left Column Description</label>
+        <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Left Column Description</label>
         <textarea value={content.left_description || ''} onChange={(e) => updateContent('left_description', e.target.value)} rows={3}
           className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <ImageUploader value={content.left_image_url} onChange={(v) => updateContent('left_image_url', v)} label="Left Column Image" />
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">CTA Link</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">CTA Link</label>
           <input type="text" value={content.cta_link || '#'} onChange={(e) => updateContent('cta_link', e.target.value)}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
         </div>
       </div>
       <div className="border-t border-admin-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold text-admin-700">Services List (3 items)</h4>
+          <h4 className="text-sm font-semibold text-black">Services List (3 items)</h4>
           <AdminButton type="button" onClick={addService} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Service</AdminButton>
         </div>
         <div className="space-y-3">
           {services.map((s, i) => (
             <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Service {i + 1}</span>
+                <span className="text-xs font-semibold text-black uppercase tracking-wider">Service {i + 1}</span>
                 <button type="button" onClick={() => removeService(i)}
                   className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="grid sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Title</label>
+                  <label className="block text-xs font-medium text-black mb-1">Title</label>
                   <input type="text" value={s.title || ''} onChange={(e) => updateService(i, 'title', e.target.value)}
                     className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                 </div>
@@ -446,7 +446,7 @@ function ServicesEditor({ data, onChange }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+                  <label className="block text-xs font-medium text-black mb-1">Description</label>
                   <input type="text" value={s.description || ''} onChange={(e) => updateService(i, 'description', e.target.value)}
                     className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                 </div>
@@ -457,26 +457,26 @@ function ServicesEditor({ data, onChange }) {
       </div>
       <div className="border-t border-admin-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold text-admin-700">Service Cards (4 items)</h4>
+          <h4 className="text-sm font-semibold text-black">Service Cards (4 items)</h4>
           <AdminButton type="button" onClick={addCard} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Card</AdminButton>
         </div>
         <div className="space-y-3">
           {cards.map((c, i) => (
             <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Card {i + 1}</span>
+                <span className="text-xs font-semibold text-black uppercase tracking-wider">Card {i + 1}</span>
                 <button type="button" onClick={() => removeCard(i)}
                   className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Title</label>
+                    <label className="block text-xs font-medium text-black mb-1">Title</label>
                     <input type="text" value={c.title || ''} onChange={(e) => updateCard(i, 'title', e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+                    <label className="block text-xs font-medium text-black mb-1">Description</label>
                     <input type="text" value={c.description || ''} onChange={(e) => updateCard(i, 'description', e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
                   </div>
@@ -486,7 +486,7 @@ function ServicesEditor({ data, onChange }) {
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" checked={!!c.is_clickable} onChange={(e) => updateCard(i, 'is_clickable', e.target.checked)}
                         className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-admin-500/20" />
-                      <span className="text-xs font-medium text-admin-600">Clickable</span>
+                      <span className="text-xs font-medium text-black">Clickable</span>
                     </label>
                     {c.is_clickable && (
                       <input type="text" value={c.link_url || ''} onChange={(e) => updateCard(i, 'link_url', e.target.value)}
@@ -534,7 +534,7 @@ function HeroEditor({ data, onChange }) {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-admin-700 mb-2 uppercase tracking-wider">Mode</label>
+        <label className="block text-xs font-semibold text-black mb-2 uppercase tracking-wider">Mode</label>
         <div className="grid grid-cols-2 gap-3">
           <button type="button" onClick={() => updateContent('hero_mode', 'normal')}
             className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
@@ -560,12 +560,12 @@ function HeroEditor({ data, onChange }) {
           <ImageUploader value={content.banner_image || ''} onChange={(v) => updateContent('banner_image', v)} label="Banner Image" />
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-admin-600 mb-1">Banner Heading</label>
+              <label className="block text-xs font-medium text-black mb-1">Banner Heading</label>
               <input type="text" value={content.banner_heading || ''} onChange={(e) => updateContent('banner_heading', e.target.value)}
                 className={inputClass} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-admin-600 mb-1">Banner Description</label>
+              <label className="block text-xs font-medium text-black mb-1">Banner Description</label>
               <input type="text" value={content.banner_description || ''} onChange={(e) => updateContent('banner_description', e.target.value)}
                 className={inputClass} />
             </div>
@@ -574,7 +574,7 @@ function HeroEditor({ data, onChange }) {
       ) : (
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-admin-700 mb-2 uppercase tracking-wider">Carousel Type</label>
+            <label className="block text-xs font-semibold text-black mb-2 uppercase tracking-wider">Carousel Type</label>
             <div className="grid grid-cols-2 gap-3">
               <button type="button" onClick={() => updateContent('carousel_type', 'text')}
                 className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
@@ -597,19 +597,19 @@ function HeroEditor({ data, onChange }) {
 
           <div className="border-t border-admin-200 pt-4">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-semibold text-admin-700">Slides</p>
+              <p className="text-sm font-semibold text-black">Slides</p>
               <AdminButton type="button" onClick={addSlide} variant="ghost" size="sm">
                 <FiPlus className="w-4 h-4" /> Add Slide
               </AdminButton>
             </div>
             {slides.length === 0 ? (
-              <p className="text-sm text-admin-400 italic py-6 text-center border-2 border-dashed border-admin-200 rounded-lg">No slides yet.</p>
+              <p className="text-sm text-neutral-400 italic py-6 text-center border-2 border-dashed border-admin-200 rounded-lg">No slides yet.</p>
             ) : (
               <div className="space-y-3">
                 {slides.map((slide, i) => (
                   <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Slide {i + 1}</span>
+                      <span className="text-xs font-semibold text-black uppercase tracking-wider">Slide {i + 1}</span>
                       <button type="button" onClick={() => removeSlide(i)}
                         className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors">
                         <FiTrash2 className="w-4 h-4" />
@@ -621,12 +621,12 @@ function HeroEditor({ data, onChange }) {
                       )}
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-admin-600 mb-1">Heading</label>
+                          <label className="block text-xs font-medium text-black mb-1">Heading</label>
                           <input type="text" value={slide.heading || ''} onChange={(e) => updateSlide(i, 'heading', e.target.value)}
                             className={inputClass} />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+                          <label className="block text-xs font-medium text-black mb-1">Description</label>
                           <input type="text" value={slide.description || ''} onChange={(e) => updateSlide(i, 'description', e.target.value)}
                             className={inputClass} />
                         </div>
@@ -643,7 +643,7 @@ function HeroEditor({ data, onChange }) {
       <div className="border-t border-admin-200 pt-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-medium text-admin-600 mb-1">Heading Below Banner</label>
+            <label className="block text-xs font-medium text-black mb-1">Heading Below Banner</label>
             <input type="text" value={content.headline || ''} onChange={(e) => updateContent('headline', e.target.value)}
               className={inputClass} />
           </div>
@@ -651,25 +651,25 @@ function HeroEditor({ data, onChange }) {
       </div>
 
       <details className="border border-admin-200 rounded-lg overflow-hidden">
-        <summary className="px-4 py-3 text-sm font-semibold text-admin-700 bg-white cursor-pointer hover:bg-admin-100 transition-colors">
+        <summary className="px-4 py-3 text-sm font-semibold text-black bg-white cursor-pointer hover:bg-admin-100 transition-colors">
           Two-Column Layout Settings
         </summary>
         <div className="p-4 space-y-4">
-          <p className="text-xs text-admin-400">These fields apply when no banner image is set (gradient background layout).</p>
+          <p className="text-xs text-neutral-400">These fields apply when no banner image is set (gradient background layout).</p>
           <div>
-            <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+            <label className="block text-xs font-medium text-black mb-1">Description</label>
             <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
               className={inputClass} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-admin-600 mb-1">Badge Text</label>
+              <label className="block text-xs font-medium text-black mb-1">Badge Text</label>
               <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
                 className={inputClass} />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-admin-600 mb-1">Feature Bullets (one per line)</label>
+            <label className="block text-xs font-medium text-black mb-1">Feature Bullets (one per line)</label>
             <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
               className={`${inputClass} font-mono text-xs`} />
           </div>
@@ -679,7 +679,7 @@ function HeroEditor({ data, onChange }) {
 
       <div className="border-t border-admin-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-semibold text-admin-700">Stats</p>
+          <p className="text-sm font-semibold text-black">Stats</p>
           <AdminButton type="button" onClick={() => {
             const s = Array.isArray(content.stats) ? content.stats : [];
             updateContent('stats', [...s, { value: '', label: '' }]);
@@ -688,13 +688,13 @@ function HeroEditor({ data, onChange }) {
           </AdminButton>
         </div>
         {(!Array.isArray(content.stats) || content.stats.length === 0) ? (
-          <p className="text-sm text-admin-400 italic">No stats yet.</p>
+          <p className="text-sm text-neutral-400 italic">No stats yet.</p>
         ) : (
           <div className="space-y-3">
             {content.stats.map((s, i) => (
               <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Stat {i + 1}</span>
+                  <span className="text-xs font-semibold text-black uppercase tracking-wider">Stat {i + 1}</span>
                   <button type="button" onClick={() => {
                     const arr = [...content.stats];
                     arr.splice(i, 1);
@@ -705,7 +705,7 @@ function HeroEditor({ data, onChange }) {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Value</label>
+                    <label className="block text-xs font-medium text-black mb-1">Value</label>
                     <input type="text" value={s.value || ''} onChange={(e) => {
                       const arr = [...content.stats];
                       arr[i] = { ...arr[i], value: e.target.value };
@@ -713,7 +713,7 @@ function HeroEditor({ data, onChange }) {
                     }} className={inputClass} />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Label</label>
+                    <label className="block text-xs font-medium text-black mb-1">Label</label>
                     <input type="text" value={s.label || ''} onChange={(e) => {
                       const arr = [...content.stats];
                       arr[i] = { ...arr[i], label: e.target.value };
@@ -729,7 +729,7 @@ function HeroEditor({ data, onChange }) {
 
       <div className="border-t border-admin-200 pt-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-semibold text-admin-700">Buttons</p>
+          <p className="text-sm font-semibold text-black">Buttons</p>
           <AdminButton type="button" onClick={() => {
             const b = Array.isArray(content.buttons) ? content.buttons : [];
             updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
@@ -738,13 +738,13 @@ function HeroEditor({ data, onChange }) {
           </AdminButton>
         </div>
         {(!Array.isArray(content.buttons) || content.buttons.length === 0) ? (
-          <p className="text-sm text-admin-400 italic">No buttons yet.</p>
+          <p className="text-sm text-neutral-400 italic">No buttons yet.</p>
         ) : (
           <div className="space-y-3">
             {content.buttons.map((btn, i) => (
               <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Button {i + 1}</span>
+                  <span className="text-xs font-semibold text-black uppercase tracking-wider">Button {i + 1}</span>
                   <button type="button" onClick={() => {
                     const arr = [...content.buttons];
                     arr.splice(i, 1);
@@ -755,7 +755,7 @@ function HeroEditor({ data, onChange }) {
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-medium text-admin-600 mb-1">Label</label>
+                    <label className="block text-xs font-medium text-black mb-1">Label</label>
                     <input type="text" value={btn.label || ''} onChange={(e) => {
                       const arr = [...content.buttons];
                       arr[i] = { ...arr[i], label: e.target.value };
@@ -764,7 +764,7 @@ function HeroEditor({ data, onChange }) {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Link</label>
+                      <label className="block text-xs font-medium text-black mb-1">Link</label>
                       <input type="text" value={btn.link || ''} onChange={(e) => {
                         const arr = [...content.buttons];
                         arr[i] = { ...arr[i], link: e.target.value };
@@ -772,7 +772,7 @@ function HeroEditor({ data, onChange }) {
                       }} className={inputClass} placeholder="/courses" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Color</label>
+                      <label className="block text-xs font-medium text-black mb-1">Color</label>
                       <input type="text" value={btn.color || ''} onChange={(e) => {
                         const arr = [...content.buttons];
                         arr[i] = { ...arr[i], color: e.target.value };
@@ -810,12 +810,12 @@ function FieldEditor({ def, data, onChange }) {
       {!def.contentOnly && (
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Heading</label>
+            <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Heading</label>
             <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" placeholder="Section heading" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+            <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Subheading</label>
             <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" placeholder="Section subheading" />
           </div>
@@ -826,13 +826,13 @@ function FieldEditor({ def, data, onChange }) {
       ))}
       {def.hasList && !Array.isArray(def.hasList) && (
         <div className="border-t border-admin-200 pt-4">
-          <h4 className="text-sm font-semibold text-admin-700 mb-3">{def.listLabel || 'List Items'}</h4>
+          <h4 className="text-sm font-semibold text-neutral-700 mb-3">{def.listLabel || 'List Items'}</h4>
           <ListEditor def={{ ...def, listKey: def.listKey || 'stats' }} data={data} onChange={onChange} />
         </div>
       )}
       {Array.isArray(def.hasList) && def.hasList.map((lc, li) => (
         <div key={li} className="border-t border-admin-200 pt-4">
-          <h4 className="text-sm font-semibold text-admin-700 mb-3">{lc.listLabel || 'Items'}</h4>
+          <h4 className="text-sm font-semibold text-neutral-700 mb-3">{lc.listLabel || 'Items'}</h4>
           <ListEditor def={{ ...def, listKey: lc.listKey || `list_${li}`, listItemFields: lc.listItemFields, listLabel: lc.listLabel }} data={data} onChange={onChange} />
         </div>
       ))}
@@ -860,12 +860,12 @@ function SimpleListEditor({ def, data, onChange }) {
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Heading</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Heading</label>
           <input type="text" value={heading} onChange={(e) => onChange({ ...data, heading: e.target.value })}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+          <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">Subheading</label>
           <input type="text" value={subheading} onChange={(e) => onChange({ ...data, subheading: e.target.value })}
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500" />
         </div>
@@ -874,14 +874,14 @@ function SimpleListEditor({ def, data, onChange }) {
         {items.map((item, i) => (
           <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">{(def.label || 'Item').slice(0, -1)} {i + 1}</span>
+              <span className="text-xs font-semibold text-black uppercase tracking-wider">{(def.label || 'Item').slice(0, -1)} {i + 1}</span>
               <button type="button" onClick={() => removeItem(i)}
                 className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
             </div>
             <div className="space-y-3">
               {def.itemFields.map((f) => (
                 <div key={f.name}>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">{f.label}</label>
+                  <label className="block text-xs font-medium text-black mb-1">{f.label}</label>
                   {f.type === 'textarea' ? (
                     <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
@@ -907,7 +907,7 @@ function RenderField({ field, value, onChange }) {
   if (field.type === 'textarea') {
     return (
       <div>
-        <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+        <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">{field.label}</label>
         <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={3}
           className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
       </div>
@@ -916,7 +916,7 @@ function RenderField({ field, value, onChange }) {
   if (field.type === 'multiline') {
     return (
       <div>
-        <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+        <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">{field.label}</label>
         <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={4}
           className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all font-mono text-xs" placeholder="Enter one per line" />
       </div>
@@ -925,7 +925,7 @@ function RenderField({ field, value, onChange }) {
   if (field.type === 'boolean') {
     return (
       <div className="flex items-center justify-between">
-        <label className="text-xs font-semibold text-admin-700 uppercase tracking-wider">{field.label}</label>
+        <label className="text-xs font-semibold text-black uppercase tracking-wider">{field.label}</label>
         <button type="button" onClick={() => onChange(!value)}
           className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${value ? 'bg-admin-600' : 'bg-admin-300'}`}>
           <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${value ? 'translate-x-4' : 'translate-x-0.5'}`} />
@@ -935,7 +935,7 @@ function RenderField({ field, value, onChange }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+      <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">{field.label}</label>
       <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
         className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
     </div>
@@ -961,7 +961,7 @@ function AlumniEditor({ data, onChange }) {
           onKeyDown={(e) => e.key === 'Enter' && addCompany()} />
         <AdminButton onClick={addCompany} variant="primary" size="md"><FiPlus className="w-4 h-4" /> Add</AdminButton>
       </div>
-      {companies.length === 0 && <p className="text-sm text-admin-400 italic">No companies added yet.</p>}
+      {companies.length === 0 && <p className="text-sm text-neutral-400 italic">No companies added yet.</p>}
       <div className="flex flex-wrap gap-2">
         {companies.map((c, i) => (
           <div key={i} className="flex items-center gap-2 bg-white border border-admin-200 px-3 py-2 rounded-lg">
@@ -1093,8 +1093,8 @@ export default function HomePageEditor() {
                 onClick={() => navigate(`/admin/home/${item.key}`)}
                 className={`cursor-pointer w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-left transition-colors ${
                   selectedNav.key === item.key
-                    ? 'bg-white text-admin-600 shadow-sm border border-admin-200/60 font-medium'
-                    : 'text-admin-600 hover:bg-white/50 hover:text-admin-900'
+                    ? 'bg-white text-black shadow-sm border border-admin-200/60 font-medium'
+                    : 'text-black hover:bg-white/50 hover:text-black'
                 }`}
               >
                 <item.icon className="w-4 h-4 shrink-0" />
@@ -1105,15 +1105,15 @@ export default function HomePageEditor() {
         </nav>
         <div className="flex-1 min-w-0">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-admin-900">{selectedNav.label}</h2>
-            <p className="text-sm text-admin-500 mt-0.5">Edit the {selectedNav.label.toLowerCase()} section</p>
+            <h2 className="text-lg font-semibold text-black">{selectedNav.label}</h2>
+            <p className="text-sm text-neutral-500 mt-0.5">Edit the {selectedNav.label.toLowerCase()} section</p>
           </div>
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
           <div className="rounded-lg border border-admin-200 p-6">
             {def && sec ? (
               <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />
             ) : (
-              <p className="text-sm text-admin-400">Section not found.</p>
+              <p className="text-sm text-neutral-400">Section not found.</p>
             )}
             <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
           </div>

@@ -35,4 +35,8 @@ do $$ begin
     create policy "Allow admin update form_submissions" on form_submissions
       for update using (true) with check (true);
   end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public insert career_submissions') then
+    create policy "Allow public insert career_submissions" on career_submissions
+      for insert with check (true);
+  end if;
 end $$;

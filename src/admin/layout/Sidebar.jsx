@@ -365,7 +365,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
 
   const content = (
     <div className="flex flex-col h-full" style={{ background: 'linear-gradient(to bottom, #0C1028, #0A0E20)' }}>
-      <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-white/10" style={{ background: 'white' }}>
+      <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-gray-200" style={{ background: 'white' }}>
         <NavLink to="/admin" className="flex items-center gap-2.5 min-w-0 group">
           <div className="w-9 h-9 flex items-center justify-center shrink-0 overflow-hidden transition-transform duration-200 group-hover:scale-105">
             {settings?.logo_url ? (

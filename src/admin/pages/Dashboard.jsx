@@ -29,9 +29,9 @@ function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
         <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${toneClasses[iconTone] || toneClasses.slate}`}>
           <Icon className="w-4 h-4" />
         </div>
-        <span className="text-[1.375rem] font-semibold tabular-nums text-neutral-900 leading-none">{value}</span>
+        <span className="text-[1.375rem] font-semibold tabular-nums text-black leading-none">{value}</span>
       </div>
-      <p className="text-[0.95rem] font-medium text-neutral-500">{label}</p>
+      <p className="text-[0.95rem] font-medium text-neutral-400">{label}</p>
     </Link>
   );
 }
@@ -42,7 +42,7 @@ function ActionTile({ to, icon: Icon, label, tone = 'slate' }) {
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${toneClasses[tone] || toneClasses.slate} group-hover:scale-105`}>
         <Icon className="w-4 h-4" />
       </div>
-      <span className="text-sm font-medium text-neutral-700">{label}</span>
+      <span className="text-sm font-medium text-neutral-500">{label}</span>
     </Link>
   );
 }
@@ -59,35 +59,36 @@ const quickLinks = [
 export default function Dashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
-  const [pending, setPending] = useState({ career: 0, contact: 0, brochure: 0, form: 0 });
+  const [pending, setPending] = useState({ career: 0, contact: 0, brochure: 0, form: 0, chat: 0 });
   const [recentItems, setRecentItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
+      const todayStart = new Date().toISOString().slice(0, 10);
       const results = await Promise.allSettled([
         supabase.from('courses').select('*', { count: 'exact', head: true }),
         supabase.from('nav_items').select('*', { count: 'exact', head: true }),
-        supabase.from('faqs').select('*', { count: 'exact', head: true }),
         supabase.from('alumni_companies').select('*', { count: 'exact', head: true }),
         supabase.from('tags').select('*', { count: 'exact', head: true }),
         supabase.from('blog_posts').select('*', { count: 'exact', head: true }),
         supabase.from('courses').select('id, title, created_at').order('created_at', { ascending: false }).limit(6),
-        supabase.from('career_submissions').select('*', { count: 'exact', head: true }),
-        supabase.from('contact_submissions').select('*', { count: 'exact', head: true }),
-        supabase.from('brochure_downloads').select('*', { count: 'exact', head: true }),
-        supabase.from('form_submissions').select('*', { count: 'exact', head: true }),
+        supabase.from('career_submissions').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
+        supabase.from('contact_submissions').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
+        supabase.from('brochure_downloads').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
+        supabase.from('form_submissions').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
+        supabase.from('conversations').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
       ]);
       const getCount = (r) => (r.status === 'fulfilled' ? r.value.count ?? 0 : 0);
       setStats({
-        courses: getCount(results[0]), navItems: getCount(results[1]), faqs: getCount(results[2]),
-        companies: getCount(results[3]), tags: getCount(results[4]), blogPosts: getCount(results[5]),
+        courses: getCount(results[0]), navItems: getCount(results[1]),
+        companies: getCount(results[2]), tags: getCount(results[3]), blogPosts: getCount(results[4]),
       });
       setPending({
-        career: getCount(results[7]), contact: getCount(results[8]), brochure: getCount(results[9]), form: getCount(results[10]),
+        career: getCount(results[6]), contact: getCount(results[7]), brochure: getCount(results[8]), form: getCount(results[9]), chat: getCount(results[10]),
       });
 
-      setRecentItems(results[6].status === 'fulfilled' ? (results[6].value.data ?? []).slice(0, 6) : []);
+      setRecentItems(results[5].status === 'fulfilled' ? (results[5].value.data ?? []).slice(0, 6) : []);
       setLoading(false);
     }
     fetchData();
@@ -97,17 +98,20 @@ export default function Dashboard() {
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   const greeting = `Good ${new Date().getHours() < 12 ? 'morning' : 'afternoon'}, ${user?.name?.split(' ')[0] || 'Admin'}`;
-  const topCards = [
+  const mainCards = [
     { label: 'Courses', value: stats.courses, icon: FiBookOpen, link: '/admin/courses', subtitle: 'Course library', iconTone: 'slate' },
     { label: 'Blog Posts', value: stats.blogPosts, icon: FiFileText, link: '/admin/blog', subtitle: 'Articles & updates', iconTone: 'violet' },
     { label: 'Nav Items', value: stats.navItems, icon: FiMenu, link: '/admin/nav-menu', subtitle: 'Menus & links', iconTone: 'cyan' },
     { label: 'Alumni', value: stats.companies, icon: FiUsers, link: '/admin/alumni', subtitle: 'Partner companies', iconTone: 'emerald' },
     { label: 'Tags', value: stats.tags, icon: FiTag, link: '/admin/tags', subtitle: 'Course categories', iconTone: 'amber' },
-    { label: 'FAQs', value: stats.faqs, icon: FiMessageCircle, link: '/admin/courses', subtitle: 'Help content', iconTone: 'rose' },
-    { label: 'Career', value: pending.career, icon: FiInbox, link: '/admin/career-submissions', subtitle: 'Submissions', iconTone: 'rose' },
-    { label: 'Contact', value: pending.contact, icon: FiInbox, link: '/admin/contact-submissions', subtitle: 'Submissions', iconTone: 'amber' },
-    { label: 'Brochure', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'emerald' },
-    { label: 'Form', value: pending.form, icon: FiInbox, link: '/admin/form-submissions', subtitle: 'Submissions', iconTone: 'violet' },
+  ];
+
+  const submissionCards = [
+    { label: 'Career Submissions', value: pending.career, icon: FiInbox, link: '/admin/career-submissions', subtitle: 'Submissions', iconTone: 'rose' },
+    { label: 'Brochure Downloads', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'emerald' },
+    { label: 'Form Submissions', value: pending.form, icon: FiInbox, link: '/admin/form-submissions', subtitle: 'Submissions', iconTone: 'violet' },
+    { label: 'Contact Submissions', value: pending.contact, icon: FiInbox, link: '/admin/contact-submissions', subtitle: 'Submissions', iconTone: 'amber' },
+    { label: 'Chat Submissions', value: pending.chat, icon: FiMessageCircle, link: '/admin/chat-submissions', subtitle: 'Submissions', iconTone: 'cyan' },
   ];
 
   return (
@@ -121,21 +125,28 @@ export default function Dashboard() {
       }
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        {topCards.map((card, i) => (
+        {mainCards.map((card, i) => (
+          <StatCard key={i} {...card} />
+        ))}
+      </div>
+
+      <h2 className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Form Responses</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        {submissionCards.map((card, i) => (
           <StatCard key={i} {...card} />
         ))}
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
-          <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Quick Links</h2>
+          <h2 className="text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-3">Quick Links</h2>
           <div className="grid grid-cols-2 gap-3">
             {quickLinks.map((action, i) => <ActionTile key={i} {...action} />)}
           </div>
         </div>
 
         <div className="lg:col-span-2">
-          <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Recent Activity</h2>
+          <h2 className="text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-3">Recent Activity</h2>
           <Card>
             {recentItems.length === 0 ? (
               <div className="py-8 text-center text-sm text-neutral-400">No recent activity.</div>
@@ -146,7 +157,7 @@ export default function Dashboard() {
                     <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shrink-0">
                       <FiBookOpen className="w-3.5 h-3.5 text-neutral-600" />
                     </div>
-                    <span className="flex-1 text-[0.95rem] text-neutral-700 truncate">{item.title}</span>
+                    <span className="flex-1 text-[0.95rem] text-neutral-500 truncate">{item.title}</span>
                     <span className="text-xs text-neutral-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
                     <FiChevronRight className="w-3.5 h-3.5 text-neutral-200 group-hover:text-neutral-500 transition-colors shrink-0" />
                   </Link>
@@ -155,7 +166,7 @@ export default function Dashboard() {
             )}
           </Card>
           {recentItems.length > 0 && (
-            <Link to="/admin/courses" className="flex items-center justify-center gap-1 text-sm text-neutral-600 hover:text-neutral-700 transition-colors py-3">
+            <Link to="/admin/courses" className="flex items-center justify-center gap-1 text-sm text-neutral-500 hover:text-neutral-700 transition-colors py-3">
               View All Courses <FiArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}

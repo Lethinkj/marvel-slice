@@ -35,7 +35,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
     <div className="w-80 shrink-0 bg-white border-r border-admin-200 flex flex-col">
       <div className="shrink-0 px-4 pt-4 pb-3 border-b border-admin-100">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-neutral-900 text-base flex items-center gap-2">
+          <h2 className="font-bold text-black text-base flex items-center gap-2">
             <FiMessageCircle className="w-4 h-4 text-cyan-500" />
             Chats
           </h2>
@@ -95,7 +95,7 @@ function ConversationList({ conversations, activeId, onSelect, filter, onFilterC
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className={`text-sm truncate ${unread ? 'font-bold text-neutral-900' : 'font-semibold text-neutral-800'}`}>
+                        <p className={`text-sm truncate ${unread ? 'font-bold text-black' : 'font-semibold text-neutral-800'}`}>
                           {conv.user_name || 'Visitor'}
                         </p>
                         <span className="text-[11px] text-neutral-400 shrink-0">{relativeTime(conv.last_message_at)}</span>
@@ -187,6 +187,8 @@ function LiveChat({ conversations, onConversationsChange }) {
     if (!activeConv) return;
     let cancelled = false;
 
+    supabase.from('conversations').update({ notified: false }).eq('id', activeConv.id).then();
+
     async function load() {
       const { data } = await supabase
         .from('messages')
@@ -230,7 +232,7 @@ function LiveChat({ conversations, onConversationsChange }) {
       content: text,
     });
 
-    await supabase.from('conversations').update({ last_message_at: new Date().toISOString() }).eq('id', activeConv.id);
+    await supabase.from('conversations').update({ last_message: text, last_message_sender: 'admin', last_message_at: new Date().toISOString() }).eq('id', activeConv.id);
 
     setSending(false);
   }
@@ -255,7 +257,7 @@ function LiveChat({ conversations, onConversationsChange }) {
                 {(activeConv.user_name || 'V')[0].toUpperCase()}
               </div>
               <div className="min-w-0">
-                <p className="font-semibold text-neutral-900 text-sm truncate">{activeConv.user_name || 'Visitor'}</p>
+                <p className="font-semibold text-black text-sm truncate">{activeConv.user_name || 'Visitor'}</p>
               </div>
             </div>
             <button onClick={() => setActiveConv(null)} className="p-1 text-neutral-400 hover:text-neutral-600 cursor-pointer">
@@ -330,7 +332,7 @@ function MessageViewer({ conversation, onClose }) {
       <div className="bg-white rounded-2xl shadow-2xl mx-4 w-full max-w-2xl max-h-[80vh] flex flex-col cursor-pointer" onClick={(e) => e.stopPropagation()}>
         <div className="shrink-0 px-5 py-4 border-b border-admin-100 flex items-center justify-between">
           <div>
-            <p className="font-semibold text-neutral-900 text-sm">{conversation.user_name || 'Visitor'}</p>
+            <p className="font-semibold text-black text-sm">{conversation.user_name || 'Visitor'}</p>
             <p className="text-xs text-neutral-400">{conversation.user_email} {conversation.user_phone ? `| ${conversation.user_phone}` : ''}</p>
           </div>
           <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-600 cursor-pointer"><FiX className="w-5 h-5" /></button>
@@ -387,7 +389,7 @@ function SessionsTable({ conversations }) {
     <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-admin-100 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
-          <h2 className="font-bold text-neutral-900 text-base flex items-center gap-2">
+          <h2 className="font-bold text-black text-base flex items-center gap-2">
             <FiList className="w-4 h-4 text-amber-500" />
             Chat Sessions
           </h2>

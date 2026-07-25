@@ -85,10 +85,10 @@ export default function NavMenuManager() {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="rounded-lg border border-admin-200 bg-white p-6 text-center">
-          <h1 className="text-2xl font-bold text-admin-900 mb-4">
+          <h1 className="text-2xl font-bold text-black mb-4">
             Access Denied
           </h1>
-          <p className="text-admin-500">
+          <p className="text-neutral-500">
             You do not have permission to access this page.
           </p>
         </div>
@@ -299,7 +299,7 @@ export default function NavMenuManager() {
                   )}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-neutral-900 truncate">
+                  <p className="text-sm font-semibold text-black truncate">
                     {section.label}
                   </p>
                   {section.path && (
@@ -414,7 +414,7 @@ export default function NavMenuManager() {
                 onSubmit={handleSave}
                 className="rounded-lg border border-admin-200 bg-white p-5"
               >
-                <p className="text-sm font-semibold text-neutral-900 mb-3">
+                <p className="text-sm font-semibold text-black mb-3">
                   {editing
                     ? `Edit: ${editing.label}`
                     : form.parent_id
@@ -563,7 +563,7 @@ export default function NavMenuManager() {
 
               <div className="rounded-lg border border-admin-200 bg-white overflow-hidden">
                 <div className="px-5 py-3 border-b border-admin-100 bg-white">
-                  <p className="text-sm font-semibold text-neutral-900">Items in {activeSection || selectedSection}</p>
+                  <p className="text-sm font-semibold text-black">Items in {activeSection || selectedSection}</p>
                 </div>
                 <div className="divide-y divide-admin-50">
                   {getSectionItems(activeSection || selectedSection).length === 0 ? (
@@ -677,7 +677,7 @@ export default function NavMenuManager() {
 
           {!activeSection && !editing && (
             <div className="rounded-lg border border-admin-200 bg-white p-8 text-center">
-              <p className="text-admin-400">Select a section to add or edit items.</p>
+              <p className="text-neutral-400">Select a section to add or edit items.</p>
             </div>
           )}
         </div>

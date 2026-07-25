@@ -44,7 +44,7 @@ function ColumnCard({ column, onUpdate, onDelete, onAddLink, onUpdateLink, onDel
       {expanded && (
         <div className="p-4 space-y-2">
           {(column.footer_links || []).length === 0 && (
-            <p className="text-xs text-admin-400 italic text-center py-2">No links in this column</p>
+            <p className="text-xs text-neutral-400 italic text-center py-2">No links in this column</p>
           )}
           {(column.footer_links || []).map((link, li) => (
             <LinkRow key={link.id || li}
@@ -170,7 +170,7 @@ export default function FooterManager() {
     >
       {columns.length === 0 ? (
         <div className="bg-white rounded-lg border border-admin-200 p-12 text-center">
-          <p className="text-sm text-admin-400">No footer columns yet. Click "Add Column" to get started.</p>
+          <p className="text-sm text-neutral-400">No footer columns yet. Click "Add Column" to get started.</p>
         </div>
       ) : (
         <div className="space-y-4">

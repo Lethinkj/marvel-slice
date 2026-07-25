@@ -24,7 +24,7 @@ export default function SaveBar({ saving, saved, saveError, onSave, label = 'Sav
   return (
     <div className="fixed bottom-6 right-6 z-10">
       <div className="backdrop-blur-lg bg-admin-900/90 text-white rounded-xl shadow-2xl px-5 py-2.5 border border-admin-700 inline-flex items-center gap-3">
-        <span className="text-xs text-admin-300 hidden sm:block">Unsaved changes</span>
+        <span className="text-xs text-neutral-300 hidden sm:block">Unsaved changes</span>
         <AdminButton onClick={onSave} disabled={saving} variant="primary" size="sm" className="!bg-white !text-admin-900 hover:!bg-admin-100 !shadow-lg">
           <FiSave className="w-3.5 h-3.5" /> {saving ? 'Saving...' : label}
         </AdminButton>

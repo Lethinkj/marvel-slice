@@ -27,7 +27,7 @@ function AlignButtons({ value, onChange }) {
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
-          className={`p-1.5 rounded-md transition-colors cursor-pointer ${value === opt.value ? 'bg-white text-admin-700 shadow-sm' : 'text-admin-400 hover:text-admin-600'}`}
+          className={`p-1.5 rounded-md transition-colors cursor-pointer ${value === opt.value ? 'bg-white text-neutral-700 shadow-sm' : 'text-admin-400 hover:text-admin-600'}`}
         >
           <opt.icon className="w-4 h-4" />
         </button>
@@ -53,7 +53,7 @@ function ImageUploader({ value, onChange, label }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
           className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Paste URL or upload..." />
@@ -414,7 +414,7 @@ export default function CareerPageEditor() {
       <form onSubmit={handleSave} className="space-y-6">
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">Hero Section</h2>
+          <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })}
               placeholder="Heading" className={inputClass} />
@@ -423,7 +423,7 @@ export default function CareerPageEditor() {
           </div>
           <div className="mt-4">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-semibold text-admin-700 uppercase tracking-wider">Hero Image</label>
+              <label className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Hero Image</label>
               <button type="button" onClick={() => {
                 if (hero.hero_image) {
                   setHero({ ...hero, hero_image: '' });
@@ -448,34 +448,34 @@ export default function CareerPageEditor() {
         </div>
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">"We're Hiring!" Header</h2>
+          <h2 className="font-semibold text-black mb-4">"We're Hiring!" Header</h2>
           <div className="mb-3">
-            <label className="block text-xs font-medium text-admin-500 mb-1">Headline</label>
+            <label className="block text-xs font-medium text-neutral-500 mb-1">Headline</label>
             <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
               placeholder="We're Hiring!" className={`${inputClass} w-full`} />
           </div>
           <div className="mb-3">
-            <label className="block text-xs font-medium text-admin-500 mb-1">Subtitle</label>
+            <label className="block text-xs font-medium text-neutral-500 mb-1">Subtitle</label>
             <input type="text" value={section1.subtitle} onChange={(e) => setSection1({ ...section1, subtitle: e.target.value })}
               placeholder="Find Your Role. Find Your Fit." className={inputClass} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-admin-500 mb-1">Description</label>
+            <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
             <textarea value={section1.description} onChange={(e) => setSection1({ ...section1, description: e.target.value })}
               rows={2} placeholder="Brief description about working at your company..." className={inputClass} />
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">Categories Section</h2>
+          <h2 className="font-semibold text-black mb-4">Categories Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-admin-500 mb-1">Heading</label>
+              <label className="block text-xs font-medium text-neutral-500 mb-1">Heading</label>
               <input type="text" value={section1.categoriesHeading} onChange={(e) => setSection1({ ...section1, categoriesHeading: e.target.value })}
                 placeholder="Explore Opportunities" className={inputClass} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-admin-500 mb-1">Subtitle</label>
+              <label className="block text-xs font-medium text-neutral-500 mb-1">Subtitle</label>
               <input type="text" value={section1.categoriesSubtitle} onChange={(e) => setSection1({ ...section1, categoriesSubtitle: e.target.value })}
                 placeholder="Find the role that fits you best" className={inputClass} />
             </div>
@@ -484,7 +484,7 @@ export default function CareerPageEditor() {
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900">Role Categories</h2>
+            <h2 className="font-semibold text-black">Role Categories</h2>
             <AdminButton type="button" onClick={openCategoryForm} variant="ghost" size="sm">
               <FiPlus className="w-4 h-4" /> Add Category
             </AdminButton>
@@ -502,17 +502,17 @@ export default function CareerPageEditor() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-admin-200 bg-white">
-                    <th className="text-left px-3 py-2.5 font-medium text-admin-600">Name</th>
-                    <th className="text-center px-3 py-2.5 font-medium text-admin-600">Order</th>
-                    <th className="text-center px-3 py-2.5 font-medium text-admin-600">Active</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-admin-600">Actions</th>
+                    <th className="text-left px-3 py-2.5 font-medium text-neutral-500">Name</th>
+                    <th className="text-center px-3 py-2.5 font-medium text-neutral-500">Order</th>
+                    <th className="text-center px-3 py-2.5 font-medium text-neutral-500">Active</th>
+                    <th className="text-right px-3 py-2.5 font-medium text-neutral-500">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {roleCategories.map((cat) => (
                     <tr key={cat.id} className="border-b border-admin-100 hover:bg-white transition-colors">
-                      <td className="px-3 py-2.5 font-medium text-admin-900">{cat.name}</td>
-                      <td className="px-3 py-2.5 text-center text-admin-600">{cat.display_order}</td>
+                      <td className="px-3 py-2.5 font-medium text-black">{cat.name}</td>
+                      <td className="px-3 py-2.5 text-center text-neutral-500">{cat.display_order}</td>
                       <td className="px-3 py-2.5 text-center">
                         <button type="button" onClick={() => toggleCategoryActive(cat)}
                           className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
@@ -527,11 +527,11 @@ export default function CareerPageEditor() {
                       <td className="px-3 py-2.5 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button type="button" onClick={() => openEditCategory(cat)}
-                            className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-white rounded-lg transition-colors cursor-pointer">
+                            className="p-1.5 text-amber-500 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer">
                             <FiEdit2 className="w-4 h-4" />
                           </button>
                           <button type="button" onClick={() => deleteCategory(cat.id)}
-                            className="p-1.5 text-admin-400 hover:text-destructive-500 hover:bg-destructive-50 rounded-lg transition-colors cursor-pointer">
+                            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
                             <FiTrash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -546,7 +546,7 @@ export default function CareerPageEditor() {
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900 flex items-center gap-2">
+            <h2 className="font-semibold text-black flex items-center gap-2">
               <FiBriefcase className="w-5 h-5 text-admin-600" />
               Job Openings
             </h2>
@@ -565,11 +565,11 @@ export default function CareerPageEditor() {
           </div>
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-admin-100">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-admin-500">Heading align:</span>
+              <span className="text-xs text-neutral-500">Heading align:</span>
               <AlignButtons value={section2.heading_align || 'center'} onChange={(v) => setSection2({ ...section2, heading_align: v })} />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-admin-500">Subheading align:</span>
+              <span className="text-xs text-neutral-500">Subheading align:</span>
               <AlignButtons value={section2.subheading_align || 'center'} onChange={(v) => setSection2({ ...section2, subheading_align: v })} />
             </div>
           </div>
@@ -586,21 +586,21 @@ export default function CareerPageEditor() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-admin-200 bg-white">
-                    <th className="text-left px-3 py-2.5 font-medium text-admin-600">Title</th>
-                    <th className="text-left px-3 py-2.5 font-medium text-admin-600">Category</th>
-                    <th className="text-left px-3 py-2.5 font-medium text-admin-600 hidden sm:table-cell">Location</th>
-                    <th className="text-left px-3 py-2.5 font-medium text-admin-600 hidden md:table-cell">Type</th>
-                    <th className="text-center px-3 py-2.5 font-medium text-admin-600">Active</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-admin-600">Actions</th>
+                    <th className="text-left px-3 py-2.5 font-medium text-neutral-500">Title</th>
+                    <th className="text-left px-3 py-2.5 font-medium text-neutral-500">Category</th>
+                    <th className="text-left px-3 py-2.5 font-medium text-neutral-500 hidden sm:table-cell">Location</th>
+                    <th className="text-left px-3 py-2.5 font-medium text-neutral-500 hidden md:table-cell">Type</th>
+                    <th className="text-center px-3 py-2.5 font-medium text-neutral-500">Active</th>
+                    <th className="text-right px-3 py-2.5 font-medium text-neutral-500">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {openings.map((job) => (
                     <tr key={job.id} className="border-b border-admin-100 hover:bg-white transition-colors">
-                      <td className="px-3 py-2.5 font-medium text-admin-900">{job.title}</td>
-                      <td className="px-3 py-2.5 text-admin-600">{job.role_categories?.name || '—'}</td>
-                      <td className="px-3 py-2.5 text-admin-600 hidden sm:table-cell">{job.location || '—'}</td>
-                      <td className="px-3 py-2.5 text-admin-600 hidden md:table-cell">{job.type || '—'}</td>
+                      <td className="px-3 py-2.5 font-medium text-black">{job.title}</td>
+                      <td className="px-3 py-2.5 text-neutral-500">{job.role_categories?.name || '—'}</td>
+                      <td className="px-3 py-2.5 text-neutral-500 hidden sm:table-cell">{job.location || '—'}</td>
+                      <td className="px-3 py-2.5 text-neutral-500 hidden md:table-cell">{job.type || '—'}</td>
                       <td className="px-3 py-2.5 text-center">
                         <button type="button" onClick={() => toggleActive(job)}
                           className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
@@ -641,7 +641,7 @@ export default function CareerPageEditor() {
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/40 pt-12 sm:pt-20 cursor-pointer" onClick={closeJobForm}>
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto cursor-pointer" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-admin-100">
-              <h2 className="text-base font-semibold text-admin-900">{editingJob ? 'Edit Job Opening' : 'Add Job Opening'}</h2>
+              <h2 className="text-base font-semibold text-black">{editingJob ? 'Edit Job Opening' : 'Add Job Opening'}</h2>
               <button type="button" onClick={closeJobForm} className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-colors cursor-pointer">
                 <FiX className="w-5 h-5" />
               </button>
@@ -649,11 +649,11 @@ export default function CareerPageEditor() {
             <form onSubmit={handleJobSave} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 sm:col-span-1">
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Title *</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Title *</label>
                   <input name="title" value={jobForm.title} onChange={handleJobChange} placeholder="e.g. Software Engineer" className={inputClass} required />
                 </div>
                 <div className="col-span-2 sm:col-span-1">
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Role Category</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Role Category</label>
                   <select name="role_category_id" value={jobForm.role_category_id} onChange={handleJobChange} className={inputClass}>
                     <option value="">Select category</option>
                     {roleCategories.map(cat => (
@@ -664,11 +664,11 @@ export default function CareerPageEditor() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Location</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Location</label>
                   <input name="location" value={jobForm.location} onChange={handleJobChange} placeholder="e.g. New York, NY" className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Type</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Type</label>
                   <select name="type" value={jobForm.type} onChange={handleJobChange} className={inputClass}>
                     <option value="">Select type</option>
                     <option value="Full-time">Full-time</option>
@@ -681,22 +681,22 @@ export default function CareerPageEditor() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Experience</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Experience</label>
                   <input name="experience" value={jobForm.experience} onChange={handleJobChange} placeholder="e.g. 2–4 years" className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Salary</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Salary</label>
                   <input name="salary" value={jobForm.salary} onChange={handleJobChange} placeholder="e.g. $80k–$120k" className={inputClass} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Application URL</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Application URL</label>
                   <input name="apply_url" value={jobForm.apply_url} onChange={handleJobChange} placeholder="e.g. https://apply.example.com/position" className={inputClass} />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+                <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
                 <textarea name="description" value={jobForm.description} onChange={handleJobChange} rows={3}
                   placeholder="Brief description of the role…" className={inputClass} />
               </div>
@@ -707,7 +707,7 @@ export default function CareerPageEditor() {
                   <label htmlFor="is_active" className="text-sm text-admin-600">Active (visible on site)</label>
                 </div>
                 <div className="flex items-center gap-2 ml-auto">
-                  <label htmlFor="job_sort_order" className="text-xs text-admin-500">Sort:</label>
+                  <label htmlFor="job_sort_order" className="text-xs text-neutral-500">Sort:</label>
                   <input type="number" id="job_sort_order" name="sort_order" value={jobForm.sort_order} onChange={handleJobChange}
                     className="w-16 px-2 py-1 border border-admin-200 rounded text-sm text-center" min="0" />
                 </div>
@@ -731,19 +731,19 @@ export default function CareerPageEditor() {
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/40 pt-12 sm:pt-20 cursor-pointer" onClick={closeCategoryForm}>
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-y-auto cursor-pointer" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-admin-100">
-              <h2 className="text-base font-semibold text-admin-900">{editingCategory ? 'Edit Role Category' : 'Add Role Category'}</h2>
+              <h2 className="text-base font-semibold text-black">{editingCategory ? 'Edit Role Category' : 'Add Role Category'}</h2>
               <button type="button" onClick={closeCategoryForm} className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-colors cursor-pointer">
                 <FiX className="w-5 h-5" />
               </button>
             </div>
             <form onSubmit={handleCategorySave} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">Name *</label>
+                <label className="block text-xs font-medium text-neutral-500 mb-1">Name *</label>
                 <input name="name" value={categoryForm.name} onChange={handleCategoryChange} placeholder="e.g. HR Recruiters" className={inputClass} required />
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-admin-600 mb-1">Display Order</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">Display Order</label>
                   <input type="number" name="display_order" value={categoryForm.display_order} onChange={handleCategoryChange} className={inputClass} min="0" />
                 </div>
                 <div className="flex items-center gap-2 pt-5">

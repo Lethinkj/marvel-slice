@@ -25,7 +25,7 @@ function ImageUploader({ value, onChange, label }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
           className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder="Paste URL or upload..." />
@@ -153,7 +153,7 @@ export default function ServicesPageEditor() {
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">Hero Section</h2>
+          <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
             <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
@@ -163,14 +163,14 @@ export default function ServicesPageEditor() {
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900">Services</h2>
+            <h2 className="font-semibold text-black">Services</h2>
             <AdminButton type="button" onClick={() => setServices([...services, { title: '', description: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Service</AdminButton>
           </div>
           <div className="space-y-4">
             {services.map((s, i) => (
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-admin-500 uppercase">Service {i + 1}</span>
+                  <span className="text-xs font-semibold text-neutral-500 uppercase">Service {i + 1}</span>
                   <button type="button" onClick={() => setServices(services.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={s.title} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], title: e.target.value }; setServices(u); }} placeholder="Service title" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
@@ -181,7 +181,7 @@ export default function ServicesPageEditor() {
         </div>
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">Call to Action</h2>
+          <h2 className="font-semibold text-black mb-4">Call to Action</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
             <input type="text" value={cta.content} onChange={(e) => setCta({ ...cta, content: e.target.value })} placeholder="Subtext" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
@@ -191,14 +191,14 @@ export default function ServicesPageEditor() {
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900">FAQs</h2>
+            <h2 className="font-semibold text-black">FAQs</h2>
             <AdminButton type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
           </div>
           <div className="space-y-3">
             {faqs.map((f, i) => (
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-admin-500 uppercase">FAQ {i + 1}</span>
+                  <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
                   <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />

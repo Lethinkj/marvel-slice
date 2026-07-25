@@ -25,7 +25,7 @@ function ImageUploader({ value, onChange, label }) {
   }
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
           className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Paste URL or upload..." />
@@ -183,7 +183,7 @@ export default function ContactPageEditor() {
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   const inputCls = "w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20";
-  const labelCls = "block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider";
+  const labelCls = "block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider";
 
   return (
     <PageShell
@@ -203,7 +203,7 @@ export default function ContactPageEditor() {
       <form onSubmit={handleSave} className="space-y-6">
         {/* Hero Section */}
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">Hero Section</h2>
+          <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputCls} />
             <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className={inputCls} />
@@ -215,8 +215,8 @@ export default function ContactPageEditor() {
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-semibold text-admin-900">Contact Section</h2>
-              <p className="text-xs text-admin-500 mt-0.5">Split-screen layout: company details on the left, contact form on the right.</p>
+              <h2 className="font-semibold text-black">Contact Section</h2>
+              <p className="text-xs text-neutral-500 mt-0.5">Split-screen layout: company details on the left, contact form on the right.</p>
             </div>
             <button type="button" onClick={() => setShowContactSection(!showContactSection)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${showContactSection ? 'bg-admin-600' : 'bg-admin-300'}`}>
@@ -229,7 +229,7 @@ export default function ContactPageEditor() {
         {showContactSection && (
           <>
             <div className="bg-white rounded-lg border border-admin-200 p-6">
-              <h2 className="font-semibold text-admin-900 mb-4">Left Side — Company Details</h2>
+              <h2 className="font-semibold text-black mb-4">Left Side — Company Details</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -270,7 +270,7 @@ export default function ContactPageEditor() {
 
             {/* Right Side: Form Settings */}
             <div className="bg-white rounded-lg border border-admin-200 p-6">
-              <h2 className="font-semibold text-admin-900 mb-4">Right Side — Form Settings</h2>
+              <h2 className="font-semibold text-black mb-4">Right Side — Form Settings</h2>
               <div className="space-y-4">
                 <div>
                   <label className={labelCls}>Success Message</label>
@@ -281,7 +281,7 @@ export default function ContactPageEditor() {
 
             {/* Style Settings */}
             <div className="bg-white rounded-lg border border-admin-200 p-6">
-              <h2 className="font-semibold text-admin-900 mb-4">Style Settings</h2>
+              <h2 className="font-semibold text-black mb-4">Style Settings</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div>
@@ -304,7 +304,7 @@ export default function ContactPageEditor() {
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${contactContent.show_shadow ? 'bg-admin-600' : 'bg-admin-300'}`}>
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${contactContent.show_shadow ? 'translate-x-6' : 'translate-x-1'}`} />
                   </button>
-                  <label className="text-sm text-admin-700">Card Shadow</label>
+                  <label className="text-sm text-neutral-700">Card Shadow</label>
                 </div>
               </div>
             </div>
@@ -315,28 +315,28 @@ export default function ContactPageEditor() {
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-semibold text-admin-900">Map Embed</h2>
-              <p className="text-xs text-admin-500 mt-0.5">Embed a Google Maps location below the contact section.</p>
+              <h2 className="font-semibold text-black">Map Embed</h2>
+              <p className="text-xs text-neutral-500 mt-0.5">Embed a Google Maps location below the contact section.</p>
             </div>
           </div>
           <div className="mt-4">
             <label className={labelCls}>Map Embed URL</label>
             <input type="text" value={contactContent.map_embed_url || ''} onChange={(e) => updateContent('map_embed_url', e.target.value)} className={inputCls} placeholder="https://www.google.com/maps/embed?pb=..." />
-            <p className="text-xs text-admin-400 mt-1">Paste the <strong>src</strong> URL from a Google Maps embed iframe. Leave empty to hide the map.</p>
+            <p className="text-xs text-neutral-400 mt-1">Paste the <strong>src</strong> URL from a Google Maps embed iframe. Leave empty to hide the map.</p>
           </div>
         </div>
 
         {/* FAQs */}
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900">FAQs</h2>
+            <h2 className="font-semibold text-black">FAQs</h2>
             <AdminButton type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
           </div>
           <div className="space-y-3">
             {faqs.map((f, i) => (
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-admin-500 uppercase">FAQ {i + 1}</span>
+                  <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
                   <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className={inputCls} />

@@ -39,8 +39,8 @@ export default function Login() {
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-admin-900">Marvel Slice</h1>
-          <p className="text-admin-500 text-sm mt-1">Sign in to the admin panel</p>
+          <h1 className="text-2xl font-bold text-black">Marvel Slice</h1>
+          <p className="text-neutral-500 text-sm mt-1">Sign in to the admin panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-admin-200 shadow-sm p-6 space-y-5">
@@ -51,7 +51,7 @@ export default function Login() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-admin-700 mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-neutral-700 mb-1.5">Email</label>
             <input
               type="email"
               value={email}
@@ -63,7 +63,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-admin-700 mb-1.5">Password</label>
+            <label className="block text-sm font-medium text-neutral-700 mb-1.5">Password</label>
             <div className="relative">
               <input
                 type={showPw ? 'text' : 'password'}

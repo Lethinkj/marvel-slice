@@ -57,7 +57,7 @@ export default function NavItemManager() {
     <PageShell title="Nav Item Manager">
 
       {sections.length === 0 ? (
-        <div className="text-center py-16 text-admin-400 text-sm border rounded-xl bg-white">No nav items found.</div>
+        <div className="text-center py-16 text-neutral-400 text-sm border rounded-xl bg-white">No nav items found.</div>
       ) : (
         <div className="space-y-6">
           {sections.map(section => {
@@ -65,7 +65,7 @@ export default function NavItemManager() {
             return (
               <div key={section} className="rounded-xl border border-admin-200 bg-white overflow-hidden">
                 <div className="px-5 py-3 bg-white border-b border-admin-100">
-                  <h2 className="text-sm font-bold text-admin-900">{section}</h2>
+                  <h2 className="text-sm font-bold text-black">{section}</h2>
                 </div>
                 <div className="divide-y divide-admin-100">
                   {sectionItems.map(item => {
@@ -74,9 +74,9 @@ export default function NavItemManager() {
                     return (
                       <div key={item.id} className="px-5 py-3">
                         <div className="flex items-center gap-3">
-                          <span className="text-sm font-medium text-admin-900 flex-1 truncate">{item.label}</span>
+                          <span className="text-sm font-medium text-black flex-1 truncate">{item.label}</span>
                           {item.path && (
-                            <span className="text-[11px] text-admin-400 bg-white px-2 py-0.5 rounded-full truncate max-w-[120px] hidden sm:inline">{item.path}</span>
+                            <span className="text-[11px] text-neutral-400 bg-white px-2 py-0.5 rounded-full truncate max-w-[120px] hidden sm:inline">{item.path}</span>
                           )}
                           <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium ${item.is_active !== false ? 'bg-success-50 text-success-700' : 'bg-destructive-50 text-destructive-700'}`}>
                             {item.is_active !== false ? 'On' : 'Off'}
@@ -104,7 +104,7 @@ export default function NavItemManager() {
                               <div className="absolute top-full right-0 mt-1 bg-white border border-admin-200 rounded-lg shadow-lg z-50 min-w-[220px] max-h-[280px] flex flex-col">
                                 <div className="overflow-y-auto">
                                   {courses.length === 0 ? (
-                                    <p className="px-3 py-4 text-xs text-admin-400 text-center">No courses available.</p>
+                                    <p className="px-3 py-4 text-xs text-neutral-400 text-center">No courses available.</p>
                                   ) : (
                                     courses.map(c => {
                                       const checked = itemCourses.some(lc => lc.id === c.id);
@@ -115,7 +115,7 @@ export default function NavItemManager() {
                                             {checked && <FiCheck className="w-3 h-3 text-white" />}
                                           </div>
                                           <input type="checkbox" checked={checked} onChange={() => toggleCourseLink(c.id, item.id)} className="sr-only" />
-                                          <span className="truncate text-admin-700">{c.title}</span>
+                                          <span className="truncate text-neutral-700">{c.title}</span>
                                         </label>
                                       );
                                     })
@@ -130,10 +130,10 @@ export default function NavItemManager() {
                             {children.map(child => {
                               const childCourses = linkedCourses(child);
                               return (
-                                <div key={child.id} className="flex items-center gap-2 text-xs text-admin-500 pl-3 border-l-2 border-admin-200 py-1">
+                                <div key={child.id} className="flex items-center gap-2 text-xs text-neutral-500 pl-3 border-l-2 border-admin-200 py-1">
                                   <FiChevronDown className="w-3 h-3 text-admin-300 -rotate-90" />
-                                  <span className="text-admin-700">{child.label}</span>
-                                  {child.path && <span className="text-admin-400">{child.path}</span>}
+                                  <span className="text-neutral-700">{child.label}</span>
+                                  {child.path && <span className="text-neutral-400">{child.path}</span>}
                                   {childCourses.length > 0 && (
                                     <div className="flex gap-1 ml-auto">
                                       {childCourses.map(c => (

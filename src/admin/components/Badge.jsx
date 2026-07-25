@@ -6,7 +6,7 @@ const variants = {
   featured: "bg-white text-admin-700",
   admin: "bg-info-50 text-info-700",
   editor: "bg-white text-admin-700",
-  master_admin: "bg-admin-100 text-admin-800",
+  master_admin: "bg-admin-100 text-neutral-800",
   coming_soon: "bg-warning-50 text-warning-700",
   on: "bg-success-50 text-success-700",
   off: "bg-admin-100 text-admin-500",

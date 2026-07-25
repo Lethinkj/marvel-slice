@@ -227,7 +227,7 @@ export default function Career() {
 
     const { error: insertError } = await supabase
       .from('career_submissions')
-      .insert({ full_name: form.full_name, email: form.email, phone: form.phone, position: form.position, category: form.category, description: form.description, file_url });
+      .insert({ full_name: form.full_name, email: form.email, phone: form.phone, department: form.position, category: form.category, description: form.description, file_url });
 
     if (insertError) {
       setStatus({ type: 'error', message: 'Failed to save submission. Please try again.' });

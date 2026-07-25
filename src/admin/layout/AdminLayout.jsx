@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import CommandPalette from "../components/ui/CommandPalette";
 import { ToastContainer } from "../components/Toast";
-import { FiMenu, FiExternalLink, FiLogOut, FiChevronRight, FiGrid, FiSearch, FiBell } from "react-icons/fi";
+import { FiMenu, FiExternalLink, FiLogOut, FiChevronRight, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock } from "react-icons/fi";
 
 function Breadcrumbs() {
   const { pathname } = useLocation();
@@ -58,19 +59,58 @@ function Breadcrumbs() {
   );
 }
 
+function relativeTime(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'now';
+  if (mins < 60) return `${mins}m`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return `${days}d`;
+  return new Date(dateStr).toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [unreadChats, setUnreadChats] = useState([]);
   const menuRef = useRef(null);
+  const notifRef = useRef(null);
 
   useEffect(() => {
     function handleClick(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  useEffect(() => {
+    async function fetchUnread() {
+      const { data } = await supabase
+        .from('conversations')
+        .select('id, user_name, last_message, last_message_sender, last_message_at, status')
+        .eq('notified', true)
+        .order('last_message_at', { ascending: false });
+      setUnreadChats(data || []);
+    }
+    fetchUnread();
+
+    const channel = supabase
+      .channel('admin-notifications')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, () => {
+        fetchUnread();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   useEffect(() => {
@@ -113,10 +153,58 @@ export default function AdminLayout() {
               <FiSearch className="w-4 h-4" />
             </button>
 
-            <button className="relative p-2 text-neutral-400 hover:text-neutral-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
-              <FiBell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive-500 rounded-full ring-2 ring-white" />
-            </button>
+            <div className="relative" ref={notifRef}>
+              <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-2 text-neutral-400 hover:text-neutral-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
+                <FiBell className="w-5 h-5" />
+                {unreadChats.length > 0 && (
+                  <span className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[11px] font-bold text-white bg-destructive-500 rounded-full ring-2 ring-white leading-none">
+                    {unreadChats.length > 9 ? '9+' : unreadChats.length}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-2xl border border-admin-200 z-50 max-h-96 flex flex-col">
+                  <div className="px-4 py-3 border-b border-admin-100">
+                    <h3 className="text-sm font-semibold text-neutral-900">Notifications</h3>
+                    <p className="text-xs text-neutral-500">{unreadChats.length} unread chat{unreadChats.length !== 1 ? 's' : ''}</p>
+                  </div>
+                  <div className="overflow-y-auto flex-1">
+                    {unreadChats.length === 0 ? (
+                      <div className="px-4 py-8 text-center text-sm text-neutral-400">No new notifications</div>
+                    ) : (
+                      unreadChats.map(chat => (
+                        <Link
+                          key={chat.id}
+                          to="/admin/chats?tab=live"
+                          onClick={() => setNotifOpen(false)}
+                          className="flex items-start gap-3 px-4 py-3 hover:bg-admin-50 transition-colors border-b border-admin-100 last:border-0"
+                        >
+                          <div className="w-8 h-8 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center shrink-0 mt-0.5">
+                            <FiMessageCircle className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-neutral-900 truncate">{chat.user_name || 'Anonymous'}</p>
+                            <p className="text-xs text-neutral-500 truncate mt-0.5">{chat.last_message || 'New conversation'}</p>
+                            <p className="text-[11px] text-neutral-400 mt-1 flex items-center gap-1">
+                              <FiClock className="w-3 h-3" />
+                              {chat.last_message_at ? relativeTime(chat.last_message_at) : 'Just now'}
+                            </p>
+                          </div>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                  <Link
+                    to="/admin/chats?tab=live"
+                    onClick={() => setNotifOpen(false)}
+                    className="block px-4 py-2.5 text-center text-xs font-medium text-admin-600 hover:text-admin-700 hover:bg-admin-50 rounded-b-xl border-t border-admin-100 transition-colors"
+                  >
+                    View all chats
+                  </Link>
+                </div>
+              )}
+            </div>
 
             <Link to="/" target="_blank" className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-neutral-500 hover:text-neutral-700 hover:bg-admin-100 transition-all duration-200">
               <FiExternalLink className="w-4 h-4" />

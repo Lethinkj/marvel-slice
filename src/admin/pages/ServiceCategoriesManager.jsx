@@ -76,7 +76,7 @@ export default function ServiceCategoriesManager() {
     <PageShell title="Service Categories" subtitle="Manage categories for services">
 
       <form onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-5 mb-6 space-y-4">
-        <h3 className="text-sm font-semibold text-neutral-900">{editingId ? 'Edit Category' : 'Add Category'}</h3>
+        <h3 className="text-sm font-semibold text-black">{editingId ? 'Edit Category' : 'Add Category'}</h3>
 
         <div className="flex gap-3">
           <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editingId ? form.slug : slugify(e.target.value) })}
@@ -137,7 +137,7 @@ export default function ServiceCategoriesManager() {
                   <FiServer className="w-4 h-4 text-cyan-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-neutral-900">{cat.name}</p>
+                  <p className="text-sm font-medium text-black">{cat.name}</p>
                   <p className="text-xs text-neutral-400">/{cat.slug}</p>
                   {cat.description && (
                     <p className="text-xs text-neutral-500 mt-0.5 truncate">{cat.description}</p>

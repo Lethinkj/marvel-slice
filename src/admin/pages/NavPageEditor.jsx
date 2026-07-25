@@ -43,7 +43,7 @@ function ImageUploader({ value, onChange, label }) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
           className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
@@ -252,16 +252,16 @@ export default function NavPageEditor() {
 
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white rounded-lg border border-admin-200 p-6">
-          <h2 className="font-semibold text-admin-900 mb-4">Hero Section</h2>
+          <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Heading</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
               <input type="text" value={heading} onChange={(e) => setHeading(e.target.value)}
                 className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
                 placeholder="Main heading" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
               <input type="text" value={subheading} onChange={(e) => setSubheading(e.target.value)}
                 className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
                 placeholder="Supporting text" />
@@ -274,7 +274,7 @@ export default function NavPageEditor() {
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900">Content Sections</h2>
+            <h2 className="font-semibold text-black">Content Sections</h2>
             <AdminButton type="button" onClick={addSection} variant="ghost" size="sm">
               <FiPlus className="w-4 h-4" />
               Add Section
@@ -282,7 +282,7 @@ export default function NavPageEditor() {
           </div>
 
           {sections.length === 0 && (
-            <p className="text-sm text-admin-400 italic py-8 text-center border-2 border-dashed border-admin-200 rounded-lg">
+            <p className="text-sm text-neutral-400 italic py-8 text-center border-2 border-dashed border-admin-200 rounded-lg">
               No sections yet. Click "Add Section" to add content.
             </p>
           )}
@@ -292,7 +292,7 @@ export default function NavPageEditor() {
               <div key={idx} className="border border-admin-200 rounded-lg p-5 hover:border-admin-200 transition-colors">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Section {idx + 1}</span>
+                    <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Section {idx + 1}</span>
                     <select value={sec.section_type} onChange={(e) => updateSection(idx, 'section_type', e.target.value)}
                       className="text-xs border border-admin-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-admin-500/20 bg-white">
                       {sectionTypes.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
@@ -300,11 +300,11 @@ export default function NavPageEditor() {
                   </div>
                   <div className="flex items-center gap-1">
                     <button type="button" onClick={() => moveSection(idx, -1)}
-                      className="p-1.5 text-admin-400 hover:text-admin-900 hover:bg-admin-100 rounded-lg transition-colors">
+                      className="p-1.5 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors">
                       <FiChevronUp className="w-4 h-4" />
                     </button>
                     <button type="button" onClick={() => moveSection(idx, 1)}
-                      className="p-1.5 text-admin-400 hover:text-admin-900 hover:bg-admin-100 rounded-lg transition-colors">
+                      className="p-1.5 text-cyan-500 hover:text-cyan-700 hover:bg-cyan-50 rounded-lg transition-colors">
                       <FiChevronDown className="w-4 h-4" />
                     </button>
                     <button type="button" onClick={() => removeSection(idx)}
@@ -315,13 +315,13 @@ export default function NavPageEditor() {
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Heading</label>
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
                     <input type="text" value={sec.heading || ''} onChange={(e) => updateSection(idx, 'heading', e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
                       placeholder="Section heading" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Content</label>
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Content</label>
                     <textarea value={sec.content || ''} onChange={(e) => updateSection(idx, 'content', e.target.value)} rows={3}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all"
                       placeholder="Section content" />
@@ -337,10 +337,10 @@ export default function NavPageEditor() {
 
         <div className="bg-white rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900">Linked Courses</h2>
+            <h2 className="font-semibold text-black">Linked Courses</h2>
             {courseChanges && <span className="text-xs text-warning-600 font-medium">Unsaved changes</span>}
           </div>
-          <p className="text-sm text-admin-500 mb-4">Select courses to display on this page.</p>
+          <p className="text-sm text-neutral-500 mb-4">Select courses to display on this page.</p>
           <div className="relative mb-4">
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
             <input type="text" value={courseSearch} onChange={(e) => setCourseSearch(e.target.value)}
@@ -348,7 +348,7 @@ export default function NavPageEditor() {
               className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" />
           </div>
           {allCourses.length === 0 ? (
-            <p className="text-sm text-admin-400 italic py-6 text-center border-2 border-dashed border-admin-200 rounded-lg">
+            <p className="text-sm text-neutral-400 italic py-6 text-center border-2 border-dashed border-admin-200 rounded-lg">
               <FiBookOpen className="w-5 h-5 mx-auto mb-2 opacity-50" />
               No courses available. Create courses in the Courses section first.
             </p>

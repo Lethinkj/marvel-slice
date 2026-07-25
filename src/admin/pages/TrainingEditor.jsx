@@ -42,7 +42,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
           </div>
           {fields.map((f) => (
             <div key={f.key}>
-              <label className="block text-xs font-medium text-admin-600 mb-1">
+              <label className="block text-xs font-medium text-neutral-500 mb-1">
                 {f.label}
               </label>
               {f.type === "textarea" ? (
@@ -91,7 +91,7 @@ function IconPicker({ value, onChange }) {
   const selected = ICON_OPTIONS.find((o) => o.key === value);
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-medium text-admin-600 mb-1">Icon</label>
+      <label className="block text-xs font-medium text-neutral-500 mb-1">Icon</label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -103,7 +103,7 @@ function IconPicker({ value, onChange }) {
             <span>{selected.label}</span>
           </>
         ) : (
-          <span className="text-admin-400">Select icon</span>
+          <span className="text-neutral-400">Select icon</span>
         )}
         <FiChevronUp className={`w-4 h-4 ml-auto text-admin-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -295,10 +295,10 @@ export default function TrainingEditor() {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg border border-admin-200 p-6 text-center">
-          <h1 className="text-2xl font-bold text-admin-900 mb-4">
+          <h1 className="text-2xl font-bold text-black mb-4">
             Access Denied
           </h1>
-          <p className="text-admin-600">
+          <p className="text-neutral-500">
             You do not have permission to access this page.
           </p>
         </div>
@@ -485,7 +485,7 @@ export default function TrainingEditor() {
           {tab === "basic" && (
             <div className="space-y-4 max-w-2xl">
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Title *
                 </label>
                 <input
@@ -495,7 +495,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Slug *
                 </label>
                 <input
@@ -508,7 +508,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Category
                 </label>
                 <select
@@ -527,7 +527,7 @@ export default function TrainingEditor() {
                 onChange={(val) => update("icon", val)}
               />
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Duration
                 </label>
                 <input
@@ -539,7 +539,7 @@ export default function TrainingEditor() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">
                     Mode
                   </label>
                   <select
@@ -553,7 +553,7 @@ export default function TrainingEditor() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">
                     Difficulty
                   </label>
                   <select
@@ -570,7 +570,7 @@ export default function TrainingEditor() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">
                     Price
                   </label>
                   <input
@@ -581,7 +581,7 @@ export default function TrainingEditor() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">
                     Discount
                   </label>
                   <input
@@ -594,7 +594,7 @@ export default function TrainingEditor() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">
                     Badge
                   </label>
                   <select
@@ -609,7 +609,7 @@ export default function TrainingEditor() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-admin-600 mb-1">
+                  <label className="block text-xs font-medium text-neutral-500 mb-1">
                     Status
                   </label>
                   <select
@@ -624,7 +624,7 @@ export default function TrainingEditor() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Sort Order
                 </label>
                 <input
@@ -680,7 +680,7 @@ export default function TrainingEditor() {
           {tab === "description" && (
             <div className="space-y-4 max-w-2xl">
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Short Description
                 </label>
                 <textarea
@@ -691,7 +691,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Full Description
                 </label>
                 <textarea
@@ -707,7 +707,7 @@ export default function TrainingEditor() {
           {tab === "media" && (
             <div className="space-y-6 max-w-2xl">
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Thumbnail
                 </label>
                 <ImageUploader
@@ -717,7 +717,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Banner / Hero Image
                 </label>
                 <ImageUploader
@@ -727,7 +727,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Meta Image (OG)
                 </label>
                 <ImageUploader
@@ -742,7 +742,7 @@ export default function TrainingEditor() {
           {tab === "details" && (
             <div className="space-y-6 max-w-2xl">
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Eligibility
                 </label>
                 <textarea
@@ -754,7 +754,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-admin-700 mb-2">Learning Outcomes</h4>
+                <h4 className="text-sm font-semibold text-neutral-700 mb-2">Learning Outcomes</h4>
                 <ListEditor
                   items={training.learning_outcomes || []}
                   onChange={(val) => update("learning_outcomes", val)}
@@ -764,7 +764,7 @@ export default function TrainingEditor() {
               </div>
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-semibold text-admin-700">Modules (JSON)</h4>
+                  <h4 className="text-sm font-semibold text-neutral-700">Modules (JSON)</h4>
                   <AdminButton
                     onClick={() => update("modules", [...training.modules, { title: "", duration: "", topics: [], outcomes: [] }])}
                     variant="ghost"
@@ -774,7 +774,7 @@ export default function TrainingEditor() {
                   </AdminButton>
                 </div>
                 {training.modules.length === 0 && (
-                  <div className="text-center py-8 text-admin-400 bg-white rounded-xl border-2 border-dashed border-admin-200">
+                  <div className="text-center py-8 text-neutral-400 bg-white rounded-xl border-2 border-dashed border-admin-200">
                     <FiBookOpen className="w-8 h-8 mx-auto mb-2 opacity-40" />
                     <p className="text-sm">No modules yet.</p>
                   </div>
@@ -783,7 +783,7 @@ export default function TrainingEditor() {
                   {training.modules.map((mod, i) => (
                     <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-admin-400 uppercase tracking-wider">Module {i + 1}</span>
+                        <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
                         <button
                           onClick={() => update("modules", training.modules.filter((_, j) => j !== i))}
                           className="p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors"
@@ -793,7 +793,7 @@ export default function TrainingEditor() {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-admin-600 mb-1">Title</label>
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
                           <input
                             value={mod.title || ""}
                             onChange={(e) => {
@@ -806,7 +806,7 @@ export default function TrainingEditor() {
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-admin-600 mb-1">Duration</label>
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">Duration</label>
                           <input
                             value={mod.duration || ""}
                             onChange={(e) => {
@@ -820,7 +820,7 @@ export default function TrainingEditor() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Topics</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Topics</label>
                         <div className="space-y-1.5">
                           {(mod.topics || []).map((topic, j) => (
                             <div key={j} className="flex items-center gap-2">
@@ -862,7 +862,7 @@ export default function TrainingEditor() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Outcomes</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Outcomes</label>
                         <div className="space-y-1.5">
                           {(mod.outcomes || []).map((outcome, j) => (
                             <div key={j} className="flex items-center gap-2">
@@ -908,7 +908,7 @@ export default function TrainingEditor() {
                 </div>
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-admin-700 mb-2">Skills (JSON)</h4>
+                <h4 className="text-sm font-semibold text-neutral-700 mb-2">Skills (JSON)</h4>
                 <ListEditor
                   items={training.skills || []}
                   onChange={(val) => update("skills", val)}
@@ -917,7 +917,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-admin-700 mb-2">Benefits (JSON)</h4>
+                <h4 className="text-sm font-semibold text-neutral-700 mb-2">Benefits (JSON)</h4>
                 <ListEditor
                   items={training.benefits || []}
                   onChange={(val) => update("benefits", val)}
@@ -926,7 +926,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Placement Support
                 </label>
                 <textarea
@@ -938,7 +938,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Assessment
                 </label>
                 <textarea
@@ -954,7 +954,7 @@ export default function TrainingEditor() {
 
           {tab === "modules" && (
             <div className="max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">Modules</h3>
+              <h3 className="font-semibold text-black mb-4">Modules</h3>
               <div className="space-y-4">
                 {training.trainingModules.map((mod, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
@@ -966,7 +966,7 @@ export default function TrainingEditor() {
                     </button>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Title</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
                         <input
                           value={mod.title || ""}
                           onChange={(e) => {
@@ -978,7 +978,7 @@ export default function TrainingEditor() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Duration</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Duration</label>
                         <input
                           value={mod.duration || ""}
                           onChange={(e) => {
@@ -992,7 +992,7 @@ export default function TrainingEditor() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Topics</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Topics</label>
                       <div className="space-y-1.5">
                         {(mod.topics || []).map((topic, j) => (
                           <div key={j} className="flex items-center gap-2">
@@ -1034,7 +1034,7 @@ export default function TrainingEditor() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Outcomes</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Outcomes</label>
                       <div className="space-y-1.5">
                         {(mod.outcomes || []).map((outcome, j) => (
                           <div key={j} className="flex items-center gap-2">
@@ -1076,7 +1076,7 @@ export default function TrainingEditor() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Sort Order</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Sort Order</label>
                       <input
                         type="number"
                         value={mod.sort_order ?? i}
@@ -1103,7 +1103,7 @@ export default function TrainingEditor() {
 
           {tab === "skills" && (
             <div className="max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">Skills</h3>
+              <h3 className="font-semibold text-black mb-4">Skills</h3>
               <div className="space-y-4">
                 {training.trainingSkills.map((s, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
@@ -1122,7 +1122,7 @@ export default function TrainingEditor() {
                       }}
                     />
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Title</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
                       <input
                         value={s.title || ""}
                         onChange={(e) => {
@@ -1134,7 +1134,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
                       <textarea
                         value={s.description || ""}
                         onChange={(e) => {
@@ -1147,7 +1147,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Sort Order</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Sort Order</label>
                       <input
                         type="number"
                         value={s.sort_order ?? i}
@@ -1174,7 +1174,7 @@ export default function TrainingEditor() {
 
           {tab === "benefits" && (
             <div className="max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">Benefits</h3>
+              <h3 className="font-semibold text-black mb-4">Benefits</h3>
               <div className="space-y-4">
                 {training.trainingBenefits.map((b, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
@@ -1193,7 +1193,7 @@ export default function TrainingEditor() {
                       }}
                     />
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Title</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
                       <input
                         value={b.title || ""}
                         onChange={(e) => {
@@ -1205,7 +1205,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Description</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
                       <textarea
                         value={b.description || ""}
                         onChange={(e) => {
@@ -1218,7 +1218,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Sort Order</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Sort Order</label>
                       <input
                         type="number"
                         value={b.sort_order ?? i}
@@ -1245,7 +1245,7 @@ export default function TrainingEditor() {
 
           {tab === "faqs" && (
             <div className="max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">FAQs</h3>
+              <h3 className="font-semibold text-black mb-4">FAQs</h3>
               <div className="space-y-4">
                 {training.faqs.map((faq, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
@@ -1256,7 +1256,7 @@ export default function TrainingEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Question</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Question</label>
                       <input
                         value={faq.question || ""}
                         onChange={(e) => {
@@ -1268,7 +1268,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Answer</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Answer</label>
                       <textarea
                         value={faq.answer || ""}
                         onChange={(e) => {
@@ -1282,7 +1282,7 @@ export default function TrainingEditor() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Category</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Category</label>
                         <input
                           value={faq.category || ""}
                           onChange={(e) => {
@@ -1325,7 +1325,7 @@ export default function TrainingEditor() {
 
           {tab === "testimonials" && (
             <div className="max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">Testimonials</h3>
+              <h3 className="font-semibold text-black mb-4">Testimonials</h3>
               <div className="space-y-4">
                 {training.testimonials.map((t, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
@@ -1336,7 +1336,7 @@ export default function TrainingEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Student Name</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Student Name</label>
                       <input
                         value={t.student_name || ""}
                         onChange={(e) => {
@@ -1348,7 +1348,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Photo</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Photo</label>
                       <ImageUploader
                         bucket="training-images"
                         value={t.photo || ""}
@@ -1361,7 +1361,7 @@ export default function TrainingEditor() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">College</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">College</label>
                         <input
                           value={t.college || ""}
                           onChange={(e) => {
@@ -1373,7 +1373,7 @@ export default function TrainingEditor() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Company</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Company</label>
                         <input
                           value={t.company || ""}
                           onChange={(e) => {
@@ -1386,7 +1386,7 @@ export default function TrainingEditor() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Rating</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Rating</label>
                       <select
                         value={t.rating ?? 5}
                         onChange={(e) => {
@@ -1402,7 +1402,7 @@ export default function TrainingEditor() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Review</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Review</label>
                       <textarea
                         value={t.review || ""}
                         onChange={(e) => {
@@ -1429,7 +1429,7 @@ export default function TrainingEditor() {
 
           {tab === "gallery" && (
             <div className="max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">Gallery</h3>
+              <h3 className="font-semibold text-black mb-4">Gallery</h3>
               <div className="space-y-4">
                 {training.gallery.map((g, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
@@ -1440,7 +1440,7 @@ export default function TrainingEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Image</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Image</label>
                       <ImageUploader
                         bucket="training-images"
                         value={g.image || ""}
@@ -1452,7 +1452,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Caption</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Caption</label>
                       <input
                         value={g.caption || ""}
                         onChange={(e) => {
@@ -1464,7 +1464,7 @@ export default function TrainingEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-admin-600 mb-1">Type</label>
+                      <label className="block text-xs font-medium text-neutral-500 mb-1">Type</label>
                       <select
                         value={g.type || "image"}
                         onChange={(e) => {
@@ -1493,7 +1493,7 @@ export default function TrainingEditor() {
 
           {tab === "statistics" && (
             <div className="max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">Statistics</h3>
+              <h3 className="font-semibold text-black mb-4">Statistics</h3>
               <div className="space-y-4">
                 {training.statistics.map((s, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
@@ -1513,7 +1513,7 @@ export default function TrainingEditor() {
                     />
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Title</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
                         <input
                           value={s.title || ""}
                           onChange={(e) => {
@@ -1526,7 +1526,7 @@ export default function TrainingEditor() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-admin-600 mb-1">Value</label>
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Value</label>
                         <input
                           value={s.value || ""}
                           onChange={(e) => {
@@ -1554,9 +1554,9 @@ export default function TrainingEditor() {
 
           {tab === "seo" && (
             <div className="space-y-4 max-w-2xl">
-              <h3 className="font-semibold text-admin-900 mb-4">SEO Settings</h3>
+              <h3 className="font-semibold text-black mb-4">SEO Settings</h3>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   SEO Title
                 </label>
                 <input
@@ -1566,7 +1566,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   SEO Description
                 </label>
                 <textarea
@@ -1577,7 +1577,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   SEO Keywords
                 </label>
                 <input
@@ -1588,7 +1588,7 @@ export default function TrainingEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-admin-600 mb-1">
+                <label className="block text-xs font-medium text-neutral-500 mb-1">
                   Canonical URL
                 </label>
                 <input

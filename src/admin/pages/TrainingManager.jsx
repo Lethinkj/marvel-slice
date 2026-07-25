@@ -105,7 +105,7 @@ export default function TrainingManager() {
     {
       header: 'Badge',
       className: 'hidden lg:table-cell',
-      cell: (row) => row.badge ? <Badge variant="default">{row.badge}</Badge> : <span className="text-sm text-admin-400">-</span>,
+      cell: (row) => row.badge ? <Badge variant="default">{row.badge}</Badge> : <span className="text-sm text-neutral-400">-</span>,
     },
     {
       header: 'Status',
@@ -150,9 +150,9 @@ export default function TrainingManager() {
       className: 'w-32 text-right',
       cell: (row) => (
         <div className="flex items-center justify-end gap-1">
-          {row.slug && <Link to={`/training/${row.slug}`} target="_blank" className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-md hover:bg-white transition-colors" title="Preview"><FiExternalLink className="w-4 h-4" /></Link>}
-          <Link to={`/admin/training/${row.id}`} className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-md hover:bg-white transition-colors" title="Edit"><FiEdit2 className="w-4 h-4" /></Link>
-          <button onClick={() => handleDuplicate(row)} className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-md hover:bg-white transition-colors" title="Duplicate"><FiCopy className="w-4 h-4" /></button>
+          {row.slug && <Link to={`/training/${row.slug}`} target="_blank" className="p-1.5 text-blue-500 hover:text-blue-700 rounded-md hover:bg-blue-50 transition-colors" title="Preview"><FiExternalLink className="w-4 h-4" /></Link>}
+          <Link to={`/admin/training/${row.id}`} className="p-1.5 text-amber-500 hover:text-amber-700 rounded-md hover:bg-amber-50 transition-colors" title="Edit"><FiEdit2 className="w-4 h-4" /></Link>
+          <button onClick={() => handleDuplicate(row)} className="p-1.5 text-violet-500 hover:text-violet-700 rounded-md hover:bg-violet-50 transition-colors" title="Duplicate"><FiCopy className="w-4 h-4" /></button>
           <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-destructive-500 hover:text-destructive-700 rounded-md hover:bg-destructive-50 transition-colors" title="Delete"><FiTrash2 className="w-4 h-4" /></button>
         </div>
       ),

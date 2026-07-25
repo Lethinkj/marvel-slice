@@ -47,7 +47,7 @@ function ReplyModal({ row, onClose, pageTitle }) {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose}>
         <div className="bg-white rounded-xl border border-admin-200 shadow-2xl max-w-lg w-full p-8 text-center cursor-pointer" onClick={e => e.stopPropagation()}>
           <div className="w-12 h-12 rounded-full bg-success-50 flex items-center justify-center mx-auto mb-4"><FiCheck className="w-6 h-6 text-success-500" /></div>
-          <h3 className="text-lg font-semibold text-neutral-900 mb-1">Reply sent!</h3>
+          <h3 className="text-lg font-semibold text-black mb-1">Reply sent!</h3>
           <p className="text-sm text-neutral-500 mb-6">Your email has been sent to {row.email}.</p>
           <button onClick={onClose} className="px-5 py-2 rounded-lg bg-admin-600 text-white text-sm font-medium hover:bg-admin-700 transition-all shadow-sm">Done</button>
         </div>
@@ -59,7 +59,7 @@ function ReplyModal({ row, onClose, pageTitle }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm cursor-pointer" onClick={onClose}>
       <div className="bg-white rounded-xl border border-admin-200 shadow-2xl max-w-lg w-full cursor-pointer" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-admin-100">
-          <div><h3 className="text-base font-semibold text-neutral-900">Reply to {row.full_name || row.name || row.email}</h3><p className="text-xs text-neutral-400 mt-0.5">{row.email}</p></div>
+          <div><h3 className="text-base font-semibold text-black">Reply to {row.full_name || row.name || row.email}</h3><p className="text-xs text-neutral-400 mt-0.5">{row.email}</p></div>
           <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-all"><FiX className="w-5 h-5" /></button>
         </div>
         <div className="p-6 space-y-4">
@@ -167,7 +167,7 @@ function ExportDialog({ type, data, columns, exportFilename, onClose }) {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer" onClick={onClose} />
       <div className="relative bg-white rounded-xl border border-admin-200 shadow-2xl w-full max-w-md cursor-pointer" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-admin-100">
-          <div><h2 className="text-base font-semibold text-neutral-900">Export {type.toUpperCase()}</h2><p className="text-xs text-neutral-400 mt-0.5">Choose date range for the report</p></div>
+          <div><h2 className="text-base font-semibold text-black">Export {type.toUpperCase()}</h2><p className="text-xs text-neutral-400 mt-0.5">Choose date range for the report</p></div>
           <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-all"><FiX className="w-5 h-5" /></button>
         </div>
         <div className="p-6 space-y-4">
@@ -331,7 +331,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-neutral-900">{title}</h1>
+          <h1 className="text-xl font-bold text-black">{title}</h1>
           <p className="text-sm text-neutral-400 mt-0.5">{data.length} total{unreadCount > 0 ? ` · ${unreadCount} unread` : ''}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -483,10 +483,10 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                               <FiSend className="w-3 h-3" /><span className="hidden md:inline">Reply</span>
                             </button>}
                             <button onClick={e => { e.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }}
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-warning-50 text-warning-700 hover:bg-warning-50 transition-all"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-50 transition-all"
                               title="View details"
                             >
-                              <FiEye className="w-3.5 h-3.5" /><span className="hidden md:inline">View</span>
+                              <FiEye className="w-3.5 h-3.5 text-blue-500" /><span className="hidden md:inline">View</span>
                             </button>
                           </div>
                         </td>
@@ -523,7 +523,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
         {selected && (
           <div className="bg-white rounded-xl border border-admin-200 shadow-lg overflow-hidden sticky top-4">
             <div className="flex items-center justify-between px-5 py-4 border-b border-admin-100">
-              <h3 className="text-sm font-semibold text-neutral-900">Details</h3>
+              <h3 className="text-sm font-semibold text-black">Details</h3>
               <button onClick={() => setSelected(null)} className="p-1 text-neutral-400 hover:text-neutral-600 rounded-md hover:bg-neutral-100 transition-all">
                 <FiX className="w-4 h-4" />
               </button>

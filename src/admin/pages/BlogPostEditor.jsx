@@ -30,7 +30,7 @@ function ImageUploader({ value, onChange, label }) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input
           type="text"
@@ -250,10 +250,10 @@ export default function BlogPostEditor() {
 
       <form ref={formRef} onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-6 space-y-8">
         <div>
-          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Basic Information</h2>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Basic Information</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Title</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Title</label>
               <input
                 type="text"
                 value={form.title}
@@ -264,7 +264,7 @@ export default function BlogPostEditor() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Slug</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Slug</label>
               <div className="relative">
                 <input
                   type="text"
@@ -300,7 +300,7 @@ export default function BlogPostEditor() {
               )}
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Author</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Author</label>
               <input
                 type="text"
                 value={form.author}
@@ -315,10 +315,10 @@ export default function BlogPostEditor() {
         <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Content</h2>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Content</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Excerpt</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Excerpt</label>
               <textarea
                 value={form.excerpt}
                 onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
@@ -328,7 +328,7 @@ export default function BlogPostEditor() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Content</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Content</label>
               <textarea
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
@@ -343,17 +343,17 @@ export default function BlogPostEditor() {
         <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Featured Image</h2>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Featured Image</h2>
           <ImageUploader value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} label="Image URL" />
         </div>
 
         <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Metadata</h2>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Metadata</h2>
           <div className="grid sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Category</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Category</label>
               <select
                 value={form.category_id}
                 onChange={(e) => setForm({ ...form, category_id: e.target.value })}
@@ -366,7 +366,7 @@ export default function BlogPostEditor() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-admin-700 mb-1.5 uppercase tracking-wider">Tags</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Tags</label>
               <div className="flex flex-wrap gap-2 mt-1">
                 {allTags.map((tag) => {
                   const isSelected = selectedTags.includes(tag.id);
@@ -389,7 +389,7 @@ export default function BlogPostEditor() {
                   );
                 })}
                 {allTags.length === 0 && (
-                  <p className="text-sm text-admin-400">
+                  <p className="text-sm text-neutral-400">
                     No tags available. Create them in{' '}
                     <Link to="/admin/tags" className="text-admin-600 hover:underline">Tags Manager</Link>.
                   </p>
@@ -402,7 +402,7 @@ export default function BlogPostEditor() {
         <div className="border-t border-admin-100" />
 
         <div>
-          <h2 className="text-sm font-semibold text-admin-500 uppercase tracking-wider mb-4">Publishing</h2>
+          <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Publishing</h2>
           <div className="flex items-center gap-6">
             <label className="flex items-center gap-3 p-3 bg-white rounded-lg border border-admin-200 cursor-pointer hover:bg-admin-100 transition-colors">
               <div className={`relative w-10 h-6 rounded-full transition-colors ${form.is_published ? 'bg-admin-600' : 'bg-admin-300'}`}>
@@ -414,7 +414,7 @@ export default function BlogPostEditor() {
                   className="sr-only"
                 />
               </div>
-              <span className="text-sm font-medium text-admin-900">Published</span>
+              <span className="text-sm font-medium text-black">Published</span>
             </label>
             <label className="flex items-center gap-2 p-3 bg-white rounded-lg border border-admin-200 cursor-pointer hover:bg-admin-100 transition-colors">
               <input
@@ -423,7 +423,7 @@ export default function BlogPostEditor() {
                 onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
                 className="w-4 h-4 rounded text-admin-600 focus:ring-admin-500/20"
               />
-              <span className="text-sm font-medium text-admin-900">Featured</span>
+              <span className="text-sm font-medium text-black">Featured</span>
             </label>
           </div>
         </div>

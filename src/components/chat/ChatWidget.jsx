@@ -292,7 +292,7 @@ export default function ChatWidget() {
     if (!error) {
       await supabase
         .from('conversations')
-        .update({ last_message_at: new Date().toISOString() })
+        .update({ last_message: text, last_message_sender: 'user', last_message_at: new Date().toISOString(), notified: true })
         .eq('id', conversationId);
     }
 
@@ -403,21 +403,23 @@ export default function ChatWidget() {
                 <div ref={messagesEnd} />
               </div>
 
-              <form onSubmit={handleSend} className="shrink-0 px-4 py-3 border-t border-gray-200 bg-white flex gap-2">
-                <input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-2.5 text-sm border border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-gray-500/40"
-                  disabled={sending}
-                />
-                <button
-                  type="submit"
-                  disabled={!input.trim() || sending}
-                  className="w-10 h-10 rounded-full bg-gray-400 text-white flex items-center justify-center hover:bg-gray-500 transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
-                >
-                  {sending ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
-                </button>
+              <form onSubmit={handleSend} className="shrink-0 px-4 py-3 border-t border-gray-200 bg-white">
+                <div className="relative flex items-center">
+                  <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Type your message..."
+                    className="w-full px-4 py-2.5 pr-11 text-sm border border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-gray-500/40"
+                    disabled={sending}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!input.trim() || sending}
+                    className="absolute right-1 w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    {sending ? <FiLoader className="w-3.5 h-3.5 animate-spin" /> : <FiSend className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
               </form>
             </>
           )}

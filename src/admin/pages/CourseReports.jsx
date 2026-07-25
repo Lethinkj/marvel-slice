@@ -353,8 +353,8 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
       <div className="relative bg-white rounded-lg border border-admin-200 w-full max-w-lg max-h-[85vh] flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-admin-200 shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-admin-900">Generate Report</h2>
-            <p className="text-xs text-admin-400">Select courses to include in the PDF</p>
+            <h2 className="text-lg font-bold text-black">Generate Report</h2>
+            <p className="text-xs text-neutral-400">Select courses to include in the PDF</p>
           </div>
           <button onClick={onClose} className="p-1 hover:bg-admin-100 rounded-lg transition-colors">
             <FiX className="w-5 h-5 text-admin-400" />
@@ -363,7 +363,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
 
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           <div>
-            <p className="text-xs font-semibold text-admin-500 uppercase tracking-wider mb-2">By Category</p>
+            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">By Category</p>
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => {
                 const active = selectedCategories.has(cat);
@@ -379,7 +379,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                     }`}
                   >
                     {cat}
-                    <span className={`ml-1.5 text-xs ${active ? 'text-white/70' : 'text-admin-400'}`}>({count})</span>
+                    <span className={`ml-1.5 text-xs ${active ? 'text-white/70' : 'text-neutral-400'}`}>({count})</span>
                   </button>
                 );
               })}
@@ -388,13 +388,13 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
 
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-admin-200" />
-            <span className="text-xs text-admin-400 font-medium">OR</span>
+            <span className="text-xs text-neutral-400 font-medium">OR</span>
             <div className="flex-1 h-px bg-admin-200" />
           </div>
 
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <p className="text-xs font-semibold text-admin-500 uppercase tracking-wider">Select Courses</p>
+              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Select Courses</p>
               <button
                 onClick={selectAll}
                 className="text-xs text-admin-600 font-medium hover:underline"
@@ -420,7 +420,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                 const paginated = displayCourses.slice((safePage - 1) * 5, safePage * 5);
 
                 return paginated.length === 0 ? (
-                  <p className="text-sm text-admin-400 text-center py-4">No courses found.</p>
+                  <p className="text-sm text-neutral-400 text-center py-4">No courses found.</p>
                 ) : (
                   paginated.map((course) => (
                     <button
@@ -435,8 +435,8 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
                       }`}>
                         {selectedCourses.has(course.id) && <FiCheck className="w-2.5 h-2.5 text-white" />}
                       </div>
-                      <span className="text-sm text-admin-900 truncate">{course.title}</span>
-                      <span className="text-xs text-admin-400 ml-auto shrink-0">{getCourseCategory(course) || 'Uncategorized'}</span>
+                      <span className="text-sm text-black truncate">{course.title}</span>
+                      <span className="text-xs text-neutral-400 ml-auto shrink-0">{getCourseCategory(course) || 'Uncategorized'}</span>
                     </button>
                   ))
                 );
@@ -480,7 +480,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
         </div>
 
         <div className="px-6 py-4 border-t border-admin-200 flex items-center justify-between shrink-0">
-          <span className="text-xs text-admin-400">
+          <span className="text-xs text-neutral-400">
             {selectedCount > 0 ? `${selectedCount} course${selectedCount > 1 ? 's' : ''} selected` : 'No courses selected'}
           </span>
           <AdminButton

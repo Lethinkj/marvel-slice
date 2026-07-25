@@ -50,7 +50,7 @@ function PreviewModal({ file, onClose }) {
     <div className="fixed inset-0 bg-admin-900/60 flex items-center justify-center z-50 p-4 cursor-pointer" onClick={onClose}>
       <div className="bg-white rounded-lg border border-admin-200 max-w-2xl w-full max-h-[90vh] overflow-hidden cursor-pointer" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-admin-100">
-          <h3 className="font-semibold text-admin-900 truncate">{file.name}</h3>
+          <h3 className="font-semibold text-black truncate">{file.name}</h3>
           <button onClick={onClose} className="p-1.5 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
             <FiX className="w-5 h-5" />
           </button>
@@ -60,12 +60,12 @@ function PreviewModal({ file, onClose }) {
             <img src={url} alt={file.name} className="max-w-full max-h-[300px] object-contain" />
           </div>
           <div className="sm:w-1/2 space-y-3 text-sm">
-            <div><span className="text-admin-500">Filename</span><p className="font-medium text-admin-900 break-all">{file.name}</p></div>
-            <div><span className="text-admin-500">Bucket</span><p className="font-medium text-admin-900"><span className="inline-block px-2 py-0.5 bg-white text-admin-600 rounded text-xs font-medium">{file._bucket}</span></p></div>
-            <div><span className="text-admin-500">Path</span><p className="font-medium text-admin-900 text-xs font-mono break-all">{file._path}</p></div>
-            <div><span className="text-admin-500">Size</span><p className="font-medium text-admin-900">{formatSize(file.metadata?.size)}</p></div>
-            {file.metadata?.mimetype && <div><span className="text-admin-500">Type</span><p className="font-medium text-admin-900">{file.metadata.mimetype}</p></div>}
-            <div><span className="text-admin-500">Uploaded</span><p className="font-medium text-admin-900">{formatDate(file.created_at)}</p></div>
+            <div><span className="text-neutral-500">Filename</span><p className="font-medium text-black break-all">{file.name}</p></div>
+            <div><span className="text-neutral-500">Bucket</span><p className="font-medium text-black"><span className="inline-block px-2 py-0.5 bg-white text-neutral-500 rounded text-xs font-medium">{file._bucket}</span></p></div>
+            <div><span className="text-neutral-500">Path</span><p className="font-medium text-black text-xs font-mono break-all">{file._path}</p></div>
+            <div><span className="text-neutral-500">Size</span><p className="font-medium text-black">{formatSize(file.metadata?.size)}</p></div>
+            {file.metadata?.mimetype && <div><span className="text-neutral-500">Type</span><p className="font-medium text-black">{file.metadata.mimetype}</p></div>}
+            <div><span className="text-neutral-500">Uploaded</span><p className="font-medium text-black">{formatDate(file.created_at)}</p></div>
             <div className="pt-2 flex gap-2">
               <AdminButton variant="ghost" size="xs" onClick={() => { navigator.clipboard.writeText(url); }}><FiCopy className="w-3.5 h-3.5" /> Copy URL</AdminButton>
               <AdminButton variant="ghost" size="xs" onClick={() => window.open(url, '_blank')}><FiExternalLink className="w-3.5 h-3.5" /> Open</AdminButton>
@@ -241,9 +241,9 @@ export default function MediaLibrary() {
       >
         <div className="rounded-lg border border-admin-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-admin-900 flex items-center gap-2">
+            <h2 className="font-semibold text-black flex items-center gap-2">
               {bucket === 'all' ? 'All Buckets' : bucket}
-              <span className="text-xs font-normal text-admin-400 bg-admin-100 px-2 py-0.5 rounded-full">{filtered.length} file{filtered.length !== 1 ? 's' : ''}</span>
+              <span className="text-xs font-normal text-neutral-400 bg-admin-100 px-2 py-0.5 rounded-full">{filtered.length} file{filtered.length !== 1 ? 's' : ''}</span>
             </h2>
           </div>
 
@@ -251,7 +251,7 @@ export default function MediaLibrary() {
             <div className="absolute inset-0 rounded-lg border-2 border-dashed border-admin-400 bg-white/80 flex items-center justify-center z-10">
               <div className="text-center">
                 <FiUpload className="w-10 h-10 text-admin-500 mx-auto mb-2" />
-                <p className="text-sm font-medium text-admin-700">Drop files to upload</p>
+                <p className="text-sm font-medium text-neutral-700">Drop files to upload</p>
               </div>
             </div>
           )}
@@ -273,7 +273,7 @@ export default function MediaLibrary() {
               <div className="w-16 h-16 mx-auto bg-admin-100 rounded-full flex items-center justify-center mb-4">
                 <FiFile className="w-7 h-7 text-admin-400" />
               </div>
-              <p className="text-admin-500">{search ? 'No files match your search.' : 'This bucket is empty.'}</p>
+              <p className="text-neutral-500">{search ? 'No files match your search.' : 'This bucket is empty.'}</p>
               {!search && bucket !== 'all' && (
                 <AdminButton variant="secondary" size="sm" className="mt-4" onClick={() => uploadRef.current?.click()}>
                   <FiUpload className="w-4 h-4" /> Upload your first file
@@ -294,10 +294,10 @@ export default function MediaLibrary() {
                     </div>
                   </button>
                   <div className="p-2.5">
-                    <p className="text-xs text-admin-900 truncate font-medium">{file.name}</p>
-                    <p className="text-[10px] text-admin-400 mt-0.5">{formatSize(file.metadata?.size)}</p>
+                    <p className="text-xs text-black truncate font-medium">{file.name}</p>
+                    <p className="text-[10px] text-neutral-400 mt-0.5">{formatSize(file.metadata?.size)}</p>
                     {bucket === 'all' && (
-                      <p className="text-[10px] text-admin-600/70 mt-0.5 truncate">{file._bucket}</p>
+                      <p className="text-[10px] text-neutral-500/70 mt-0.5 truncate">{file._bucket}</p>
                     )}
                     <div className="flex items-center gap-1 mt-2 pt-1.5 border-t border-admin-100 opacity-100">
                       <button onClick={() => copyUrl(file)}
@@ -326,17 +326,17 @@ export default function MediaLibrary() {
                     )}
                   </button>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-admin-900 truncate">{file.name}</p>
-                    <p className="text-xs text-admin-400">
+                    <p className="text-sm font-medium text-black truncate">{file.name}</p>
+                    <p className="text-xs text-neutral-400">
                       {formatSize(file.metadata?.size)} &middot; {formatDate(file.created_at)}
-                      {bucket === 'all' && <span> &middot; <span className="text-admin-600">{file._bucket}</span></span>}
+                      {bucket === 'all' && <span> &middot; <span className="text-neutral-500">{file._bucket}</span></span>}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 opacity-100 shrink-0">
-                    <button onClick={() => copyUrl(file)} className="p-2 text-admin-400 hover:text-admin-600 hover:bg-white rounded-lg transition-colors" title="Copy URL">
+                    <button onClick={() => copyUrl(file)} className="p-2 text-violet-500 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors" title="Copy URL">
                       {copied === file._path ? <FiCheck className="w-4 h-4 text-success-500" /> : <FiCopy className="w-4 h-4" />}
                     </button>
-                    <button onClick={() => window.open(getUrl(file), '_blank')} className="p-2 text-admin-400 hover:text-admin-900 hover:bg-admin-100 rounded-lg transition-colors" title="Open">
+                    <button onClick={() => window.open(getUrl(file), '_blank')} className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors" title="Open">
                       <FiExternalLink className="w-4 h-4" />
                     </button>
                     <button onClick={() => deleteFile(file)} className="px-2.5 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">

@@ -163,7 +163,7 @@ export default function SiteSettings() {
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
             <FiMail className="w-4 h-4 text-cyan-600" /> Contact Information
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -186,7 +186,7 @@ export default function SiteSettings() {
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
             <FiGlobe className="w-4 h-4 text-violet-500" /> Social Links
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -207,7 +207,7 @@ export default function SiteSettings() {
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
             <FiMapPin className="w-4 h-4 text-amber-500" /> Address
           </h3>
           <div>
@@ -219,7 +219,7 @@ export default function SiteSettings() {
         </div>
 
         <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
             <FiClock className="w-4 h-4 text-cyan-500" /> Working Hours
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
