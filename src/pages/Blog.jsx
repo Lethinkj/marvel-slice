@@ -187,7 +187,7 @@ function NewsletterForm() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email address" required
-            className="w-full px-4 py-2.5 rounded-xl text-dark-navy text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange" />
+            className="w-full px-4 py-2.5 rounded-xl bg-white text-dark-navy text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange" />
           <Button type="submit" variant="primary" size="lg" shape="md" className="w-full">
             Subscribe <FiArrowRight className="w-4 h-4" /></Button>
         </form>
