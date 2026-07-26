@@ -8,8 +8,6 @@ import {
   FiTrash2,
   FiArrowLeft,
   FiCheck,
-  FiChevronRight,
-  FiChevronLeft,
   FiClock,
   FiMonitor,
   FiUsers,
@@ -32,7 +30,6 @@ import {
   FiTrendingUp,
   FiChevronUp,
   FiAlertCircle,
-  FiSave,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
@@ -382,25 +379,12 @@ export default function CourseWizard() {
       title="Create New Course"
       maxWidth="max-w-[1600px]"
       actions={
-        <>
-          <Link to="/admin/courses" className="p-2 text-admin-400 hover:text-admin-700 rounded-lg hover:bg-admin-100 transition-colors">
-            <FiArrowLeft className="w-5 h-5" />
-          </Link>
-          <AdminButton onClick={() => navigate("/admin/courses")} variant="ghost" size="md">Cancel</AdminButton>
-          <AdminButton
-            onClick={handleSave}
-            disabled={saving || !c.title.trim() || !c.slug.trim() || !navItemId || courseTags.length === 0}
-            variant="primary"
-            size="md"
-          >
-            {saving ? "Saving..." : "Save Course"}
-          </AdminButton>
-        </>
+        <button onClick={() => navigate("/admin/courses")} className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-colors">Cancel</button>
       }
     >
 
       {message && (
-        <div className={`mb-6 p-4 rounded-lg flex items-center gap-2 text-sm ${
+        <div className={`p-4 rounded-lg flex items-center gap-2 text-sm ${
           message.includes("successfully")
             ? "bg-success-50 border border-success-500 text-success-700"
             : "bg-destructive-50 border border-destructive-500 text-destructive-700"
@@ -414,46 +398,31 @@ export default function CourseWizard() {
         </div>
       )}
 
-      <div className="mb-8">
-        <div className="relative flex items-center justify-between">
-          {STEPS.map((s, i) => {
-            const isCompleted = i < step;
-            const isCurrent = i === step;
-            return (
-              <div key={s.label} className="flex flex-col items-center flex-1 relative">
-                {i > 0 && (
-                  <div
-                    className={`absolute top-[14px] right-1/2 w-full h-0.5 ${i <= step ? "bg-white0" : "bg-admin-200"}`}
-                    style={{ transform: "translateX(50%)" }}
-                  />
-                )}
-                <button
-                  type="button"
-                  disabled={!isCompleted}
-                  onClick={() => handleStepClick(i)}
-                  className={`relative z-10 w-7 h-7 flex items-center justify-center rounded-full text-xs font-semibold border-2 transition-colors ${
-                    isCurrent
-                      ? "bg-white0 border-admin-500 text-white"
-                      : isCompleted
-                      ? "bg-white0 border-admin-500 text-white cursor-pointer hover:bg-admin-700"
-                      : "bg-white border-admin-200 text-admin-400"
-                  }`}
-                >
-                  {isCompleted ? <FiCheck className="w-3.5 h-3.5" /> : <span>{i + 1}</span>}
-                </button>
-                <span className={`mt-2 text-xs font-medium text-center leading-tight ${
-                  isCurrent || isCompleted ? "text-neutral-600" : "text-neutral-400"
-                }`}>
-                  {s.label}
-                </span>
-              </div>
-            );
-          })}
+      <div className="flex gap-6 items-start">
+        <div className="w-48 shrink-0 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+            {STEPS.map((s, i) => (
+              <button
+                key={s.label}
+                type="button"
+                onClick={() => setStep(i)}
+                className={`cursor-pointer w-full flex items-center gap-3 text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
+                  step === i
+                    ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]'
+                    : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'
+                }`}
+              >
+                <s.icon className={`w-4 h-4 shrink-0 ${
+                  step === i ? 'text-indigo-600' : 'text-gray-400'
+                }`} />
+                <span>{s.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="p-6 sm:p-8">
-        {step === 0 && (
+        <div className="flex-1 min-w-0">
+          {step === 0 && (
           <div className="space-y-6">
             {categories.length > 0 && (
               <div>
@@ -909,30 +878,19 @@ export default function CourseWizard() {
             </div>
           </div>
         )}
+        </div>
       </div>
 
-      <div className="flex items-center justify-between mt-6 bg-white rounded-lg border border-admin-200 p-4">
-        <AdminButton onClick={() => setStep((s) => s - 1)} disabled={step === 0} variant="ghost" size="md">
-          <FiChevronLeft className="w-4 h-4" /> Back
-        </AdminButton>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-neutral-400">Step {step + 1} of {STEPS.length}</span>
-          <div className="hidden sm:flex gap-1">
-            {STEPS.map((_, i) => (
-              <div key={i} className={`w-2 h-2 rounded-full ${i <= step ? 'bg-white0' : 'bg-admin-200'}`} />
-            ))}
-          </div>
-        </div>
-        {step < STEPS.length - 1 ? (
-          <AdminButton onClick={() => setStep((s) => s + 1)} disabled={!canNext()} variant="primary" size="md">
-            Next <FiChevronRight className="w-4 h-4" />
-          </AdminButton>
-        ) : (
-          <AdminButton onClick={handleSave} disabled={saving} variant="primary" size="md" className="min-w-[120px]">
-            {saving ? "Saving..." : "Save Course"}
-          </AdminButton>
-        )}
+      <div className="flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={saving || !c.title.trim() || !c.slug.trim() || !navItemId || courseTags.length === 0}
+          className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg transition-colors disabled:opacity-50"
+        >
+          {saving ? "Saving..." : "Save Course"}
+        </button>
       </div>
+
     </PageShell>
   );
 }
