@@ -118,6 +118,7 @@ export default function Dashboard() {
     <PageShell
       title={greeting}
       subtitle={today}
+      className="!bg-[#EEEEEE]"
       actions={
         <AdminButton to="/" target="_blank" variant="secondary" size="md">
           <FiExternalLink className="w-4 h-4" /> View Site
