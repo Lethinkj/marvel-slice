@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
-import AdminButton from '../components/AdminButton';
 import {
   FiGrid, FiMonitor, FiServer, FiBookOpen, FiStar, FiAward,
   FiUsers, FiClock, FiCode, FiGlobe, FiZap, FiShield, FiHeart,
@@ -140,53 +139,57 @@ export default function TrainingCategoriesManager() {
   return (
     <PageShell title="Training Categories" subtitle="Manage categories for trainings">
 
-      <form onSubmit={handleSave} className="rounded-xl border border-gray-200 bg-white shadow-sm p-5 mb-6 space-y-4">
-        <h3 className="text-sm font-semibold text-gray-900">{editingId ? 'Edit Category' : 'Add Category'}</h3>
+      <div className="flex gap-6 items-start mb-6">
+        <form onSubmit={handleSave} className="flex-1 rounded-xl border border-gray-200 bg-white shadow-sm p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-gray-900">{editingId ? 'Edit Category' : 'Add Category'}</h3>
 
-        <div className="flex items-center gap-3">
-          <label className="text-sm font-medium text-gray-700 w-20 shrink-0">Icon</label>
-          <IconPicker value={form.icon} onChange={(v) => setForm({ ...form, icon: v })} />
-          <label className="text-sm font-medium text-gray-700 shrink-0 ml-2">Name</label>
-          <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editingId ? form.slug : slugify(e.target.value) })}
-            placeholder="Category name"
-            className="w-48 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white" />
-          <label className="text-sm font-medium text-gray-700 shrink-0 ml-2">Slug</label>
-          <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
-            placeholder="slug"
-            className="w-32 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white font-mono text-xs" />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <label className="text-sm font-medium text-gray-700 w-20 shrink-0">Description</label>
-          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-            placeholder="Optional"
-            rows={1}
-            className="flex-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white resize-none" />
-          <label className="text-sm font-medium text-gray-700 shrink-0 ml-2">Order</label>
-          <input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
-            placeholder="0"
-            className="w-16 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white" />
-          <label className="text-sm font-medium text-gray-700 shrink-0 ml-3">Active</label>
-          <label className="flex items-center gap-2.5 cursor-pointer">
-            <div onClick={() => setForm({ ...form, status: !form.status })}
-              className={`relative w-9 h-5 rounded-full transition-colors ${form.status ? 'bg-indigo-500' : 'bg-gray-300'}`}>
-              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${form.status ? 'translate-x-4' : ''}`} />
-            </div>
-            <span className="text-sm text-gray-600">{form.status ? 'Yes' : 'No'}</span>
-          </label>
-          <div className="flex gap-2 ml-auto">
-            <AdminButton type="submit" variant="primary" size="xs" disabled={!form.name.trim()}>
-              {editingId ? 'Update' : 'Add'}
-            </AdminButton>
-            {editingId && (
-              <button type="button" onClick={resetForm}
-                className="px-2 py-1 rounded-lg text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
-                Cancel
-              </button>
-            )}
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-gray-700 w-20 shrink-0">Icon</label>
+            <IconPicker value={form.icon} onChange={(v) => setForm({ ...form, icon: v })} />
+            <label className="text-sm font-medium text-gray-700 shrink-0 ml-2">Name</label>
+            <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editingId ? form.slug : slugify(e.target.value) })}
+              placeholder="Category name"
+              className="w-48 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white" />
+            <label className="text-sm font-medium text-gray-700 shrink-0 ml-2">Slug</label>
+            <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
+              placeholder="slug"
+              className="w-32 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white font-mono text-xs" />
           </div>
+
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-gray-700 w-20 shrink-0">Description</label>
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+              placeholder="Optional"
+              rows={1}
+              className="flex-1 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white resize-none" />
+            <label className="text-sm font-medium text-gray-700 shrink-0 ml-2">Order</label>
+            <input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
+              placeholder="0"
+              className="w-16 px-2.5 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white" />
+            <label className="text-sm font-medium text-gray-700 shrink-0 ml-3">Active</label>
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <div onClick={() => setForm({ ...form, status: !form.status })}
+                className={`relative w-9 h-5 rounded-full transition-colors ${form.status ? 'bg-indigo-500' : 'bg-gray-300'}`}>
+                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${form.status ? 'translate-x-4' : ''}`} />
+              </div>
+              <span className="text-sm text-gray-600">{form.status ? 'Yes' : 'No'}</span>
+            </label>
+          </div>
+        </form>
+
+        <div className="w-28 shrink-0 flex flex-col gap-2 pt-9">
+          <button type="button" onClick={handleSave} disabled={!form.name.trim()}
+            className="w-full px-3 py-2 rounded-lg text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            {editingId ? 'Update' : 'Add'}
+          </button>
+          {editingId && (
+            <button type="button" onClick={resetForm}
+              className="w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-colors">
+              Cancel
+            </button>
+          )}
         </div>
-      </form>
+      </div>
 
       {categories.length === 0 ? (
         <div className="bg-white rounded-lg border border-admin-200 p-12 text-center">
@@ -215,11 +218,11 @@ export default function TrainingCategoriesManager() {
                 </div>
                 <div className="flex items-center gap-2 opacity-100">
                   <button onClick={() => startEdit(cat)}
-                    className="px-3 py-1.5 text-xs font-medium text-admin-600 bg-white hover:bg-admin-100 rounded-md transition-colors">
+                    className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-md transition-colors">
                     Edit
                   </button>
                   <button onClick={() => deleteCategory(cat.id)}
-                    className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">
+                    className="px-3 py-1.5 text-xs font-medium text-red-600 bg-white border border-red-200 hover:bg-red-50 hover:border-red-300 rounded-md transition-colors">
                     Delete
                   </button>
                 </div>

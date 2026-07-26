@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
@@ -148,15 +147,15 @@ export default function TrainingPageEditor() {
           <button onClick={() => navigate('/admin')} className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
             <FiArrowLeft className="w-5 h-5" />
           </button>
-          <AdminButton to="/training" target="_blank" variant="secondary" size="md">
+          <Link to="/training" target="_blank" className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg transition-colors">
             <FiExternalLink className="w-4 h-4" /> View Page
-          </AdminButton>
+          </Link>
         </div>
       }
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" />
@@ -165,11 +164,12 @@ export default function TrainingPageEditor() {
           <div className="mt-4"><ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" /></div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">Training Programs</h2>
-            <AdminButton type="button" onClick={() => setPrograms([...programs, { title: '', description: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Program</AdminButton>
+            <button type="button" onClick={() => setPrograms([...programs, { title: '', description: '' }])} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg transition-colors"><FiPlus className="w-4 h-4" /> Add Program</button>
           </div>
+          {programs.length > 0 && (
           <div className="space-y-4">
             {programs.map((p, i) => (
               <div key={i} className="border border-admin-200 rounded-lg p-4">
@@ -182,13 +182,15 @@ export default function TrainingPageEditor() {
               </div>
             ))}
           </div>
+          )}
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">Features</h2>
-            <AdminButton type="button" onClick={() => setFeatures([...features, { text: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add Feature</AdminButton>
+            <button type="button" onClick={() => setFeatures([...features, { text: '' }])} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg transition-colors"><FiPlus className="w-4 h-4" /> Add Feature</button>
           </div>
+          {features.length > 0 && (
           <div className="space-y-2">
             {features.map((f, i) => (
               <div key={i} className="flex items-center gap-2">
@@ -197,9 +199,10 @@ export default function TrainingPageEditor() {
               </div>
             ))}
           </div>
+          )}
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">Call to Action</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" />
@@ -208,11 +211,12 @@ export default function TrainingPageEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">FAQs</h2>
-            <AdminButton type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
+            <button type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg transition-colors"><FiPlus className="w-4 h-4" /> Add FAQ</button>
           </div>
+          {faqs.length > 0 && (
           <div className="space-y-3">
             {faqs.map((f, i) => (
               <div key={i} className="border border-admin-200 rounded-lg p-4">
@@ -225,6 +229,7 @@ export default function TrainingPageEditor() {
               </div>
             ))}
           </div>
+          )}
         </div>
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />

@@ -562,7 +562,7 @@ export default function AboutPageEditor() {
         </div>
       )}
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">Hero Image</h2>
           <div className="mt-2">
             {showHeroImage ? (
@@ -578,7 +578,7 @@ export default function AboutPageEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">Sections</h2>
             <div className="flex items-center gap-2">

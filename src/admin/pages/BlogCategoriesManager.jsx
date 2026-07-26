@@ -68,7 +68,7 @@ export default function BlogCategoriesManager() {
   return (
     <PageShell title="Blog Categories" subtitle="Manage categories for blog posts">
 
-      <form onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-5 mb-6">
+      <form onSubmit={handleSave} className="mb-6">
         <h3 className="text-sm font-semibold text-neutral-700 mb-4">{editingId ? 'Edit Category' : 'Add Category'}</h3>
         <div className="flex gap-3">
           <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value, slug: editingId ? form.slug : slugify(e.target.value) })}

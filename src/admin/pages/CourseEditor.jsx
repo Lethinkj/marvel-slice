@@ -559,7 +559,7 @@ export default function CourseEditor() {
           })}
         </div>
 
-        <div className="flex-1 min-w-0 bg-white rounded-lg border border-admin-200 p-6">
+        <div className="flex-1 min-w-0">
           {tab === "basic" && (
             <div className="space-y-4 max-w-2xl">
               <div>

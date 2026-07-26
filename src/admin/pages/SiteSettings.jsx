@@ -157,7 +157,7 @@ export default function SiteSettings() {
     <PageShell title="Site Settings" subtitle="Contact info, social links, and logo">
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
 
-      <form onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-6 space-y-6">
+      <form onSubmit={handleSave} className="space-y-6">
         <div>
           <ImageUploader value={form.logo_url} onChange={(v) => setForm({ ...form, logo_url: v })} label="Site Logo" />
         </div>

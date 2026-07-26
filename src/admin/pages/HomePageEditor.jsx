@@ -1186,7 +1186,7 @@ export default function HomePageEditor() {
             </div>
           </div>
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-          <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-6">
+          <div>
             {def && sec ? (
               <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />
             ) : (

@@ -452,7 +452,7 @@ export default function CourseWizard() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-admin-200 p-6 sm:p-8">
+      <div className="p-6 sm:p-8">
         {step === 0 && (
           <div className="space-y-6">
             {categories.length > 0 && (

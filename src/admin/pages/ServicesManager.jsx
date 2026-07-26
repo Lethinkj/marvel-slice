@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
 import DataTable from '../components/ui/DataTable';
@@ -171,10 +170,10 @@ export default function ServicesManager() {
       subtitle={`${services.length} service${services.length !== 1 ? 's' : ''} total`}
       actions={
         services.length > 0 ? (
-          <AdminButton to="/admin/services/new" variant="primary" size="sm">
+          <Link to="/admin/services/new" className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-colors">
             <FiPlus className="w-4 h-4" />
             Add Service
-          </AdminButton>
+          </Link>
         ) : undefined
       }
     >

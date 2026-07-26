@@ -202,7 +202,7 @@ export default function ContactPageEditor() {
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
         {/* Hero Section */}
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputCls} />
@@ -212,7 +212,7 @@ export default function ContactPageEditor() {
         </div>
 
         {/* Contact Section Toggle */}
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-semibold text-black">Contact Section</h2>
@@ -228,7 +228,7 @@ export default function ContactPageEditor() {
         {/* Left Side: Company Details */}
         {showContactSection && (
           <>
-            <div className="bg-white rounded-lg border border-admin-200 p-6">
+            <div className="p-6">
               <h2 className="font-semibold text-black mb-4">Left Side — Company Details</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -269,7 +269,7 @@ export default function ContactPageEditor() {
             </div>
 
             {/* Right Side: Form Settings */}
-            <div className="bg-white rounded-lg border border-admin-200 p-6">
+            <div className="p-6">
               <h2 className="font-semibold text-black mb-4">Right Side — Form Settings</h2>
               <div className="space-y-4">
                 <div>
@@ -280,7 +280,7 @@ export default function ContactPageEditor() {
             </div>
 
             {/* Style Settings */}
-            <div className="bg-white rounded-lg border border-admin-200 p-6">
+            <div className="p-6">
               <h2 className="font-semibold text-black mb-4">Style Settings</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-3 gap-4">
@@ -312,7 +312,7 @@ export default function ContactPageEditor() {
         )}
 
         {/* Map Embed */}
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-semibold text-black">Map Embed</h2>
@@ -327,7 +327,7 @@ export default function ContactPageEditor() {
         </div>
 
         {/* FAQs */}
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">FAQs</h2>
             <AdminButton type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>

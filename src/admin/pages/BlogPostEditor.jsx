@@ -248,7 +248,7 @@ export default function BlogPostEditor() {
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" top />
 
-      <form ref={formRef} onSubmit={handleSave} className="bg-white rounded-lg border border-admin-200 p-6 space-y-8">
+      <form ref={formRef} onSubmit={handleSave} className="space-y-8">
         <div>
           <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Basic Information</h2>
           <div className="grid sm:grid-cols-2 gap-4">

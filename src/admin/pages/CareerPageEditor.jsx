@@ -413,7 +413,7 @@ export default function CareerPageEditor() {
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })}
@@ -447,7 +447,7 @@ export default function CareerPageEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">"We're Hiring!" Header</h2>
           <div className="mb-3">
             <label className="block text-xs font-medium text-neutral-500 mb-1">Headline</label>
@@ -466,7 +466,7 @@ export default function CareerPageEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">Categories Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
@@ -482,7 +482,7 @@ export default function CareerPageEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">Role Categories</h2>
             <AdminButton type="button" onClick={openCategoryForm} variant="ghost" size="sm">
@@ -544,7 +544,7 @@ export default function CareerPageEditor() {
           )}
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black flex items-center gap-2">
               <FiBriefcase className="w-5 h-5 text-admin-600" />

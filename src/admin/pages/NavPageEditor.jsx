@@ -251,7 +251,7 @@ export default function NavPageEditor() {
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
 
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
@@ -272,7 +272,7 @@ export default function NavPageEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">Content Sections</h2>
             <AdminButton type="button" onClick={addSection} variant="ghost" size="sm">
@@ -335,7 +335,7 @@ export default function NavPageEditor() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-admin-200 p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black">Linked Courses</h2>
             {courseChanges && <span className="text-xs text-warning-600 font-medium">Unsaved changes</span>}
