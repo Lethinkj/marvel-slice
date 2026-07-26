@@ -363,12 +363,7 @@ export default function ChatWidget() {
               <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                 <FiMessageCircle className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-300" />
-                  <span className="text-[10px] text-white/80">Admin Online</span>
-                </div>
-              </div>
+              <span className="text-sm font-semibold">Marvel Chat</span>
             </div>
             <div className="flex items-center gap-0.5">
               <button onClick={() => setMaximized((p) => !p)} className="w-7 h-7 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors shrink-0 cursor-pointer">

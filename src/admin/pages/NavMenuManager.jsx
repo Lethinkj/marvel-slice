@@ -12,6 +12,10 @@ import {
   FiFile,
   FiBookOpen,
   FiList,
+  FiMoreVertical,
+  FiEdit3,
+  FiTrash2,
+  FiExternalLink,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from "../components/ui/PageShell";
@@ -38,7 +42,9 @@ export default function NavMenuManager() {
   const [loading, setLoading] = useState(true);
   const [allCourses, setAllCourses] = useState([]);
   const [courseDropdown, setCourseDropdown] = useState(null);
+  const [courseSelectOpen, setCourseSelectOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const courseSelectRef = useRef(null);
   const pathAuto = useRef(true);
 
   useEffect(() => {
@@ -75,6 +81,9 @@ export default function NavMenuManager() {
     function handleClick(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setCourseDropdown(null);
+      }
+      if (courseSelectRef.current && !courseSelectRef.current.contains(e.target)) {
+        setCourseSelectOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -273,379 +282,305 @@ export default function NavMenuManager() {
     );
   }
 
+  function KebabMenu({ item }) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
+    useEffect(() => {
+      function handleClick(e) {
+        if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      }
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }, []);
+    return (
+      <div className="relative" ref={ref}>
+        <button onClick={() => setOpen(!open)} className="p-1 text-neutral-300 hover:text-neutral-600 rounded transition-colors">
+          <FiMoreVertical className="w-4 h-4" />
+        </button>
+        {open && (
+          <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg border border-admin-200 shadow-lg z-50 py-1">
+            <button onClick={() => { setOpen(false); openEdit(item); }} className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-neutral-700 hover:bg-neutral-50 transition-colors">
+              <FiEdit3 className="w-3.5 h-3.5" /> Edit
+            </button>
+            <button onClick={() => { setOpen(false); handleDelete(item); }} className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-destructive-600 hover:bg-destructive-50 transition-colors">
+              <FiTrash2 className="w-3.5 h-3.5" /> Delete
+            </button>
+            <Link to={`/admin/nav-pages/${item.id}`} onClick={() => setOpen(false)} className="flex items-center gap-2 px-3 py-1.5 text-xs text-neutral-700 hover:bg-neutral-50 transition-colors">
+              <FiExternalLink className="w-3.5 h-3.5" /> Page
+            </Link>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <PageShell title="Navigation Menu" subtitle="Manage dropdown items for container sections.">
-
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="lg:w-80 xl:w-96 shrink-0">
+      {(activeSection || selectedSection) && (
+        <form onSubmit={handleSave} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm mb-6">
+          <p className="text-sm font-semibold text-gray-900 mb-5">
+            {editing ? `Edit: ${editing.label}` : form.parent_id
+              ? `Add sub-item under ${dbItems.find(i => i.id === form.parent_id)?.label || '...'}`
+              : `Add item under ${activeSection || selectedSection}`}
+          </p>
           <div className="space-y-4">
-        {filteredSections.map((section) => {
-          const items = getSectionItems(section.label);
-          const isContainer = !section.path;
-
-          return (
-            <div
-              key={section.label}
-              className="rounded-lg border border-admin-200 bg-white overflow-hidden"
-            >
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-admin-100 bg-white">
-                <span
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center ${isContainer ? "bg-white" : "bg-admin-100"}`}
-                >
-                  {isContainer ? (
-                    <FiFolder className="w-4 h-4 text-cyan-500" />
-                  ) : (
-                    <FiFile className="w-4 h-4 text-amber-500" />
-                  )}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-black truncate">
-                    {section.label}
-                  </p>
-                  {section.path && (
-                    <p className="text-xs text-neutral-400 truncate">
-                      /{section.label.toLowerCase().replace(/\s+/g, "-")}
-                    </p>
-                  )}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Label</label>
+                <input value={form.label} onChange={(e) => handleLabelChange(e.target.value)}
+                  className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors bg-white"
+                  placeholder="e.g. Angular Course" />
+              </div>
+              <div className="relative">
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Parent (optional)</label>
+                {(() => {
+                  const allItems = getAllSectionItems(activeSection || selectedSection);
+                  const parentItem = allItems.find(i => i.id === form.parent_id);
+                  return (
+                    <div className="relative">
+                      <button type="button" onClick={() => setParentOpen(!parentOpen)}
+                        className="w-full flex items-center justify-between px-3.5 py-2 border border-gray-200 rounded-lg text-sm bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                        <span className={form.parent_id ? 'text-gray-900' : 'text-gray-400'}>
+                          {parentItem ? parentItem.label : `— Top level —`}
+                        </span>
+                        <svg className={`w-4 h-4 text-gray-400 transition-transform ${parentOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      {parentOpen && (
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[240px] overflow-y-auto">
+                          <button type="button" onClick={() => { handleParentChange(null); setParentOpen(false); }}
+                            className={`w-full text-left px-3 py-2 text-sm transition-colors ${!form.parent_id ? 'bg-indigo-50/40 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50'}`}>
+                            — Top level —
+                          </button>
+                          {allItems.map((p) => (
+                            <button key={p.id} type="button" onClick={() => { handleParentChange(p.id); setParentOpen(false); }}
+                              className={`w-full text-left px-3 py-2 text-sm transition-colors ${form.parent_id === p.id ? 'bg-indigo-50/40 text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}
+                              style={{ paddingLeft: `${12 + p._depth * 20}px` }}>
+                              {p._depth > 0 && <span className="text-gray-400 mr-1">&#8627;</span>}
+                              {p.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Path (optional)</label>
+                <input value={form.path} onChange={(e) => handlePathChange(e.target.value)}
+                  className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors bg-white font-mono text-xs"
+                  placeholder="/auto-generated-from-label" />
+              </div>
+            </div>
+            <div className="flex flex-wrap items-end gap-4">
+              {allCourses.length > 0 && (
+                <div className="w-56 relative" ref={courseSelectRef}>
+                  <label className="block text-xs font-medium text-gray-500 mb-1.5">Link to Course</label>
+                  <div className="relative">
+                    <button type="button" onClick={() => setCourseSelectOpen(!courseSelectOpen)}
+                      className="w-full flex items-center justify-between px-3.5 py-2 border border-gray-200 rounded-lg text-sm bg-white cursor-pointer hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+                      <span className={form.path ? 'text-gray-900 truncate' : 'text-gray-400'}>
+                        {(() => {
+                          const c = allCourses.find((c) => form.path === `/courses/${c.slug}`);
+                          return c ? c.title : '— None —';
+                        })()}
+                      </span>
+                      <svg className={`w-4 h-4 text-gray-400 shrink-0 ml-2 transition-transform ${courseSelectOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {courseSelectOpen && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[200px] overflow-y-auto">
+                        <button type="button" onClick={() => { setForm({ ...form, path: "" }); setCourseSelectOpen(false); }}
+                          className={`w-full text-left px-3 py-2 text-sm transition-colors ${!form.path ? 'bg-indigo-50/40 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50'}`}>
+                          — None —
+                        </button>
+                        {allCourses.map((c) => (
+                          <button key={c.id} type="button" onClick={() => { setForm({ ...form, path: `/courses/${c.slug}` }); setCourseSelectOpen(false); }}
+                            className={`w-full text-left px-3 py-2 text-sm transition-colors ${form.path === `/courses/${c.slug}` ? 'bg-indigo-50/40 text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
+                            {c.title}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                {isContainer ? (
+              )}
+              <div className="flex items-center gap-3 ml-auto">
+                <label className="flex items-center gap-2.5 px-3.5 py-2 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
+                  <div className={`relative w-9 h-5 rounded-full transition-colors ${form.is_active ? "bg-indigo-500" : "bg-gray-300"}`}>
+                    <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${form.is_active ? "translate-x-4" : ""}`} />
+                    <input type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="sr-only" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700">Active</span>
+                </label>
+                <AdminButton type="submit" variant="primary" size="md">
+                  <FiCheck className="w-4 h-4" /> {editing ? "Update" : "Add"}
+                </AdminButton>
+                <button type="button" onClick={cancel} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="lg:col-span-4 xl:col-span-4 space-y-4">
+          {filteredSections.map((section) => {
+            const items = getSectionItems(section.label);
+
+            return (
+              <div key={section.label} className="rounded-lg border border-gray-200 bg-white overflow-hidden shadow-sm">
+                <div
+                  onClick={() => { setActiveSection(section.label); setEditing(null); setParentOpen(false); pathAuto.current = true; setForm({ label: "", path: "", is_active: true, parent_id: null }); }}
+                  className={`flex items-center gap-3 px-6 py-3.5 border-b border-gray-100 cursor-pointer transition-colors ${(activeSection || selectedSection) === section.label ? 'bg-indigo-50/40' : 'hover:bg-gray-50'}`}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
+                    <FiFolder className="w-4 h-4 text-indigo-500" />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 truncate">{section.label}</p>
+                    <p className="text-xs text-gray-400">{items.length} item{items.length !== 1 ? 's' : ''}</p>
+                  </div>
                   <button
-                    onClick={() => openAdd(section.label)}
-                    className="p-1.5 text-admin-600 hover:bg-white rounded-lg transition-colors"
+                    onClick={(e) => { e.stopPropagation(); openAdd(section.label); }}
+                    className="p-1.5 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
                     title={`Add item under ${section.label}`}
                   >
                     <FiPlus className="w-4 h-4" />
                   </button>
-                ) : (
-                  <Link
-                    to={`/admin/pages/${section.label.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-white rounded-lg transition-colors"
-                    title="Edit Page"
-                  >
-                    <FiFileText className="w-4 h-4" />
-                  </Link>
-                )}
-              </div>
-
-              <div className="divide-y divide-admin-50">
-                {items.length === 0 ? (
-                  <div className="px-4 py-6 text-center">
-                    {isContainer ? (
-                      <button
-                        onClick={() => openAdd(section.label)}
-                        className="text-sm text-neutral-700 hover:text-neutral-900 font-medium flex items-center justify-center gap-1.5 mx-auto transition-colors"
-                      >
-                        <FiPlus className="w-4 h-4" /> Add item
-                      </button>
-                    ) : (
-                      <Link
-                        to={`/admin/pages/${section.label.toLowerCase().replace(/\s+/g, "-")}`}
-                        className="text-sm text-neutral-700 hover:text-neutral-900 font-medium inline-flex items-center gap-1.5 transition-colors"
-                      >
-                        <FiFileText className="w-4 h-4" /> Edit Page
-                      </Link>
-                    )}
-                  </div>
-                ) : (
-                  items.map((item) => {
-                    const subItems = getChildItems(item.id);
-                    return (
-                      <div
-                        key={item.id}
-                        className="px-4 py-2.5 hover:bg-white transition-colors group"
-                      >
-                        <div className="flex items-center gap-2">
-                          {subItems.length > 0 && (
-                            <FiFolder className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
-                          )}
-                          <span className="text-sm text-neutral-900 flex-1 truncate">
-                            {item.label}
-                          </span>
-                          {item.path && (
-                            <span className="text-[11px] text-neutral-400 bg-white px-2 py-0.5 rounded-full truncate max-w-[120px]">
-                              {item.path}
-                            </span>
-                          )}
-                          <span
-                            className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
-                              item.is_active !== false
-                                ? "bg-success-50 text-success-700"
-                                : "bg-destructive-50 text-destructive-700"
-                            }`}
-                          >
-                            {item.is_active !== false ? "On" : "Off"}
-                          </span>
-                          <div className="flex items-center gap-1 shrink-0 opacity-100">
-                            <button
-                              onClick={() => openEdit(item)}
-                              className="px-2 py-0.5 text-[11px] font-medium text-admin-600 bg-white hover:bg-admin-100 rounded transition-colors"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(item)}
-                              className="px-2 py-0.5 text-[11px] font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded transition-colors"
-                            >
-                              Delete
-                            </button>
-                            <Link
-                              to={`/admin/nav-pages/${item.id}`}
-                              className="px-2 py-0.5 text-[11px] font-medium text-admin-500 bg-admin-100 hover:bg-admin-200 rounded transition-colors"
-                            >
-                              Page
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                    })
-                  )}
                 </div>
-            </div>
-          );
-        })}
-      </div>
-        </div>
 
-        <div className="flex-1 min-w-0 space-y-6">
-          {(activeSection || selectedSection) && (
-            <>
-              <form
-                onSubmit={handleSave}
-                className="rounded-lg border border-admin-200 bg-white p-5"
-              >
-                <p className="text-sm font-semibold text-black mb-3">
-                  {editing
-                    ? `Edit: ${editing.label}`
-                    : form.parent_id
-                      ? `Add sub-item under ${dbItems.find(i => i.id === form.parent_id)?.label || '...'}`
-                      : `Add item under ${activeSection || selectedSection}`}
-                </p>
-                <div className="flex flex-wrap items-end gap-3">
-                  <div className="flex-1 min-w-[180px]">
-                    <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
-                      Label
-                    </label>
-                    <input
-                      value={form.label}
-                      onChange={(e) => handleLabelChange(e.target.value)}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-colors"
-                      placeholder="e.g. Angular Course"
-                    />
+                {items.length === 0 ? (
+                  <div className="px-6 py-5 text-center">
+                    <button onClick={() => openAdd(section.label)} className="text-sm text-gray-400 hover:text-indigo-500 font-medium transition-colors">
+                      + Add first item
+                    </button>
                   </div>
-                  <div className="flex-1 min-w-[180px] relative">
-                    <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
-                      Parent (optional)
-                    </label>
-                    {(() => {
-                      const allItems = getAllSectionItems(activeSection || selectedSection);
-                      const parentItem = allItems.find(i => i.id === form.parent_id);
+                ) : (
+                  <div className="divide-y divide-gray-50">
+                    {items.map((item) => {
+                      const subItems = getChildItems(item.id);
                       return (
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={() => setParentOpen(!parentOpen)}
-                            className="w-full flex items-center justify-between px-3 py-2 border border-admin-200 rounded-lg text-sm bg-white cursor-pointer hover:border-admin-400 transition-colors focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                          >
-                            <span className={form.parent_id ? 'text-neutral-900' : 'text-neutral-400'}>
-                              {parentItem
-                                ? parentItem.label
-                                : `— Top level in ${activeSection || selectedSection} —`}
+                        <div key={item.id} className="group relative">
+                          <div className="flex items-center gap-2.5 px-6 py-2.5 hover:bg-gray-50/50 transition-colors">
+                            {subItems.length > 0 ? (
+                              <FiFolder className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+                            ) : (
+                              <FiFile className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                            )}
+                            <span className="text-sm text-gray-800 flex-1 truncate">{item.label}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                              item.is_active !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'
+                            }`}>
+                              {item.is_active !== false ? 'On' : 'Off'}
                             </span>
-                            <svg className={`w-4 h-4 text-neutral-400 transition-transform ${parentOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                          </button>
-                          {parentOpen && (
-                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-admin-200 rounded-lg shadow-lg z-50 max-h-[240px] overflow-y-auto">
-                              <button
-                                type="button"
-                                onClick={() => { handleParentChange(null); setParentOpen(false); }}
-                                className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                                    !form.parent_id
-                                      ? 'bg-white text-neutral-700 font-medium'
-                                      : 'text-neutral-500 hover:bg-white'
-                                }`}
-                              >
-                                — Top level in {activeSection || selectedSection} —
-                              </button>
-                              {allItems.map((p) => (
-                                <button
-                                  key={p.id}
-                                  type="button"
-                                  onClick={() => { handleParentChange(p.id); setParentOpen(false); }}
-                                  className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                                    form.parent_id === p.id
-                                      ? 'bg-white text-neutral-700 font-medium'
-                                      : 'text-neutral-700 hover:bg-white'
-                                  }`}
-                                  style={{ paddingLeft: `${12 + p._depth * 20}px` }}
-                                >
-                                  {p._depth > 0 && <span className="text-neutral-400 mr-1">&#8627;</span>}
-                                  {p.label}
-                                </button>
+                            <KebabMenu item={item} />
+                          </div>
+                          {subItems.length > 0 && (
+                            <div className="border-t border-gray-50">
+                              {subItems.map((sub) => (
+                                <div key={sub.id} className="flex items-center gap-2.5 pl-12 pr-6 py-2 hover:bg-gray-50/50 transition-colors group/sub">
+                                  <FiFile className="w-3 h-3 text-gray-300 shrink-0" />
+                                  <span className="text-sm text-gray-700 flex-1 truncate">{sub.label}</span>
+                                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                                    sub.is_active !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'
+                                  }`}>
+                                    {sub.is_active !== false ? 'On' : 'Off'}
+                                  </span>
+                                  <KebabMenu item={sub} />
+                                </div>
                               ))}
                             </div>
                           )}
                         </div>
                       );
-                    })()}
+                    })}
                   </div>
-                  <div className="flex-1 min-w-[180px]">
-                    <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
-                      Path (optional)
-                    </label>
-                    <input
-                      value={form.path}
-                      onChange={(e) => handlePathChange(e.target.value)}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-colors font-mono text-xs"
-                      placeholder="/auto-generated-from-label"
-                    />
-                  </div>
-                  {allCourses.length > 0 && (
-                    <div className="flex-1 min-w-[180px]">
-                      <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">
-                        Link to Course
-                      </label>
-                      <select
-                        value={
-                          allCourses.find((c) => form.path === `/courses/${c.slug}`)
-                            ?.id || ""
-                        }
-                        onChange={(e) => {
-                          const course = allCourses.find(
-                            (c) => c.id === e.target.value,
-                          );
-                          setForm({
-                            ...form,
-                            path: course ? `/courses/${course.slug}` : "",
-                          });
-                        }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-colors bg-white appearance-none cursor-pointer"
-                      >
-                        <option value="">— None —</option>
-                        {allCourses.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  <label className="flex items-center gap-2.5 p-3 bg-white rounded-lg border border-admin-200 cursor-pointer hover:bg-admin-100 transition-colors">
-                    <div
-                      className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? "bg-white0" : "bg-admin-300"}`}
-                    >
-                      <div
-                        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.is_active ? "translate-x-4" : ""}`}
-                      />
-                      <input
-                        type="checkbox"
-                        checked={form.is_active}
-                        onChange={(e) =>
-                          setForm({ ...form, is_active: e.target.checked })
-                        }
-                        className="sr-only"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-neutral-900">Active</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <AdminButton type="submit" variant="primary" size="md">
-                      <FiCheck className="w-4 h-4" /> {editing ? "Update" : "Add"}
-                    </AdminButton>
-                    <AdminButton type="button" onClick={cancel} variant="ghost" size="md">
-                      <FiX className="w-4 h-4" /> Cancel
-                    </AdminButton>
-                  </div>
-                </div>
-              </form>
+                )}
+              </div>
+            );
+          })}
+        </div>
 
-              <div className="rounded-lg border border-admin-200 bg-white overflow-hidden">
-                <div className="px-5 py-3 border-b border-admin-100 bg-white">
-                  <p className="text-sm font-semibold text-black">Items in {activeSection || selectedSection}</p>
+        <div className="lg:col-span-8 xl:col-span-8">
+          {!activeSection && !selectedSection ? (
+            <div className="rounded-lg border border-gray-200 bg-white p-10 text-center shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center mx-auto mb-4">
+                <FiFolder className="w-6 h-6 text-indigo-400" />
+              </div>
+              <p className="text-sm font-medium text-gray-700 mb-1">Select a section</p>
+              <p className="text-xs text-gray-400">Click on a navigation section from the left panel to manage its items.</p>
+            </div>
+          ) : (
+
+              <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+                <div className="grid grid-cols-12 gap-3 px-6 py-3 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <div className="col-span-5">Title</div>
+                  <div className="col-span-3">URL Path</div>
+                  <div className="col-span-2">Status</div>
+                  <div className="col-span-2 text-right">Actions</div>
                 </div>
-                <div className="divide-y divide-admin-50">
+                <div className="divide-y divide-gray-50">
                   {getSectionItems(activeSection || selectedSection).length === 0 ? (
-                    <p className="px-5 py-6 text-sm text-neutral-400 text-center">No items yet.</p>
+                    <div className="px-6 py-10 text-center">
+                      <p className="text-sm text-gray-400">No items yet. Use the form above to add one.</p>
+                    </div>
                   ) : (
                     (function renderItems(parentItems, depth = 0) {
                       return parentItems.map((item) => {
                         const subItems = getChildItems(item.id);
                         return (
                           <div key={item.id}>
-                            <div
-                              className={`flex items-center gap-3 px-5 py-2.5 hover:bg-white transition-colors group ${depth > 0 ? 'border-l-2 border-admin-200 ml-3' : ''}`}
-                              style={{ paddingLeft: `${20 + depth * 24}px` }}
-                            >
-                              {subItems.length > 0 ? (
-                                <FiFolder className="w-4 h-4 text-cyan-500 shrink-0" />
-                              ) : (
-                                <FiFile className="w-3.5 h-3.5 text-neutral-300 shrink-0" />
-                              )}
-                              <span className="text-sm text-neutral-900 font-medium flex-1 truncate">
-                                {item.label}
-                              </span>
-                              {(() => {
-                                const linked = linkedCourses(item);
-                                return linked.length > 0 ? (
-                                  <div className="flex gap-1">
-                                    {linked.slice(0, 2).map(c => (
-                                      <Link key={c.id} to={`/admin/courses/${c.id}`}
-                                        className="text-[11px] text-neutral-700 bg-white px-2 py-0.5 rounded-full truncate max-w-[100px] hover:bg-neutral-100 transition-colors flex items-center gap-1">
-                                        <FiBookOpen className="w-3 h-3" /> {c.title}
-                                      </Link>
-                                    ))}
-                                    {linked.length > 2 && (
-                                      <span className="text-[11px] text-neutral-400">+{linked.length - 2}</span>
-                                    )}
-                                  </div>
-                                ) : null;
-                              })()}
-                              {item.path && (
-                                <span className="text-[11px] text-neutral-400 bg-white px-2 py-0.5 rounded-full truncate max-w-[100px] hidden sm:inline">
-                                  {item.path}
+                            <div className={`grid grid-cols-12 gap-3 px-6 py-3 hover:bg-gray-50/50 transition-colors items-center ${depth > 0 ? 'bg-gray-50/30' : ''}`}
+                              style={{ paddingLeft: `${24 + depth * 28}px` }}>
+                              <div className="col-span-5 flex items-center gap-2.5 min-w-0">
+                                {subItems.length > 0 ? (
+                                  <FiFolder className="w-4 h-4 text-cyan-500 shrink-0" />
+                                ) : (
+                                  <FiFile className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                                )}
+                                <span className="text-sm text-gray-800 font-medium truncate">{item.label}</span>
+                              </div>
+                              <div className="col-span-3 truncate">
+                                {item.path ? (
+                                  <span className="text-xs text-gray-400 font-mono truncate block">{item.path}</span>
+                                ) : (
+                                  <span className="text-xs text-gray-300">—</span>
+                                )}
+                              </div>
+                              <div className="col-span-2">
+                                <span className={`inline-block text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                                  item.is_active !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'
+                                }`}>
+                                  {item.is_active !== false ? 'Active' : 'Inactive'}
                                 </span>
-                              )}
-                              <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium shrink-0 ${
-                                item.is_active !== false
-                                  ? "bg-success-50 text-success-700"
-                                  : "bg-destructive-50 text-destructive-700"
-                              }`}>
-                                {item.is_active !== false ? "On" : "Off"}
-                              </span>
-                              <div className="flex items-center gap-1 shrink-0 transition-opacity">
-                                <Link to={`/admin/nav-menu/children/${item.id}`}
-                                  className="p-1 text-neutral-400 hover:text-neutral-700 hover:bg-white rounded transition-colors"
-                                  title="Manage sub-items">
-                                  <FiList className="w-3.5 h-3.5" />
-                                </Link>
-                                <button onClick={() => { setActiveSection(activeSection || selectedSection); setForm({ label: "", path: "", is_active: true, parent_id: item.id }); setEditing(null); }}
-                                  className="p-1 text-neutral-400 hover:text-neutral-700 hover:bg-white rounded transition-colors"
-                                  title="Add sub-item">
-                                  <FiPlus className="w-3.5 h-3.5" />
-                                </button>
+                              </div>
+                              <div className="col-span-2 flex items-center justify-end gap-1">
                                 <div className="relative" ref={courseDropdown === item.id ? dropdownRef : null}>
                                   <button onClick={() => setCourseDropdown(courseDropdown === item.id ? null : item.id)}
-                                    className={`px-2 py-0.5 text-[11px] font-medium rounded transition-colors ${courseDropdown === item.id ? 'bg-neutral-100 text-neutral-700' : 'bg-white text-neutral-600 hover:bg-neutral-100'}`}>
-                                    Linked Courses
+                                    className="p-1.5 text-gray-300 hover:text-gray-500 hover:bg-gray-100 rounded transition-colors" title="Linked Courses">
+                                    <FiBookOpen className="w-3.5 h-3.5" />
                                   </button>
                                   {courseDropdown === item.id && (
-                                    <div className="absolute top-full right-0 mt-1 bg-white border border-admin-200 rounded-lg shadow-lg z-50 min-w-[200px] max-h-[260px] flex flex-col">
+                                    <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[200px] max-h-[260px] flex flex-col">
                                       <div className="overflow-y-auto">
                                         {allCourses.length === 0 ? (
-                                          <p className="px-3 py-3 text-xs text-neutral-400 text-center">No courses.</p>
+                                          <p className="px-3 py-3 text-xs text-gray-400 text-center">No courses.</p>
                                         ) : (
                                           allCourses.map(c => {
                                             const checked = linkedCourses(item).some(lc => lc.id === c.id);
                                             return (
-                                              <label key={c.id}
-                                                className="flex items-center gap-2 px-3 py-1.5 hover:bg-white cursor-pointer text-xs border-b border-admin-50 last:border-b-0">
-                                                <div className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${checked ? 'bg-admin-600 border-admin-600' : 'border-admin-200'}`}>
+                                              <label key={c.id} className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 cursor-pointer text-xs border-b border-gray-50 last:border-b-0">
+                                                <div className={`w-3.5 h-3.5 rounded border-2 flex items-center justify-center transition-colors ${checked ? 'bg-indigo-500 border-indigo-500' : 'border-gray-300'}`}>
                                                   {checked && <FiCheck className="w-2.5 h-2.5 text-white" />}
                                                 </div>
                                                 <input type="checkbox" checked={checked} onChange={() => toggleCourseLink(c.id, item.id)} className="sr-only" />
-                                                <span className="truncate text-neutral-700">{c.title}</span>
+                                                <span className="truncate text-gray-700">{c.title}</span>
                                               </label>
                                             );
                                           })
@@ -654,13 +589,17 @@ export default function NavMenuManager() {
                                     </div>
                                   )}
                                 </div>
+                                <button onClick={() => { setActiveSection(activeSection || selectedSection); setForm({ label: "", path: "", is_active: true, parent_id: item.id }); setEditing(null); }}
+                                  className="p-1.5 text-gray-300 hover:text-gray-500 hover:bg-gray-100 rounded transition-colors" title="Add sub-item">
+                                  <FiPlus className="w-3.5 h-3.5" />
+                                </button>
                                 <button onClick={() => openEdit(item)}
-                                  className="px-2 py-0.5 text-[11px] font-medium text-admin-600 bg-white hover:bg-admin-100 rounded transition-colors">
-                                  Edit
+                                  className="p-1.5 text-gray-300 hover:text-indigo-500 hover:bg-indigo-50 rounded transition-colors" title="Edit">
+                                  <FiEdit3 className="w-3.5 h-3.5" />
                                 </button>
                                 <button onClick={() => handleDelete(item)}
-                                  className="px-2 py-0.5 text-[11px] font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded transition-colors">
-                                  Delete
+                                  className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors" title="Delete">
+                                  <FiTrash2 className="w-3.5 h-3.5" />
                                 </button>
                               </div>
                             </div>
@@ -672,14 +611,7 @@ export default function NavMenuManager() {
                   )}
                 </div>
               </div>
-            </>
-          )}
-
-          {!activeSection && !editing && (
-            <div className="rounded-lg border border-admin-200 bg-white p-8 text-center">
-              <p className="text-neutral-400">Select a section to add or edit items.</p>
-            </div>
-          )}
+            )}
         </div>
       </div>
       {confirmDialog}
