@@ -111,15 +111,20 @@ export default function BlogManager() {
       }
     >
       {posts.length > 0 && (
-        <div className="relative mb-4">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search posts by title..."
-            className="w-full pl-9 pr-4 py-2 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
-          />
+        <div className="flex gap-2 mb-4">
+          <div className="relative max-w-sm">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search posts by title..."
+              className="w-full pl-9 pr-4 py-1.5 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+            />
+          </div>
+          <button onClick={() => setSearch(search)} className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-colors">
+            <FiSearch className="w-4 h-4" />
+          </button>
         </div>
       )}
 

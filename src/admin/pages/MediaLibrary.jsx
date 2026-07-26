@@ -191,62 +191,60 @@ export default function MediaLibrary() {
         </div>
       }
     >
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="flex-1 flex flex-wrap gap-2">
-          <button key="all" onClick={() => setBucket('all')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              bucket === 'all' ? 'bg-admin-900 text-white' : 'bg-white text-admin-600 border border-admin-200 hover:border-admin-400 hover:text-admin-900'
+      <div className="flex gap-6">
+        <div className="w-48 shrink-0 flex flex-col gap-1 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
+          <button onClick={() => setBucket('all')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              bucket === 'all' ? 'bg-admin-600 text-white' : 'text-admin-600 hover:bg-admin-50'
             }`}
           >
-            <span className="flex items-center gap-1.5"><FiLayers className="w-3.5 h-3.5" />All</span>
+            <FiLayers className="w-4 h-4" />All
           </button>
           {BUCKETS.map((b) => (
             <button key={b} onClick={() => setBucket(b)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                bucket === b ? 'bg-admin-600 text-white' : 'bg-white text-admin-600 border border-admin-200 hover:border-admin-300 hover:text-admin-600'
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                bucket === b ? 'bg-admin-600 text-white' : 'text-admin-600 hover:bg-admin-50'
               }`}
             >
-              <span className="flex items-center gap-1.5"><FiFolder className="w-3.5 h-3.5" />{b}</span>
+              <FiFolder className="w-4 h-4" />{b}
             </button>
           ))}
         </div>
-        <div className="flex gap-2 items-center">
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Search files..."
-              className="w-48 pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-600 transition-all"
-            />
-          </div>
-          <div className="flex border border-admin-200 rounded-lg overflow-hidden">
-            <button onClick={() => setViewMode('grid')}
-              className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-admin-600 text-white' : 'bg-white text-admin-400 hover:text-admin-900'}`}>
-              <FiGrid className="w-4 h-4" />
-            </button>
-            <button onClick={() => setViewMode('list')}
-              className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-admin-600 text-white' : 'bg-white text-admin-400 hover:text-admin-900'}`}>
-              <FiList className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <div
-        ref={dropRef}
-        onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className="relative"
-      >
-        <div className="rounded-lg border border-admin-200 p-6">
+        <div className="flex-1 min-w-0"
+          ref={dropRef}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-black flex items-center gap-2">
               {bucket === 'all' ? 'All Buckets' : bucket}
               <span className="text-xs font-normal text-neutral-400 bg-admin-100 px-2 py-0.5 rounded-full">{filtered.length} file{filtered.length !== 1 ? 's' : ''}</span>
             </h2>
+            <div className="flex gap-2 items-center">
+              <div className="relative">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
+                <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+                  placeholder="Search files..."
+                  className="w-48 pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-600 transition-all"
+                />
+              </div>
+              <div className="flex border border-admin-200 rounded-lg overflow-hidden">
+                <button onClick={() => setViewMode('grid')}
+                  className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-admin-600 text-white' : 'bg-white text-admin-400 hover:text-admin-900'}`}>
+                  <FiGrid className="w-4 h-4" />
+                </button>
+                <button onClick={() => setViewMode('list')}
+                  className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-admin-600 text-white' : 'bg-white text-admin-400 hover:text-admin-900'}`}>
+                  <FiList className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
 
+          <div className="rounded-lg border border-admin-200 p-6">
           {isDragging && bucket !== 'all' && (
             <div className="absolute inset-0 rounded-lg border-2 border-dashed border-admin-400 bg-white/80 flex items-center justify-center z-10">
               <div className="text-center">
@@ -347,6 +345,7 @@ export default function MediaLibrary() {
               ))}
             </div>
           )}
+          </div>
         </div>
       </div>
 
