@@ -444,21 +444,21 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-admin-100 bg-white/50">
-                      <th className="w-10 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">#</th>
+                    <tr className="border-b border-gray-200 bg-gray-100">
+                      <th className="w-10 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider px-4 py-3">#</th>
                       {columns.map((col, i) => (
-                        <th key={i} className={`text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>
+                        <th key={i} className={`text-left text-xs font-semibold text-gray-700 uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>
                           {col.header}
                         </th>
                       ))}
-                      <th className="text-right text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3">Actions</th>
+                      <th className="text-right text-xs font-semibold text-gray-700 uppercase tracking-wider px-4 py-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {paged.map((row, idx) => (
                       <tr key={row.id}
                         onClick={() => { setSelected(selected?.id === row.id ? null : row); if (!row.is_read) markRead(row); }}
-                        className={`border-b border-admin-50 last:border-0 cursor-pointer transition-colors ${idx % 2 === 1 ? 'bg-neutral-50' : 'bg-white'} ${selected?.id === row.id ? 'bg-white' : 'hover:bg-white'} ${!disableReply && !row.is_read ? 'border-l-2 border-l-warning-500 bg-warning-50/30' : ''}`}
+                        className={`border-b border-gray-100 last:border-0 cursor-pointer transition-colors ${idx % 2 === 1 ? 'bg-gray-50' : 'bg-white'} ${selected?.id === row.id ? 'bg-indigo-50' : 'hover:bg-gray-50'} ${!disableReply && !row.is_read ? 'border-l-2 border-l-warning-500 bg-warning-50/30' : ''}`}
                       >
                         <td className="px-4 py-3 text-xs text-neutral-400 font-mono whitespace-nowrap">{(page - 1) * pageSize + idx + 1}</td>
                         {columns.map((col, i) => (
