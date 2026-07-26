@@ -144,7 +144,7 @@ const sectionDefs = [
   },
 ];
 
-function ImageUploader({ value, onChange, label }) {
+function ImageUploader({ value, onChange, label, hideInput }) {
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
   async function handleUpload(e) {
@@ -162,16 +162,30 @@ function ImageUploader({ value, onChange, label }) {
     }
     setUploading(false);
   }
+
+  if (hideInput) {
+    return (
+      <label className="cursor-pointer inline-flex items-center justify-center px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all bg-white shrink-0">
+        {uploading ? (
+          <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <FiUpload className="w-4 h-4" />
+        )}
+        <input ref={inputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+      </label>
+    );
+  }
+
   return (
     <div>
-      <label className="block text-xs font-semibold text-black mb-1.5 uppercase tracking-wider">{label}</label>
+      <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all"
+          className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
           placeholder="Paste image URL or upload..." />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors">
+        <label className="cursor-pointer inline-flex items-center justify-center px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all bg-white shrink-0">
           {uploading ? (
-            <span className="w-4 h-4 border-2 border-admin-500 border-t-transparent rounded-full animate-spin" />
+            <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
           ) : (
             <FiUpload className="w-4 h-4" />
           )}
@@ -179,10 +193,10 @@ function ImageUploader({ value, onChange, label }) {
         </label>
       </div>
       {value && (
-        <div className="mt-2 relative group rounded-lg overflow-hidden border border-admin-200">
-          <img src={value} alt="" className="h-32 w-full object-cover" />
+        <div className="mt-3 relative rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+          <img src={value} alt="" className="h-36 w-full object-cover" />
           <button type="button" onClick={() => onChange('')}
-            className="absolute top-2 right-2 p-1.5 bg-destructive-500 text-white rounded-full opacity-100 shadow-lg">
+            className="absolute top-2.5 right-2.5 p-2 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white hover:text-red-600 transition-all border border-gray-200">
             <FiTrash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -503,6 +517,20 @@ function ServicesEditor({ data, onChange }) {
   );
 }
 
+function AccordionCard({ title, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+      <button type="button" onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-semibold text-gray-900 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+        {title}
+        <FiChevronUp className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? '' : 'rotate-180'}`} />
+      </button>
+      {open && <div className="px-5 py-4 space-y-4 border-t border-gray-100">{children}</div>}
+    </div>
+  );
+}
+
 function HeroEditor({ data, onChange }) {
   const content = data?.content || {};
   const mode = content.hero_mode || 'normal';
@@ -529,26 +557,27 @@ function HeroEditor({ data, onChange }) {
     updateContent('slides', slides.filter((_, i) => i !== idx));
   }
 
-  const inputClass = 'w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all';
+  const inputClass = 'w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white';
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Display Mode - Segmented Control */}
       <div>
-        <label className="block text-xs font-semibold text-black mb-2 uppercase tracking-wider">Mode</label>
-        <div className="grid grid-cols-2 gap-3">
+        <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">Display Mode</label>
+        <div className="inline-flex bg-gray-100 rounded-lg p-0.5">
           <button type="button" onClick={() => updateContent('hero_mode', 'normal')}
-            className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               mode === 'normal'
-                ? 'bg-admin-600 text-white border-admin-600'
-                : 'bg-white text-admin-600 border-admin-200 hover:border-admin-400'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
             }`}>
             Normal (Single Banner)
           </button>
           <button type="button" onClick={() => updateContent('hero_mode', 'carousel')}
-            className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
               mode === 'carousel'
-                ? 'bg-admin-600 text-white border-admin-600'
-                : 'bg-white text-admin-600 border-admin-200 hover:border-admin-400'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
             }`}>
             Carousel
           </button>
@@ -556,77 +585,134 @@ function HeroEditor({ data, onChange }) {
       </div>
 
       {mode === 'normal' ? (
-        <div className="space-y-4">
-          <ImageUploader value={content.banner_image || ''} onChange={(v) => updateContent('banner_image', v)} label="Banner Image" />
-          <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-6">
+          {/* Media Preview Section */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">Banner Image</label>
+            <div className="flex gap-2 mb-3">
+              <input type="text" value={content.banner_image || ''} onChange={(e) => updateContent('banner_image', e.target.value)}
+                className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                placeholder="Paste image URL or upload..." />
+              <ImageUploader value={content.banner_image || ''} onChange={(v) => updateContent('banner_image', v)} label="" hideInput />
+            </div>
+            {content.banner_image ? (
+              <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-md">
+                <img src={content.banner_image} alt="Banner preview" className="w-full h-48 object-cover" />
+                <button type="button" onClick={() => updateContent('banner_image', '')}
+                  className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white hover:text-red-600 transition-all border border-gray-200">
+                  <FiTrash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 h-48 flex items-center justify-center">
+                <div className="text-center">
+                  <FiUpload className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                  <p className="text-sm text-gray-400">No banner image selected</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Text Fields - 2 Column Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-black mb-1">Banner Heading</label>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Banner Heading</label>
               <input type="text" value={content.banner_heading || ''} onChange={(e) => updateContent('banner_heading', e.target.value)}
-                className={inputClass} />
+                className={inputClass} placeholder="e.g. Transform Your Career" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-black mb-1">Banner Description</label>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Banner Description</label>
               <input type="text" value={content.banner_description || ''} onChange={(e) => updateContent('banner_description', e.target.value)}
-                className={inputClass} />
+                className={inputClass} placeholder="e.g. Empowering students with industry-ready skills" />
             </div>
+          </div>
+
+          {/* Heading Below Banner */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Heading Below Banner</label>
+            <input type="text" value={content.headline || ''} onChange={(e) => updateContent('headline', e.target.value)}
+              className={inputClass} placeholder="e.g. Featured Programs" />
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
+          {/* Carousel Type - Segmented Control */}
           <div>
-            <label className="block text-xs font-semibold text-black mb-2 uppercase tracking-wider">Carousel Type</label>
-            <div className="grid grid-cols-2 gap-3">
+            <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">Carousel Type</label>
+            <div className="inline-flex bg-gray-100 rounded-lg p-0.5">
               <button type="button" onClick={() => updateContent('carousel_type', 'text')}
-                className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
                   carouselType === 'text'
-                    ? 'bg-admin-600 text-white border-admin-600'
-                    : 'bg-white text-admin-600 border-admin-200 hover:border-admin-400'
+                    ? 'bg-white text-indigo-700 shadow-sm border border-gray-200'
+                    : 'text-gray-500 hover:text-gray-700'
                 }`}>
                 Text Slides
               </button>
               <button type="button" onClick={() => updateContent('carousel_type', 'image')}
-                className={`px-4 py-3 text-sm font-medium rounded-lg border text-center transition-colors ${
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
                   carouselType === 'image'
-                    ? 'bg-admin-600 text-white border-admin-600'
-                    : 'bg-white text-admin-600 border-admin-200 hover:border-admin-400'
+                    ? 'bg-white text-indigo-700 shadow-sm border border-gray-200'
+                    : 'text-gray-500 hover:text-gray-700'
                 }`}>
                 Image Slides
               </button>
             </div>
           </div>
 
-          <div className="border-t border-admin-200 pt-4">
+          {/* Slides */}
+          <div>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-semibold text-black">Slides</p>
-              <AdminButton type="button" onClick={addSlide} variant="ghost" size="sm">
-                <FiPlus className="w-4 h-4" /> Add Slide
-              </AdminButton>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Slides ({slides.length})</span>
+              <button type="button" onClick={addSlide}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+                <FiPlus className="w-3.5 h-3.5" /> Add Slide
+              </button>
             </div>
             {slides.length === 0 ? (
-              <p className="text-sm text-neutral-400 italic py-6 text-center border-2 border-dashed border-admin-200 rounded-lg">No slides yet.</p>
+              <div className="border-2 border-dashed border-gray-200 rounded-xl py-8 text-center">
+                <p className="text-sm text-gray-400">No slides yet.</p>
+                <button type="button" onClick={addSlide} className="mt-2 text-sm text-indigo-600 font-medium hover:text-indigo-700">+ Add your first slide</button>
+              </div>
             ) : (
               <div className="space-y-3">
                 {slides.map((slide, i) => (
-                  <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-black uppercase tracking-wider">Slide {i + 1}</span>
+                  <div key={i} className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+                    <div className="flex items-center justify-between px-5 py-3 bg-gray-50/50 border-b border-gray-100">
+                      <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Slide {i + 1}</span>
                       <button type="button" onClick={() => removeSlide(i)}
-                        className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors">
-                        <FiTrash2 className="w-4 h-4" />
+                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                        <FiTrash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    <div className="space-y-3">
+                    <div className="px-5 py-4 space-y-3">
                       {carouselType === 'image' && (
-                        <ImageUploader value={slide.image || ''} onChange={(v) => updateSlide(i, 'image', v)} label="Slide Image" />
-                      )}
-                      <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-black mb-1">Heading</label>
+                          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Slide Image</label>
+                          <div className="flex gap-2">
+                            <input type="text" value={slide.image || ''} onChange={(e) => updateSlide(i, 'image', e.target.value)}
+                              className="flex-1 px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                              placeholder="Image URL" />
+                            <ImageUploader value={slide.image || ''} onChange={(v) => updateSlide(i, 'image', v)} label="" hideInput />
+                          </div>
+                          {slide.image && (
+                            <div className="relative mt-2 rounded-lg overflow-hidden border border-gray-200">
+                              <img src={slide.image} alt="" className="h-32 w-full object-cover" />
+                              <button type="button" onClick={() => updateSlide(i, 'image', '')}
+                                className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white transition-all border border-gray-200">
+                                <FiTrash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Heading</label>
                           <input type="text" value={slide.heading || ''} onChange={(e) => updateSlide(i, 'heading', e.target.value)}
                             className={inputClass} />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-black mb-1">Description</label>
+                          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
                           <input type="text" value={slide.description || ''} onChange={(e) => updateSlide(i, 'description', e.target.value)}
                             className={inputClass} />
                         </div>
@@ -640,152 +726,139 @@ function HeroEditor({ data, onChange }) {
         </div>
       )}
 
-      <div className="border-t border-admin-200 pt-4">
-        <div className="grid grid-cols-2 gap-3">
+      {/* Two-Column Layout Settings - Collapsible Card Accordion */}
+      <AccordionCard title="Two-Column Layout Settings">
+        <p className="text-xs text-gray-400">These fields apply when no banner image is set (gradient background layout).</p>
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
+          <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
+            className={inputClass} placeholder="Hero section description for two-column layout" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-black mb-1">Heading Below Banner</label>
-            <input type="text" value={content.headline || ''} onChange={(e) => updateContent('headline', e.target.value)}
-              className={inputClass} />
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Badge Text</label>
+            <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
+              className={inputClass} placeholder="e.g. New batch starting soon" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Student Image</label>
+            <ImageUploader value={content.student_image_url || ''} onChange={(v) => updateContent('student_image_url', v)} label="" hideInput />
           </div>
         </div>
-      </div>
-
-      <details className="border border-admin-200 rounded-lg overflow-hidden">
-        <summary className="px-4 py-3 text-sm font-semibold text-black bg-white cursor-pointer hover:bg-admin-100 transition-colors">
-          Two-Column Layout Settings
-        </summary>
-        <div className="p-4 space-y-4">
-          <p className="text-xs text-neutral-400">These fields apply when no banner image is set (gradient background layout).</p>
-          <div>
-            <label className="block text-xs font-medium text-black mb-1">Description</label>
-            <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
-              className={inputClass} />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-black mb-1">Badge Text</label>
-              <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
-                className={inputClass} />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-black mb-1">Feature Bullets (one per line)</label>
-            <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
-              className={`${inputClass} font-mono text-xs`} />
-          </div>
-          <ImageUploader value={content.student_image_url || ''} onChange={(v) => updateContent('student_image_url', v)} label="Student Image (right side)" />
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Feature Bullets (one per line)</label>
+          <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
+            className={`${inputClass} font-mono text-xs`} placeholder="Industry-recognized certification&#10;Expert-led live sessions&#10;Flexible learning schedule" />
         </div>
-      </details>
+        {content.student_image_url && (
+          <div className="relative rounded-lg overflow-hidden border border-gray-200">
+            <img src={content.student_image_url} alt="" className="h-32 w-full object-cover" />
+            <button type="button" onClick={() => updateContent('student_image_url', '')}
+              className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white transition-all border border-gray-200">
+              <FiTrash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+      </AccordionCard>
 
-      <div className="border-t border-admin-200 pt-4">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-semibold text-black">Stats</p>
-          <AdminButton type="button" onClick={() => {
+      {/* Stats Section */}
+      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+          <span className="text-sm font-semibold text-gray-900">Stats</span>
+          <button type="button" onClick={() => {
             const s = Array.isArray(content.stats) ? content.stats : [];
             updateContent('stats', [...s, { value: '', label: '' }]);
-          }} variant="ghost" size="sm">
-            <FiPlus className="w-4 h-4" /> Add Stat
-          </AdminButton>
+          }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+            <FiPlus className="w-3.5 h-3.5" /> Add Stat
+          </button>
         </div>
         {(!Array.isArray(content.stats) || content.stats.length === 0) ? (
-          <p className="text-sm text-neutral-400 italic">No stats yet.</p>
+          <div className="px-5 py-6 text-center">
+            <p className="text-sm text-gray-400">No stats yet.</p>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div className="px-5 py-4 space-y-3">
             {content.stats.map((s, i) => (
-              <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-black uppercase tracking-wider">Stat {i + 1}</span>
-                  <button type="button" onClick={() => {
-                    const arr = [...content.stats];
-                    arr.splice(i, 1);
-                    updateContent('stats', arr);
-                  }} className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg">
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-black mb-1">Value</label>
-                    <input type="text" value={s.value || ''} onChange={(e) => {
-                      const arr = [...content.stats];
-                      arr[i] = { ...arr[i], value: e.target.value };
-                      updateContent('stats', arr);
-                    }} className={inputClass} />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-black mb-1">Label</label>
-                    <input type="text" value={s.label || ''} onChange={(e) => {
-                      const arr = [...content.stats];
-                      arr[i] = { ...arr[i], label: e.target.value };
-                      updateContent('stats', arr);
-                    }} className={inputClass} />
-                  </div>
-                </div>
+              <div key={i} className="flex items-center gap-3">
+                <span className="text-xs font-semibold text-gray-400 w-16 shrink-0">STAT {i + 1}</span>
+                <input type="text" value={s.value || ''} onChange={(e) => {
+                  const arr = [...content.stats];
+                  arr[i] = { ...arr[i], value: e.target.value };
+                  updateContent('stats', arr);
+                }}
+                  className="w-28 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  placeholder="Value" />
+                <input type="text" value={s.label || ''} onChange={(e) => {
+                  const arr = [...content.stats];
+                  arr[i] = { ...arr[i], label: e.target.value };
+                  updateContent('stats', arr);
+                }}
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  placeholder="Label" />
+                <button type="button" onClick={() => {
+                  const arr = [...content.stats];
+                  arr.splice(i, 1);
+                  updateContent('stats', arr);
+                }}
+                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                  <FiTrash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <div className="border-t border-admin-200 pt-4">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-semibold text-black">Buttons</p>
-          <AdminButton type="button" onClick={() => {
+      {/* Buttons Section */}
+      <AccordionCard title="Call-to-Action Buttons" defaultOpen={false}>
+        <div className="space-y-3">
+          {(!Array.isArray(content.buttons) || content.buttons.length === 0) ? (
+            <p className="text-sm text-gray-400">No buttons yet.</p>
+          ) : (
+            content.buttons.map((btn, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <input type="text" value={btn.label || ''} onChange={(e) => {
+                  const arr = [...content.buttons];
+                  arr[i] = { ...arr[i], label: e.target.value };
+                  updateContent('buttons', arr);
+                }}
+                  className="w-40 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  placeholder="Label" />
+                <input type="text" value={btn.link || ''} onChange={(e) => {
+                  const arr = [...content.buttons];
+                  arr[i] = { ...arr[i], link: e.target.value };
+                  updateContent('buttons', arr);
+                }}
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  placeholder="/courses" />
+                <input type="text" value={btn.color || ''} onChange={(e) => {
+                  const arr = [...content.buttons];
+                  arr[i] = { ...arr[i], color: e.target.value };
+                  updateContent('buttons', arr);
+                }}
+                  className="w-28 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white font-mono"
+                  placeholder="#F7941D" />
+                <button type="button" onClick={() => {
+                  const arr = [...content.buttons];
+                  arr.splice(i, 1);
+                  updateContent('buttons', arr);
+                }}
+                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                  <FiTrash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))
+          )}
+          <button type="button" onClick={() => {
             const b = Array.isArray(content.buttons) ? content.buttons : [];
             updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
-          }} variant="ghost" size="sm">
-            <FiPlus className="w-4 h-4" /> Add Button
-          </AdminButton>
+          }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+            <FiPlus className="w-3.5 h-3.5" /> Add Button
+          </button>
         </div>
-        {(!Array.isArray(content.buttons) || content.buttons.length === 0) ? (
-          <p className="text-sm text-neutral-400 italic">No buttons yet.</p>
-        ) : (
-          <div className="space-y-3">
-            {content.buttons.map((btn, i) => (
-              <div key={i} className="bg-white rounded-lg border border-admin-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-black uppercase tracking-wider">Button {i + 1}</span>
-                  <button type="button" onClick={() => {
-                    const arr = [...content.buttons];
-                    arr.splice(i, 1);
-                    updateContent('buttons', arr);
-                  }} className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg">
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-black mb-1">Label</label>
-                    <input type="text" value={btn.label || ''} onChange={(e) => {
-                      const arr = [...content.buttons];
-                      arr[i] = { ...arr[i], label: e.target.value };
-                      updateContent('buttons', arr);
-                    }} className={inputClass} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-black mb-1">Link</label>
-                      <input type="text" value={btn.link || ''} onChange={(e) => {
-                        const arr = [...content.buttons];
-                        arr[i] = { ...arr[i], link: e.target.value };
-                        updateContent('buttons', arr);
-                      }} className={inputClass} placeholder="/courses" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-black mb-1">Color</label>
-                      <input type="text" value={btn.color || ''} onChange={(e) => {
-                        const arr = [...content.buttons];
-                        arr[i] = { ...arr[i], color: e.target.value };
-                        updateContent('buttons', arr);
-                      }} className={inputClass} placeholder="#F7941D" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      </AccordionCard>
     </div>
   );
 }
@@ -1083,37 +1156,41 @@ export default function HomePageEditor() {
 
   return (
     <PageShell title="Home Page Editor" maxWidth="max-w-none">
-      <div className="flex gap-6">
-        <nav className="w-60 shrink-0">
-          <div className="bg-white/80 rounded-xl p-2 space-y-0.5">
+      <div className="flex gap-6 items-start">
+        <nav className="w-[20%] min-w-[220px] shrink-0 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
             {allNavItems.map((item) => (
               <button
                 key={item.key}
                 type="button"
                 onClick={() => navigate(`/admin/home/${item.key}`)}
-                className={`cursor-pointer w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-left transition-colors ${
+                className={`cursor-pointer w-full flex items-center gap-3 text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
                   selectedNav.key === item.key
-                    ? 'bg-white text-black shadow-sm border border-admin-200/60 font-medium'
-                    : 'text-black hover:bg-white/50 hover:text-black'
+                    ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]'
+                    : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'
                 }`}
               >
-                <item.icon className="w-4 h-4 shrink-0" />
+                <item.icon className={`w-4 h-4 shrink-0 ${
+                  selectedNav.key === item.key ? 'text-indigo-600' : 'text-gray-400'
+                }`} />
                 <span>{item.label}</span>
               </button>
             ))}
           </div>
         </nav>
-        <div className="flex-1 min-w-0">
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-black">{selectedNav.label}</h2>
-            <p className="text-sm text-neutral-500 mt-0.5">Edit the {selectedNav.label.toLowerCase()} section</p>
+        <div className="w-[80%] min-w-0">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">{selectedNav.label}</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Manage {selectedNav.label.toLowerCase()} section assets, content, and display settings.</p>
+            </div>
           </div>
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-          <div className="rounded-lg border border-admin-200 p-6">
+          <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-6">
             {def && sec ? (
               <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />
             ) : (
-              <p className="text-sm text-neutral-400">Section not found.</p>
+              <p className="text-sm text-gray-400">Section not found.</p>
             )}
             <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
           </div>
