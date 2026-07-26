@@ -12,7 +12,7 @@ import {
   FiLayout, FiMail, FiMessageSquare, FiBell, FiUsers,
   FiClock, FiVideo, FiCode, FiCalendar, FiRefreshCw,
   FiBarChart2, FiBookOpen, FiBriefcase, FiGlobe, FiCpu,
-  FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiChevronUp,
+  FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
 
 const ICON_LIST = [
@@ -1057,6 +1057,7 @@ export default function HomePageEditor() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const savingRef = useRef(false);
   const { dirty, reset } = useDirty([sections, alumniData], loading);
@@ -1157,28 +1158,39 @@ export default function HomePageEditor() {
   return (
     <PageShell title="Home Page Editor" maxWidth="max-w-none">
       <div className="flex gap-6 items-start">
-        <nav className="w-[20%] min-w-[220px] shrink-0 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-            {allNavItems.map((item) => (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => navigate(`/admin/home/${item.key}`)}
-                className={`cursor-pointer w-full flex items-center gap-3 text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
-                  selectedNav.key === item.key
-                    ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]'
-                    : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'
-                }`}
-              >
-                <item.icon className={`w-4 h-4 shrink-0 ${
-                  selectedNav.key === item.key ? 'text-indigo-600' : 'text-gray-400'
-                }`} />
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </nav>
-        <div className="w-[80%] min-w-0">
+        <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className={`w-full flex items-center justify-center gap-2 px-3 py-2 mb-2 text-sm font-medium text-gray-500 hover:text-gray-700 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors ${sidebarOpen ? '' : 'p-2'}`}
+            title={sidebarOpen ? 'Hide Menu' : 'Show Menu'}
+          >
+            {sidebarOpen ? <FiChevronLeft className="w-4 h-4" /> : <FiChevronRight className="w-4 h-4" />}
+            {sidebarOpen && 'Hide Menu'}
+          </button>
+          <nav className="sticky top-16 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+              {allNavItems.map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => navigate(`/admin/home/${item.key}`)}
+                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
+                    sidebarOpen
+                      ? `gap-3 ${selectedNav.key === item.key ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]' : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'}`
+                      : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-indigo-50 text-indigo-600' : 'text-gray-400 hover:bg-slate-50 hover:text-gray-600'}`
+                  }`}
+                  title={item.label}
+                >
+                  <item.icon className={`w-4 h-4 shrink-0 ${
+                    selectedNav.key === item.key ? 'text-indigo-600' : 'text-gray-400'
+                  }`} />
+                  {sidebarOpen && <span className="flex-1 truncate">{item.label}</span>}
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
+        <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h2 className="text-xl font-bold text-gray-900">{selectedNav.label}</h2>

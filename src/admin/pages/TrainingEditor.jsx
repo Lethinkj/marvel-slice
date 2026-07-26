@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import AdminButton from "../components/AdminButton";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiSettings, FiFileText, FiTag, FiImage, FiHeart, FiAlertCircle, FiSave } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiSettings, FiFileText, FiTag, FiImage, FiHeart, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
@@ -177,6 +177,7 @@ export default function TrainingEditor() {
 
   const isNew = id === "new";
   const [tab, setTab] = useState("basic");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [categories, setCategories] = useState([]);
@@ -461,25 +462,36 @@ export default function TrainingEditor() {
       )}
 
       <div className="flex gap-6 items-start">
-        <div className="w-48 shrink-0 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-            {editorTabs.map((t) => {
-              const meta = tabMeta[t];
-              return (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`cursor-pointer w-full flex items-center gap-3 text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
-                    tab === t
-                      ? "bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]"
-                      : "text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent"
-                  }`}
-                >
-                  <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-indigo-600" : "text-gray-400"}`} />
-                  <span>{meta.label}</span>
-                </button>
-              );
-            })}
+        <div className={`transition-all duration-200 ${sidebarOpen ? 'w-48' : 'w-14'}`}>
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className={`w-full flex items-center justify-center gap-2 px-3 py-2 mb-2 text-sm font-medium text-gray-500 hover:text-gray-700 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors ${sidebarOpen ? '' : 'p-2'}`}
+            title={sidebarOpen ? 'Hide Menu' : 'Show Menu'}
+          >
+            {sidebarOpen ? <FiChevronLeft className="w-4 h-4" /> : <FiChevronRight className="w-4 h-4" />}
+            {sidebarOpen && 'Hide Menu'}
+          </button>
+          <div className="sticky top-16 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+              {editorTabs.map((t) => {
+                const meta = tabMeta[t];
+                return (
+                  <button
+                    key={t}
+                    onClick={() => setTab(t)}
+                    className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
+                      sidebarOpen
+                        ? `gap-3 ${tab === t ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]' : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'}`
+                        : `justify-center gap-0 ${tab === t ? 'bg-indigo-50 text-indigo-600' : 'text-gray-400 hover:bg-slate-50 hover:text-gray-600'}`
+                    }`}
+                    title={meta.label}
+                  >
+                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-indigo-600" : "text-gray-400"}`} />
+                    {sidebarOpen && <span className="flex-1 truncate">{meta.label}</span>}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
