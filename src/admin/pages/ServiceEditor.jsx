@@ -473,7 +473,7 @@ export default function ServiceEditor() {
                       : "text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent"
                   }`}
                 >
-                  <meta.Icon className="w-4 h-4 shrink-0" />
+                  <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-indigo-600" : "text-gray-400"}`} />
                   <span>{meta.label}</span>
                 </button>
               );

@@ -538,28 +538,32 @@ export default function CourseEditor() {
         </div>
       )}
 
-      <div className="flex gap-6">
-        <div className="w-60 bg-white/80 rounded-xl p-2 shrink-0 space-y-0.5">
-          {editorTabs.map((t) => {
-            const meta = tabMeta[t];
-            return (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`flex flex-col items-center gap-1 w-full px-3 py-2.5 rounded-lg text-xs font-medium transition-colors ${
-                  tab === t
-                    ? "bg-white text-admin-600 shadow-sm border border-admin-200/60"
-                    : "text-admin-600 hover:bg-white/50 hover:text-admin-900"
-                }`}
-              >
-                <meta.Icon className="w-5 h-5" />
-                <span>{meta.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      <div className="flex gap-6 items-start">
+        <nav className="w-[20%] min-w-[220px] shrink-0 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+            {editorTabs.map((t) => {
+              const meta = tabMeta[t];
+              return (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={`w-full flex items-center gap-3 text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
+                    tab === t
+                      ? "bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]"
+                      : "text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent"
+                  }`}
+                >
+                  <meta.Icon className={`w-4 h-4 shrink-0 ${
+                    tab === t ? "text-indigo-600" : "text-gray-400"
+                  }`} />
+                  <span>{meta.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
 
-        <div className="flex-1 min-w-0">
+        <div className="w-[80%] min-w-0">
           {tab === "basic" && (
             <div className="space-y-4 max-w-2xl">
               <div>
