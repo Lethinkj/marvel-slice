@@ -6,7 +6,6 @@ import Sidebar from "./Sidebar";
 import CommandPalette from "../components/ui/CommandPalette";
 import { ToastContainer } from "../components/Toast";
 import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock } from "react-icons/fi";
-import Breadcrumbs from "../components/ui/Breadcrumbs";
 import { trackLogout } from "../../lib/analytics";
 
 
@@ -188,7 +187,6 @@ export default function AdminLayout() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 admin-scrollbar">
-          <div className="lg:hidden mb-3"><Breadcrumbs /></div>
           <Outlet />
         </main>
       </div>

@@ -342,10 +342,10 @@ export default function NavPageEditor() {
           </div>
           <p className="text-sm text-neutral-500 mb-4">Select courses to display on this page.</p>
           <div className="relative mb-4">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
             <input type="text" value={courseSearch} onChange={(e) => setCourseSearch(e.target.value)}
               placeholder="Search courses..."
-              className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" />
+              className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white" />
           </div>
           {allCourses.length === 0 ? (
             <p className="text-sm text-neutral-400 italic py-6 text-center border-2 border-dashed border-admin-200 rounded-lg">

@@ -411,26 +411,32 @@ function SessionsTable({ conversations }) {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, email, phone..."
-              className="w-64 pl-9 pr-3 py-2 text-sm bg-neutral-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-neutral-500/30 placeholder-neutral-400"
-            />
+          <div>
+            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
+            <div className="relative">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by name, email, phone..."
+                className="w-64 pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+              />
+            </div>
           </div>
-          <div className="relative">
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="appearance-none pl-3 pr-8 py-2 text-sm bg-neutral-100 border-0 rounded-lg outline-none focus:ring-2 focus:ring-neutral-500/30 cursor-pointer"
-            >
-              <option value="all">All</option>
-              <option value="new">New</option>
-              <option value="closed">Closed</option>
-            </select>
-            <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+          <div>
+            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
+            <div className="relative">
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
+              >
+                <option value="all">All</option>
+                <option value="new">New</option>
+                <option value="closed">Closed</option>
+              </select>
+              <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+            </div>
           </div>
         </div>
       </div>
@@ -459,7 +465,7 @@ function SessionsTable({ conversations }) {
               </tr>
             ) : (
               paginated.map((conv, i) => (
-                <tr key={conv.id} onClick={() => setViewingConv(conv)} className="border-b border-admin-50 hover:bg-white/50 transition-colors cursor-pointer">
+                <tr key={conv.id} onClick={() => setViewingConv(conv)} className={`border-b border-gray-100 last:border-0 cursor-pointer transition-colors ${i % 2 === 1 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-50`}>
                   <td className="px-5 py-4 text-neutral-400 text-xs">{(page - 1) * pageSize + i + 1}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-2.5">

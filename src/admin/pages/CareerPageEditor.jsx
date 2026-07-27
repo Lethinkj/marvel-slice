@@ -510,7 +510,7 @@ export default function CareerPageEditor() {
                 </thead>
                 <tbody>
                   {roleCategories.map((cat) => (
-                    <tr key={cat.id} className="border-b border-admin-100 hover:bg-white transition-colors">
+                    <tr key={cat.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                       <td className="px-3 py-2.5 font-medium text-black">{cat.name}</td>
                       <td className="px-3 py-2.5 text-center text-neutral-500">{cat.display_order}</td>
                       <td className="px-3 py-2.5 text-center">

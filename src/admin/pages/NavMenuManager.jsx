@@ -698,36 +698,39 @@ export default function NavMenuManager() {
             <div className="border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
               
               {/* Filter Bar */}
-              <div className="px-5 py-4 bg-white border-b border-gray-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div className="flex items-center gap-2 w-full sm:max-w-md">
-                  <div className="relative flex-1">
-                    <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search items by label or path..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(searchQuery)}
-                      className="w-full pl-9 pr-4 py-2 h-9 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow"
-                    />
+              <div className="px-5 py-4 bg-white border-b border-gray-100 flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                <div>
+                  <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-[200px]">
+                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                      <input
+                        type="text"
+                        placeholder="Search items by label or path..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(searchQuery)}
+                        className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+                      />
+                    </div>
+                    <button onClick={() => { setActiveSearch(searchQuery); setPage(1); }} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
+                      Search
+                    </button>
                   </div>
-                  <button onClick={() => { setActiveSearch(searchQuery); setPage(1); }} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
-                    Search
-                  </button>
                 </div>
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <div className="relative flex-1 sm:flex-none">
-                    <FiFilter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <div>
+                  <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
+                  <div className="relative">
                     <select
                       value={statusFilter}
                       onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                      className="w-full sm:w-auto pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
+                      className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
                     >
                       <option value="all">All Statuses</option>
                       <option value="active">Active Only</option>
                       <option value="inactive">Inactive Only</option>
                     </select>
-                    <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
                   </div>
                 </div>
               </div>

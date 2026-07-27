@@ -403,13 +403,13 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
               </button>
             </div>
             <div className="relative mb-3">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
               <input
                 ref={searchRef}
                 value={search}
                 placeholder="Search courses..."
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="w-full pl-9 pr-4 py-2 border border-admin-200 rounded-lg text-sm outline-none ring-0 focus:ring-2 focus:ring-admin-500 bg-white"
+                className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
               />
             </div>
             <div className="max-h-52 overflow-y-auto border border-admin-100 rounded-lg divide-y divide-admin-50">
