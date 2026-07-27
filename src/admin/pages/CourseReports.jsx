@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import PageShell from "../components/ui/PageShell";
-import { FiDownload, FiLoader, FiCheck, FiSearch, FiX } from 'react-icons/fi';
+import { FiDownload, FiLoader, FiCheck, FiSearch, FiX, FiArrowLeft } from 'react-icons/fi';
 
 const categories = [
   'Software Learning',
@@ -13,7 +13,7 @@ const categories = [
 ];
 
 export default function CourseReports() {
-  const [courses, setCourses] = useState([]);
+const [courses, setCourses] = useState([]);
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -47,14 +47,16 @@ export default function CourseReports() {
   }
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title="Course Reports"
       subtitle="Generate combined brochure PDFs"
       actions={
-        <AdminButton onClick={() => setOpen(true)} variant="primary" size="md">
-          <FiDownload className="w-4 h-4" />
-          Download
-        </AdminButton>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+<AdminButton onClick={() => setOpen(true)} variant="primary" size="md">
+            <FiDownload className="w-4 h-4" />
+            Download
+          </AdminButton>
+        </div>
       }>
 
       {open && (

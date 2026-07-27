@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
-import { FiPlus, FiTag, FiX } from 'react-icons/fi';
+import { FiPlus, FiTag, FiX, FiArrowLeft } from 'react-icons/fi';
 import PageShell from "../components/ui/PageShell";
 import AdminButton from "../components/AdminButton";
 
@@ -42,7 +42,7 @@ export default function TagAdd() {
   }
 
   return (
-    <PageShell 
+    <PageShell backTo="/admin" 
       title="Add Tag" 
       subtitle="Create a new tag for your courses and posts"
     >

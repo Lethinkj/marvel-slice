@@ -243,7 +243,7 @@ export default function BlogPostEditor() {
       <div className="flex items-center gap-4 mb-8">
         <Link
           to="/admin/blog"
-          className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors"
+          className="p-2 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
         >
           <FiArrowLeft className="w-5 h-5" />
         </Link>

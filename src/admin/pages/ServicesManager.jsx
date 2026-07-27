@@ -19,7 +19,7 @@ const statusColors = {
 };
 
 export default function ServicesManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [services, setServices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -169,17 +169,9 @@ export default function ServicesManager() {
   }
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title="Services"
       subtitle={`${services.length} service${services.length !== 1 ? 's' : ''} total`}
-      actions={
-        services.length > 0 ? (
-          <Link to="/admin/services/new" className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-colors">
-            <FiPlus className="w-4 h-4" />
-            Add Service
-          </Link>
-        ) : undefined
-      }
     >
       {services.length > 0 && (
         <Card>

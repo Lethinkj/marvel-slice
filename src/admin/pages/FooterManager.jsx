@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
-import { FiPlus, FiLink, FiChevronDown, FiChevronRight } from 'react-icons/fi';
+import { FiPlus, FiLink, FiChevronDown, FiChevronRight, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -63,7 +63,7 @@ function ColumnCard({ column, onUpdate, onDelete, onAddLink, onUpdateLink, onDel
 }
 
 export default function FooterManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -158,14 +158,16 @@ export default function FooterManager() {
   }
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title="Footer Manager"
       subtitle="Manage footer columns and their links"
       actions={
-        <AdminButton onClick={addColumn} variant="primary" size="md">
-          <FiPlus className="w-4 h-4" />
-          Add Column
-        </AdminButton>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+<AdminButton onClick={addColumn} variant="primary" size="md">
+            <FiPlus className="w-4 h-4" />
+            Add Column
+          </AdminButton>
+        </div>
       }
     >
       {columns.length === 0 ? (

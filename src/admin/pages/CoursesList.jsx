@@ -6,12 +6,12 @@ import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
 import Card from "../components/ui/Card";
 import DataTable from "../components/ui/DataTable";
-import { FiPlus, FiBookOpen, FiSearch, FiEdit3, FiTrash2, FiChevronDown } from "react-icons/fi";
+import { FiPlus, FiBookOpen, FiSearch, FiEdit3, FiTrash2, FiChevronDown, FiArrowLeft } from "react-icons/fi";
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
 export default function CoursesList() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const [courses, setCourses] = useState([]);
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -173,7 +173,7 @@ export default function CoursesList() {
   }
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title={activeCategory ? `${activeCategory} Courses` : "All Courses"}
       subtitle={`${courses.length} course${courses.length !== 1 ? 's' : ''} total`}
     >

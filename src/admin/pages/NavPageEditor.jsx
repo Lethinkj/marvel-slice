@@ -232,7 +232,7 @@ export default function NavPageEditor() {
     <PageShell
       title={navItem ? navItem.label : 'Page Editor'}
       actions={
-        <Link to="/admin/nav-menu" className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
+        <Link to="/admin/nav-menu" className="p-2 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors">
           <FiArrowLeft className="w-5 h-5" />
         </Link>
       }

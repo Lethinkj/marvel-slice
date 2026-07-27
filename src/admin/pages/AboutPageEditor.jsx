@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import * as LuIcons from 'react-icons/lu';
 import { supabase } from '../../lib/supabaseClient';
@@ -374,8 +374,7 @@ const SECTION_TYPE_LABELS = Object.fromEntries(SECTION_TYPES.map(t => [t.value, 
 const PAGE_PATH = '/about';
 
 export default function AboutPageEditor() {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [navItem, setNavItem] = useState(null);
   const [navItemId, setNavItemId] = useState(null);
@@ -539,16 +538,8 @@ export default function AboutPageEditor() {
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title={`${navItem?.label || 'About'} Page`}
-      actions={
-        <div className="flex items-center gap-2">
-          <button onClick={() => navigate('/admin')} className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
-            <FiArrowLeft className="w-5 h-5" />
-          </button>
-
-        </div>
-      }
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       {validationErrors.length > 0 && (
@@ -560,25 +551,24 @@ export default function AboutPageEditor() {
         </div>
       )}
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="p-6">
-          <h2 className="font-semibold text-black mb-4">Hero Image</h2>
-          <div className="mt-2">
-            {showHeroImage ? (
-              <div>
-                <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
-                <button type="button" onClick={() => { setShowHeroImage(false); setHero({ ...hero, hero_image: '' }); }} className="mt-2 text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
-              </div>
-            ) : (
-              <button type="button" onClick={() => setShowHeroImage(true)} className="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors cursor-pointer">
-                <FiUpload className="w-4 h-4" /> Add Hero Image
-              </button>
-            )}
-          </div>
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+          <button type="button" onClick={() => setShowHeroImage(!showHeroImage)} className="w-full flex items-center justify-between px-5 py-3.5 bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-pointer">
+            <span className="text-sm font-semibold text-gray-900">Hero Image</span>
+            <FiChevronUp className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showHeroImage ? '' : 'rotate-180'}`} />
+          </button>
+          {showHeroImage && (
+            <div className="px-5 py-4 space-y-3">
+              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+              {hero.hero_image && (
+                <button type="button" onClick={() => { setShowHeroImage(false); setHero({ ...hero, hero_image: '' }); }} className="text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
+              )}
+            </div>
+          )}
         </div>
 
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-black">Sections</h2>
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+            <h2 className="text-sm font-semibold text-gray-900">Sections</h2>
             <div className="flex items-center gap-2">
               <div className="relative">
                 <select value={newType} onChange={(e) => setNewType(e.target.value)}
@@ -592,8 +582,9 @@ export default function AboutPageEditor() {
               <AdminButton type="button" onClick={addSection} variant="primary" size="sm"><FiPlus className="w-4 h-4" /> Add</AdminButton>
             </div>
           </div>
+          <div className="px-5 py-4 space-y-4">
           {SECTION_TYPES.find(t => t.value === newType)?.desc && (
-            <p className="text-xs text-neutral-400 -mt-3 mb-4">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
+            <p className="text-xs text-neutral-400">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
           )}
           {sections.length === 0 && (
             <p className="text-sm text-neutral-400 text-center py-8">No sections yet. Select a type above and click "Add".</p>
@@ -638,6 +629,7 @@ export default function AboutPageEditor() {
                 )}
               </div>
             ))}
+          </div>
           </div>
         </div>
 

@@ -5,7 +5,7 @@ import PageShell from "../components/ui/PageShell";
 import {
   FiGrid, FiMonitor, FiServer, FiBookOpen, FiStar, FiAward,
   FiUsers, FiClock, FiCode, FiGlobe, FiZap, FiShield, FiHeart,
-  FiLayers, FiFileText, FiImage, FiVideo, FiChevronUp,
+  FiLayers, FiFileText, FiImage, FiVideo, FiChevronUp, FiArrowLeft,
 } from 'react-icons/fi';
 import useConfirm from '../hooks/useConfirm';
 
@@ -71,7 +71,7 @@ function IconPicker({ value, onChange }) {
 }
 
 export default function ServiceCategoriesManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -137,7 +137,8 @@ export default function ServiceCategoriesManager() {
   }
 
   return (
-    <PageShell title="Service Categories" subtitle="Manage categories for services">
+    <PageShell backTo="/admin" title="Service Categories" subtitle="Manage categories for services"
+    >
 
       <div className="flex gap-6 items-start mb-6">
         <form onSubmit={handleSave} className="flex-1 rounded-xl border border-gray-200 bg-white shadow-sm p-5 space-y-4">

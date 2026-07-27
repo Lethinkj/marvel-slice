@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiUpload, FiTrash2, FiCheck, FiMail, FiPhone, FiGlobe, FiMapPin, FiClock } from 'react-icons/fi';
+import { FiSave, FiUpload, FiTrash2, FiCheck, FiArrowLeft, FiMail, FiPhone, FiGlobe, FiMapPin, FiClock } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function ImageUploader({ value, onChange, label }) {
@@ -57,7 +57,7 @@ function ImageUploader({ value, onChange, label }) {
 }
 
 export default function SiteSettings() {
-  const queryClient = useQueryClient();
+const queryClient = useQueryClient();
   const [form, setForm] = useState({
     logo_url: '',
     contact_email: '',
@@ -154,7 +154,8 @@ export default function SiteSettings() {
   }
 
   return (
-    <PageShell title="Site Settings" subtitle="Contact info, social links, and logo">
+    <PageShell backTo="/admin" title="Site Settings" subtitle="Contact info, social links, and logo"
+    >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
 
       <form onSubmit={handleSave} className="space-y-6">

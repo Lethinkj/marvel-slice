@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import { useNavigate } from 'react-router-dom';
 import DataTable from '../components/ui/DataTable';
 import EmptyState from '../components/EmptyState';
-import { FiTrash2, FiTag } from 'react-icons/fi';
+import { FiTrash2, FiTag, FiArrowLeft } from 'react-icons/fi';
 import PageShell from "../components/ui/PageShell";
 import useConfirm from '../hooks/useConfirm';
 
 export default function TagsList() {
   const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const [tags, setTags] = useState([]);
+const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,7 +52,7 @@ export default function TagsList() {
   ];
 
   return (
-    <PageShell 
+    <PageShell backTo="/admin" 
       title="View Tags" 
       subtitle="Manage your content tags"
     >

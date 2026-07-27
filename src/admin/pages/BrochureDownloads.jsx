@@ -1,5 +1,6 @@
 import SubmissionsInbox from '../components/ui/SubmissionsInbox';
 import PageShell from '../components/ui/PageShell';
+import { FiArrowLeft } from 'react-icons/fi';
 
 const columns = [
   { header: 'Name', accessor: 'name', className: 'min-w-[140px]' },
@@ -14,8 +15,9 @@ const detailFields = [
 ];
 
 export default function BrochureDownloads() {
-  return (
-    <PageShell title="Brochure Downloads">
+return (
+    <PageShell backTo="/admin" title="Brochure Downloads"
+    >
       <SubmissionsInbox
         table="brochure_downloads"
         title="Brochure Downloads"

@@ -11,8 +11,11 @@ const navGroups = [
     items: [
       { to: "/admin/home", label: "Home", catchSubRoutes: true },
       { to: "/admin/about-page", label: "About" },
+      { to: "/admin/services-page", label: "Services" },
+      { to: "/admin/training-page", label: "Training" },
       { to: "/admin/career-page", label: "Career" },
-      { to: "/admin/contact-page", label: "Contact" }
+      { to: "/admin/blog", label: "Blog" },
+      { to: "/admin/contact-page", label: "Contact" },
     ],
   },
   { label: "Chat", icon: FiMessageCircle, items: [
@@ -24,16 +27,14 @@ const navGroups = [
     label: "Services", icon: FiServer, parentTo: "/admin/services", items: [
       { to: "/admin/services/new", label: "Add Service" },
       { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
-      { to: "/admin/service-categories", label: "Categories" },
-      { to: "/admin/services-page", label: "Services Page" }
+      { to: "/admin/service-categories", label: "Categories" }
     ],
   },
   {
     label: "Training", icon: FiZap, parentTo: "/admin/training", items: [
       { to: "/admin/training/new", label: "Add Program" },
       { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
-      { to: "/admin/training-categories", label: "Categories" },
-      { to: "/admin/training-page", label: "Training Page" }
+      { to: "/admin/training-categories", label: "Categories" }
     ],
   },
   {

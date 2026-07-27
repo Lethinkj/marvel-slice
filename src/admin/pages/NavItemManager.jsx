@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { FiBookOpen, FiChevronDown, FiList, FiCheck } from 'react-icons/fi';
+import { FiBookOpen, FiChevronDown, FiList, FiCheck, FiArrowLeft } from 'react-icons/fi';
 import PageShell from "../components/ui/PageShell";
 
 export default function NavItemManager() {
-  const [items, setItems] = useState([]);
+const [items, setItems] = useState([]);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [courseDropdown, setCourseDropdown] = useState(null);
@@ -54,7 +53,8 @@ export default function NavItemManager() {
   }
 
   return (
-    <PageShell title="Nav Item Manager">
+    <PageShell backTo="/admin" title="Nav Item Manager"
+    >
 
       {sections.length === 0 ? (
         <div className="text-center py-16 text-neutral-400 text-sm border rounded-xl bg-white">No nav items found.</div>

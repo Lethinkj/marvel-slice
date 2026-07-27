@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
@@ -8,7 +7,7 @@ import useDirty from '../hooks/useDirty';
 import EmptyState from '../components/EmptyState';
 import {
   FiSave, FiAlertCircle, FiPlus, FiTrash2, FiEdit2,
-  FiUpload, FiCheck, FiX, FiBriefcase,
+  FiUpload, FiCheck, FiX, FiBriefcase, FiArrowLeft,
   FiAlignLeft, FiAlignCenter, FiAlignRight, FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
@@ -103,7 +102,7 @@ const defaultJobForm = {
 };
 
 export default function CareerPageEditor() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -406,7 +405,7 @@ export default function CareerPageEditor() {
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title="Career Page"
     >
 

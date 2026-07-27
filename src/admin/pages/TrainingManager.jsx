@@ -19,7 +19,7 @@ const statusColors = {
 };
 
 export default function TrainingManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [programs, setPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -171,17 +171,9 @@ export default function TrainingManager() {
   }
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title="Training Programs"
       subtitle={`${programs.length} program${programs.length !== 1 ? 's' : ''} total`}
-      actions={
-        programs.length > 0 ? (
-          <Link to="/admin/training/new" className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-colors">
-            <FiPlus className="w-4 h-4" />
-            Add Program
-          </Link>
-        ) : undefined
-      }
     >
       {programs.length > 0 && (
         <Card>

@@ -12,6 +12,7 @@ import {
   FiEye,
   FiEyeOff,
   FiX,
+  FiArrowLeft,
 } from "react-icons/fi";
 import useConfirm from "../hooks/useConfirm";
 
@@ -25,7 +26,7 @@ const ALL_ROLES = [
 const ROLE_RANK = Object.fromEntries(ALL_ROLES.map((r) => [r.value, r.rank]));
 
 export default function AdminUsersManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const { user: currentUser } = useAuth();
   const userRank = ROLE_RANK[currentUser?.role] || 0;
   const availableRoles = currentUser?.role === 'master_admin' ? ALL_ROLES : ALL_ROLES.filter((r) => r.rank < userRank);
@@ -167,7 +168,8 @@ export default function AdminUsersManager() {
   }
 
   return (
-    <PageShell title="Admin Users" subtitle="Create and manage admin accounts with credentials">
+    <PageShell backTo="/admin" title="Admin Users" subtitle="Create and manage admin accounts with credentials"
+    >
 
       {saved && (
         <div className="mb-6 p-4 bg-success-50 border border-success-200 rounded-lg flex items-center gap-2 text-success-700 text-sm">

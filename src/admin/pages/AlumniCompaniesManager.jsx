@@ -4,11 +4,11 @@ import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
 import AdminButton from '../components/AdminButton';
 import EmptyState from '../components/EmptyState';
-import { FiPlus, FiBriefcase } from 'react-icons/fi';
+import { FiPlus, FiBriefcase, FiArrowLeft } from 'react-icons/fi';
 import useConfirm from '../hooks/useConfirm';
 
 export default function AlumniCompaniesManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [companies, setCompanies] = useState([]);
   const [name, setName] = useState('');
@@ -43,7 +43,8 @@ export default function AlumniCompaniesManager() {
   }
 
   return (
-    <PageShell title="Alumni / Hiring Partners" subtitle="Manage partner companies">
+    <PageShell backTo="/admin" title="Alumni / Hiring Partners" subtitle="Manage partner companies"
+    >
 
       <div className="rounded-lg border border-admin-200 bg-white p-5">
         <div className="flex gap-2 mb-4">

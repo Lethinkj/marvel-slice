@@ -6,12 +6,12 @@ import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
 import Card from '../components/ui/Card';
 import DataTable from '../components/ui/DataTable';
-import { FiPlus, FiFileText, FiCalendar, FiSearch, FiEdit3, FiTrash2, FiChevronDown } from 'react-icons/fi';
+import { FiPlus, FiFileText, FiCalendar, FiSearch, FiEdit3, FiTrash2, FiChevronDown, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
 export default function BlogManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -131,7 +131,7 @@ export default function BlogManager() {
   }
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title="Blog Posts"
       subtitle={search ? `${filteredPosts.length} of ${posts.length} post${posts.length !== 1 ? 's' : ''}` : `${posts.length} post${posts.length !== 1 ? 's' : ''}`}
     >

@@ -3,11 +3,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
 import AdminButton from '../components/AdminButton';
-import { FiFolder } from 'react-icons/fi';
+import { FiFolder, FiArrowLeft } from 'react-icons/fi';
 import useConfirm from '../hooks/useConfirm';
 
 export default function BlogCategoriesManager() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +66,8 @@ export default function BlogCategoriesManager() {
   }
 
   return (
-    <PageShell title="Blog Categories" subtitle="Manage categories for blog posts">
+    <PageShell backTo="/admin" title="Blog Categories" subtitle="Manage categories for blog posts"
+    >
 
       <form onSubmit={handleSave} className="mb-6">
         <h3 className="text-sm font-semibold text-neutral-700 mb-4">{editingId ? 'Edit Category' : 'Add Category'}</h3>

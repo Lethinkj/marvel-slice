@@ -1,5 +1,6 @@
 import SubmissionsInbox from '../components/ui/SubmissionsInbox';
 import PageShell from '../components/ui/PageShell';
+import { FiArrowLeft } from 'react-icons/fi';
 
 const columns = [
   { header: 'Name', accessor: 'full_name', className: 'min-w-[140px]' },
@@ -17,8 +18,9 @@ const detailFields = [
 ];
 
 export default function ContactSubmissions() {
-  return (
-    <PageShell title="Contact Submissions">
+return (
+    <PageShell backTo="/admin" title="Contact Submissions"
+    >
       <SubmissionsInbox
         table="contact_submissions"
         title="Contact Submissions"

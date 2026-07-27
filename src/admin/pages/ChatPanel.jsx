@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { FiMessageCircle, FiSend, FiLoader, FiSearch, FiChevronLeft, FiChevronRight, FiCheck, FiMail, FiPhone, FiCalendar, FiChevronDown, FiMessageSquare, FiList, FiX } from 'react-icons/fi';
+import { FiMessageCircle, FiSend, FiLoader, FiSearch, FiChevronLeft, FiChevronRight, FiCheck, FiMail, FiPhone, FiCalendar, FiChevronDown, FiMessageSquare, FiList, FiX, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function relativeTime(dateStr) {
@@ -554,7 +554,7 @@ function SessionsTable({ conversations }) {
 }
 
 export default function ChatPanel() {
-  const [searchParams, setSearchParams] = useSearchParams();
+const [searchParams, setSearchParams] = useSearchParams();
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const tab = searchParams.get('tab') || 'live';
@@ -618,7 +618,8 @@ export default function ChatPanel() {
   }
 
   return (
-    <PageShell title="Chats" maxWidth="max-w-none">
+    <PageShell backTo="/admin" title="Chats" maxWidth="max-w-none"
+    >
       {tab === 'live' ? (
         <LiveChat conversations={conversations} onConversationsChange={setConversations} />
       ) : (

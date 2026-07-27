@@ -7,7 +7,7 @@ import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
 import {
-  FiPlus, FiTrash2, FiSave, FiUpload,
+  FiPlus, FiTrash2, FiSave, FiUpload, FiArrowLeft,
   FiHome, FiStar, FiAward, FiHelpCircle,
   FiLayout, FiMail, FiMessageSquare, FiBell, FiUsers,
   FiClock, FiVideo, FiCode, FiCalendar, FiRefreshCw,
@@ -1159,7 +1159,8 @@ export default function HomePageEditor() {
   const sec = sections.find(s => s.section_key === section);
 
   return (
-    <PageShell title="Home Page Editor" maxWidth="max-w-none">
+    <PageShell backTo="/admin" title="Home Page Editor" maxWidth="max-w-none"
+    >
       <div className="flex gap-6 items-start">
         <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
           {/* Hide menu button removed as per request to keep it static */}

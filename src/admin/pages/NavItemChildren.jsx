@@ -123,7 +123,7 @@ export default function NavItemChildren() {
       title={parentItem ? `Children: ${parentItem.label}` : 'Nav Item Children'}
       subtitle={`${items.length} child item${items.length !== 1 ? 's' : ''}`}
       actions={
-        <Link to="/admin/nav-menu/manage" className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-colors">
+        <Link to="/admin/nav-menu/manage" className="p-1.5 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 rounded-lg transition-colors">
           <FiArrowLeft className="w-5 h-5" />
         </Link>
       }>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
@@ -57,8 +57,7 @@ const DEFAULT_CONTACT_CONTENT = {
 };
 
 export default function ContactPageEditor() {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [navItem, setNavItem] = useState(null);
   const [navItemId, setNavItemId] = useState(null);
@@ -186,16 +185,8 @@ export default function ContactPageEditor() {
   const labelCls = "block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider";
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title={`${navItem?.label || 'Contact'} Page`}
-      actions={
-        <div className="flex items-center gap-2">
-          <button onClick={() => navigate('/admin')} className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
-            <FiArrowLeft className="w-5 h-5" />
-          </button>
-
-        </div>
-      }
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">

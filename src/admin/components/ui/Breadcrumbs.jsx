@@ -27,14 +27,14 @@ const labels = {
 
 export default function Breadcrumbs({ className = "" }) {
   const { pathname } = useLocation();
-  const parts = pathname.split("/").filter(Boolean);
-  if (parts.length <= 1) return null;
+  const parts = pathname.split("/").filter(Boolean).filter(p => p !== "admin");
+  if (parts.length <= 0) return null;
 
   return (
     <nav className={`flex items-center gap-1.5 text-xs text-neutral-500 ${className}`}>
       <Link to="/admin" className="hover:text-neutral-700 transition-colors font-medium">Dashboard</Link>
       {parts.map((part, i) => {
-        const path = "/" + parts.slice(0, i + 1).join("/");
+        const path = "/admin/" + parts.slice(0, i + 1).join("/");
         const label = labels[part] || part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, " ");
         const isLast = i === parts.length - 1;
         return (

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import SubmissionsInbox from '../components/ui/SubmissionsInbox';
 import PageShell from '../components/ui/PageShell';
+import { FiArrowLeft } from 'react-icons/fi';
 
 const columns = [
   { header: 'Name', accessor: 'full_name', className: 'min-w-[140px]' },
@@ -25,7 +26,7 @@ const detailFields = [
 ];
 
 export default function CareerSubmissions() {
-  const [positionOptions, setPositionOptions] = useState([]);
+const [positionOptions, setPositionOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [positionFilter, setPositionFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -70,7 +71,8 @@ export default function CareerSubmissions() {
   }, [positionFilter, categoryFilter]);
 
   return (
-    <PageShell title="Career Submissions">
+    <PageShell backTo="/admin" title="Career Submissions"
+    >
       <SubmissionsInbox
         table="career_submissions"
         title="Career Submissions"

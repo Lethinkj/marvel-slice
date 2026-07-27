@@ -3,12 +3,12 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import DataTable from '../components/ui/DataTable';
 import EmptyState from '../components/EmptyState';
-import { FiPlus, FiEdit2, FiTrash2, FiBriefcase, FiX } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiBriefcase, FiX, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
 export default function CareerJobsManager() {
-  const [jobs, setJobs] = useState([]);
+const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [confirm, confirmDialog] = useConfirm();
   
@@ -116,13 +116,15 @@ export default function CareerJobsManager() {
   ];
 
   return (
-    <PageShell 
+    <PageShell backTo="/admin" 
       title="Job Openings" 
       description="Manage your company's career opportunities"
       actions={
-        <AdminButton onClick={() => openJobForm()} variant="primary" size="md">
-          <FiPlus className="w-4 h-4" /> Add Job
-        </AdminButton>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+<AdminButton onClick={() => openJobForm()} variant="primary" size="md">
+            <FiPlus className="w-4 h-4" /> Add Job
+          </AdminButton>
+        </div>
       }
     >
       <div className="bg-white shadow-sm border border-admin-200 overflow-hidden">
@@ -140,7 +142,7 @@ export default function CareerJobsManager() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col cursor-auto overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-admin-200 bg-gray-50/50 shrink-0">
               <h3 className="font-semibold text-black">{editingJob ? 'Edit Job Opening' : 'Add Job Opening'}</h3>
-              <button type="button" onClick={closeJobForm} className="p-1.5 text-admin-400 hover:text-admin-600 hover:bg-admin-100 rounded-lg transition-colors cursor-pointer">
+              <button type="button" onClick={closeJobForm} className="p-1.5 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 rounded-lg transition-colors cursor-pointer">
                 <FiX className="w-5 h-5" />
               </button>
             </div>

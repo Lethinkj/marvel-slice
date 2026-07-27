@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
-import { FiCopy, FiTrash2, FiUpload, FiSearch, FiCheck, FiX, FiGrid, FiList, FiFolder, FiFile, FiLayers } from 'react-icons/fi';
+import { FiCopy, FiTrash2, FiUpload, FiSearch, FiCheck, FiX, FiGrid, FiList, FiFolder, FiFile, FiLayers, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -51,7 +51,7 @@ function PreviewModal({ file, onClose }) {
       <div className="bg-white rounded-lg border border-admin-200 max-w-2xl w-full max-h-[90vh] overflow-hidden cursor-pointer" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-admin-100">
           <h3 className="font-semibold text-black truncate">{file.name}</h3>
-          <button onClick={onClose} className="p-1.5 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
+          <button onClick={onClose} className="p-1.5 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors">
             <FiX className="w-5 h-5" />
           </button>
         </div>
@@ -77,7 +77,7 @@ function PreviewModal({ file, onClose }) {
 }
 
 export default function MediaLibrary() {
-  const [confirm, confirmDialog] = useConfirm();
+const [confirm, confirmDialog] = useConfirm();
   const [bucket, setBucket] = useState('all');
   const [files, setFiles] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -179,11 +179,11 @@ export default function MediaLibrary() {
   const isImage = (name) => /\.(png|jpg|jpeg|gif|webp|svg|avif|bmp|ico)$/i.test(name);
 
   return (
-    <PageShell
+    <PageShell backTo="/admin"
       title="Media Library"
       actions={
-        <div className="flex items-center gap-2">
-          <AdminButton variant="primary" size="md" disabled={bucket === 'all'} onClick={() => uploadRef.current?.click()}>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+<AdminButton variant="primary" size="md" disabled={bucket === 'all'} onClick={() => uploadRef.current?.click()}>
             <FiUpload className="w-4 h-4" /> Upload
           </AdminButton>
           <input ref={uploadRef} type="file" multiple onChange={handleUpload} className="hidden" accept="image/*,.pdf,.svg" />
