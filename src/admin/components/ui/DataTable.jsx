@@ -143,7 +143,7 @@ export default function DataTable({
               <tr
                 key={row[rowKey]}
                 onClick={() => onRowClick?.(row)}
-                className={`border-b border-admin-50 last:border-0 transition-colors ${onRowClick ? 'cursor-pointer hover:bg-white/80' : 'hover:bg-white/50'}`}
+                className={`border-b border-admin-50 even:bg-gray-50/50 last:border-0 transition-colors ${onRowClick ? 'cursor-pointer hover:bg-white/80' : 'hover:bg-white/50'}`}
               >
                 {columns.map((col, i) => (
                   <td key={i} className={`px-4 py-3 text-sm text-neutral-700 ${col.className || ''}`}>

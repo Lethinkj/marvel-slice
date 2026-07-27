@@ -7,11 +7,13 @@ import EmptyState from '../components/EmptyState';
 import { FiPlus, FiEdit3, FiEdit2, FiTrash2, FiBriefcase } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
+import ExportDialog from '../components/ExportDialog';
 
 export default function JobsList() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [confirm, confirmDialog] = useConfirm();
+  const [exportModal, setExportModal] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function JobsList() {
   }
 
   async function deleteJob(id) {
-    if (await confirmDialog('Delete Job', 'Are you sure you want to delete this job opening?', 'Delete', 'destructive')) {
+    if (await confirm('Delete Job', 'Are you sure you want to delete this job opening?', 'Delete', 'destructive')) {
       await supabase.from('job_openings').delete().eq('id', id);
       loadData();
     }
@@ -66,7 +68,16 @@ export default function JobsList() {
     <PageShell 
       title="Job Openings" 
       description="Manage your company's career opportunities"
-      
+      actions={
+        <div className="flex items-center gap-2">
+          <AdminButton onClick={() => setExportModal('csv')} variant="ghost" size="sm">
+            Export CSV
+          </AdminButton>
+          <AdminButton onClick={() => setExportModal('pdf')} variant="ghost" size="sm">
+            Export PDF
+          </AdminButton>
+        </div>
+      }
     >
       <div className="bg-white rounded-xl shadow-sm border border-admin-200 overflow-hidden">
         {jobs.length > 0 ? (
@@ -78,6 +89,15 @@ export default function JobsList() {
         )}
       </div>
       {confirmDialog}
+      {exportModal && (
+        <ExportDialog 
+          type={exportModal} 
+          data={jobs} 
+          columns={columns.slice(0, -1)} 
+          exportFilename="jobs" 
+          onClose={() => setExportModal(null)} 
+        />
+      )}
     </PageShell>
   );
 }
