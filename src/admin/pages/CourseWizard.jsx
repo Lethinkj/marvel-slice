@@ -409,37 +409,39 @@ export default function CourseWizard() {
               </span>
             </div>
 
-            {filterSection && (() => {
-              const topLevel = availablePaths.filter((p) => p.parent_label === filterSection && !p.parent_id);
-              const kids1 = catL1 ? getChildren(catL1) : [];
-              const kids2 = catL2 ? getChildren(catL2) : [];
-              function dd(label, items, val, setter) {
-                return (
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-1">{label}</label>
-                    <select
-                      value={val}
-                      onChange={(e) => setter(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
-                    >
-                      <option value="">— Select —</option>
-                      {items.map((item) => (
-                        <option key={item.id} value={item.id}>{item.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              }
-              return (
-                <div className="space-y-3">
-                  {dd(`Topic under ${filterSection}`, topLevel, catL1, setCatL1)}
-                  {catL1 && kids1.length > 0 && dd(`Sub-topic under ${findItem(catL1)?.label || ''}`, kids1, catL2, setCatL2)}
-                  {catL2 && kids2.length > 0 && dd(`Sub-topic under ${findItem(catL2)?.label || ''}`, kids2, catL3, setCatL3)}
-                </div>
-              );
-            })()}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+              <div>
+                {filterSection && (() => {
+                  const topLevel = availablePaths.filter((p) => p.parent_label === filterSection && !p.parent_id);
+                  const kids1 = catL1 ? getChildren(catL1) : [];
+                  const kids2 = catL2 ? getChildren(catL2) : [];
+                  function dd(label, items, val, setter) {
+                    return (
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">{label}</label>
+                        <select
+                          value={val}
+                          onChange={(e) => setter(e.target.value)}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
+                        >
+                          <option value="">— Select —</option>
+                          {items.map((item) => (
+                            <option key={item.id} value={item.id}>{item.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="space-y-3">
+                      {dd(`Topic under ${filterSection}`, topLevel, catL1, setCatL1)}
+                      {catL1 && kids1.length > 0 && dd(`Sub-topic under ${findItem(catL1)?.label || ''}`, kids1, catL2, setCatL2)}
+                      {catL2 && kids2.length > 0 && dd(`Sub-topic under ${findItem(catL2)?.label || ''}`, kids2, catL3, setCatL3)}
+                    </div>
+                  );
+                })()}
+              </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">Course Title *</label>
                 <input
@@ -449,6 +451,7 @@ export default function CourseWizard() {
                   placeholder="e.g. Full Stack Web Development"
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">Slug *</label>
                 <input
