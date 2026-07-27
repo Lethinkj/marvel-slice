@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
+import Card from "../components/ui/Card";
 import {
   FiPlus, FiCheck, FiFolder, FiFile, FiEdit3, FiTrash2,
-  FiChevronDown, FiChevronRight, FiArrowLeft, FiBookOpen, FiSearch, FiFilter
+  FiChevronDown, FiChevronRight, FiArrowLeft, FiBookOpen, FiSearch
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from "../components/ui/PageShell";
@@ -695,45 +696,49 @@ export default function NavMenuManager() {
             <ContentBreadcrumbs />
             <ParentInfoCard />
 
-            <div className="border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
-              
-              {/* Filter Bar */}
-              <div className="px-5 py-4 bg-white border-b border-gray-100 flex flex-col sm:flex-row gap-4 items-start sm:items-end">
-                <div>
-                  <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-[200px]">
-                      <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
-                      <input
-                        type="text"
-                        placeholder="Search items by label or path..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(searchQuery)}
-                        className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
-                      />
-                    </div>
-                    <button onClick={() => { setActiveSearch(searchQuery); setPage(1); }} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
-                      Search
-                    </button>
+            {/* Filter Bar — outside the table container */}
+            <Card>
+              <div className="flex flex-wrap items-end gap-3">
+              <div>
+                <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-[200px]">
+                    <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      placeholder="Search items by label or path..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(searchQuery)}
+                      className="w-full pl-9 pr-3 h-9 border border-admin-200 text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+                    />
                   </div>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
-                  <div className="relative">
-                    <select
-                      value={statusFilter}
-                      onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                      className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
-                    >
-                      <option value="all">All Statuses</option>
-                      <option value="active">Active Only</option>
-                      <option value="inactive">Inactive Only</option>
-                    </select>
-                    <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
-                  </div>
+                  <button onClick={() => { setActiveSearch(searchQuery); setPage(1); }} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
+                    Search
+                  </button>
                 </div>
               </div>
+              <div className="flex items-end gap-3 ml-auto flex-wrap">
+              <div>
+                <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
+                <div className="relative">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+                    className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active Only</option>
+                    <option value="inactive">Inactive Only</option>
+                  </select>
+                  <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                </div>
+              </div>
+              </div>
+              </div>
+            </Card>
+
+            <div className="border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
 
               {filteredItems.length === 0 ? (
                 <div className="px-6 py-16 text-center">
@@ -761,34 +766,35 @@ export default function NavMenuManager() {
                   <div className="divide-y divide-gray-100">
                     <NavTable items={paginatedItems} level={0} />
                   </div>
-
-                  {totalPages > 1 && (
-                    <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
-                      <span className="text-sm font-medium text-gray-500">Page <span className="text-gray-900">{page}</span> of <span className="text-gray-900">{totalPages}</span></span>
-                      <div className="flex items-center gap-1.5">
-                        <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}
-                          className="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm">Previous</button>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1)
-                          .filter(pn => pn === 1 || pn === totalPages || Math.abs(pn - page) <= 1)
-                          .reduce((acc, pn, idx, arr) => {
-                            if (idx > 0 && pn - arr[idx - 1] > 1) acc.push('...');
-                            acc.push(pn);
-                            return acc;
-                          }, [])
-                          .map((pn, i) =>
-                            pn === '...'
-                              ? <span key={`e${i}`} className="w-8 h-8 text-sm text-gray-500 flex items-center justify-center">...</span>
-                              : <button key={pn} onClick={() => setPage(pn)}
-                                  className={`w-8 h-8 text-sm font-bold rounded-lg transition-all shadow-sm ${page === pn ? 'bg-blue-600 text-white border-transparent' : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}>{pn}</button>
-                          )}
-                        <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                          className="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm">Next</button>
-                      </div>
-                    </div>
-                  )}
                 </>
               )}
             </div>
+
+            {/* Pagination — outside the table container */}
+            {filteredItems.length > 0 && totalPages > 1 && (
+              <div className="flex items-center justify-between px-6 py-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <span className="text-sm font-medium text-gray-500">Page <span className="text-gray-900">{page}</span> of <span className="text-gray-900">{totalPages}</span></span>
+                <div className="flex items-center gap-1.5">
+                  <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}
+                    className="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm">Previous</button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(pn => pn === 1 || pn === totalPages || Math.abs(pn - page) <= 1)
+                    .reduce((acc, pn, idx, arr) => {
+                      if (idx > 0 && pn - arr[idx - 1] > 1) acc.push('...');
+                      acc.push(pn);
+                      return acc;
+                    }, [])
+                    .map((pn, i) =>
+                      pn === '...'
+                        ? <span key={`e${i}`} className="w-8 h-8 text-sm text-gray-500 flex items-center justify-center">...</span>
+                        : <button key={pn} onClick={() => setPage(pn)}
+                            className={`w-8 h-8 text-sm font-bold rounded-lg transition-all shadow-sm ${page === pn ? 'bg-blue-600 text-white border-transparent' : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}>{pn}</button>
+                    )}
+                  <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    className="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm">Next</button>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

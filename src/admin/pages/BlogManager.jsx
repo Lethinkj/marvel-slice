@@ -4,8 +4,9 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
+import Card from '../components/ui/Card';
 import DataTable from '../components/ui/DataTable';
-import { FiPlus, FiFileText, FiCalendar, FiSearch, FiEdit3, FiTrash2, FiFilter } from 'react-icons/fi';
+import { FiPlus, FiFileText, FiCalendar, FiSearch, FiEdit3, FiTrash2, FiChevronDown } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -135,7 +136,8 @@ export default function BlogManager() {
       subtitle={search ? `${filteredPosts.length} of ${posts.length} post${posts.length !== 1 ? 's' : ''}` : `${posts.length} post${posts.length !== 1 ? 's' : ''}`}
     >
       {posts.length > 0 && (
-        <div className="mb-6 flex flex-col sm:flex-row gap-3">
+        <Card>
+          <div className="flex flex-wrap items-end gap-3">
           <div>
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
             <div className="flex items-center gap-2">
@@ -147,7 +149,7 @@ export default function BlogManager() {
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
                   placeholder="Search posts..."
-                  className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+                  className="w-full pl-9 pr-3 h-9 border border-admin-200 text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
                 />
               </div>
               <button onClick={() => setActiveSearch(search)} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
@@ -155,19 +157,20 @@ export default function BlogManager() {
               </button>
             </div>
           </div>
+          <div className="flex items-end gap-3 ml-auto flex-wrap">
           <div>
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
               >
                 <option value="All">All Status</option>
                 <option value="Published">Published</option>
                 <option value="Draft">Draft</option>
               </select>
-              <FiFilter className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+              <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
             </div>
           </div>
           <div>
@@ -176,17 +179,19 @@ export default function BlogManager() {
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
               >
                 <option value="All">All Dates</option>
                 <option value="Today">Today</option>
                 <option value="Last 7 Days">Last 7 Days</option>
                 <option value="This Month">This Month</option>
               </select>
-              <FiFilter className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+              <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
             </div>
           </div>
-        </div>
+          </div>
+          </div>
+        </Card>
       )}
 
       {filteredPosts.length === 0 ? (

@@ -77,7 +77,7 @@ export default function DataTable({
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
           placeholder={searchPlaceholder}
-          className="w-full pl-9 pr-3 h-9 rounded-lg border border-admin-200 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+          className="w-full pl-9 pr-3 h-9 border border-admin-200 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
         />
       </div>
       <button onClick={() => { setActiveSearch(search); setPage(1); }} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">

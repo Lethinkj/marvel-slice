@@ -364,7 +364,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                 <input ref={searchRef} type="text" value={search} onChange={e => { setSearch(e.target.value); }}
                   onKeyDown={(e) => e.key === 'Enter' && (setActiveSearch(search), setPage(1))}
                   placeholder={`Search ${title.toLowerCase()}...`}
-                  className="w-full h-9 pl-9 pr-3 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+                  className="w-full h-9 pl-9 pr-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
               </div>
               <button onClick={() => { setActiveSearch(search); setPage(1); }} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
@@ -373,11 +373,12 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </div>
           </div>
 
+          <div className="flex items-end gap-3 ml-auto flex-wrap">
           {!disableReply && <div>
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none w-full"
+                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none w-full"
               >
                 <option value="all">All</option>
                 <option value="unread">Unread</option>
@@ -392,7 +393,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               <label className="block text-[11px] font-medium text-neutral-500 mb-1">{f.label}</label>
               <div className="relative">
                 <select value={f.value} onChange={e => { f.onChange(e.target.value); setPage(1); }}
-                  className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                  className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
                 >
                   {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -405,7 +406,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Date</label>
             <div className="relative">
               <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none w-full"
+                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none w-full"
               >
                 <option value="all">All time</option>
                 <option value="today">Today</option>
@@ -422,13 +423,13 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               <div>
                 <label className="block text-[11px] font-medium text-neutral-500 mb-1">From</label>
                 <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)}
-                  className="h-9 px-3 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+                  className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
               </div>
               <div>
                 <label className="block text-[11px] font-medium text-neutral-500 mb-1">To</label>
                 <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)}
-                  className="h-9 px-3 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+                  className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
               </div>
             </>
@@ -439,6 +440,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               Clear filters
             </button>
           )}
+          </div>
         </div>
       </Card>
 
