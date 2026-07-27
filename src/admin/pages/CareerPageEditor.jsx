@@ -9,7 +9,7 @@ import EmptyState from '../components/EmptyState';
 import {
   FiSave, FiAlertCircle, FiPlus, FiTrash2, FiEdit2,
   FiUpload, FiExternalLink, FiCheck, FiX, FiBriefcase,
-  FiAlignLeft, FiAlignCenter, FiAlignRight,
+  FiAlignLeft, FiAlignCenter, FiAlignRight, FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
@@ -133,6 +133,11 @@ export default function CareerPageEditor() {
   const [editingJob, setEditingJob] = useState(null);
   const [jobForm, setJobForm] = useState(defaultJobForm);
   const [jobSaving, setJobSaving] = useState(false);
+  const [catPage, setCatPage] = useState(1);
+  const [catPageSize, setCatPageSize] = useState(10);
+
+  const catTotalPages = Math.ceil(roleCategories.length / catPageSize) || 1;
+  useEffect(() => { if (catPage > catTotalPages) setCatPage(catTotalPages); }, [roleCategories.length, catPageSize]);
 
   const { dirty, reset } = useDirty([hero, section1, section2, formConfig, openings], loading);
 
@@ -498,49 +503,82 @@ export default function CareerPageEditor() {
               action={{ onClick: openCategoryForm, icon: <FiPlus className="w-4 h-4" />, label: 'Add Role Category' }}
             />
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-admin-200 bg-blue-600">
-                    <th className="text-left px-3 py-2.5 font-semibold text-white">Name</th>
-                    <th className="text-center px-3 py-2.5 font-semibold text-white">Order</th>
-                    <th className="text-center px-3 py-2.5 font-semibold text-white">Active</th>
-                    <th className="text-right px-3 py-2.5 font-semibold text-white">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {roleCategories.map((cat) => (
-                    <tr key={cat.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="px-3 py-2.5 font-medium text-black">{cat.name}</td>
-                      <td className="px-3 py-2.5 text-center text-neutral-500">{cat.display_order}</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <button type="button" onClick={() => toggleCategoryActive(cat)}
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
-                            cat.is_active
-                              ? 'bg-success-50 text-success-500 hover:bg-success-50'
-                              : 'bg-admin-100 text-admin-400 hover:bg-admin-200'
-                          }`}>
-                          {cat.is_active ? <FiCheck className="w-3 h-3" /> : <FiX className="w-3 h-3" />}
-                          {cat.is_active ? 'Active' : 'Inactive'}
-                        </button>
-                      </td>
-                      <td className="px-3 py-2.5 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button type="button" onClick={() => openEditCategory(cat)}
-                            className="p-1.5 text-amber-500 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer">
-                            <FiEdit2 className="w-4 h-4" />
-                          </button>
-                          <button type="button" onClick={() => deleteCategory(cat.id)}
-                            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
-                            <FiTrash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-admin-200 bg-blue-600">
+                      <th className="text-left px-3 py-2.5 font-semibold text-white">Name</th>
+                      <th className="text-center px-3 py-2.5 font-semibold text-white">Order</th>
+                      <th className="text-center px-3 py-2.5 font-semibold text-white">Active</th>
+                      <th className="text-right px-3 py-2.5 font-semibold text-white">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {(() => {
+                      const start = (catPage - 1) * catPageSize;
+                      const paginated = roleCategories.slice(start, start + catPageSize);
+                      const totalPages = Math.ceil(roleCategories.length / catPageSize);
+                      return paginated.map((cat, i) => (
+                        <tr key={cat.id} className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${(start + i) % 2 === 1 ? 'bg-gray-50' : 'bg-white'}`}>
+                          <td className="px-3 py-2.5 font-medium text-black">{cat.name}</td>
+                          <td className="px-3 py-2.5 text-center text-neutral-500">{cat.display_order}</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <button type="button" onClick={() => toggleCategoryActive(cat)}
+                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                                cat.is_active
+                                  ? 'bg-success-50 text-success-500 hover:bg-success-50'
+                                  : 'bg-admin-100 text-admin-400 hover:bg-admin-200'
+                              }`}>
+                              {cat.is_active ? <FiCheck className="w-3 h-3" /> : <FiX className="w-3 h-3" />}
+                              {cat.is_active ? 'Active' : 'Inactive'}
+                            </button>
+                          </td>
+                          <td className="px-3 py-2.5 text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <button type="button" onClick={() => openEditCategory(cat)}
+                                className="p-1.5 text-amber-500 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer">
+                                <FiEdit2 className="w-4 h-4" />
+                              </button>
+                              <button type="button" onClick={() => deleteCategory(cat.id)}
+                                className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer">
+                                <FiTrash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ));
+                    })()}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex items-center justify-between px-3 py-3 border-t border-gray-100">
+                <div className="flex items-center gap-2 text-sm text-neutral-500">
+                  <span>{roleCategories.length} total</span>
+                  <span className="text-neutral-300">|</span>
+                  <span className="text-xs text-neutral-400">Show</span>
+                  <select value={catPageSize} onChange={(e) => { setCatPageSize(Number(e.target.value)); setCatPage(1); }}
+                    className="h-7 px-1.5 border border-admin-200 bg-white text-xs text-neutral-500 focus:outline-none appearance-none cursor-pointer"
+                  >
+                    <option value={10}>10</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button type="button" onClick={() => setCatPage(p => Math.max(1, p - 1))} disabled={catPage <= 1}
+                    className="p-1 text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer">
+                    <FiChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="px-2 text-xs text-neutral-500">{catPage} / {Math.ceil(roleCategories.length / catPageSize) || 1}</span>
+                  <button type="button" onClick={() => setCatPage(p => Math.min(Math.ceil(roleCategories.length / catPageSize), p + 1))} disabled={catPage >= Math.ceil(roleCategories.length / catPageSize)}
+                    className="p-1 text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer">
+                    <FiChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </>
           )}
         </div>
 
