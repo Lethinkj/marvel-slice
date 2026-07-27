@@ -367,34 +367,27 @@ export default function BlogPostEditor() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Tags</label>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {allTags.map((tag) => {
-                  const isSelected = selectedTags.includes(tag.id);
-                  return (
-                    <button
-                      key={tag.id}
-                      type="button"
-                      onClick={() =>
-                        setSelectedTags(isSelected ? selectedTags.filter(t => t !== tag.id) : [...selectedTags, tag.id])
-                      }
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                        isSelected
-                          ? 'bg-admin-600 text-white ring-2 ring-admin-600/30'
-                          : 'bg-admin-100 text-admin-600 hover:bg-admin-200'
-                      }`}
-                    >
-                      <FiTag className={`w-3 h-3 ${isSelected ? 'text-white' : 'text-admin-400'}`} />
-                      {tag.name}
-                    </button>
-                  );
-                })}
-                {allTags.length === 0 && (
-                  <p className="text-sm text-neutral-400">
-                    No tags available. Create them in{' '}
-                    <Link to="/admin/tags" className="text-admin-600 hover:underline">Tags Manager</Link>.
-                  </p>
-                )}
-              </div>
+              {allTags.length === 0 ? (
+                <p className="text-sm text-neutral-400">
+                  No tags available. Create them in{' '}
+                  <Link to="/admin/tags" className="text-admin-600 hover:underline">Tags Manager</Link>.
+                </p>
+              ) : (
+                <select
+                  multiple
+                  value={selectedTags}
+                  onChange={(e) => {
+                    const options = [...e.target.options];
+                    const selected = options.filter(option => option.selected).map(option => option.value);
+                    setSelectedTags(selected);
+                  }}
+                  className="w-full h-32 px-3 py-2 rounded-lg border border-admin-200 bg-admin-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                >
+                  {allTags.map((tag) => (
+                    <option key={tag.id} value={tag.id}>{tag.name}</option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
         </div>

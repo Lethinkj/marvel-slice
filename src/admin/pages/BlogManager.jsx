@@ -133,14 +133,6 @@ export default function BlogManager() {
     <PageShell
       title="Blog Posts"
       subtitle={search ? `${filteredPosts.length} of ${posts.length} post${posts.length !== 1 ? 's' : ''}` : `${posts.length} post${posts.length !== 1 ? 's' : ''}`}
-      actions={
-        search || posts.length === 0 ? undefined : (
-          <AdminButton to="/admin/blog/new" variant="primary" size="md">
-            <FiPlus className="w-4 h-4" />
-            New Post
-          </AdminButton>
-        )
-      }
     >
       {posts.length > 0 && (
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
