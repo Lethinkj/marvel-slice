@@ -1,6 +1,6 @@
 export default function Card({ title, description, children, actions, className = '' }) {
   return (
-    <div className={`bg-white rounded-xl border border-admin-200 shadow-sm ${className}`}>
+    <div className={`bg-white rounded-xl border border-admin-200 shadow-lg ${className}`}>
       {(title || actions) && (
         <div className="flex items-start justify-between px-5 pt-5 pb-3">
           <div>

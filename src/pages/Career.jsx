@@ -506,15 +506,15 @@ export default function Career() {
 
         {roleCategories?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 max-w-6xl mx-auto text-left">
-            {roleCategories.map((cat) => (
+            {roleCategories.map((cat, idx) => (
               <div
                 key={cat.id}
                 className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 hover:-translate-y-0.5 transition-all cursor-pointer flex items-center gap-3 group"
               >
-                <div className="bg-blue-50 text-blue-600 p-3 rounded-xl flex items-center justify-center shrink-0">
+                <div className={`p-3 rounded-xl flex items-center justify-center shrink-0 ${idx % 2 === 0 ? 'bg-brand-green/10 text-brand-green' : 'bg-brand-orange/10 text-brand-orange'}`}>
                   <FiBriefcase className="w-5 h-5" />
                 </div>
-                <span className="text-blue-600 font-semibold text-sm md:text-base">
+                <span className="text-gray-900 font-semibold text-sm md:text-base">
                   {cat.name}
                 </span>
               </div>

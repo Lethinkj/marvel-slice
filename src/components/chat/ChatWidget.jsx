@@ -63,13 +63,13 @@ function PreChatForm({ onSubmit, initial }) {
           <h3 className="text-sm font-bold text-dark-navy">Start a Conversation</h3>
           <p className="text-xs text-gray-500 mt-1">Share your details and we'll be right with you.</p>
         </div>
-        <form onSubmit={handleNext} className="space-y-3">
+        <form onSubmit={handleNext} className="space-y-2.5">
           <div>
             <input
               value={name}
               onChange={(e) => { setName(e.target.value); if (errors.name) setErrors((p) => ({ ...p, name: undefined })); }}
               placeholder="Your Name *"
-              className={`w-full px-4 py-2.5 text-sm border rounded-lg outline-none transition-colors ${
+              className={`w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors ${
                 errors.name ? 'border-red-400 focus:ring-2 focus:ring-red-200' : 'border-gray-300 focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green'
               }`}
             />
@@ -81,7 +81,7 @@ function PreChatForm({ onSubmit, initial }) {
               value={email}
               onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }}
               placeholder="Email Address *"
-              className={`w-full px-4 py-2.5 text-sm border rounded-lg outline-none transition-colors ${
+              className={`w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors ${
                 errors.email ? 'border-red-400 focus:ring-2 focus:ring-red-200' : 'border-gray-300 focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green'
               }`}
             />
@@ -93,7 +93,7 @@ function PreChatForm({ onSubmit, initial }) {
               value={phone}
               onChange={(e) => { setPhone(e.target.value); if (errors.phone) setErrors((p) => ({ ...p, phone: undefined })); }}
               placeholder="Phone Number *"
-              className={`w-full px-4 py-2.5 text-sm border rounded-lg outline-none transition-colors ${
+              className={`w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors ${
                 errors.phone ? 'border-red-400 focus:ring-2 focus:ring-red-200' : 'border-gray-300 focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green'
               }`}
             />
@@ -101,7 +101,7 @@ function PreChatForm({ onSubmit, initial }) {
           </div>
           <button
             type="submit"
-            className="w-full py-2.5 rounded-lg bg-brand-green text-white text-sm font-semibold hover:bg-brand-green/90 transition-colors cursor-pointer"
+            className="w-full py-1 rounded-lg bg-brand-green text-white text-xs font-semibold hover:bg-brand-green/90 transition-colors cursor-pointer"
           >
             Next
           </button>
@@ -117,20 +117,20 @@ function PreChatForm({ onSubmit, initial }) {
         <h3 className="text-sm font-bold text-dark-navy">What brings you here?</h3>
         <p className="text-xs text-gray-500 mt-1">Tell us how we can help you.</p>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-2.5">
         <div>
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="Describe your issue or question..."
             rows={3}
-            className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green resize-none"
+            className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green resize-none"
           />
         </div>
         <button
           type="submit"
           disabled={!reason.trim() || submitting}
-          className="w-full py-2.5 rounded-lg bg-brand-green text-white text-sm font-semibold hover:bg-brand-green/90 transition-colors disabled:opacity-60 cursor-pointer"
+          className="w-full py-1.5 rounded-lg bg-brand-green text-white text-sm font-semibold hover:bg-brand-green/90 transition-colors disabled:opacity-60 cursor-pointer"
         >
           {submitting ? 'Starting...' : 'Start Chat'}
         </button>
@@ -363,7 +363,7 @@ export default function ChatWidget() {
               <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                 <FiMessageCircle className="w-4 h-4" />
               </div>
-              <span className="text-sm font-semibold">Marvel Chat</span>
+              <span className="text-sm font-semibold">Online</span>
             </div>
             <div className="flex items-center gap-0.5">
               <button onClick={() => setMaximized((p) => !p)} className="w-7 h-7 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors shrink-0 cursor-pointer">

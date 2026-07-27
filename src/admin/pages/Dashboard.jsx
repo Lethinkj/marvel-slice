@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { useAuth } from '../context/AuthContext';
-import AdminButton from '../components/AdminButton';
 import PageShell from '../components/ui/PageShell';
 import Card from '../components/ui/Card';
 import { LoadingState } from '../components/ui/EmptyState';
 import {
   FiBookOpen, FiUsers, FiFileText, FiMenu, FiTag, FiMessageCircle,
-  FiExternalLink, FiPlusCircle, FiArrowRight, FiChevronRight, FiInbox, FiImage,
+  FiPlusCircle, FiArrowRight, FiChevronRight, FiInbox, FiImage,
   FiSettings, FiBarChart2,
 } from 'react-icons/fi';
 
@@ -24,21 +22,21 @@ const toneClasses = {
 
 function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
   return (
-    <Link to={link} className="block bg-white rounded-xl border border-admin-200 shadow-sm p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
+    <Link to={link} className="block bg-white rounded-xl border border-admin-200 shadow-lg p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
       <div className="flex items-start justify-between mb-2">
         <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${toneClasses[iconTone] || toneClasses.slate}`}>
           <Icon className="w-4 h-4" />
         </div>
         <span className="text-[1.375rem] font-semibold tabular-nums text-black leading-none">{value}</span>
       </div>
-      <p className="text-[0.95rem] font-medium text-neutral-400">{label}</p>
+      <p className="text-[0.95rem] font-medium text-neutral-500">{label}</p>
     </Link>
   );
 }
 
 function ActionTile({ to, icon: Icon, label, tone = 'slate' }) {
   return (
-    <Link to={to} className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white rounded-xl border border-admin-200 shadow-sm hover:border-admin-300 hover:shadow-elevated transition-all text-center group">
+    <Link to={to} className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white rounded-xl border border-admin-200 shadow-lg hover:border-admin-300 hover:shadow-elevated transition-all text-center group">
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${toneClasses[tone] || toneClasses.slate} group-hover:scale-105`}>
         <Icon className="w-4 h-4" />
       </div>
@@ -57,7 +55,6 @@ const quickLinks = [
 ];
 
 export default function Dashboard() {
-  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [pending, setPending] = useState({ career: 0, contact: 0, brochure: 0, form: 0, chat: 0 });
   const [recentItems, setRecentItems] = useState([]);
@@ -96,14 +93,12 @@ export default function Dashboard() {
 
   if (loading) return <LoadingState />;
 
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  const greeting = `Good ${new Date().getHours() < 12 ? 'morning' : 'afternoon'}, ${user?.name?.split(' ')[0] || 'Admin'}`;
   const mainCards = [
-    { label: 'Courses', value: stats.courses, icon: FiBookOpen, link: '/admin/courses', subtitle: 'Course library', iconTone: 'slate' },
-    { label: 'Blog Posts', value: stats.blogPosts, icon: FiFileText, link: '/admin/blog', subtitle: 'Articles & updates', iconTone: 'violet' },
-    { label: 'Nav Items', value: stats.navItems, icon: FiMenu, link: '/admin/nav-menu', subtitle: 'Menus & links', iconTone: 'cyan' },
+    { label: 'Courses', value: stats.courses, icon: FiBookOpen, link: '/admin/courses', subtitle: 'Course library', iconTone: 'emerald' },
+    { label: 'Blog Posts', value: stats.blogPosts, icon: FiFileText, link: '/admin/blog', subtitle: 'Articles & updates', iconTone: 'emerald' },
+    { label: 'Nav Items', value: stats.navItems, icon: FiMenu, link: '/admin/nav-menu', subtitle: 'Menus & links', iconTone: 'emerald' },
     { label: 'Alumni', value: stats.companies, icon: FiUsers, link: '/admin/alumni', subtitle: 'Partner companies', iconTone: 'emerald' },
-    { label: 'Tags', value: stats.tags, icon: FiTag, link: '/admin/tags', subtitle: 'Course categories', iconTone: 'amber' },
+    { label: 'Tags', value: stats.tags, icon: FiTag, link: '/admin/tags', subtitle: 'Course categories', iconTone: 'emerald' },
   ];
 
   const submissionCards = [
@@ -115,16 +110,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <PageShell
-      title={greeting}
-      subtitle={today}
-      className="!bg-[#EEEEEE]"
-      actions={
-        <AdminButton to="/" target="_blank" variant="secondary" size="md">
-          <FiExternalLink className="w-4 h-4" /> View Site
-        </AdminButton>
-      }
-    >
+    <PageShell>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
         {mainCards.map((card, i) => (
           <StatCard key={i} {...card} />

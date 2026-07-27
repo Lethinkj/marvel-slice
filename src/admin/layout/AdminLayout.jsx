@@ -123,7 +123,7 @@ export default function AdminLayout() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-admin-50 overflow-hidden">
+    <div className="flex h-screen bg-[#EEEEEE] overflow-hidden">
       <Sidebar mobileOpen={sidebarOpen} onMobileClose={() => setSidebarOpen(false)} />
       <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
 
