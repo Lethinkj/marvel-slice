@@ -185,7 +185,7 @@ export default function CourseEditor() {
   const [catL2, setCatL2] = useState("");
   const [catL3, setCatL3] = useState("");
   const [filterSection, setFilterSection] = useState("");
-  const [loading, setLoading] = useState(!isNew);
+  const [loading, setLoading] = useState(true);
   const [course, setCourse] = useState({
     title: "",
     slug: "",
@@ -220,52 +220,32 @@ export default function CourseEditor() {
   const { dirty, reset } = useDirty([course, courseTags], loading);
 
   useEffect(() => {
-    supabase
-      .from("tags")
-      .select("*")
-      .order("name")
-      .then(({ data }) => setAllTags(data || []));
-    supabase
-      .from("nav_items")
-      .select("*")
-      .order("sort_order")
-      .then(({ data }) => {
-        setNavItems(data || []);
-        setAvailablePaths(data || []);
-      });
-    if (isNew) return;
-    Promise.all([
-      supabase
-        .from("courses")
-        .select(
-          `*, highlights(*), overview_faqs(*), course_fees(*), projects(*), certifications(*)`,
-        )
-        .eq("id", id)
-        .single(),
-      supabase
-        .from("course_tabs")
-        .select("*")
-        .eq("course_id", id)
-        .order("sort_order"),
-      supabase
-        .from("faqs")
-        .select("*")
-        .eq("course_id", id)
-        .order("sort_order"),
-      supabase
-        .from("course_tags")
-        .select("tag_id")
-        .eq("course_id", id),
-    ]).then(([courseRes, tabsRes, faqsRes, tagsRes]) => {
-      if (courseRes.data && !courseRes.error) {
-        setCourse((p) => ({ ...p, ...courseRes.data }));
+    async function fetchData() {
+      const [{ data: tagsData }, { data: navData }] = await Promise.all([
+        supabase.from("tags").select("*").order("name"),
+        supabase.from("nav_items").select("*").order("sort_order")
+      ]);
+      setAllTags(tagsData || []);
+      setNavItems(navData || []);
+      setAvailablePaths(navData || []);
+
+      if (!isNew) {
+        const [courseRes, tabsRes, faqsRes, tagsRes] = await Promise.all([
+          supabase.from("courses").select(`*, highlights(*), overview_faqs(*), course_fees(*), projects(*), certifications(*)`).eq("id", id).single(),
+          supabase.from("course_tabs").select("*").eq("course_id", id).order("sort_order"),
+          supabase.from("faqs").select("*").eq("course_id", id).order("sort_order"),
+          supabase.from("course_tags").select("tag_id").eq("course_id", id),
+        ]);
+
+        if (courseRes.data && !courseRes.error) {
+          setCourse((p) => ({ ...p, ...courseRes.data, tabs: tabsRes.data || [], faqs: faqsRes.data || [] }));
+        }
+        setCourseTags(tagsRes.data?.map((t) => t.tag_id) || []);
       }
-      if (tabsRes.data) setCourse((prev) => ({ ...prev, tabs: tabsRes.data }));
-      if (faqsRes.data) setCourse((prev) => ({ ...prev, faqs: faqsRes.data }));
-      setCourseTags(tagsRes.data?.map((t) => t.tag_id) || []);
       setLoading(false);
-    });
-  }, [id]);
+    }
+    fetchData();
+  }, [id, isNew]);
 
   useEffect(() => {
     if (!catL1) { setCatL2(""); setCatL3(""); return; }

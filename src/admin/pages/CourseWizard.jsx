@@ -400,27 +400,7 @@ export default function CourseWizard() {
       )}
 
       <div className="flex gap-6 items-start">
-        <div className="w-48 shrink-0 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-            {STEPS.map((s, i) => (
-              <button
-                key={s.label}
-                type="button"
-                onClick={() => setStep(i)}
-                className={`cursor-pointer w-full flex items-center gap-3 text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
-                  step === i
-                    ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]'
-                    : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'
-                }`}
-              >
-                <s.icon className={`w-4 h-4 shrink-0 ${
-                  step === i ? 'text-indigo-600' : 'text-gray-400'
-                }`} />
-                <span>{s.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         <div className="flex-1 min-w-0">
           {step === 0 && (
@@ -864,14 +844,36 @@ export default function CourseWizard() {
         </div>
       </div>
 
-      <div className="flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saving || !c.title.trim() || !c.slug.trim() || !navItemId || courseTags.length === 0}
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg transition-colors disabled:opacity-50"
-        >
-          {saving ? "Saving..." : "Save Course"}
-        </button>
+      <div className="flex justify-between items-center mt-8 pt-6 border-t border-admin-200">
+        <div>
+          {step > 0 && (
+            <button
+              onClick={() => setStep(step - 1)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-neutral-600 bg-white border border-admin-200 hover:bg-admin-50 rounded-lg transition-colors"
+            >
+              Back
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          {step < STEPS.length - 1 ? (
+            <button
+              onClick={() => handleStepClick(step + 1)}
+              disabled={!canNext()}
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            >
+              Next Step
+            </button>
+          ) : (
+            <button
+              onClick={handleSave}
+              disabled={saving || !c.title.trim() || !c.slug.trim() || !navItemId || courseTags.length === 0}
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            >
+              {saving ? "Saving..." : "Save Course"}
+            </button>
+          )}
+        </div>
       </div>
 
     </PageShell>

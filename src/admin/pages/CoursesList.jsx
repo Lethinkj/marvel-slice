@@ -175,12 +175,6 @@ export default function CoursesList() {
     <PageShell
       title={activeCategory ? `${activeCategory} Courses` : "All Courses"}
       subtitle={`${courses.length} course${courses.length !== 1 ? 's' : ''} total`}
-      actions={
-        <AdminButton to={`/admin/courses/wizard${activeCategory ? `?category=${encodeURIComponent(activeCategory)}` : ''}`} variant="primary" size="sm">
-          <FiPlus className="w-4 h-4" />
-          Add Course
-        </AdminButton>
-      }
     >
       {courses.length > 0 && (
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
@@ -253,7 +247,7 @@ export default function CoursesList() {
           />
         </div>
       ) : (
-        <DataTable columns={columns} data={filteredCourses} searchable={false} />
+        <DataTable columns={columns} data={filteredCourses} searchable={false} headerRowClass="bg-gray-100" headerCellClass="text-gray-900 font-bold" />
       )}
       {confirmDialog}
     </PageShell>
