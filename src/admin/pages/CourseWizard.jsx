@@ -30,6 +30,7 @@ import {
   FiTrendingUp,
   FiChevronUp,
   FiAlertCircle,
+  FiX,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
@@ -139,6 +140,7 @@ export default function CourseWizard() {
   const [filterSection, setFilterSection] = useState(searchParams.get("category") || "Software Learning");
   const [newTagName, setNewTagName] = useState("");
   const [creatingTag, setCreatingTag] = useState(false);
+  const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
 
   const [c, setC] = useState({
     title: "",
@@ -810,23 +812,56 @@ export default function CourseWizard() {
               {courseTags.length === 0 && (
                 <p className="text-xs text-destructive-500 mb-2">Select at least one tag to enable saving</p>
               )}
-              <div className="flex flex-wrap gap-2">
-                {allTags.map((tag) => {
-                  const sel = courseTags.includes(tag.id);
-                  return (
-                    <button
-                      key={tag.id}
-                      onClick={() => setCourseTags(sel ? courseTags.filter((t) => t !== tag.id) : [...courseTags, tag.id])}
-                      className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                        sel ? "bg-admin-600 text-white border-admin-600" : "bg-white text-neutral-500 border-admin-200 hover:border-neutral-500 hover:text-neutral-700"
-                      }`}
-                    >
-                      {tag.name}
-                    </button>
-                  );
-                })}
-                {allTags.length === 0 && <p className="text-sm text-neutral-400">No tags yet. Create some in the Tags page.</p>}
-              </div>
+              {allTags.length === 0 ? (
+                <p className="text-sm text-neutral-400">
+                  No tags available. Create them in{' '}
+                  <Link to="/admin/tags" className="text-admin-600 hover:underline">Tags Manager</Link>.
+                </p>
+              ) : (
+                <div className="relative">
+                  <div
+                    onClick={() => setTagsDropdownOpen(!tagsDropdownOpen)}
+                    className="w-full min-h-[40px] px-3 py-2 rounded-lg border border-admin-200 bg-white text-sm focus-within:ring-2 focus-within:ring-admin-500/20 focus-within:border-admin-500 cursor-pointer flex flex-wrap gap-1 items-center"
+                  >
+                    {courseTags.length === 0 && <span className="text-neutral-400">Select tags...</span>}
+                    {courseTags.map(id => {
+                      const tag = allTags.find(t => t.id === id);
+                      return tag ? (
+                        <span key={id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-admin-100 text-admin-700 rounded-md text-xs font-medium">
+                          {tag.name}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setCourseTags(courseTags.filter(t => t !== id)); }}
+                            className="hover:text-admin-900"
+                          >
+                            <FiX className="w-3 h-3" />
+                          </button>
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
+                  {tagsDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setTagsDropdownOpen(false)} />
+                      <div className="absolute top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-admin-200 rounded-lg shadow-lg z-20 py-1">
+                        {allTags.map(tag => (
+                          <label key={tag.id} className="flex items-center gap-2 px-3 py-2 hover:bg-neutral-50 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={courseTags.includes(tag.id)}
+                              onChange={() => {
+                                setCourseTags(prev => prev.includes(tag.id) ? prev.filter(t => t !== tag.id) : [...prev, tag.id]);
+                              }}
+                              className="rounded border-admin-300 text-admin-600 focus:ring-admin-500"
+                            />
+                            <span className="text-sm text-neutral-700">{tag.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
               <div className="flex items-center gap-2 mt-4">
                 <input
                   value={newTagName}

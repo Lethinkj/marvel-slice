@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import AdminButton from "../components/AdminButton";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiSettings, FiFileText, FiTag, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiSettings, FiFileText, FiTag, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
@@ -179,6 +179,7 @@ export default function CourseEditor() {
   const [message, setMessage] = useState("");
   const [allTags, setAllTags] = useState([]);
   const [courseTags, setCourseTags] = useState([]);
+  const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
   const [navItems, setNavItems] = useState([]);
   const [availablePaths, setAvailablePaths] = useState([]);
   const [catL1, setCatL1] = useState("");
@@ -1377,31 +1378,59 @@ export default function CourseEditor() {
               <p className="text-sm text-neutral-500 mb-4">
                 Select tags that apply to this course.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {allTags.map((tag) => {
-                  const selected = courseTags.includes(tag.id);
-                  return (
-                    <button
-                      key={tag.id}
-                      onClick={() =>
-                        handleCourseTagsChange(
-                          selected
-                            ? courseTags.filter((t) => t !== tag.id)
-                            : [...courseTags, tag.id],
-                        )
-                      }
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${selected ? "bg-admin-600 text-white border-admin-500" : "bg-white text-admin-600 border-admin-200 hover:border-admin-500"}`}
-                    >
-                      {tag.name}
-                    </button>
-                  );
-                })}
-                {allTags.length === 0 && (
-                  <p className="text-sm text-neutral-500">
-                    No tags created yet. Go to Tags page to add some.
-                  </p>
-                )}
-              </div>
+              {allTags.length === 0 ? (
+                <p className="text-sm text-neutral-500">
+                  No tags created yet. Go to <Link to="/admin/tags" className="text-admin-600 hover:underline">Tags page</Link> to add some.
+                </p>
+              ) : (
+                <div className="relative">
+                  <div
+                    onClick={() => setTagsDropdownOpen(!tagsDropdownOpen)}
+                    className="w-full min-h-[40px] px-3 py-2 rounded-lg border border-admin-200 bg-white text-sm focus-within:ring-2 focus-within:ring-admin-500/20 focus-within:border-admin-500 cursor-pointer flex flex-wrap gap-1 items-center"
+                  >
+                    {courseTags.length === 0 && <span className="text-neutral-400">Select tags...</span>}
+                    {courseTags.map(id => {
+                      const tag = allTags.find(t => t.id === id);
+                      return tag ? (
+                        <span key={id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-admin-100 text-admin-700 rounded-md text-xs font-medium">
+                          {tag.name}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleCourseTagsChange(courseTags.filter(t => t !== id)); }}
+                            className="hover:text-admin-900"
+                          >
+                            <FiX className="w-3 h-3" />
+                          </button>
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
+                  {tagsDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setTagsDropdownOpen(false)} />
+                      <div className="absolute top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-admin-200 rounded-lg shadow-lg z-20 py-1">
+                        {allTags.map(tag => (
+                          <label key={tag.id} className="flex items-center gap-2 px-3 py-2 hover:bg-neutral-50 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={courseTags.includes(tag.id)}
+                              onChange={() => {
+                                handleCourseTagsChange(
+                                  courseTags.includes(tag.id)
+                                    ? courseTags.filter(t => t !== tag.id)
+                                    : [...courseTags, tag.id]
+                                );
+                              }}
+                              className="rounded border-admin-300 text-admin-600 focus:ring-admin-500"
+                            />
+                            <span className="text-sm text-neutral-700">{tag.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
