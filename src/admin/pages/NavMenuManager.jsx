@@ -322,7 +322,6 @@ export default function NavMenuManager() {
   // Apply search and status filters
   const filteredItems = useMemo(() => {
     let result = baseItems;
-    // 3. Search Filter
     if (activeSearch.trim()) {
       const q = activeSearch.toLowerCase();
       result = result.filter(item => 
@@ -335,9 +334,13 @@ export default function NavMenuManager() {
     } else if (statusFilter === "inactive") {
       result = result.filter(item => item.is_active === false);
     }
-    setPage(1);
     return result;
   }, [baseItems, activeSearch, statusFilter]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [activeSearch, statusFilter]);
 
   const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE) || 1;
   const paginatedItems = filteredItems.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
