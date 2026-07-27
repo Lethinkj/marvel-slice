@@ -372,16 +372,14 @@ export default function CourseWizard() {
   }
 
   function handleStepClick(targetStep) {
-    if (targetStep < step) setStep(targetStep);
+    if (targetStep > step && !canNext()) return;
+    setStep(targetStep);
   }
 
   return (
     <PageShell
       title="Create New Course"
       maxWidth="max-w-[1600px]"
-      actions={
-        <button onClick={() => navigate(-1)} className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 shadow-sm border-transparent rounded-lg transition-colors">Cancel</button>
-      }
     >
 
       {message && (
@@ -856,6 +854,12 @@ export default function CourseWizard() {
           )}
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-200 hover:bg-red-50 rounded-lg transition-colors shadow-sm"
+          >
+            Cancel
+          </button>
           {step < STEPS.length - 1 ? (
             <button
               onClick={() => handleStepClick(step + 1)}

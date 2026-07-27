@@ -501,11 +501,11 @@ export default function CareerPageEditor() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-admin-200 bg-white">
-                    <th className="text-left px-3 py-2.5 font-medium text-neutral-500">Name</th>
-                    <th className="text-center px-3 py-2.5 font-medium text-neutral-500">Order</th>
-                    <th className="text-center px-3 py-2.5 font-medium text-neutral-500">Active</th>
-                    <th className="text-right px-3 py-2.5 font-medium text-neutral-500">Actions</th>
+                  <tr className="border-b border-admin-200 bg-blue-600">
+                    <th className="text-left px-3 py-2.5 font-semibold text-white">Name</th>
+                    <th className="text-center px-3 py-2.5 font-semibold text-white">Order</th>
+                    <th className="text-center px-3 py-2.5 font-semibold text-white">Active</th>
+                    <th className="text-right px-3 py-2.5 font-semibold text-white">Actions</th>
                   </tr>
                 </thead>
                 <tbody>

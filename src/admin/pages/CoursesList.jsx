@@ -247,7 +247,7 @@ export default function CoursesList() {
           />
         </div>
       ) : (
-        <DataTable columns={columns} data={filteredCourses} searchable={false} headerRowClass="bg-gray-100" headerCellClass="text-gray-900 font-bold" />
+        <DataTable columns={columns} data={filteredCourses} searchable={false} />
       )}
       {confirmDialog}
     </PageShell>

@@ -92,9 +92,9 @@ export default function JobsList() {
         </div>
       }
     >
-      <div className="bg-white rounded-xl shadow-sm border border-admin-200 overflow-hidden">
+      <div className="bg-white shadow-sm border border-admin-200 overflow-hidden">
         {jobs.length > 0 ? (
-          <DataTable data={jobs} columns={columns} headerRowClass="bg-gray-100" headerCellClass="text-gray-700" />
+          <DataTable data={jobs} columns={columns} />
         ) : (
           <EmptyState icon={FiBriefcase} title="No jobs added" description="Get started by creating your first job opening."
             

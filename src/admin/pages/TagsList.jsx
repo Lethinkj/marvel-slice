@@ -58,14 +58,12 @@ export default function TagsList() {
       title="View Tags" 
       subtitle="Manage your content tags"
     >
-      <div className="bg-white rounded-xl shadow-sm border border-admin-200 overflow-hidden">
+      <div className="bg-white shadow-sm border border-admin-200 overflow-hidden">
         {tags.length > 0 ? (
           <DataTable 
             data={tags} 
             columns={columns} 
             searchPlaceholder="Search tags..."
-            headerRowClass="bg-gray-100" 
-            headerCellClass="text-gray-700" 
           />
         ) : (
           <EmptyState 

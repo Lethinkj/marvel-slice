@@ -22,24 +22,24 @@ const navGroups = [
   
   {
     label: "Services", icon: FiServer, iconColor: "#d97706", parentTo: "/admin/services", items: [
-      { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
       { to: "/admin/services/new", label: "Add Service" },
+      { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
       { to: "/admin/service-categories", label: "Categories" },
       { to: "/admin/services-page", label: "Services Page" }
     ],
   },
   {
     label: "Training", icon: FiZap, iconColor: "#7c3aed", parentTo: "/admin/training", items: [
-      { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
       { to: "/admin/training/new", label: "Add Program" },
+      { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
       { to: "/admin/training-categories", label: "Categories" },
       { to: "/admin/training-page", label: "Training Page" }
     ],
   },
   {
     label: "Jobs", icon: FiBriefcase, iconColor: "#8b5cf6", items: [
-      { to: "/admin/jobs", label: "View Jobs", catchSubRoutes: true, siblingRoutes: ["/admin/jobs/new"] },
-      { to: "/admin/jobs/new", label: "Add Job" }
+      { to: "/admin/jobs/new", label: "Add Job" },
+      { to: "/admin/jobs", label: "View Jobs", catchSubRoutes: true, siblingRoutes: ["/admin/jobs/new"] }
     ],
   },
   { label: "Submissions", icon: FiInbox, iconColor: "#e11d48", items: [
@@ -52,43 +52,43 @@ const navGroups = [
   {
     label: "Courses", icon: FiBookOpen, iconColor: "#0891b2", items: [
       { label: "Software Learning", children: [
-        { to: "/admin/courses?category=Software%20Learning", label: "View Courses" },
-        { to: "/admin/courses/wizard?category=Software%20Learning", label: "Add Course" }
+        { to: "/admin/courses/wizard?category=Software%20Learning", label: "Add Course" },
+        { to: "/admin/courses?category=Software%20Learning", label: "View Courses" }
       ]},
       { label: "Competitive Exam", children: [
-        { to: "/admin/courses?category=Competitive%20Exam", label: "View Courses" },
-        { to: "/admin/courses/wizard?category=Competitive%20Exam", label: "Add Course" }
+        { to: "/admin/courses/wizard?category=Competitive%20Exam", label: "Add Course" },
+        { to: "/admin/courses?category=Competitive%20Exam", label: "View Courses" }
       ]},
       { label: "Tags", children: [
-        { to: "/admin/tags", label: "View Tags" },
-        { to: "/admin/tags/add", label: "Add Tag" }
+        { to: "/admin/tags/add", label: "Add Tag" },
+        { to: "/admin/tags", label: "View Tags" }
       ]},
       { to: "/admin/courses/reports", label: "Reports" }
     ],
   },
   {
     label: "Blog", icon: FiFileText, iconColor: "#ea580c", items: [
-      { to: "/admin/blog", label: "View Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
       { to: "/admin/blog/new", label: "Add Blog" },
+      { to: "/admin/blog", label: "View Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
       { to: "/admin/blog/categories", label: "Categories" }
     ],
   },
   { label: "Navigation", icon: FiMenu, iconColor: "#0f766e", items: [
     { label: "Software Learning", children: [
-      { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add" }
+      { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View" }
     ]},
     { label: "Competitive Exam", children: [
-      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=add", label: "Add" }
+      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=view", label: "View" }
     ]},
     { label: "Services", children: [
-      { to: "/admin/nav-menu?section=Services&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Services&tab=add", label: "Add" }
+      { to: "/admin/nav-menu?section=Services&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Services&tab=view", label: "View" }
     ]},
     { label: "Training", children: [
-      { to: "/admin/nav-menu?section=Training&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Training&tab=add", label: "Add" }
+      { to: "/admin/nav-menu?section=Training&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Training&tab=view", label: "View" }
     ]}
     ]},
   { label: "Uploads", icon: FiLayers, iconColor: "#52525b", items: [

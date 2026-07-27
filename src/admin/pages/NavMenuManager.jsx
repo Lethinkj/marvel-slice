@@ -695,7 +695,7 @@ export default function NavMenuManager() {
             <ContentBreadcrumbs />
             <ParentInfoCard />
 
-            <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
+            <div className="border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
               
               {/* Filter Bar */}
               <div className="px-5 py-4 bg-white border-b border-gray-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -746,7 +746,7 @@ export default function NavMenuManager() {
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-12 gap-3 px-6 py-3 bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  <div className="grid grid-cols-12 gap-3 px-6 py-3 bg-blue-600 border-b border-gray-200 text-xs font-bold text-white uppercase tracking-wider">
                     <div className="col-span-1">SL NO</div>
                     <div className="col-span-3">LABEL</div>
                     <div className="col-span-4">PATH</div>

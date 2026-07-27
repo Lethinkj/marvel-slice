@@ -444,21 +444,21 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
       <div className="grid xl:grid-cols-3 gap-4 items-start">
         <div className={`${selected ? 'xl:col-span-2' : 'xl:col-span-3'}`}>
-          <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
+          <div className="bg-white border border-admin-200 shadow-sm overflow-hidden">
             {paged.length === 0 ? (
               <EmptyState title={search ? 'No results match your search' : 'No submissions yet'} description={search ? 'Try adjusting your search or filters.' : 'Submissions will appear here once received.'} />
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-100">
-                      <th className="w-10 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider px-4 py-3">#</th>
+                    <tr className="border-b border-gray-200 bg-blue-600">
+                      <th className="w-10 text-left text-xs font-semibold text-white uppercase tracking-wider px-4 py-3">#</th>
                       {columns.map((col, i) => (
-                        <th key={i} className={`text-left text-xs font-semibold text-gray-700 uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>
+                        <th key={i} className={`text-left text-xs font-semibold text-white uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>
                           {col.header}
                         </th>
                       ))}
-                      <th className="text-right text-xs font-semibold text-gray-700 uppercase tracking-wider px-4 py-3">Actions</th>
+                      <th className="text-right text-xs font-semibold text-white uppercase tracking-wider px-4 py-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -504,23 +504,25 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               </div>
             )}
 
-            <div className="flex items-center justify-between px-4 py-3 border-t border-admin-100 bg-white/50">
-              <div className="flex items-center gap-2 text-xs text-neutral-500">
-                <span>Rows per page:</span>
-                <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                  className="h-7 px-2 rounded-md border border-admin-200 bg-white text-xs text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
-                >
-                  {PAGE_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
-                </select>
+            <div className="flex items-center justify-between px-4 py-3 border-t border-admin-100 bg-white text-xs text-neutral-400 font-medium">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <span>Rows per page:</span>
+                  <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+                    className="h-7 px-1.5 rounded border border-admin-200 bg-white text-xs text-neutral-500 focus:outline-none"
+                  >
+                    {PAGE_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
+                  </select>
+                </div>
                 <span>{filtered.length} total</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}
-                  className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-all disabled:opacity-30"
+                  className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                 ><FiChevronLeft className="w-4 h-4" /></button>
-                <span className="text-xs text-neutral-500 px-2">{page} / {totalPages || 1}</span>
+                <span className="px-1 text-neutral-400">{page} / {totalPages || 1}</span>
                 <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages}
-                  className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-all disabled:opacity-30"
+                  className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                 ><FiChevronRight className="w-4 h-4" /></button>
               </div>
             </div>

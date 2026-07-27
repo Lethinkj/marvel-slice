@@ -101,7 +101,7 @@ export default function DataTable({
 
   if (variant === 'cards') {
     return (
-      <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
+      <div className="bg-white border border-admin-200 shadow-sm overflow-hidden">
         {searchable && renderSearchBar()}
         <div className="divide-y divide-admin-100">
           {paginated.map((row, rowIndex) => (
@@ -124,15 +124,15 @@ export default function DataTable({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
+    <div className="bg-white border border-admin-200 shadow-sm overflow-hidden">
       {searchable && renderSearchBar()}
 
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className={`border-b border-admin-100 ${headerRowClass || 'bg-white/50'}`}>
+            <tr className={`border-b border-admin-100 ${headerRowClass || 'bg-blue-600'}`}>
               {columns.map((col, i) => (
-                <th key={i} className={`text-left text-xs font-semibold uppercase tracking-wider px-4 py-3 ${headerCellClass || 'text-neutral-500'} ${col.className || ''}`}>
+                <th key={i} className={`text-left text-xs font-semibold uppercase tracking-wider px-4 py-3 ${headerCellClass || 'text-white'} ${col.className || ''}`}>
                   {col.header}
                 </th>
               ))}
@@ -156,21 +156,44 @@ export default function DataTable({
         </table>
       </div>
 
-      <div className="flex items-center justify-between px-4 py-3 border-t border-admin-100 bg-white">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-neutral-500">Show entries:</span>
-          <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} className="border border-admin-200 rounded-md text-sm px-2 py-1 focus:outline-none focus:ring-1 focus:ring-admin-500 bg-white">
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-            <option value={75}>75</option>
-            <option value={100}>100</option>
-          </select>
+      <div className="flex items-center justify-between px-4 py-3 border-t border-admin-100 bg-white text-xs text-neutral-400 font-medium">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <span>Rows per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+              className="h-7 px-1.5 rounded border border-admin-200 bg-white text-xs text-neutral-500 focus:outline-none"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={75}>75</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+          <span>{filtered.length} total</span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1 text-sm font-medium border border-admin-200 rounded-md disabled:opacity-50 hover:bg-admin-50 transition-colors">Prev</button>
-          <span className="text-sm text-neutral-500">Page {page} of {Math.ceil(filtered.length / pageSize) || 1}</span>
-          <button onClick={() => setPage(p => Math.min(Math.ceil(filtered.length / pageSize) || 1, p + 1))} disabled={page >= Math.ceil(filtered.length / pageSize) || filtered.length === 0} className="px-3 py-1 text-sm font-medium border border-admin-200 rounded-md disabled:opacity-50 hover:bg-admin-50 transition-colors">Next</button>
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <span className="px-1 text-neutral-400">{page} / {Math.ceil(filtered.length / pageSize) || 1}</span>
+          <button
+            onClick={() => setPage(p => Math.min(Math.ceil(filtered.length / pageSize) || 1, p + 1))}
+            disabled={page >= Math.ceil(filtered.length / pageSize) || filtered.length === 0}
+            className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
 

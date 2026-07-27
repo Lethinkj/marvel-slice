@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { FiMessageCircle, FiSend, FiLoader, FiSearch, FiChevronLeft, FiCheck, FiMail, FiPhone, FiCalendar, FiChevronDown, FiMessageSquare, FiList, FiX } from 'react-icons/fi';
+import { FiMessageCircle, FiSend, FiLoader, FiSearch, FiChevronLeft, FiChevronRight, FiCheck, FiMail, FiPhone, FiCalendar, FiChevronDown, FiMessageSquare, FiList, FiX } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function relativeTime(dateStr) {
@@ -370,6 +370,12 @@ function SessionsTable({ conversations }) {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [viewingConv, setViewingConv] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filter, search]);
 
   const filtered = conversations.filter((c) => {
     if (filter === 'new') return c.status === 'open';
@@ -385,8 +391,15 @@ function SessionsTable({ conversations }) {
       ;
   });
 
+  const paginated = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, page, pageSize]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+
   return (
-    <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
+    <div className="bg-white border border-admin-200 shadow-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-admin-100 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
           <h2 className="font-bold text-black text-base flex items-center gap-2">
@@ -425,19 +438,19 @@ function SessionsTable({ conversations }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-white border-b border-admin-100">
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider w-12">#</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Name</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Email</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Phone</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Reason</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Status</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Date</th>
-              <th className="text-left px-5 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Closed</th>
+            <tr className="bg-blue-600 border-b border-admin-100">
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider w-12">#</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider">Name</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider">Email</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider">Phone</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider">Reason</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider">Status</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider">Date</th>
+              <th className="text-left px-5 py-3 text-xs font-semibold text-white uppercase tracking-wider">Closed</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {paginated.length === 0 ? (
               <tr>
                 <td colSpan={8} className="text-center py-16 text-neutral-400">
                   <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-neutral-200" />
@@ -445,9 +458,9 @@ function SessionsTable({ conversations }) {
                 </td>
               </tr>
             ) : (
-              filtered.map((conv, i) => (
+              paginated.map((conv, i) => (
                 <tr key={conv.id} onClick={() => setViewingConv(conv)} className="border-b border-admin-50 hover:bg-white/50 transition-colors cursor-pointer">
-                  <td className="px-5 py-4 text-neutral-400 text-xs">{i + 1}</td>
+                  <td className="px-5 py-4 text-neutral-400 text-xs">{(page - 1) * pageSize + i + 1}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600 shrink-0">
@@ -491,6 +504,44 @@ function SessionsTable({ conversations }) {
           </tbody>
         </table>
       </div>
+
+      <div className="flex items-center justify-between px-4 py-3 border-t border-admin-100 bg-white text-xs text-neutral-400 font-medium">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <span>Rows per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
+              className="h-7 px-1.5 rounded border border-admin-200 bg-white text-xs text-neutral-500 focus:outline-none"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={75}>75</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+          <span>{filtered.length} total</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          >
+            <FiChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="px-1 text-neutral-400">{page} / {totalPages}</span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page >= totalPages}
+            className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          >
+            <FiChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
       {viewingConv && <MessageViewer conversation={viewingConv} onClose={() => setViewingConv(null)} />}
     </div>
   );
