@@ -84,8 +84,8 @@ export default function DataTable({
     </div>
   );
 
-  const renderCell = (row, col) =>
-    col.cell ? col.cell(row) : col.accessor ? row[col.accessor] : null;
+  const renderCell = (row, col, index) =>
+    col.cell ? col.cell(row, index) : col.accessor ? row[col.accessor] : null;
 
   const renderNoResults = () =>
     filtered.length === 0 && activeSearch ? (
@@ -102,7 +102,7 @@ export default function DataTable({
       <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
         {searchable && renderSearchBar()}
         <div className="divide-y divide-admin-100">
-          {paginated.map((row) => (
+          {paginated.map((row, rowIndex) => (
             <div
               key={row[rowKey]}
               onClick={() => onRowClick?.(row)}
@@ -110,7 +110,7 @@ export default function DataTable({
             >
               {columns.map((col, i) => (
                 <div key={i} className={`${i === 0 ? 'flex-1 min-w-0' : 'shrink-0'} ${col.className || ''}`}>
-                  {renderCell(row, col)}
+                  {renderCell(row, col, (page - 1) * pageSize + rowIndex)}
                 </div>
               ))}
             </div>
@@ -137,7 +137,7 @@ export default function DataTable({
             </tr>
           </thead>
           <tbody>
-            {paginated.map((row) => (
+            {paginated.map((row, rowIndex) => (
               <tr
                 key={row[rowKey]}
                 onClick={() => onRowClick?.(row)}
@@ -145,7 +145,7 @@ export default function DataTable({
               >
                 {columns.map((col, i) => (
                   <td key={i} className={`px-4 py-3 text-sm text-neutral-700 ${col.className || ''}`}>
-                    {renderCell(row, col)}
+                    {renderCell(row, col, (page - 1) * pageSize + rowIndex)}
                   </td>
                 ))}
               </tr>

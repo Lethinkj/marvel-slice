@@ -19,6 +19,13 @@ export default function CoursesList() {
   const [search, setSearch] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [catL1, setCatL1] = useState('All');
+  const [catL2, setCatL2] = useState('All');
+
+  useEffect(() => {
+    setCatL1('All');
+    setCatL2('All');
+  }, [activeCategory]);
 
   useEffect(() => {
     loadCourses();
@@ -76,15 +83,44 @@ export default function CoursesList() {
         return false;
       }
     }
+
+    // 4. L1 filter
+    if (catL1 !== 'All') {
+      let currentId = c.nav_item_id;
+      let hasCat1 = false;
+      while (currentId) {
+        if (currentId === catL1) { hasCat1 = true; break; }
+        const parent = navItems.find(n => n.id === currentId);
+        if (!parent) break;
+        currentId = parent.parent_id;
+      }
+      if (!hasCat1) return false;
+    }
+
+    // 5. L2 filter
+    if (catL2 !== 'All') {
+      let currentId = c.nav_item_id;
+      let hasCat2 = false;
+      while (currentId) {
+        if (currentId === catL2) { hasCat2 = true; break; }
+        const parent = navItems.find(n => n.id === currentId);
+        if (!parent) break;
+        currentId = parent.parent_id;
+      }
+      if (!hasCat2) return false;
+    }
     
     return true;
   });
 
+  const l1Options = activeCategory ? navItems.filter(p => p.parent_label === activeCategory && !p.parent_id) : [];
+  const l2Options = catL1 !== 'All' ? navItems.filter(p => p.parent_id === catL1) : [];
+
   const columns = [
     {
-      header: 'ID',
+      header: 'SL NO',
       className: 'w-20',
-      cell: (row) => <span className="text-sm text-neutral-400 font-mono">{row.id.slice(0, 8)}...</span>,
+      cell: (row, index) => <span className="text-sm text-neutral-900 font-medium">{index + 1}</span>,
     },
     {
       header: 'Title',
@@ -164,7 +200,7 @@ export default function CoursesList() {
               Search
             </button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <FiFilter className="w-4 h-4 text-admin-400 shrink-0" />
             <select
               value={statusFilter}
@@ -175,6 +211,26 @@ export default function CoursesList() {
               <option value="published">Published</option>
               <option value="draft">Draft</option>
             </select>
+            {l1Options.length > 0 && (
+              <select
+                value={catL1}
+                onChange={(e) => { setCatL1(e.target.value); setCatL2('All'); }}
+                className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 max-w-[200px] truncate"
+              >
+                <option value="All">All Topics</option>
+                {l1Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+              </select>
+            )}
+            {l2Options.length > 0 && (
+              <select
+                value={catL2}
+                onChange={(e) => setCatL2(e.target.value)}
+                className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 max-w-[200px] truncate"
+              >
+                <option value="All">All Subtopics</option>
+                {l2Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+              </select>
+            )}
           </div>
         </div>
       )}
