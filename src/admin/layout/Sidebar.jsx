@@ -48,7 +48,8 @@ const navGroups = [
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
     { to: "/admin/contact-submissions", label: "Contact Submissions" },
-    { to: "/admin/chat-submissions", label: "Chat Submissions" }
+    { to: "/admin/chat-submissions", label: "Chat Submissions" },
+    { to: "/admin/courses/reports", label: "Reports" }
     ]},
   {
     label: "Courses", icon: FiBookOpen, items: [
@@ -67,9 +68,6 @@ const navGroups = [
       { to: "/admin/courses/brochure", label: "Brochure" },
     ],
   },
-  { label: "Reports", icon: FiBarChart2, items: [
-    { to: "/admin/courses/reports", label: "Reports" }
-    ]},
   {
     label: "Blog", icon: FiFileText, items: [
       { to: "/admin/blog/new", label: "Add Blog" },
