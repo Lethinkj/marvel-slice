@@ -35,7 +35,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
             <FiMove className="w-4 h-4 text-admin-300 cursor-move" />
             <button
               onClick={() => removeItem(i)}
-              className="text-destructive-400 hover:text-destructive-600"
+              className="text-red-500 hover:text-red-600"
             >
               <FiTrash2 className="w-4 h-4" />
             </button>
@@ -800,7 +800,7 @@ export default function TrainingEditor() {
                         <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
                         <button
                           onClick={() => update("modules", training.modules.filter((_, j) => j !== i))}
-                          className="p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors"
+                          className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
                         </button>
@@ -974,7 +974,7 @@ export default function TrainingEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("trainingModules", training.trainingModules.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1123,7 +1123,7 @@ export default function TrainingEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("trainingSkills", training.trainingSkills.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1194,7 +1194,7 @@ export default function TrainingEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("trainingBenefits", training.trainingBenefits.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1265,7 +1265,7 @@ export default function TrainingEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("faqs", training.faqs.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1345,7 +1345,7 @@ export default function TrainingEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("testimonials", training.testimonials.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1449,7 +1449,7 @@ export default function TrainingEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("gallery", training.gallery.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1513,7 +1513,7 @@ export default function TrainingEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("statistics", training.statistics.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>

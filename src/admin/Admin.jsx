@@ -31,8 +31,6 @@ import ServicesPageEditor from './pages/ServicesPageEditor';
 import TrainingPageEditor from './pages/TrainingPageEditor';
 import CareerSubmissions from './pages/CareerSubmissions';
 import BrochureDownloads from './pages/BrochureDownloads';
-import NavItemChildren from './pages/NavItemChildren';
-import NavItemManager from './pages/NavItemManager';
 import FormSubmissions from './pages/FormSubmissions';
 import ContactSubmissions from './pages/ContactSubmissions';
 import ChatSubmissions from './pages/ChatSubmissions';
@@ -111,8 +109,6 @@ export default function Admin() {
           <Route index element={<Dashboard />} />
           <Route path="site-settings" element={<SiteSettings />} />
           <Route path="nav-menu" element={<NavMenuManager />} />
-          <Route path="nav-menu/children/:id" element={<NavItemChildren />} />
-          <Route path="nav-menu/manage" element={<NavItemManager />} />
           <Route path="courses" element={<CoursesList />} />
           <Route path="courses/wizard" element={<CourseWizard />} />
           <Route path="courses/reports" element={<CourseReports />} />

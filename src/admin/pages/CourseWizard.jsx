@@ -379,7 +379,7 @@ export default function CourseWizard() {
       title="Create New Course"
       maxWidth="max-w-[1600px]"
       actions={
-        <button onClick={() => navigate("/admin/courses")} className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-colors">Cancel</button>
+        <button onClick={() => navigate("/admin/courses")} className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 shadow-sm border-transparent rounded-lg transition-colors">Cancel</button>
       }
     >
 
@@ -655,7 +655,7 @@ export default function CourseWizard() {
               <div className="space-y-3">
                 {c.tabs.map((t, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
-                    <button onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors">
+                    <button onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors">
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div className="grid sm:grid-cols-2 gap-3">
@@ -710,7 +710,7 @@ export default function CourseWizard() {
                                     <div key={ai} className="flex items-center gap-2 mb-1">
                                       <span className="text-xs text-neutral-300">•</span>
                                       <input value={ans} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; const an = [...qa[qi].answers]; an[ai] = e.target.value; qa[qi] = { ...qa[qi], answers: an }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="flex-1 px-2 py-1 border border-admin-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Answer bullet" />
-                                      <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-destructive-400 hover:text-destructive-600">×</button>
+                                      <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-red-500 hover:text-red-600">×</button>
                                     </div>
                                   ))}
                                 </div>
@@ -739,7 +739,7 @@ export default function CourseWizard() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
-                      <button onClick={() => removeModule(i)} className="p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors">
+                      <button onClick={() => removeModule(i)} className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors">
                         <FiTrash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -794,7 +794,7 @@ export default function CourseWizard() {
                       />
                     </div>
                     <input value={h.label || ""} onChange={(e) => { const n = [...c.highlights]; n[i] = { ...n[i], label: e.target.value }; u("highlights", n); }} className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Label" />
-                    <button onClick={() => u("highlights", c.highlights.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                    <button onClick={() => u("highlights", c.highlights.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                   </div>
                 ))}
               </div>
@@ -813,7 +813,7 @@ export default function CourseWizard() {
               <div className="space-y-3">
                 {c.projects.map((p, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
-                    <button onClick={() => u("projects", c.projects.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                    <button onClick={() => u("projects", c.projects.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                     <input value={p.title || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], title: e.target.value }; u("projects", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Project title" />
                     <textarea value={p.description || ""} onChange={(e) => { const n = [...c.projects]; n[i] = { ...n[i], description: e.target.value }; u("projects", n); }} rows={2} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Description..." />
                   </div>
@@ -833,7 +833,7 @@ export default function CourseWizard() {
               <div className="space-y-3">
                 {c.faqs.map((f, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
-                    <button onClick={() => u("faqs", c.faqs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                    <button onClick={() => u("faqs", c.faqs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                     <input value={f.question || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], question: e.target.value }; u("faqs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Question" />
                     <textarea value={f.answer || ""} onChange={(e) => { const n = [...c.faqs]; n[i] = { ...n[i], answer: e.target.value }; u("faqs", n); }} rows={2} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Answer..." />
                   </div>

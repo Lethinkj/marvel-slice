@@ -175,7 +175,7 @@ export default function TrainingPageEditor() {
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
                   <span className="text-xs font-semibold text-neutral-500 uppercase">Program {i + 1}</span>
-                  <button type="button" onClick={() => setPrograms(programs.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => setPrograms(programs.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={p.title} onChange={(e) => { const u = [...programs]; u[i] = { ...u[i], title: e.target.value }; setPrograms(u); }} placeholder="Program title" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" />
                 <textarea value={p.description} onChange={(e) => { const u = [...programs]; u[i] = { ...u[i], description: e.target.value }; setPrograms(u); }} rows={2} placeholder="Program description..." className="w-full mt-2 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" />
@@ -195,7 +195,7 @@ export default function TrainingPageEditor() {
             {features.map((f, i) => (
               <div key={i} className="flex items-center gap-2">
                 <input type="text" value={f.text} onChange={(e) => { const u = [...features]; u[i] = { ...u[i], text: e.target.value }; setFeatures(u); }} placeholder="Feature text" className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" />
-                <button type="button" onClick={() => setFeatures(features.filter((_, j) => j !== i))} className="p-2 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                <button type="button" onClick={() => setFeatures(features.filter((_, j) => j !== i))} className="p-2 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
               </div>
             ))}
           </div>
@@ -222,7 +222,7 @@ export default function TrainingPageEditor() {
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
                   <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
-                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" />
                 <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className="w-full mt-2 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500" />

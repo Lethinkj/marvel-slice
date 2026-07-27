@@ -171,7 +171,7 @@ export default function ServicesPageEditor() {
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
                   <span className="text-xs font-semibold text-neutral-500 uppercase">Service {i + 1}</span>
-                  <button type="button" onClick={() => setServices(services.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => setServices(services.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={s.title} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], title: e.target.value }; setServices(u); }} placeholder="Service title" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
                 <textarea value={s.description} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], description: e.target.value }; setServices(u); }} rows={2} placeholder="Brief description..." className="w-full mt-2 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
@@ -201,7 +201,7 @@ export default function ServicesPageEditor() {
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
                   <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
-                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
                 <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className="w-full mt-2 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />

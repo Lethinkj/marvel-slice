@@ -226,7 +226,7 @@ function ListEditor({ def, data, onChange }) {
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-black uppercase tracking-wider">{def.listLabel || 'Item'} {i + 1}</span>
             <button type="button" onClick={() => removeItem(i)}
-              className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors">
+              className="p-1.5 text-red-500 hover:text-red-600 hover:bg-destructive-50 rounded-lg transition-colors">
               <FiTrash2 className="w-4 h-4" />
             </button>
           </div>
@@ -313,7 +313,7 @@ function FeatureCardsEditor({ data, onChange }) {
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-semibold text-black uppercase tracking-wider">Card {i + 1}</span>
                 <button type="button" onClick={() => removeCard(i)}
-                  className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
+                  className="p-1.5 text-red-500 hover:text-red-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -350,7 +350,7 @@ function FeatureCardsEditor({ data, onChange }) {
                           className="flex-1 px-2.5 py-1.5 border border-admin-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
                           placeholder="Bullet point" />
                         <button type="button" onClick={() => removeBullet(i, j)}
-                          className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
+                          className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     ))}
                   </div>
@@ -445,7 +445,7 @@ function ServicesEditor({ data, onChange }) {
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-semibold text-black uppercase tracking-wider">Service {i + 1}</span>
                 <button type="button" onClick={() => removeService(i)}
-                  className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
+                  className="p-1.5 text-red-500 hover:text-red-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="grid sm:grid-cols-3 gap-3">
                 <div>
@@ -480,7 +480,7 @@ function ServicesEditor({ data, onChange }) {
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-semibold text-black uppercase tracking-wider">Card {i + 1}</span>
                 <button type="button" onClick={() => removeCard(i)}
-                  className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
+                  className="p-1.5 text-red-500 hover:text-red-600 hover:bg-destructive-50 rounded-lg"><FiTrash2 className="w-4 h-4" /></button>
               </div>
               <div className="space-y-3">
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -664,7 +664,7 @@ function HeroEditor({ data, onChange }) {
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Slides ({slides.length})</span>
               <button type="button" onClick={addSlide}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
                 <FiPlus className="w-3.5 h-3.5" /> Add Slide
               </button>
             </div>
@@ -680,7 +680,7 @@ function HeroEditor({ data, onChange }) {
                     <div className="flex items-center justify-between px-5 py-3 bg-gray-50/50 border-b border-gray-100">
                       <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Slide {i + 1}</span>
                       <button type="button" onClick={() => removeSlide(i)}
-                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                        className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                         <FiTrash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -769,7 +769,7 @@ function HeroEditor({ data, onChange }) {
             const s = Array.isArray(content.stats) ? content.stats : [];
             updateContent('stats', [...s, { value: '', label: '' }]);
           }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
             <FiPlus className="w-3.5 h-3.5" /> Add Stat
           </button>
         </div>
@@ -801,7 +801,7 @@ function HeroEditor({ data, onChange }) {
                   arr.splice(i, 1);
                   updateContent('stats', arr);
                 }}
-                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                  className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0">
                   <FiTrash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -844,7 +844,7 @@ function HeroEditor({ data, onChange }) {
                   arr.splice(i, 1);
                   updateContent('buttons', arr);
                 }}
-                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                  className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0">
                   <FiTrash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -854,7 +854,7 @@ function HeroEditor({ data, onChange }) {
             const b = Array.isArray(content.buttons) ? content.buttons : [];
             updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
           }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
             <FiPlus className="w-3.5 h-3.5" /> Add Button
           </button>
         </div>
@@ -949,7 +949,7 @@ function SimpleListEditor({ def, data, onChange }) {
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-semibold text-black uppercase tracking-wider">{(def.label || 'Item').slice(0, -1)} {i + 1}</span>
               <button type="button" onClick={() => removeItem(i)}
-                className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
+                className="p-1.5 text-red-500 hover:text-red-600 hover:bg-destructive-50 rounded-lg transition-colors"><FiTrash2 className="w-4 h-4" /></button>
             </div>
             <div className="space-y-3">
               {def.itemFields.map((f) => (
@@ -1039,7 +1039,7 @@ function AlumniEditor({ data, onChange }) {
         {companies.map((c, i) => (
           <div key={i} className="flex items-center gap-2 bg-white border border-admin-200 px-3 py-2 rounded-lg">
             <span className="text-sm font-medium">{c.name}</span>
-            <button onClick={() => removeCompany(i)} className="text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
+            <button onClick={() => removeCompany(i)} className="text-red-500 hover:text-red-600"><FiTrash2 className="w-3.5 h-3.5" /></button>
           </div>
         ))}
       </div>

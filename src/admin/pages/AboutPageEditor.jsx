@@ -630,7 +630,7 @@ export default function AboutPageEditor() {
                     <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, 1); }} disabled={i === sections.length - 1}
                       className="p-1 text-cyan-500 hover:text-cyan-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
                     <button type="button" onClick={(e) => { e.stopPropagation(); removeSection(i); }}
-                      className="p-1 text-destructive-400 hover:text-destructive-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
+                      className="p-1 text-red-500 hover:text-red-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
                 {expandedIdx === i && (

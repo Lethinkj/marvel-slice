@@ -35,7 +35,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
             <FiMove className="w-4 h-4 text-admin-300 cursor-move" />
             <button
               onClick={() => removeItem(i)}
-              className="text-destructive-400 hover:text-destructive-600"
+              className="text-red-500 hover:text-red-600"
             >
               <FiTrash2 className="w-4 h-4" />
             </button>
@@ -809,7 +809,7 @@ export default function CourseEditor() {
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
                       <button onClick={() => update("curriculum", course.curriculum.filter((_, j) => j !== i))}
-                        className="p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors">
+                        className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors">
                         <FiTrash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -1079,7 +1079,7 @@ export default function CourseEditor() {
                                       n[i] = { ...n[i], content: { ...n[i].content, qa } };
                                       update("tabs", n);
                                     }}
-                                    className="text-xs text-destructive-400 hover:text-destructive-600"
+                                    className="text-xs text-red-500 hover:text-red-600"
                                   >
                                     ×
                                   </button>
@@ -1133,7 +1133,7 @@ export default function CourseEditor() {
                           course.highlights.filter((_, j) => j !== i),
                         )
                       }
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1193,7 +1193,7 @@ export default function CourseEditor() {
                           course.projects.filter((_, j) => j !== i),
                         )
                       }
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1358,7 +1358,7 @@ export default function CourseEditor() {
                           course.faqs.filter((_, j) => j !== i),
                         )
                       }
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>

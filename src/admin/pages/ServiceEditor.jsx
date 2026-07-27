@@ -35,7 +35,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
             <FiMove className="w-4 h-4 text-admin-300 cursor-move" />
             <button
               onClick={() => removeItem(i)}
-              className="text-destructive-400 hover:text-destructive-600"
+              className="text-red-500 hover:text-red-600"
             >
               <FiTrash2 className="w-4 h-4" />
             </button>
@@ -850,7 +850,7 @@ export default function ServiceEditor() {
                         <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
                         <button
                           onClick={() => update("curriculum", service.curriculum.filter((_, j) => j !== i))}
-                          className="p-1 text-destructive-400 hover:text-destructive-600 rounded hover:bg-destructive-50 transition-colors"
+                          className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors"
                         >
                           <FiTrash2 className="w-4 h-4" />
                         </button>
@@ -920,7 +920,7 @@ export default function ServiceEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("benefits", service.benefits.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -978,7 +978,7 @@ export default function ServiceEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("steps", service.steps.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1036,7 +1036,7 @@ export default function ServiceEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("faqs", service.faqs.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1116,7 +1116,7 @@ export default function ServiceEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("testimonials", service.testimonials.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1220,7 +1220,7 @@ export default function ServiceEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("gallery", service.gallery.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
@@ -1284,7 +1284,7 @@ export default function ServiceEditor() {
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
                       onClick={() => update("statistics", service.statistics.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-destructive-400 hover:text-destructive-600"
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>

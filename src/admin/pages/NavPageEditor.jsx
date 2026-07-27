@@ -308,7 +308,7 @@ export default function NavPageEditor() {
                       <FiChevronDown className="w-4 h-4" />
                     </button>
                     <button type="button" onClick={() => removeSection(idx)}
-                      className="p-1.5 text-destructive-400 hover:text-destructive-600 hover:bg-destructive-50 rounded-lg transition-colors">
+                      className="p-1.5 text-red-500 hover:text-red-600 hover:bg-destructive-50 rounded-lg transition-colors">
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                   </div>

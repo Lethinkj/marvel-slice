@@ -56,11 +56,22 @@ const navGroups = [
     ],
   },
   { label: "Navigation", icon: FiMenu, iconColor: "#0f766e", items: [
-    { to: "/admin/nav-menu?section=Software%20Learning", label: "Software Learning" },
-    { to: "/admin/nav-menu?section=Competitive%20Exam", label: "Competitive Exam" },
-    { to: "/admin/nav-menu?section=Services", label: "Services" },
-    { to: "/admin/nav-menu?section=Training", label: "Training" },
-    { to: "/admin/nav-menu/manage", label: "Manage Sub-items" },
+    { label: "Software Learning", children: [
+      { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View" },
+      { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add" },
+    ]},
+    { label: "Competitive Exam", children: [
+      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=view", label: "View" },
+      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=add", label: "Add" },
+    ]},
+    { label: "Services", children: [
+      { to: "/admin/nav-menu?section=Services&tab=view", label: "View" },
+      { to: "/admin/nav-menu?section=Services&tab=add", label: "Add" },
+    ]},
+    { label: "Training", children: [
+      { to: "/admin/nav-menu?section=Training&tab=view", label: "View" },
+      { to: "/admin/nav-menu?section=Training&tab=add", label: "Add" },
+    ]},
   ]},
   { label: "Uploads", icon: FiLayers, iconColor: "#52525b", items: [
     { to: "/admin/media", label: "Media Library" },
@@ -178,11 +189,27 @@ function Collapsible({ open, children }) {
   );
 }
 
-function NestedNavGroup({ item, pathname, onNavigate }) {
-  const [open, setOpen] = useState(() => item.children.some((c) => isActive(pathname, c)));
+function NestedNavGroup({ item, pathname, onNavigate, isAccordionOpen, onToggleAccordion }) {
+  const hasControlledOpen = isAccordionOpen !== undefined;
+  const [localOpen, setLocalOpen] = useState(() => item.children.some((c) => isActive(pathname, c)));
   useEffect(() => {
-    if (item.children.some((c) => isActive(pathname, c))) setOpen(true);
+    if (item.children.some((c) => isActive(pathname, c))) {
+      if (hasControlledOpen) {
+        if (!isAccordionOpen) onToggleAccordion?.();
+      } else {
+        setLocalOpen(true);
+      }
+    }
   }, [pathname, item.children]);
+
+  const open = hasControlledOpen ? isAccordionOpen : localOpen;
+  const handleToggle = () => {
+    if (hasControlledOpen) {
+      onToggleAccordion?.();
+    } else {
+      setLocalOpen((p) => !p);
+    }
+  };
 
   const iconColor = '#707897';
 
@@ -191,7 +218,7 @@ function NestedNavGroup({ item, pathname, onNavigate }) {
   return (
     <div>
       <button
-        onClick={() => setOpen((p) => !p)}
+        onClick={handleToggle}
         className={`cursor-pointer w-full flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-all duration-200 ${
           hasActiveChild ? "" : "text-[#939AB3] hover:text-white hover:bg-white/5 hover:translate-x-0.5"
         }`}
@@ -229,6 +256,13 @@ function NestedNavGroup({ item, pathname, onNavigate }) {
 }
 
 function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
+  const [activeNested, setActiveNested] = useState(() => {
+    const activeIdx = group.items.findIndex(item => 
+      item.children && item.children.some(c => isActive(pathname, c))
+    );
+    return activeIdx >= 0 ? activeIdx : null;
+  });
+
   const Icon = group.icon;
   const groupActive = group.items.some((item) => {
     if (item.to) return isActive(pathname, item);
@@ -290,8 +324,17 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
         </div>
         <Collapsible open={opened}>
           <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
-            {group.items.map((item) => {
-              if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onNavigate} />;
+            {group.items.map((item, itemIdx) => {
+              if (item.children) return (
+                <NestedNavGroup 
+                  key={item.label} 
+                  item={item} 
+                  pathname={pathname} 
+                  onNavigate={onNavigate}
+                  isAccordionOpen={activeNested === itemIdx}
+                  onToggleAccordion={() => setActiveNested(prev => prev === itemIdx ? null : itemIdx)}
+                />
+              );
               const act = isActive(pathname, item);
               return (
                 <Link
@@ -334,8 +377,17 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
       </button>
       <Collapsible open={opened}>
         <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
-          {group.items.map((item) => {
-            if (item.children) return <NestedNavGroup key={item.label} item={item} pathname={pathname} onNavigate={onNavigate} />;
+          {group.items.map((item, itemIdx) => {
+            if (item.children) return (
+              <NestedNavGroup 
+                key={item.label} 
+                item={item} 
+                pathname={pathname} 
+                onNavigate={onNavigate}
+                isAccordionOpen={activeNested === itemIdx}
+                onToggleAccordion={() => setActiveNested(prev => prev === itemIdx ? null : itemIdx)}
+              />
+            );
             const act = isActive(pathname, item);
             return (
               <Link

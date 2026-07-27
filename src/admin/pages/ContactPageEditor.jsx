@@ -337,7 +337,7 @@ export default function ContactPageEditor() {
               <div key={i} className="border border-admin-200 rounded-lg p-4">
                 <div className="flex justify-between mb-2">
                   <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
-                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-destructive-400 hover:text-destructive-600"><FiTrash2 className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
                 </div>
                 <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className={inputCls} />
                 <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className={`${inputCls} mt-2`} />
