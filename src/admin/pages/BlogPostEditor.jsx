@@ -5,7 +5,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag } from 'react-icons/fi';
+import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag, FiX } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function ImageUploader({ value, onChange, label }) {
@@ -85,6 +85,7 @@ export default function BlogPostEditor() {
   const [categories, setCategories] = useState([]);
   const [allTags, setAllTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
@@ -118,14 +119,16 @@ export default function BlogPostEditor() {
   }, [form.slug, isNew]);
 
   useEffect(() => {
-    supabase.from('blog_categories').select('*').order('sort_order').then(({ data }) => {
-      setCategories(data || []);
-    });
-    supabase.from('tags').select('*').order('name').then(({ data }) => {
-      setAllTags(data || []);
-    });
-    if (!isNew) {
-      supabase.from('blog_posts').select('*').eq('id', id).single().then(({ data }) => {
+    async function loadData() {
+      const [catRes, tagsRes] = await Promise.all([
+        supabase.from('blog_categories').select('*').order('sort_order'),
+        supabase.from('tags').select('*').order('name')
+      ]);
+      setCategories(catRes.data || []);
+      setAllTags(tagsRes.data || []);
+
+      if (!isNew) {
+        const { data } = await supabase.from('blog_posts').select('*').eq('id', id).single();
         if (data) {
           setForm({
             title: data.title || '',
@@ -138,13 +141,13 @@ export default function BlogPostEditor() {
             is_published: data.is_published || false,
             is_featured: data.is_featured || false,
           });
-          supabase.from('blog_post_tags').select('tag_id').eq('post_id', data.id).then(({ data: tagData }) => {
-            setSelectedTags((tagData || []).map(t => t.tag_id));
-          });
+          const { data: tagData } = await supabase.from('blog_post_tags').select('tag_id').eq('post_id', data.id);
+          setSelectedTags((tagData || []).map(t => t.tag_id));
         }
-        setLoading(false);
-      });
+      }
+      setLoading(false);
     }
+    loadData();
   }, [id, isNew]);
 
   useEffect(() => {
@@ -373,20 +376,49 @@ export default function BlogPostEditor() {
                   <Link to="/admin/tags" className="text-admin-600 hover:underline">Tags Manager</Link>.
                 </p>
               ) : (
-                <select
-                  multiple
-                  value={selectedTags}
-                  onChange={(e) => {
-                    const options = [...e.target.options];
-                    const selected = options.filter(option => option.selected).map(option => option.value);
-                    setSelectedTags(selected);
-                  }}
-                  className="w-full h-32 px-3 py-2 rounded-lg border border-admin-200 bg-admin-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
-                >
-                  {allTags.map((tag) => (
-                    <option key={tag.id} value={tag.id}>{tag.name}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <div 
+                    onClick={() => setTagsDropdownOpen(!tagsDropdownOpen)}
+                    className="w-full min-h-[40px] px-3 py-2 rounded-lg border border-admin-200 bg-white text-sm focus-within:ring-2 focus-within:ring-admin-500/20 focus-within:border-admin-500 cursor-pointer flex flex-wrap gap-1 items-center"
+                  >
+                    {selectedTags.length === 0 && <span className="text-neutral-400">Select tags...</span>}
+                    {selectedTags.map(id => {
+                      const tag = allTags.find(t => t.id === id);
+                      return tag ? (
+                        <span key={id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-admin-100 text-admin-700 rounded-md text-xs font-medium">
+                          {tag.name}
+                          <button 
+                            type="button" 
+                            onClick={(e) => { e.stopPropagation(); setSelectedTags(selectedTags.filter(t => t !== id)); }} 
+                            className="hover:text-admin-900"
+                          >
+                            <FiX className="w-3 h-3" />
+                          </button>
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
+                  {tagsDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setTagsDropdownOpen(false)} />
+                      <div className="absolute top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-admin-200 rounded-lg shadow-lg z-20 py-1">
+                        {allTags.map(tag => (
+                          <label key={tag.id} className="flex items-center gap-2 px-3 py-2 hover:bg-neutral-50 cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              checked={selectedTags.includes(tag.id)} 
+                              onChange={() => {
+                                setSelectedTags(prev => prev.includes(tag.id) ? prev.filter(t => t !== tag.id) : [...prev, tag.id]);
+                              }} 
+                              className="rounded border-admin-300 text-admin-600 focus:ring-admin-500" 
+                            />
+                            <span className="text-sm text-neutral-700">{tag.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -427,7 +459,7 @@ export default function BlogPostEditor() {
               <FiExternalLink className="w-4 h-4" /> View Post
             </AdminButton>
           )}
-          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" dirty={dirty} />
+          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={() => formRef.current?.requestSubmit()} onDiscard={() => window.location.reload()} label="Save Changes" dirty={dirty} />
         </div>
       </form>
     </PageShell>

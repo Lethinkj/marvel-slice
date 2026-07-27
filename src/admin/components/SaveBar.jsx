@@ -1,7 +1,7 @@
 import { FiSave, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import AdminButton from './AdminButton';
 
-export default function SaveBar({ saving, saved, saveError, onSave, label = 'Save', top = false, dirty }) {
+export default function SaveBar({ saving, saved, saveError, onSave, onDiscard, label = 'Save', top = false, dirty }) {
   if (top) {
     return (
       <>
@@ -22,12 +22,24 @@ export default function SaveBar({ saving, saved, saveError, onSave, label = 'Sav
   if (!dirty) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-10">
-      <div className="backdrop-blur-lg bg-admin-900/90 text-white rounded-xl shadow-2xl px-5 py-2.5 border border-admin-700 inline-flex items-center gap-3">
-        <span className="text-xs text-neutral-300 hidden sm:block">Unsaved changes</span>
-        <AdminButton onClick={onSave} disabled={saving} variant="primary" size="sm" className="!bg-white !text-admin-900 hover:!bg-admin-100 !shadow-lg">
-          <FiSave className="w-3.5 h-3.5" /> {saving ? 'Saving...' : label}
-        </AdminButton>
+    <div className="fixed bottom-6 right-6 z-40">
+      <div className="backdrop-blur-lg bg-admin-900/90 text-white rounded-xl shadow-2xl px-5 py-2.5 border border-admin-700 inline-flex items-center gap-4">
+        <span className="text-xs text-neutral-300 hidden sm:block font-medium">Unsaved changes</span>
+        <div className="flex items-center gap-2">
+          {onDiscard && (
+            <button 
+              type="button"
+              onClick={onDiscard} 
+              disabled={saving} 
+              className="px-3 py-1.5 text-xs font-semibold text-neutral-300 hover:text-white transition-colors"
+            >
+              Discard
+            </button>
+          )}
+          <AdminButton onClick={onSave} disabled={saving} variant="primary" size="sm" className="!shadow-lg">
+            <FiSave className="w-3.5 h-3.5" /> {saving ? 'Saving...' : label}
+          </AdminButton>
+        </div>
       </div>
     </div>
   );
