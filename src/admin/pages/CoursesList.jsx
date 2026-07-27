@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import AdminButton from "../components/AdminButton";
 import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
 import DataTable from "../components/ui/DataTable";
-import { FiPlus, FiBookOpen, FiSearch } from "react-icons/fi";
+import { FiPlus, FiBookOpen, FiSearch, FiEdit3, FiTrash2, FiFilter } from "react-icons/fi";
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -14,7 +14,11 @@ export default function CoursesList() {
   const [courses, setCourses] = useState([]);
   const [navItems, setNavItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const activeCategory = searchParams.get("category");
+  const [search, setSearch] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   useEffect(() => {
     loadCourses();
@@ -55,30 +59,26 @@ export default function CoursesList() {
     setCourses((prev) => prev.filter((c) => c.id !== id));
   }
 
-  const filtered = courses.filter((c) => {
-    if (!search) return true;
-    const q = search.toLowerCase();
-    return (
-      (c.title || "").toLowerCase().includes(q) ||
-      (c.slug || "").toLowerCase().includes(q)
-    );
-  });
-
-  const grouped = filtered.reduce((acc, course) => {
-    const cat = getRootSection(course.nav_item_id);
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(course);
-    return acc;
-  }, {});
-
-  const categoryOrder = ["Software Learning", "Competitive Exam"];
-  const sortedCategories = Object.keys(grouped).sort(
-    (a, b) => {
-      const ai = categoryOrder.indexOf(a);
-      const bi = categoryOrder.indexOf(b);
-      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  const filteredCourses = courses.filter((c) => {
+    // 1. Category
+    if (activeCategory && getRootSection(c.nav_item_id) !== activeCategory) {
+      return false;
     }
-  );
+    
+    // 2. Status
+    if (statusFilter === 'published' && !c.is_published) return false;
+    if (statusFilter === 'draft' && c.is_published) return false;
+    
+    // 3. Search
+    if (activeSearch) {
+      const q = activeSearch.toLowerCase();
+      if (!(c.title || "").toLowerCase().includes(q) && !(c.slug || "").toLowerCase().includes(q)) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
 
   const columns = [
     {
@@ -115,9 +115,13 @@ export default function CoursesList() {
       header: 'Actions',
       className: 'w-24 text-right',
       cell: (row) => (
-        <div className="flex items-center justify-end gap-2">
-          <Link to={`/admin/courses/${row.id}`} className="px-3 py-1.5 text-xs font-medium text-admin-600 bg-white hover:bg-admin-100 rounded-md transition-colors">Edit</Link>
-          <button onClick={() => handleDelete(row.id, row.title)} className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">Delete</button>
+        <div className="flex items-center justify-end gap-1.5">
+          <Link to={`/admin/courses/${row.id}`} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+            <FiEdit3 className="w-4 h-4" />
+          </Link>
+          <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
+            <FiTrash2 className="w-4 h-4" />
+          </button>
         </div>
       ),
     },
@@ -133,28 +137,44 @@ export default function CoursesList() {
 
   return (
     <PageShell
-      title="All Courses"
+      title={activeCategory ? `${activeCategory} Courses` : "All Courses"}
       subtitle={`${courses.length} course${courses.length !== 1 ? 's' : ''} total`}
       actions={
-        courses.length > 0 ? (
-          <AdminButton to="/admin/courses/wizard" variant="primary" size="sm">
-            <FiPlus className="w-4 h-4" />
-            Add Course
-          </AdminButton>
-        ) : undefined
+        <AdminButton to={`/admin/courses/wizard${activeCategory ? `?category=${encodeURIComponent(activeCategory)}` : ''}`} variant="primary" size="sm">
+          <FiPlus className="w-4 h-4" />
+          Add Course
+        </AdminButton>
       }
     >
       {courses.length > 0 && (
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search courses..."
-              className="w-full pl-10 pr-4 h-9 border border-admin-200 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 bg-white"
-            />
+        <div className="mb-6 flex flex-col sm:flex-row gap-3">
+          <div className="flex items-center gap-2 w-full sm:max-w-md">
+            <div className="relative flex-1">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
+                placeholder="Search title or slug..."
+                className="w-full pl-10 pr-4 h-9 border border-admin-300 rounded-lg text-sm text-admin-900 placeholder-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 bg-white"
+              />
+            </div>
+            <button onClick={() => setActiveSearch(search)} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
+              Search
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <FiFilter className="w-4 h-4 text-admin-400 shrink-0" />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500"
+            >
+              <option value="All">All Status</option>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
           </div>
         </div>
       )}
@@ -163,35 +183,21 @@ export default function CoursesList() {
         <div className="border border-admin-200 rounded-lg">
           <EmptyState
             icon={FiBookOpen}
-            title="No courses yet"
+            title={activeCategory ? `No courses in ${activeCategory}` : "No courses yet"}
             description="Get started by creating your first course."
-            action={{ to: "/admin/courses/wizard", icon: <FiPlus className="w-4 h-4" />, label: "Create your first course" }}
+            action={{ to: `/admin/courses/wizard${activeCategory ? `?category=${encodeURIComponent(activeCategory)}` : ''}`, icon: <FiPlus className="w-4 h-4" />, label: "Create your first course" }}
           />
         </div>
-      ) : filtered.length === 0 ? (
+      ) : filteredCourses.length === 0 ? (
         <div className="border border-admin-200 rounded-lg">
           <EmptyState
             icon={FiSearch}
-            title={`No courses match "${search}"`}
-            description="Try a different search term."
+            title="No courses match your filters"
+            description="Try adjusting your search or filter criteria."
           />
         </div>
       ) : (
-        <div className="space-y-8">
-          {sortedCategories.map((cat) => (
-            <div key={cat}>
-              <div className="flex items-center gap-2 mb-3">
-                <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
-                  {cat}
-                </h2>
-                <span className="text-xs text-neutral-400">
-                  ({grouped[cat].length})
-                </span>
-              </div>
-                <DataTable columns={columns} data={grouped[cat]} searchable={false} />
-            </div>
-          ))}
-        </div>
+        <DataTable columns={columns} data={filteredCourses} searchable={false} />
       )}
       {confirmDialog}
     </PageShell>

@@ -23,10 +23,13 @@ export default function DataTable({
   variant = 'table',
 }) {
   const [search, setSearch] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return data || [];
-    const q = search.toLowerCase();
+    if (!activeSearch.trim()) return data || [];
+    const q = activeSearch.toLowerCase();
     return (data || []).filter((row) => {
       if (filterFn) return filterFn(row, q);
       return columns.some((col) => {
@@ -34,7 +37,12 @@ export default function DataTable({
         return String(val || '').toLowerCase().includes(q);
       });
     });
-  }, [data, search, filterFn, columns]);
+  }, [data, activeSearch, filterFn, columns]);
+
+  const paginated = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  }, [filtered, page, pageSize]);
 
   if (isLoading) {
     return (
@@ -65,10 +73,14 @@ export default function DataTable({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
           placeholder={searchPlaceholder}
-          className="w-full pl-9 pr-3 h-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+          className="w-full pl-9 pr-3 h-9 rounded-lg border border-admin-200 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
         />
       </div>
+      <button onClick={() => { setActiveSearch(search); setPage(1); }} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
+        Search
+      </button>
     </div>
   );
 
@@ -76,10 +88,10 @@ export default function DataTable({
     col.cell ? col.cell(row) : col.accessor ? row[col.accessor] : null;
 
   const renderNoResults = () =>
-    filtered.length === 0 && search ? (
+    filtered.length === 0 && activeSearch ? (
       <div className="flex flex-col items-center py-12 text-center">
         <p className="text-sm text-neutral-400">No results match your search.</p>
-        <button onClick={() => setSearch('')} className="mt-2 text-xs font-semibold text-neutral-600 hover:text-neutral-700 transition-colors">
+        <button onClick={() => { setSearch(''); setActiveSearch(''); }} className="mt-2 text-xs font-semibold text-neutral-600 hover:text-neutral-700 transition-colors">
           Clear search
         </button>
       </div>
@@ -90,7 +102,7 @@ export default function DataTable({
       <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
         {searchable && renderSearchBar()}
         <div className="divide-y divide-admin-100">
-          {filtered.map((row) => (
+          {paginated.map((row) => (
             <div
               key={row[rowKey]}
               onClick={() => onRowClick?.(row)}
@@ -125,7 +137,7 @@ export default function DataTable({
             </tr>
           </thead>
           <tbody>
-            {filtered.map((row) => (
+            {paginated.map((row) => (
               <tr
                 key={row[rowKey]}
                 onClick={() => onRowClick?.(row)}
@@ -140,6 +152,24 @@ export default function DataTable({
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex items-center justify-between px-4 py-3 border-t border-admin-100 bg-white">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-neutral-500">Show entries:</span>
+          <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} className="border border-admin-200 rounded-md text-sm px-2 py-1 focus:outline-none focus:ring-1 focus:ring-admin-500 bg-white">
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={75}>75</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1 text-sm font-medium border border-admin-200 rounded-md disabled:opacity-50 hover:bg-admin-50 transition-colors">Prev</button>
+          <span className="text-sm text-neutral-500">Page {page} of {Math.ceil(filtered.length / pageSize) || 1}</span>
+          <button onClick={() => setPage(p => Math.min(Math.ceil(filtered.length / pageSize) || 1, p + 1))} disabled={page >= Math.ceil(filtered.length / pageSize) || filtered.length === 0} className="px-3 py-1 text-sm font-medium border border-admin-200 rounded-md disabled:opacity-50 hover:bg-admin-50 transition-colors">Next</button>
+        </div>
       </div>
 
       {renderNoResults()}

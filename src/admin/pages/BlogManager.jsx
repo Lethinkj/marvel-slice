@@ -5,7 +5,7 @@ import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
 import DataTable from '../components/ui/DataTable';
-import { FiPlus, FiFileText, FiSearch, FiChevronRight, FiCalendar } from 'react-icons/fi';
+import { FiPlus, FiFileText, FiCalendar, FiChevronRight, FiSearch, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -14,6 +14,7 @@ export default function BlogManager() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
 
   useEffect(() => {
     supabase
@@ -40,9 +41,11 @@ export default function BlogManager() {
     setPosts(posts.filter((p) => p.id !== id));
   }
 
-  const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredPosts = posts.filter(post => {
+    if (!activeSearch) return true;
+    const query = activeSearch.toLowerCase();
+    return post.title.toLowerCase().includes(query);
+  });
 
   const cardsColumns = [
     {
@@ -80,9 +83,13 @@ export default function BlogManager() {
     },
     {
       cell: (row) => (
-        <div className="flex items-center gap-2">
-          <Link to={`/admin/blog/${row.id}`} className="px-3 py-1.5 text-xs font-medium text-admin-600 bg-white hover:bg-admin-100 rounded-md transition-colors">Edit</Link>
-          <button onClick={() => handleDelete(row.id, row.title)} className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">Delete</button>
+        <div className="flex items-center justify-end gap-1.5">
+          <Link to={`/admin/blog/${row.id}`} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+            <FiEdit3 className="w-4 h-4" />
+          </Link>
+          <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
+            <FiTrash2 className="w-4 h-4" />
+          </button>
           <FiChevronRight className="w-4 h-4 text-neutral-300 transition-colors shrink-0" />
         </div>
       ),
@@ -111,19 +118,20 @@ export default function BlogManager() {
       }
     >
       {posts.length > 0 && (
-        <div className="flex gap-2 mb-4">
-          <div className="relative max-w-sm">
+        <div className="flex items-center gap-2 mb-4 w-full sm:max-w-md">
+          <div className="relative flex-1">
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
               placeholder="Search posts by title..."
-              className="w-full pl-9 pr-4 py-1.5 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+              className="w-full pl-9 pr-4 py-1.5 h-9 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
             />
           </div>
-          <button onClick={() => setSearch(search)} className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-lg transition-colors">
-            <FiSearch className="w-4 h-4" />
+          <button onClick={() => setActiveSearch(search)} className="px-4 py-1.5 h-9 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors">
+            Search
           </button>
         </div>
       )}

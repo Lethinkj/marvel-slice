@@ -43,8 +43,14 @@ const navGroups = [
   ]},
   {
     label: "Courses", icon: FiBookOpen, iconColor: "#0891b2", items: [
-      { to: "/admin/courses", label: "All Courses", catchSubRoutes: true, siblingRoutes: ["/admin/courses/wizard", "/admin/courses/reports"] },
-      { to: "/admin/courses/wizard", label: "Add Course" },
+      { label: "Software Learning", children: [
+        { to: "/admin/courses?category=Software%20Learning", label: "View Courses" },
+        { to: "/admin/courses/wizard?category=Software%20Learning", label: "Add Course" }
+      ]},
+      { label: "Competitive Exam", children: [
+        { to: "/admin/courses?category=Competitive%20Exam", label: "View Courses" },
+        { to: "/admin/courses/wizard?category=Competitive%20Exam", label: "Add Course" }
+      ]},
       { to: "/admin/tags", label: "Tags" },
       { to: "/admin/courses/reports", label: "Reports" },
     ],
@@ -84,10 +90,25 @@ const navGroups = [
 
 function isActive(pathname, item) {
   const fullPath = pathname.split("?")[0] || "/";
-  const fullSearch = pathname.includes("?") ? "?" + pathname.split("?").slice(1).join("?") : "";
+  const fullSearch = pathname.includes("?") ? pathname.split("?").slice(1).join("?") : "";
   const itemPath = (item.to.split("?")[0].replace(/\/$/, "") || "/");
-  const itemSearch = item.to.includes("?") ? "?" + item.to.split("?").slice(1).join("?") : "";
-  if (fullPath.replace(/\/$/, "") === itemPath && fullSearch === itemSearch) return true;
+  const itemSearch = item.to.includes("?") ? item.to.split("?").slice(1).join("?") : "";
+  
+  if (fullPath.replace(/\/$/, "") === itemPath) {
+    if (!fullSearch && !itemSearch) return true;
+    if (fullSearch && itemSearch) {
+      const fullParams = new URLSearchParams(fullSearch);
+      const itemParams = new URLSearchParams(itemSearch);
+      let match = true;
+      for (const [key, val] of itemParams.entries()) {
+        if (fullParams.get(key) !== val) {
+          match = false;
+          break;
+        }
+      }
+      if (match) return true;
+    }
+  }
 
   if (item.catchSubRoutes && fullPath.replace(/\/$/, "").startsWith(itemPath + "/")) {
     const nextSeg = fullPath.replace(/\/$/, "").slice(itemPath.length + 1).split("/")[0];

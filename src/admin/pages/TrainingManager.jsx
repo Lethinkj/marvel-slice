@@ -6,7 +6,7 @@ import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
 import DataTable from '../components/ui/DataTable';
 import {
-  FiPlus, FiTrash2, FiSearch, FiFilter, FiBookOpen,
+  FiPlus, FiTrash2, FiSearch, FiFilter, FiEdit3, FiBookOpen
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
@@ -24,6 +24,7 @@ export default function TrainingManager() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
 
@@ -75,8 +76,8 @@ export default function TrainingManager() {
   }
 
   const filtered = programs.filter((p) => {
-    if (search) {
-      const q = search.toLowerCase();
+    if (activeSearch) {
+      const q = activeSearch.toLowerCase();
       if (!(p.title || '').toLowerCase().includes(q)) return false;
     }
     if (statusFilter !== 'All' && p.status !== statusFilter) return false;
@@ -148,9 +149,13 @@ export default function TrainingManager() {
       header: 'Actions',
       className: 'w-32 text-right',
       cell: (row) => (
-        <div className="flex items-center justify-end gap-1">
-          <Link to={`/admin/training/${row.id}`} className="px-2.5 py-1 text-xs font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-md transition-colors">Edit</Link>
-          <button onClick={() => handleDelete(row.id, row.title)} className="px-2.5 py-1 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">Delete</button>
+        <div className="flex items-center justify-end gap-1.5">
+          <Link to={`/admin/training/${row.id}`} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+            <FiEdit3 className="w-4 h-4" />
+          </Link>
+          <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
+            <FiTrash2 className="w-4 h-4" />
+          </button>
         </div>
       ),
     },
@@ -179,15 +184,21 @@ export default function TrainingManager() {
     >
       {programs.length > 0 && (
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1 max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by title..."
-              className="w-full pl-10 pr-4 h-9 border border-admin-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 bg-white"
-            />
+          <div className="flex items-center gap-2 w-full sm:max-w-md">
+            <div className="relative flex-1">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
+                placeholder="Search by title..."
+                className="w-full pl-10 pr-4 h-9 border border-admin-300 rounded-lg text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-neutral-500 bg-white"
+              />
+            </div>
+            <button onClick={() => setActiveSearch(search)} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
+              Search
+            </button>
           </div>
           <div className="flex items-center gap-2">
             <FiFilter className="w-4 h-4 text-neutral-400 shrink-0" />

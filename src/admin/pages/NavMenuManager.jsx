@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useSearchParams, Link } from "react-router-dom";
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import {
   FiPlus, FiCheck, FiFolder, FiFile, FiEdit3, FiTrash2,
-  FiChevronDown, FiChevronRight,
+  FiChevronDown, FiChevronRight, FiArrowLeft, FiBookOpen, FiSearch, FiFilter
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from "../components/ui/PageShell";
@@ -25,40 +25,58 @@ export default function NavMenuManager() {
   const [searchParams, setSearchParams] = useSearchParams();
   const sectionLabel = searchParams.get("section") || "Software Learning";
 
-  // activeTab is now purely derived from the URL — the global sidebar's
-  // "View"/"Add" sub-links set ?tab=view / ?tab=add. This page no longer
-  // renders its own tab bar or section switcher; it just reacts to the URL.
   const activeTab = searchParams.get("tab") === "add" ? "add" : "view";
 
+  // --- Core Data ---
   const [dbItems, setDbItems] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // --- Search & Filters ---
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeSearch, setActiveSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all"); // all, active, inactive
+
+  // --- Form State ---
   const [editing, setEditing] = useState(null);
   const [lockedParent, setLockedParent] = useState(null);
   const [form, setForm] = useState({ label: "", path: "", status: "on", parent_id: null });
   const [parentOpen, setParentOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const pathAuto = useRef(true);
+
+  // --- Table State ---
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState({});
   const [highlightId, setHighlightId] = useState(null);
-  const pathAuto = useRef(true);
   const highlightTimer = useRef(null);
 
-  // Navigate to a given tab ("view" | "add") while preserving section + any
-  // other params. This is the single function that changes what's on screen —
-  // the global sidebar can call the exact same navigation by linking to
-  // `?section=<label>&tab=<view|add>` directly, no separate state to sync.
+  // --- Drill-Down Navigation ---
+  const [drillStack, setDrillStack] = useState([]);
+
+  // --- Course Link UI ---
+  const [courseLinkOpen, setCourseLinkOpen] = useState(false);
+
+  // =============================================
+  // DATA FETCHING
+  // =============================================
+
   const goToTab = useCallback((tab, extraParams = {}) => {
     const next = Object.fromEntries(searchParams);
     setSearchParams({ ...next, section: sectionLabel, tab, ...extraParams }, { replace: true });
   }, [searchParams, setSearchParams, sectionLabel]);
 
-  const fetchItems = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from("nav_items").select("*").order("sort_order");
-    if (data) setDbItems(data);
+    const [navRes, courseRes] = await Promise.all([
+      supabase.from("nav_items").select("*").order("sort_order"),
+      supabase.from("courses").select("id, title, slug, nav_item_id").order("title"),
+    ]);
+    if (navRes.data) setDbItems(navRes.data);
+    if (courseRes.data) setCourses(courseRes.data);
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchItems(); }, [fetchItems]);
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {
     if (!searchParams.get("section")) {
@@ -66,18 +84,25 @@ export default function NavMenuManager() {
     }
   }, []);
 
-  // Reset local table/form state whenever the section changes (sidebar switched
-  // sections). Tab itself stays whatever the URL says — if the sidebar link
-  // for that section points at "view", the URL already reflects that.
+  // Reset everything when section changes
   useEffect(() => {
     setPage(1);
     setExpanded({});
+    setDrillStack([]);
+    setCourseLinkOpen(false);
+    setSearchQuery("");
+    setActiveSearch("");
+    setStatusFilter("all");
     cancelForm();
   }, [sectionLabel]);
 
   useEffect(() => {
     return () => { if (highlightTimer.current) clearTimeout(highlightTimer.current); };
   }, []);
+
+  // =============================================
+  // AUTH CHECK
+  // =============================================
 
   if (currentUser?.role !== "admin" && currentUser?.role !== "manager" && currentUser?.role !== "master_admin") {
     return (
@@ -90,16 +115,20 @@ export default function NavMenuManager() {
     );
   }
 
+  // =============================================
+  // HELPERS
+  // =============================================
+
   function slugify(text) {
     return text.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
   }
 
   function getSectionItems(label) {
-    return dbItems.filter((item) => item.parent_label === label);
+    return dbItems.filter((item) => item.parent_label === label && !item.parent_id);
   }
 
   function getChildItems(pid) {
-    return dbItems.filter((item) => String(item.parent_id) === String(pid) && !item.parent_label);
+    return dbItems.filter((item) => String(item.parent_id) === String(pid));
   }
 
   function getAllSectionItems(label) {
@@ -114,15 +143,54 @@ export default function NavMenuManager() {
     return result;
   }
 
-  function getParentChain(itemId) {
+  function getParentChainItems(itemId) {
     const chain = [];
     let current = dbItems.find(i => i.id === itemId);
     while (current) {
-      chain.unshift(current.label);
+      chain.unshift(current);
       current = current.parent_id ? dbItems.find(i => i.id === current.parent_id) : null;
     }
     return chain;
   }
+
+  function getParentChainLabels(itemId) {
+    return getParentChainItems(itemId).map(i => i.label);
+  }
+
+  function countAllDescendants(parentId) {
+    let count = 0;
+    const children = getChildItems(parentId);
+    for (const child of children) {
+      count += 1 + countAllDescendants(child.id);
+    }
+    return count;
+  }
+
+  // =============================================
+  // DRILL-DOWN NAVIGATION
+  // =============================================
+
+  function drillInto(itemId) {
+    setDrillStack(prev => [...prev, itemId]);
+    setPage(1);
+    setExpanded({});
+    setCourseLinkOpen(false);
+  }
+
+  function drillTo(index) {
+    if (index < 0) {
+      setDrillStack([]);
+    } else {
+      setDrillStack(prev => prev.slice(0, index + 1));
+    }
+    setPage(1);
+    setExpanded({});
+    setCourseLinkOpen(false);
+  }
+
+  // =============================================
+  // FORM HANDLERS
+  // =============================================
 
   function handleLabelChange(value) {
     setForm((prev) => {
@@ -149,7 +217,8 @@ export default function NavMenuManager() {
     goToTab("add");
   }
 
-  function openEdit(item) {
+  function openEdit(item, e) {
+    if (e) e.stopPropagation();
     setEditing(item);
     setLockedParent(null);
     setParentOpen(false);
@@ -184,7 +253,7 @@ export default function NavMenuManager() {
 
     queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
     cancelForm();
-    await fetchItems();
+    await fetchData();
 
     // Auto-expand parent chain and highlight
     if (savedId) {
@@ -200,24 +269,21 @@ export default function NavMenuManager() {
     goToTab("view");
   }
 
-  function countAllDescendants(parentId) {
-    let count = 0;
-    const children = getChildItems(parentId);
-    for (const child of children) {
-      count += 1 + countAllDescendants(child.id);
-    }
-    return count;
-  }
-
-  async function handleDelete(item) {
+  async function handleDelete(item, e) {
+    if (e) e.stopPropagation();
     const totalSubs = countAllDescendants(item.id);
     const subText = totalSubs > 0 ? ` and its ${totalSubs} sub-item${totalSubs > 1 ? 's' : ''}` : '';
     if (!(await confirm(`Delete "${item.label}"${subText}?`))) return;
-    // Cascade delete — DB has ON DELETE CASCADE, so deleting parent suffices
+    
     await supabase.from("nav_items").delete().eq("id", item.id);
     queryClient.invalidateQueries({ queryKey: ['topNavItems'] });
     toast({ type: "success", message: `"${item.label}" deleted` });
-    fetchItems();
+
+    if (drillStack.includes(item.id)) {
+      const idx = drillStack.indexOf(item.id);
+      drillTo(idx - 1);
+    }
+    fetchData();
   }
 
   function cancelForm() {
@@ -228,81 +294,303 @@ export default function NavMenuManager() {
     setForm({ label: "", path: "", status: "on", parent_id: null });
   }
 
-  const parents = getSectionItems(sectionLabel);
-  const totalPages = Math.ceil(parents.length / PAGE_SIZE) || 1;
-  const paginatedParents = parents.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  // =============================================
+  // COURSE LINKING
+  // =============================================
+
+  async function toggleCourseLink(courseId, navItemId) {
+    const course = courses.find(c => c.id === courseId);
+    const newNavItemId = course.nav_item_id === navItemId ? null : navItemId;
+    await supabase.from('courses').update({ nav_item_id: newNavItemId }).eq('id', courseId);
+    setCourses(prev => prev.map(c => c.id === courseId ? { ...c, nav_item_id: newNavItemId } : c));
+    toast({ type: "success", message: newNavItemId ? "Course linked" : "Course unlinked" });
+  }
+
+  // =============================================
+  // COMPUTED VALUES & FILTERING
+  // =============================================
+
+  const currentParentId = drillStack.length > 0 ? drillStack[drillStack.length - 1] : null;
+  const currentParent = currentParentId ? dbItems.find(i => i.id === currentParentId) : null;
+  const currentLevel = drillStack.length;
+  
+  const baseItems = currentParentId
+    ? getChildItems(currentParentId)
+    : getSectionItems(sectionLabel);
+
+  // Apply search and status filters
+  const filteredItems = useMemo(() => {
+    let result = baseItems;
+    // 3. Search Filter
+    if (activeSearch.trim()) {
+      const q = activeSearch.toLowerCase();
+      result = result.filter(item => 
+        (item.label && item.label.toLowerCase().includes(q)) || 
+        (item.path && item.path.toLowerCase().includes(q))
+      );
+    }
+    if (statusFilter === "active") {
+      result = result.filter(item => item.is_active !== false);
+    } else if (statusFilter === "inactive") {
+      result = result.filter(item => item.is_active === false);
+    }
+    setPage(1);
+    return result;
+  }, [baseItems, activeSearch, statusFilter]);
+
+  const totalPages = Math.ceil(filteredItems.length / PAGE_SIZE) || 1;
+  const paginatedItems = filteredItems.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  
+  const drillBreadcrumbs = drillStack
+    .map(id => dbItems.find(i => i.id === id))
+    .filter(Boolean);
+
+  // =============================================
+  // LOADING
+  // =============================================
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-2 border-admin-500 border-t-transparent rounded-full animate-spin" /></div>;
+    return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" /></div>;
+  }
+
+  // If drilled into a deleted item, reset
+  if (currentParentId && !currentParent) {
+    setDrillStack([]);
+    return null;
+  }
+
+  // =============================================
+  // SUB-COMPONENTS
+  // =============================================
+
+  function ContentBreadcrumbs() {
+    if (drillStack.length === 0) return null;
+    return (
+      <div className="flex items-center gap-1.5 flex-wrap px-1 mb-4">
+        <button
+          onClick={() => drillTo(-1)}
+          className="flex items-center gap-1.5 px-2 py-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors font-bold"
+          title="Back to top level"
+        >
+          <FiArrowLeft className="w-5 h-5" /> Back
+        </button>
+        <button
+          onClick={() => drillTo(-1)}
+          className="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors"
+        >
+          {sectionLabel}
+        </button>
+        {drillBreadcrumbs.map((item, idx) => (
+          <span key={item.id} className="flex items-center gap-1.5">
+            <FiChevronRight className="w-3 h-3 text-gray-300" />
+            {idx === drillBreadcrumbs.length - 1 ? (
+              <span className="text-xs font-semibold text-gray-900">{item.label}</span>
+            ) : (
+              <button
+                onClick={() => drillTo(idx)}
+                className="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                {item.label}
+              </button>
+            )}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  function ParentInfoCard() {
+    if (!currentParent) return null;
+    const parentLinked = courses.filter(c => c.nav_item_id === currentParent.id);
+
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden mb-5">
+        <div className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+              <FiFolder className="w-4 h-4 text-cyan-500 shrink-0" />
+              <span className="truncate">{currentParent.label}</span>
+            </h3>
+            <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
+              {currentParent.path && (
+                <span className="font-mono bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">{currentParent.path}</span>
+              )}
+              <span className={`inline-block px-2 py-0.5 rounded-full font-medium ${
+                currentParent.is_active !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'
+              }`}>
+                {currentParent.is_active !== false ? 'Active' : 'Inactive'}
+              </span>
+              <span>{baseItems.length} child{baseItems.length !== 1 ? 'ren' : ''}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {currentLevel < MAX_DEPTH && (
+              <button onClick={() => openAdd(currentParent)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm" title="Add child">
+                <FiPlus className="w-3.5 h-3.5" /> Add Child
+              </button>
+            )}
+            <button onClick={(e) => openEdit(currentParent, e)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors" title="Edit">
+              <FiEdit3 className="w-3.5 h-3.5" /> Edit Parent
+            </button>
+          </div>
+        </div>
+
+        <div className="px-5 py-3 bg-gray-50">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+              <FiBookOpen className="w-3.5 h-3.5" />
+              Linked Courses ({parentLinked.length})
+            </h4>
+            <button
+              onClick={() => setCourseLinkOpen(!courseLinkOpen)}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors border border-blue-200 bg-white px-2 py-1 rounded"
+            >
+              {courseLinkOpen ? 'Close Links' : 'Manage Links'}
+            </button>
+          </div>
+
+          {parentLinked.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {parentLinked.map(c => (
+                <Link key={c.id} to={`/admin/courses/${c.id}`}
+                  className="inline-flex items-center gap-1 text-xs text-gray-700 bg-white border border-gray-200 shadow-sm px-2.5 py-1 rounded-full hover:bg-gray-50 hover:border-gray-300 transition-colors">
+                  <FiBookOpen className="w-3 h-3 text-blue-500" />
+                  {c.title}
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-gray-500 italic">No courses currently linked.</p>
+          )}
+
+          {courseLinkOpen && (
+            <div className="mt-3 border border-gray-200 rounded-lg bg-white shadow-sm max-h-56 overflow-y-auto">
+              {courses.length === 0 ? (
+                <p className="px-3 py-4 text-xs text-gray-400 text-center">No courses available.</p>
+              ) : (
+                courses.map(c => {
+                  const isLinked = c.nav_item_id === currentParent.id;
+                  const linkedElsewhere = c.nav_item_id && c.nav_item_id !== currentParent.id;
+                  const otherItem = linkedElsewhere ? dbItems.find(n => n.id === c.nav_item_id) : null;
+                  return (
+                    <label key={c.id}
+                      className={`flex items-center gap-2.5 px-4 py-2.5 text-sm border-b border-gray-100 last:border-0 transition-colors ${
+                        linkedElsewhere ? 'text-gray-400 cursor-not-allowed bg-gray-50/50' : 'hover:bg-blue-50/30 cursor-pointer'
+                      }`}>
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
+                        isLinked ? 'bg-blue-600 border-blue-600' : linkedElsewhere ? 'border-gray-200 bg-gray-100' : 'border-gray-300 bg-white'
+                      }`}>
+                        {isLinked && <FiCheck className="w-3 h-3 text-white" />}
+                      </div>
+                      <input type="checkbox" checked={isLinked} disabled={linkedElsewhere}
+                        onChange={() => { if (!linkedElsewhere) toggleCourseLink(c.id, currentParent.id); }}
+                        className="sr-only" />
+                      <span className="truncate flex-1 font-medium">{c.title}</span>
+                      {linkedElsewhere && (
+                        <span className="text-[10px] text-gray-400 shrink-0 bg-gray-100 px-1.5 py-0.5 rounded">
+                          Linked to: {otherItem?.label || 'Other'}
+                        </span>
+                      )}
+                    </label>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
   }
 
   function NavTable({ items, level = 0, parentLabel = '' }) {
     return items.map((item, idx) => {
-      const subs = level < MAX_DEPTH ? getChildItems(item.id) : [];
+      const actualDepth = currentLevel + level;
+      const subs = actualDepth < MAX_DEPTH ? getChildItems(item.id) : [];
       const open = expanded[item.id];
       const isHighlighted = highlightId === item.id;
       const slNo = level === 0 ? (page - 1) * PAGE_SIZE + idx + 1 : idx + 1;
       const labelPrefix = level > 0 ? `${parentLabel}.${slNo}` : `${slNo}`;
+      const hasSubs = subs.length > 0;
+      const itemLinkedCourses = courses.filter(c => c.nav_item_id === item.id);
 
       return (
         <div key={item.id}>
-          <div className={`grid grid-cols-12 gap-3 px-6 py-3 items-center transition-colors ${isHighlighted ? 'bg-indigo-50/60' : 'hover:bg-gray-50'} ${level > 0 ? 'bg-gray-50/30' : 'bg-white'}`}
-            style={{ paddingLeft: `${24 + level * 28}px` }}>
+          <div
+            onClick={() => {
+              if (hasSubs) setExpanded(p => ({ ...p, [item.id]: !open }));
+            }}
+            className={`group grid grid-cols-12 gap-3 px-6 py-3.5 items-center transition-all ${hasSubs ? 'cursor-pointer' : ''} ${
+              isHighlighted ? 'bg-blue-50/60' : 'hover:bg-gray-50'
+            } ${level > 0 ? 'bg-gray-50/30 border-t border-gray-100' : 'bg-white'}`}
+            style={{ paddingLeft: `${24 + level * 28}px` }}
+          >
             <div className="col-span-1 text-xs text-gray-400 font-mono">{labelPrefix}</div>
-            <div className="col-span-3 flex items-center gap-2 min-w-0">
-              {subs.length > 0 ? (
-                <button onClick={() => setExpanded(p => ({ ...p, [item.id]: !open }))} className="p-0.5 text-gray-400 hover:text-gray-600 focus:outline-none">
+
+            <div className="col-span-3 flex items-center gap-2.5 min-w-0">
+              {hasSubs ? (
+                <button onClick={(e) => { e.stopPropagation(); setExpanded(p => ({ ...p, [item.id]: !open })); }}
+                  className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors focus:outline-none">
                   {open ? <FiChevronDown className="w-3.5 h-3.5" /> : <FiChevronRight className="w-3.5 h-3.5" />}
                 </button>
-              ) : <span className="w-4" />}
+              ) : <span className="w-5" />}
               {level > 0 ? (
-                <FiFile className="w-4 h-4 text-gray-400 shrink-0" />
-              ) : subs.length > 0 ? (
-                <FiFolder className="w-4 h-4 text-cyan-500 shrink-0" />
+                <FiFile className="w-4 h-4 text-gray-300 shrink-0" />
+              ) : hasSubs ? (
+                <FiFolder className="w-4 h-4 text-blue-400 shrink-0" />
               ) : (
-                <FiFile className="w-3.5 h-3.5 text-gray-300 shrink-0" />
+                <FiFile className="w-4 h-4 text-gray-300 shrink-0" />
               )}
-              <span className="text-sm text-gray-800 font-medium truncate">{item.label}</span>
+              <span className="text-sm font-semibold text-gray-800 truncate group-hover:text-blue-600 transition-colors">
+                {item.label}
+              </span>
+              {itemLinkedCourses.length > 0 && (
+                <span className="shrink-0 inline-flex items-center gap-1 text-[10px] text-blue-600 bg-blue-50 border border-blue-100 px-1.5 py-0.5 rounded-full font-medium" title={`${itemLinkedCourses.length} linked courses`}>
+                  <FiBookOpen className="w-2.5 h-2.5" />{itemLinkedCourses.length}
+                </span>
+              )}
             </div>
+
             <div className="col-span-4 truncate">
               {item.path ? (
-                <span className="text-xs text-gray-400 font-mono truncate block">{item.path}</span>
+                <span className="text-xs text-gray-500 font-mono truncate block bg-gray-50 px-2 py-1 rounded inline-block">{item.path}</span>
               ) : (
                 <span className="text-xs text-gray-300">—</span>
               )}
             </div>
+
             <div className="col-span-1">
-              {subs.length > 0 ? (
-                <button onClick={() => setExpanded(p => ({ ...p, [item.id]: !open }))}
-                  className="text-xs font-medium text-indigo-500 hover:text-indigo-700 focus:outline-none">
-                  {subs.length}
-                </button>
+              {hasSubs ? (
+                <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  {subs.length} sub{subs.length !== 1 ? 's' : ''}
+                </span>
               ) : (
                 <span className="text-xs text-gray-300">—</span>
               )}
             </div>
+
             <div className="col-span-1">
               <span className={`inline-block text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                item.is_active !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'
+                item.is_active !== false ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-100 text-gray-500 border border-gray-200'
               }`}>
                 {item.is_active !== false ? 'On' : 'Off'}
               </span>
             </div>
-            <div className="col-span-2 flex items-center justify-end gap-1">
-              {level < MAX_DEPTH && (
-                <button onClick={() => openAdd(item)} className="p-1.5 text-gray-300 hover:text-indigo-500 hover:bg-indigo-50 rounded transition-colors" title="Add sub-item">
-                  <FiPlus className="w-3.5 h-3.5" />
-                </button>
-              )}
-              <button onClick={() => openEdit(item)} className="p-1.5 text-gray-300 hover:text-amber-500 hover:bg-amber-50 rounded transition-colors" title="Edit">
-                <FiEdit3 className="w-3.5 h-3.5" />
+
+            <div className="col-span-2 flex items-center justify-end gap-1.5">
+              <button onClick={(e) => { e.stopPropagation(); drillInto(item.id); }}
+                className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Manage">
+                <FiEdit3 className="w-4 h-4" />
               </button>
-              <button onClick={() => handleDelete(item)} className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors" title="Delete">
-                <FiTrash2 className="w-3.5 h-3.5" />
+              <button onClick={(e) => { e.stopPropagation(); handleDelete(item, e); }}
+                className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
+                <FiTrash2 className="w-4 h-4" />
               </button>
             </div>
           </div>
-          {open && subs.length > 0 && (
+
+          {open && hasSubs && (
             <NavTable items={subs} level={level + 1} parentLabel={labelPrefix} />
           )}
         </div>
@@ -311,57 +599,67 @@ export default function NavMenuManager() {
   }
 
   return (
-    <PageShell title="Navigation Menu" subtitle={`Manage navigation items — ${sectionLabel}`}>
+    <PageShell title="Navigation Menu" subtitle={currentParent ? `${sectionLabel} ▸ ${drillBreadcrumbs.map(b => b.label).join(' ▸ ')}` : `Manage navigation items — ${sectionLabel}`}>
+      <div className="space-y-5">
 
-      {/* No local section switcher and no local tab bar here anymore —
-          the global sidebar owns both (Navigation ▸ Software Learning ▾ ▸ View / Add).
-          This page just renders whatever ?section=&tab= currently says. */}
-      <div className="space-y-6">
+        {/* ---- ADD / EDIT FORM ---- */}
         {activeTab === "add" && (
-          <form onSubmit={handleSave} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm font-semibold text-gray-900 mb-5">
-              {editing
-                ? `Edit: ${editing.label}`
-                : lockedParent
-                  ? `Add sub-item under ${getParentChain(lockedParent.id).join(' ▸ ')}`
-                  : `Add item under ${sectionLabel}`}
-            </p>
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <form onSubmit={handleSave} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-3 border-b border-gray-100">
+              <h3 className="text-base font-bold text-gray-900">
+                {editing
+                  ? `Edit Item: ${editing.label}`
+                  : lockedParent
+                    ? `Add Sub-item under ${getParentChainLabels(lockedParent.id).join(' ▸ ')}`
+                    : currentParent
+                      ? `Add Item under ${currentParent.label}`
+                      : `Add Top-level Item in ${sectionLabel}`}
+              </h3>
+              <label className="flex items-center gap-3 px-4 py-2 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors shadow-sm w-fit">
+                <div className={`relative w-10 h-5 rounded-full transition-colors ${form.status === "on" ? "bg-emerald-500" : "bg-gray-300"}`}>
+                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${form.status === "on" ? "translate-x-5" : ""}`} />
+                  <input type="checkbox" checked={form.status === "on"} onChange={(e) => setForm(p => ({ ...p, status: e.target.checked ? "on" : "off" }))} className="sr-only" />
+                </div>
+                <span className="text-sm font-semibold text-gray-700">Active</span>
+              </label>
+            </div>
+            <div className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1.5">Label <span className="text-red-400">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Label <span className="text-red-500">*</span></label>
                   <input value={form.label} onChange={(e) => handleLabelChange(e.target.value)}
-                    className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white transition-shadow"
                     placeholder="e.g. Web Development" autoFocus />
                 </div>
+
                 <div className="relative">
-                  <label className="block text-xs font-medium text-gray-500 mb-1.5">Parent</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Parent</label>
                   {lockedParent ? (
-                    <div className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-not-allowed truncate">
-                      {getParentChain(lockedParent.id).join(' ▸ ')}
+                    <div className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-not-allowed truncate">
+                      {getParentChainLabels(lockedParent.id).join(' ▸ ')}
                     </div>
                   ) : (
                     <div className="relative">
                       <button type="button" onClick={() => setParentOpen(!parentOpen)}
-                        className="w-full flex items-center justify-between px-3.5 py-2 border border-gray-200 rounded-lg text-sm bg-white cursor-pointer hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
-                        <span className={form.parent_id ? 'text-gray-900' : 'text-gray-400'}>
+                        className="w-full flex items-center justify-between px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-colors">
+                        <span className={form.parent_id ? 'text-gray-900 font-medium' : 'text-gray-500'}>
                           {form.parent_id
                             ? dbItems.find(i => i.id === form.parent_id)?.label || '...'
-                            : '— None (top level) —'}
+                            : '— None (Top Level) —'}
                         </span>
                         <FiChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${parentOpen ? 'rotate-180' : ''}`} />
                       </button>
                       {parentOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[240px] overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto">
                           <button type="button" onClick={() => { setForm(p => ({ ...p, parent_id: null })); setParentOpen(false); }}
-                            className={`w-full text-left px-3 py-2 text-sm ${!form.parent_id ? 'bg-indigo-50/40 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50'}`}>
-                            — None (top level) —
+                            className={`w-full text-left px-4 py-2.5 text-sm ${!form.parent_id ? 'bg-blue-50 text-blue-700 font-bold border-l-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}>
+                            — None (Top Level) —
                           </button>
                           {getAllSectionItems(sectionLabel).map((p) => (
                             <button key={p.id} type="button" onClick={() => { setForm(prev => ({ ...prev, parent_id: p.id })); setParentOpen(false); }}
-                              className={`w-full text-left px-3 py-2 text-sm ${form.parent_id === p.id ? 'bg-indigo-50/40 text-gray-900 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}
-                              style={{ paddingLeft: `${12 + p._depth * 20}px` }}>
-                              {p._depth > 0 && <span className="text-gray-400 mr-1">&#8627;</span>}{p.label}
+                              className={`w-full text-left px-4 py-2.5 text-sm ${form.parent_id === p.id ? 'bg-blue-50 text-blue-700 font-bold border-l-2 border-blue-600' : 'text-gray-700 hover:bg-gray-50'} border-t border-gray-50`}
+                              style={{ paddingLeft: `${16 + p._depth * 24}px` }}>
+                              {p._depth > 0 && <span className="text-gray-300 mr-2">&#8627;</span>}{p.label}
                             </button>
                           ))}
                         </div>
@@ -369,85 +667,129 @@ export default function NavMenuManager() {
                     </div>
                   )}
                 </div>
+
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 mb-1.5">Path</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Path</label>
                   <input value={form.path} onChange={(e) => handlePathChange(e.target.value)}
-                    className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white font-mono text-xs"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white font-mono text-xs transition-shadow"
                     placeholder="/auto-generated" />
                 </div>
               </div>
-              <div className="flex items-center gap-3 justify-end">
-                <label className="flex items-center gap-2.5 px-3.5 py-2 bg-white rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
-                  <div className={`relative w-9 h-5 rounded-full transition-colors ${form.status === "on" ? "bg-indigo-500" : "bg-gray-300"}`}>
-                    <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${form.status === "on" ? "translate-x-4" : ""}`} />
-                    <input type="checkbox" checked={form.status === "on"} onChange={(e) => setForm(p => ({ ...p, status: e.target.checked ? "on" : "off" }))} className="sr-only" />
-                  </div>
-                  <span className="text-sm font-medium text-gray-700">Active</span>
-                </label>
-                <button type="submit" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">
-                  <FiCheck className="w-4 h-4" /> {editing ? "Update" : "Save"}
+
+              <div className="flex items-center gap-4 justify-center pt-2 border-t border-gray-100">
+                <button type="submit" className="inline-flex items-center gap-2 px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all hover:-translate-y-0.5">
+                  <FiCheck className="w-4 h-4" /> Submit
                 </button>
-                <button type="button" onClick={() => { cancelForm(); goToTab("view"); }} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">Cancel</button>
+                <button type="button" onClick={() => { cancelForm(); goToTab("view"); }}
+                  className="px-6 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-all hover:-translate-y-0.5">
+                  Cancel
+                </button>
               </div>
             </div>
           </form>
         )}
 
+        {/* ---- VIEW MODE ---- */}
         {activeTab === "view" && (
-          <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
-            {parents.length === 0 ? (
-              <div className="px-6 py-12 text-center">
-                <FiFolder className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-                <p className="text-sm text-gray-400 mb-3">No items yet.</p>
-                <button onClick={() => { cancelForm(); goToTab("add"); }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
-                  <FiPlus className="w-3.5 h-3.5" /> Add first item
-                </button>
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-12 gap-3 px-6 py-3 bg-gray-100 border-b border-gray-200 text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                  <div className="col-span-1">SL NO</div>
-                  <div className="col-span-3">LABEL</div>
-                  <div className="col-span-4">PATH</div>
-                  <div className="col-span-1">SUBS</div>
-                  <div className="col-span-1">STATUS</div>
-                  <div className="col-span-2 text-right">ACTIONS</div>
-                </div>
-                <div className="divide-y divide-gray-100">
-                  <NavTable items={paginatedParents} level={0} />
-                </div>
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-between px-6 py-3 border-t border-gray-100 bg-gray-50/50">
-                    <span className="text-xs text-gray-400">Page {page} of {totalPages}</span>
-                    <div className="flex items-center gap-1">
-                      <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}
-                        className="px-3 py-1 text-xs font-medium rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Previous</button>
-                      {Array.from({ length: totalPages }, (_, i) => i + 1)
-                        .filter(pn => pn === 1 || pn === totalPages || Math.abs(pn - page) <= 1)
-                        .reduce((acc, pn, idx, arr) => {
-                          if (idx > 0 && pn - arr[idx - 1] > 1) acc.push('...');
-                          acc.push(pn);
-                          return acc;
-                        }, [])
-                        .map((pn, i) =>
-                          pn === '...'
-                            ? <span key={`e${i}`} className="w-7 h-7 text-xs text-gray-400 flex items-center justify-center">...</span>
-                            : <button key={pn} onClick={() => setPage(pn)}
-                                className={`w-7 h-7 text-xs font-medium rounded-md transition-colors ${page === pn ? 'bg-indigo-600 text-white' : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50'}`}>{pn}</button>
-                        )}
-                      <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                        className="px-3 py-1 text-xs font-medium rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Next</button>
-                    </div>
+          <>
+            <ContentBreadcrumbs />
+            <ParentInfoCard />
+
+            <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
+              
+              {/* Filter Bar */}
+              <div className="px-5 py-4 bg-white border-b border-gray-100 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div className="flex items-center gap-2 w-full sm:max-w-md">
+                  <div className="relative flex-1">
+                    <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search items by label or path..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(searchQuery)}
+                      className="w-full pl-9 pr-4 py-2 h-9 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow"
+                    />
                   </div>
-                )}
-              </>
-            )}
-          </div>
+                  <button onClick={() => { setActiveSearch(searchQuery); setPage(1); }} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
+                    Search
+                  </button>
+                </div>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:flex-none">
+                    <FiFilter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <select
+                      value={statusFilter}
+                      onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+                      className="w-full sm:w-auto pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
+                    >
+                      <option value="all">All Statuses</option>
+                      <option value="active">Active Only</option>
+                      <option value="inactive">Inactive Only</option>
+                    </select>
+                    <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {filteredItems.length === 0 ? (
+                <div className="px-6 py-16 text-center">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FiFolder className="w-8 h-8 text-gray-300" />
+                  </div>
+                  <p className="text-base font-medium text-gray-900 mb-1">No items found</p>
+                  <p className="text-sm text-gray-500">
+                    {activeSearch || statusFilter !== 'all' 
+                      ? "Try adjusting your search or filters." 
+                      : (currentParent ? `No children added under "${currentParent.label}" yet.` : 'Get started by adding a new navigation item.')}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-12 gap-3 px-6 py-3 bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    <div className="col-span-1">SL NO</div>
+                    <div className="col-span-3">LABEL</div>
+                    <div className="col-span-4">PATH</div>
+                    <div className="col-span-1">SUBS</div>
+                    <div className="col-span-1">STATUS</div>
+                    <div className="col-span-2 text-right">ACTIONS</div>
+                  </div>
+
+                  <div className="divide-y divide-gray-100">
+                    <NavTable items={paginatedItems} level={0} />
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
+                      <span className="text-sm font-medium text-gray-500">Page <span className="text-gray-900">{page}</span> of <span className="text-gray-900">{totalPages}</span></span>
+                      <div className="flex items-center gap-1.5">
+                        <button disabled={page <= 1} onClick={() => setPage(p => Math.max(1, p - 1))}
+                          className="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm">Previous</button>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                          .filter(pn => pn === 1 || pn === totalPages || Math.abs(pn - page) <= 1)
+                          .reduce((acc, pn, idx, arr) => {
+                            if (idx > 0 && pn - arr[idx - 1] > 1) acc.push('...');
+                            acc.push(pn);
+                            return acc;
+                          }, [])
+                          .map((pn, i) =>
+                            pn === '...'
+                              ? <span key={`e${i}`} className="w-8 h-8 text-sm text-gray-500 flex items-center justify-center">...</span>
+                              : <button key={pn} onClick={() => setPage(pn)}
+                                  className={`w-8 h-8 text-sm font-bold rounded-lg transition-all shadow-sm ${page === pn ? 'bg-blue-600 text-white border-transparent' : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}>{pn}</button>
+                          )}
+                        <button disabled={page >= totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                          className="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm">Next</button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </>
         )}
       </div>
       {confirmDialog}
     </PageShell>
   );
 }
-

@@ -494,33 +494,25 @@ export default function CourseEditor() {
 
   return (
     <PageShell
-      title={isNew ? "New Course" : `Edit: ${course.title || "Untitled"}`}
-      actions={
-        <>
-          <Link
-            to="/admin/courses"
-            className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors"
-          >
+      title={
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors" title="Go back">
             <FiArrowLeft className="w-5 h-5" />
-          </Link>
+          </button>
+          {isNew ? "New Course" : `Edit: ${course.title || "Untitled"}`}
+        </div>
+      }
+      actions={
+        <div className="relative">
           <AdminButton
-            onClick={() => navigate("/admin/courses")}
-            variant="secondary"
+            onClick={handleSave}
+            disabled={saving}
+            variant="primary"
             size="md"
           >
-            Cancel
+            {saving ? "Saving..." : "Save Course"}
           </AdminButton>
-          <div className="relative">
-            <AdminButton
-              onClick={handleSave}
-              disabled={saving}
-              variant="primary"
-              size="md"
-            >
-              {saving ? "Saving..." : "Save Course"}
-            </AdminButton>
-          </div>
-        </>
+        </div>
       }
     >
 

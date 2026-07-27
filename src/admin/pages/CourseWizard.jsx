@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import AdminButton from "../components/AdminButton";
 import ImageUploader from "../components/ImageUploader";
@@ -124,6 +124,7 @@ function slugify(text) {
 export default function CourseWizard() {
   const { user: currentUser } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -135,7 +136,7 @@ export default function CourseWizard() {
   const [catL1, setCatL1] = useState("");
   const [catL2, setCatL2] = useState("");
   const [catL3, setCatL3] = useState("");
-  const [filterSection, setFilterSection] = useState("");
+  const [filterSection, setFilterSection] = useState(searchParams.get("category") || "Software Learning");
   const [newTagName, setNewTagName] = useState("");
   const [creatingTag, setCreatingTag] = useState(false);
 
@@ -379,7 +380,7 @@ export default function CourseWizard() {
       title="Create New Course"
       maxWidth="max-w-[1600px]"
       actions={
-        <button onClick={() => navigate("/admin/courses")} className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 shadow-sm border-transparent rounded-lg transition-colors">Cancel</button>
+        <button onClick={() => navigate(-1)} className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 shadow-sm border-transparent rounded-lg transition-colors">Cancel</button>
       }
     >
 
@@ -424,29 +425,11 @@ export default function CourseWizard() {
         <div className="flex-1 min-w-0">
           {step === 0 && (
           <div className="space-y-6">
-            {categories.length > 0 && (
-              <div>
-                <label className="block text-sm font-semibold text-black mb-3">Category *</label>
-                <div className="flex flex-wrap gap-3">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => {
-                        setFilterSection(cat);
-                        resetCategoryPath();
-                      }}
-                      className={`px-5 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                        filterSection === cat
-                          ? "border-admin-500 bg-white text-admin-600"
-                          : "border-admin-200 text-admin-500 hover:border-admin-200 hover:bg-white"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="mb-4">
+              <span className="inline-block px-3 py-1 bg-admin-50 text-admin-600 rounded-md font-semibold text-sm border border-admin-200">
+                Category: {filterSection}
+              </span>
+            </div>
 
             {filterSection && (() => {
               const topLevel = availablePaths.filter((p) => p.parent_label === filterSection && !p.parent_id);
