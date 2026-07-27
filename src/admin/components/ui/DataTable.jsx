@@ -17,6 +17,8 @@ export default function DataTable({
   emptyTitle,
   emptyDescription,
   emptyAction,
+  headerRowClass,
+  headerCellClass,
   onRowClick,
   rowKey = 'id',
   isLoading,
@@ -128,9 +130,9 @@ export default function DataTable({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-admin-100 bg-white/50">
+            <tr className={`border-b border-admin-100 ${headerRowClass || 'bg-white/50'}`}>
               {columns.map((col, i) => (
-                <th key={i} className={`text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>
+                <th key={i} className={`text-left text-xs font-semibold uppercase tracking-wider px-4 py-3 ${headerCellClass || 'text-neutral-500'} ${col.className || ''}`}>
                   {col.header}
                 </th>
               ))}

@@ -1,3 +1,4 @@
+import { FiBriefcase } from "react-icons/fi";
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX } from "react-icons/fi";
@@ -11,19 +12,20 @@ const navGroups = [
       { to: "/admin/home", label: "Home", catchSubRoutes: true },
       { to: "/admin/about-page", label: "About" },
       { to: "/admin/career-page", label: "Career" },
-      { to: "/admin/contact-page", label: "Contact" },
+      { to: "/admin/contact-page", label: "Contact" }
     ],
   },
   { label: "Chat", icon: FiMessageCircle, iconColor: "#059669", items: [
     { to: "/admin/chats?tab=live", label: "Live Chat" },
-    { to: "/admin/chats?tab=history", label: "Chat History" },
-  ]},
+    { to: "/admin/chats?tab=history", label: "Chat History" }
+    ]},
+  
   {
     label: "Services", icon: FiServer, iconColor: "#d97706", parentTo: "/admin/services", items: [
       { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
       { to: "/admin/services/new", label: "Add Service" },
       { to: "/admin/service-categories", label: "Categories" },
-      { to: "/admin/services-page", label: "Services Page" },
+      { to: "/admin/services-page", label: "Services Page" }
     ],
   },
   {
@@ -31,7 +33,13 @@ const navGroups = [
       { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
       { to: "/admin/training/new", label: "Add Program" },
       { to: "/admin/training-categories", label: "Categories" },
-      { to: "/admin/training-page", label: "Training Page" },
+      { to: "/admin/training-page", label: "Training Page" }
+    ],
+  },
+  {
+    label: "Jobs", icon: FiBriefcase, iconColor: "#8b5cf6", items: [
+      { to: "/admin/jobs", label: "View Jobs", catchSubRoutes: true, siblingRoutes: ["/admin/jobs/new"] },
+      { to: "/admin/jobs/new", label: "Add Job" }
     ],
   },
   { label: "Submissions", icon: FiInbox, iconColor: "#e11d48", items: [
@@ -39,8 +47,8 @@ const navGroups = [
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
     { to: "/admin/contact-submissions", label: "Contact Submissions" },
-    { to: "/admin/chat-submissions", label: "Chat Submissions" },
-  ]},
+    { to: "/admin/chat-submissions", label: "Chat Submissions" }
+    ]},
   {
     label: "Courses", icon: FiBookOpen, iconColor: "#0891b2", items: [
       { label: "Software Learning", children: [
@@ -52,41 +60,41 @@ const navGroups = [
         { to: "/admin/courses/wizard?category=Competitive%20Exam", label: "Add Course" }
       ]},
       { to: "/admin/tags", label: "Tags" },
-      { to: "/admin/courses/reports", label: "Reports" },
+      { to: "/admin/courses/reports", label: "Reports" }
     ],
   },
   {
     label: "Blog", icon: FiFileText, iconColor: "#ea580c", items: [
       { to: "/admin/blog", label: "All Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
-      { to: "/admin/blog/categories", label: "Categories" },
+      { to: "/admin/blog/categories", label: "Categories" }
     ],
   },
   { label: "Navigation", icon: FiMenu, iconColor: "#0f766e", items: [
     { label: "Software Learning", children: [
       { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add" }
     ]},
     { label: "Competitive Exam", children: [
       { to: "/admin/nav-menu?section=Competitive%20Exam&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=add", label: "Add" }
     ]},
     { label: "Services", children: [
       { to: "/admin/nav-menu?section=Services&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Services&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Services&tab=add", label: "Add" }
     ]},
     { label: "Training", children: [
       { to: "/admin/nav-menu?section=Training&tab=view", label: "View" },
-      { to: "/admin/nav-menu?section=Training&tab=add", label: "Add" },
+      { to: "/admin/nav-menu?section=Training&tab=add", label: "Add" }
+    ]}
     ]},
-  ]},
   { label: "Uploads", icon: FiLayers, iconColor: "#52525b", items: [
-    { to: "/admin/media", label: "Media Library" },
-  ]},
+    { to: "/admin/media", label: "Media Library" }
+    ]},
   { label: "Settings", icon: FiSettings, iconColor: "#475569", items: [
     { to: "/admin/site-settings?section=general", label: "Site Settings" },
-    { to: "/admin/admin-users", label: "Admin Users" },
-  ]},
-];
+    { to: "/admin/admin-users", label: "Admin Users" }
+    ]}
+    ];
 
 function isActive(pathname, item) {
   const fullPath = pathname.split("?")[0] || "/";

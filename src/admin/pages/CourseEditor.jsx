@@ -978,7 +978,7 @@ export default function CourseEditor() {
                         </div>
                       );
                     })}
-                    <hr className="border-admin-200" />
+                    
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <label className="text-xs font-medium text-neutral-500">Q&A Items</label>

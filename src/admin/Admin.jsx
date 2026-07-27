@@ -21,6 +21,9 @@ import HomePageEditor from './pages/HomePageEditor';
 import AboutPageEditor from './pages/AboutPageEditor';
 import ContactPageEditor from './pages/ContactPageEditor';
 import CareerPageEditor from './pages/CareerPageEditor';
+import JobsList from './pages/JobsList';
+import JobEditor from './pages/JobEditor';
+
 import ServicesManager from './pages/ServicesManager';
 import ServiceEditor from './pages/ServiceEditor';
 import ServiceCategoriesManager from './pages/ServiceCategoriesManager';
@@ -125,6 +128,9 @@ export default function Admin() {
           <Route path="about-page" element={<AboutPageEditor />} />
           <Route path="contact-page" element={<ContactPageEditor />} />
           <Route path="career-page" element={<CareerPageEditor />} />
+          <Route path="jobs" element={<JobsList />} />
+          <Route path="jobs/:id" element={<JobEditor />} />
+          
           <Route path="services" element={<ServicesManager />} />
           <Route path="services/new" element={<ServiceEditor />} />
           <Route path="services/:id" element={<ServiceEditor />} />
