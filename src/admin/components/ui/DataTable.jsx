@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 function SearchIcon() {
   return (
@@ -29,14 +29,19 @@ export default function DataTable({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  useEffect(() => {
+    setPage(1);
+  }, [activeSearch, pageSize, data]);
+
   const filtered = useMemo(() => {
-    if (!activeSearch.trim()) return data || [];
-    const q = activeSearch.toLowerCase();
-    return (data || []).filter((row) => {
+    const rows = data || [];
+    const q = activeSearch.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((row) => {
       if (filterFn) return filterFn(row, q);
       return columns.some((col) => {
         const val = col.accessor ? row[col.accessor] : '';
-        return String(val || '').toLowerCase().includes(q);
+        return String(val ?? '').toLowerCase().includes(q);
       });
     });
   }, [data, activeSearch, filterFn, columns]);
@@ -45,6 +50,17 @@ export default function DataTable({
     const start = (page - 1) * pageSize;
     return filtered.slice(start, start + pageSize);
   }, [filtered, page, pageSize]);
+
+  const applySearch = () => {
+    setPage(1);
+    setActiveSearch(search.trim());
+  };
+
+  const clearSearch = () => {
+    setSearch('');
+    setActiveSearch('');
+    setPage(1);
+  };
 
   if (isLoading) {
     return (
@@ -75,14 +91,19 @@ export default function DataTable({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
+          onKeyDown={(e) => e.key === 'Enter' && applySearch()}
           placeholder={searchPlaceholder}
           className="w-full pl-9 pr-3 h-9 border border-admin-200 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
         />
       </div>
-      <button onClick={() => { setActiveSearch(search); setPage(1); }} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
+      <button onClick={applySearch} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
         Search
       </button>
+      {activeSearch && (
+        <button onClick={clearSearch} className="px-3 py-1.5 h-9 text-xs font-medium text-neutral-500 hover:text-neutral-700 transition-colors">
+          Clear
+        </button>
+      )}
     </div>
   );
 
@@ -93,7 +114,7 @@ export default function DataTable({
     filtered.length === 0 && activeSearch ? (
       <div className="flex flex-col items-center py-12 text-center">
         <p className="text-sm text-neutral-400">No results match your search.</p>
-        <button onClick={() => { setSearch(''); setActiveSearch(''); }} className="mt-2 text-xs font-semibold text-neutral-600 hover:text-neutral-700 transition-colors">
+        <button onClick={clearSearch} className="mt-2 text-xs font-semibold text-neutral-600 hover:text-neutral-700 transition-colors">
           Clear search
         </button>
       </div>
@@ -106,7 +127,7 @@ export default function DataTable({
         <div className="divide-y divide-admin-100">
           {paginated.map((row, rowIndex) => (
             <div
-              key={row[rowKey]}
+              key={`${row[rowKey]}-${rowIndex}`}
               onClick={() => onRowClick?.(row)}
               className="px-5 py-4 flex items-center gap-4 hover:bg-white/80 transition-colors cursor-pointer"
             >
@@ -141,7 +162,7 @@ export default function DataTable({
           <tbody>
             {paginated.map((row, rowIndex) => (
               <tr
-                key={row[rowKey]}
+                key={`${row[rowKey]}-${rowIndex}`}
                 onClick={() => onRowClick?.(row)}
                 className={`border-b border-gray-100 last:border-0 transition-colors ${rowIndex % 2 === 1 ? 'bg-gray-50' : 'bg-white'} ${onRowClick ? 'cursor-pointer hover:bg-gray-50' : 'hover:bg-gray-50'}`}
               >

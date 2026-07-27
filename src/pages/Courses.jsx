@@ -804,7 +804,10 @@ export default function Courses() {
             ) : (
               <>
                 {viewMode === "grid" ? (
-                  <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <Stagger
+                    key={`${activeNavId || "all"}-${search}-${page}`}
+                    className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  >
                     {paginatedCourses.map((course) => (
                       <StaggerItem key={course.id}>
                         <CourseCard

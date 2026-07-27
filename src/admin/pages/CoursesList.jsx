@@ -6,7 +6,7 @@ import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
 import Card from "../components/ui/Card";
 import DataTable from "../components/ui/DataTable";
-import { FiPlus, FiBookOpen, FiSearch, FiEdit3, FiTrash2, FiChevronDown, FiArrowLeft } from "react-icons/fi";
+import { FiPlus, FiBookOpen, FiSearch, FiEdit3, FiTrash2, FiChevronDown, FiArrowLeft, FiX } from "react-icons/fi";
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -18,7 +18,6 @@ const [confirm, confirmDialog] = useConfirm();
   const [searchParams] = useSearchParams();
   const activeCategory = searchParams.get("category");
   const [search, setSearch] = useState('');
-  const [activeSearch, setActiveSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [catL1, setCatL1] = useState('All');
   const [catL2, setCatL2] = useState('All');
@@ -78,8 +77,8 @@ const [confirm, confirmDialog] = useConfirm();
     if (statusFilter === 'draft' && c.is_published) return false;
     
     // 3. Search
-    if (activeSearch) {
-      const q = activeSearch.toLowerCase();
+    if (search) {
+      const q = search.toLowerCase();
       if (!(c.title || "").toLowerCase().includes(q) && !(c.slug || "").toLowerCase().includes(q)) {
         return false;
       }
@@ -127,7 +126,7 @@ const [confirm, confirmDialog] = useConfirm();
       header: 'Title',
       cell: (row) => (
         <Link to={`/admin/courses/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-neutral-700 transition-colors">
-          {row.title || 'Untitled'}
+          {row.title?.trim() || 'Untitled'}
         </Link>
       ),
     },
@@ -189,14 +188,15 @@ const [confirm, confirmDialog] = useConfirm();
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
                   placeholder="Search title or slug..."
-                  className="w-full pl-9 pr-3 h-9 border border-admin-200 text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+                  className="w-full pl-9 pr-8 h-9 border border-admin-200 text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
                 />
+                {search && (
+                  <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-neutral-400 hover:text-neutral-600 transition-colors" title="Clear search">
+                    <FiX className="w-4 h-4" />
+                  </button>
+                )}
               </div>
-              <button onClick={() => setActiveSearch(search)} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
-                Search
-              </button>
             </div>
           </div>
           <div className="flex items-end gap-3 ml-auto flex-wrap">
