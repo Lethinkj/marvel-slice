@@ -175,9 +175,9 @@ export default function TrainingEditor() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const isNew = id === "new";
-  const [tab, setTab] = useState("basic");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const isNew = id === 'new';
+  const [tab, setTab] = useState('basic');
+  const sidebarOpen = true;
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [categories, setCategories] = useState([]);
@@ -462,15 +462,8 @@ export default function TrainingEditor() {
       )}
 
       <div className="flex gap-6 items-start">
-        <div className={`transition-all duration-200 ${sidebarOpen ? 'w-48' : 'w-14'}`}>
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`w-full flex items-center justify-center gap-2 px-3 py-2 mb-2 text-sm font-medium text-gray-500 hover:text-gray-700 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors ${sidebarOpen ? '' : 'p-2'}`}
-            title={sidebarOpen ? 'Hide Menu' : 'Show Menu'}
-          >
-            {sidebarOpen ? <FiChevronLeft className="w-4 h-4" /> : <FiChevronRight className="w-4 h-4" />}
-            {sidebarOpen && 'Hide Menu'}
-          </button>
+        <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
+          {/* Hide menu button removed */}
           <div className="sticky top-16 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
               {editorTabs.map((t) => {
