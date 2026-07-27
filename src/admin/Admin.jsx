@@ -11,6 +11,7 @@ import CoursesList from './pages/CoursesList';
 import CourseEditor from './pages/CourseEditor';
 import CourseWizard from './pages/CourseWizard';
 import CourseReports from './pages/CourseReports';
+import CourseBrochure from './pages/CourseBrochure';
 import AlumniCompaniesManager from './pages/AlumniCompaniesManager';
 import TagsList from './pages/TagsList';
 import TagAdd from './pages/TagAdd';
@@ -116,6 +117,7 @@ export default function Admin() {
           <Route path="courses" element={<CoursesList />} />
           <Route path="courses/wizard" element={<CourseWizard />} />
           <Route path="courses/reports" element={<CourseReports />} />
+          <Route path="courses/brochure" element={<CourseBrochure />} />
           <Route path="courses/:id" element={<CourseEditor />} />
           <Route path="alumni" element={<AlumniCompaniesManager />} />
           <Route path="tags" element={<TagsList />} />

@@ -1,7 +1,7 @@
 import { FiBriefcase } from "react-icons/fi";
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX, FiBarChart2 } from "react-icons/fi";
 import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
@@ -64,9 +64,12 @@ const navGroups = [
         { to: "/admin/tags/add", label: "Add Tag" },
         { to: "/admin/tags", label: "View Tags" }
       ]},
-      { to: "/admin/courses/reports", label: "Reports" }
+      { to: "/admin/courses/brochure", label: "Brochure" },
     ],
   },
+  { label: "Reports", icon: FiBarChart2, items: [
+    { to: "/admin/courses/reports", label: "Reports" }
+    ]},
   {
     label: "Blog", icon: FiFileText, items: [
       { to: "/admin/blog/new", label: "Add Blog" },
