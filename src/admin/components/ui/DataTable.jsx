@@ -61,7 +61,7 @@ export default function DataTable({
           <svg className="w-6 h-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
         </div>
         {emptyTitle && <h3 className="text-sm font-semibold text-neutral-700 mb-1">{emptyTitle}</h3>}
-        {emptyDescription && <p className="text-xs text-neutral-400 max-w-xs">{emptyDescription}</p>}
+        {emptyDescription && <p className="text-xs text-neutral-400 w-[200px]">{emptyDescription}</p>}
         {emptyAction && <div className="mt-4">{emptyAction}</div>}
       </div>
     );
@@ -69,7 +69,7 @@ export default function DataTable({
 
   const renderSearchBar = () => (
     <div className="flex items-center gap-2 px-4 py-3 border-b border-admin-100">
-      <div className="relative flex-1 max-w-xs">
+      <div className="relative w-[200px]">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"><SearchIcon /></div>
         <input
           type="text"

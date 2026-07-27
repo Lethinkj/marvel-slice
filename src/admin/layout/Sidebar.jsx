@@ -59,13 +59,17 @@ const navGroups = [
         { to: "/admin/courses?category=Competitive%20Exam", label: "View Courses" },
         { to: "/admin/courses/wizard?category=Competitive%20Exam", label: "Add Course" }
       ]},
-      { to: "/admin/tags", label: "Tags" },
+      { label: "Tags", children: [
+        { to: "/admin/tags", label: "View Tags" },
+        { to: "/admin/tags/add", label: "Add Tag" }
+      ]},
       { to: "/admin/courses/reports", label: "Reports" }
     ],
   },
   {
     label: "Blog", icon: FiFileText, iconColor: "#ea580c", items: [
-      { to: "/admin/blog", label: "All Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
+      { to: "/admin/blog", label: "View Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
+      { to: "/admin/blog/new", label: "Add Blog" },
       { to: "/admin/blog/categories", label: "Categories" }
     ],
   },

@@ -22,9 +22,9 @@ export default function ExportDialog({ type, data, columns, exportFilename, onCl
     try {
       if (type === 'csv') {
         const headers = columns.map(c => c.header).join(',');
-        const csvRows = filtered.map(row => {
+        const csvRows = filtered.map((row, i) => {
           return columns.map(c => {
-            const val = c.exportValue ? c.exportValue(row) : row[c.accessor];
+            const val = c.exportValue ? c.exportValue(row, i) : row[c.accessor];
             return '"' + String(val || '').replace(/"/g, '""') + '"';
           }).join(',');
         });
@@ -37,9 +37,9 @@ export default function ExportDialog({ type, data, columns, exportFilename, onCl
       } else {
         const pdf = new jsPDF();
         const head = [columns.map(c => c.header)];
-        const body = filtered.map(row => {
+        const body = filtered.map((row, i) => {
           return columns.map(c => {
-            const val = c.exportValue ? c.exportValue(row) : row[c.accessor];
+            const val = c.exportValue ? c.exportValue(row, i) : row[c.accessor];
             return String(val || '');
           });
         });

@@ -222,6 +222,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [dateFilter, setDateFilter] = useState('all');
@@ -277,8 +278,8 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
   const filtered = useMemo(() => {
     let result = data;
-    const q = search.trim().toLowerCase();
-    if (q) {
+    if (activeSearch) {
+      const q = activeSearch.trim().toLowerCase();
       result = result.filter(row =>
         columns.some(col => String(row[col.accessor] || '').toLowerCase().includes(q))
       );
@@ -306,14 +307,14 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
       });
     }
     return result;
-  }, [data, search, dateFilter, customStart, customEnd, statusFilter, columns, extraFilters]);
+  }, [data, activeSearch, dateFilter, customStart, customEnd, statusFilter, columns, extraFilters]);
 
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
   const unreadCount = data.filter(r => !r.is_read).length;
 
   function clearFilters() {
-    setSearch(''); setDateFilter('all'); setCustomStart(''); setCustomEnd('');
+    setSearch(''); setActiveSearch(''); setDateFilter('all'); setCustomStart(''); setCustomEnd('');
     setStatusFilter('all'); setPage(1);
   }
 
@@ -323,7 +324,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
-  const hasFilters = search || dateFilter !== 'all' || customStart || statusFilter !== 'all';
+  const hasFilters = activeSearch || dateFilter !== 'all' || customStart || statusFilter !== 'all';
 
   if (loading) return <LoadingState />;
 
@@ -355,14 +356,20 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
       <Card>
         <div className="flex flex-wrap items-end gap-3">
-          <div className="flex-1 min-w-[200px]">
+          <div>
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
-              <input ref={searchRef} type="text" value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-                placeholder={`Search ${title.toLowerCase()}...`}
-                className="w-full pl-9 pr-3 h-9 rounded-lg border border-admin-200 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
-              />
+            <div className="relative flex gap-2">
+              <div className="relative w-[200px]">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                <input ref={searchRef} type="text" value={search} onChange={e => { setSearch(e.target.value); }}
+                  onKeyDown={(e) => e.key === 'Enter' && (setActiveSearch(search), setPage(1))}
+                  placeholder={`Search ${title.toLowerCase()}...`}
+                  className="w-full h-9 pl-9 pr-3 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+                />
+              </div>
+              <button onClick={() => { setActiveSearch(search); setPage(1); }} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
+                Search
+              </button>
             </div>
           </div>
 

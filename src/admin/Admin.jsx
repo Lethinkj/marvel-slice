@@ -12,7 +12,8 @@ import CourseEditor from './pages/CourseEditor';
 import CourseWizard from './pages/CourseWizard';
 import CourseReports from './pages/CourseReports';
 import AlumniCompaniesManager from './pages/AlumniCompaniesManager';
-import TagsManager from './pages/TagsManager';
+import TagsList from './pages/TagsList';
+import TagAdd from './pages/TagAdd';
 import FooterManager from './pages/FooterManager';
 import MediaLibrary from './pages/MediaLibrary';
 import AdminUsersManager from './pages/AdminUsersManager';
@@ -117,7 +118,8 @@ export default function Admin() {
           <Route path="courses/reports" element={<CourseReports />} />
           <Route path="courses/:id" element={<CourseEditor />} />
           <Route path="alumni" element={<AlumniCompaniesManager />} />
-          <Route path="tags" element={<TagsManager />} />
+          <Route path="tags" element={<TagsList />} />
+          <Route path="tags/add" element={<TagAdd />} />
           <Route path="footer" element={<FooterManager />} />
           <Route path="media" element={<MediaLibrary />} />
           <Route path="admin-users" element={<AdminUsersManager />} />
@@ -129,6 +131,7 @@ export default function Admin() {
           <Route path="contact-page" element={<ContactPageEditor />} />
           <Route path="career-page" element={<CareerPageEditor />} />
           <Route path="jobs" element={<JobsList />} />
+          <Route path="jobs/new" element={<JobEditor />} />
           <Route path="jobs/:id" element={<JobEditor />} />
           
           <Route path="services" element={<ServicesManager />} />

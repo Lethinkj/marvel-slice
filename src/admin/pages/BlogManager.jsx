@@ -15,6 +15,8 @@ export default function BlogManager() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [dateFilter, setDateFilter] = useState('All');
 
   useEffect(() => {
     supabase
@@ -42,35 +44,57 @@ export default function BlogManager() {
   }
 
   const filteredPosts = posts.filter(post => {
-    if (!activeSearch) return true;
-    const query = activeSearch.toLowerCase();
-    return post.title.toLowerCase().includes(query);
+    // 1. Search
+    if (activeSearch) {
+      const query = activeSearch.toLowerCase();
+      if (!post.title.toLowerCase().includes(query)) return false;
+    }
+    // 2. Status Filter
+    if (statusFilter !== 'All') {
+      const isPub = statusFilter === 'Published';
+      if (post.is_published !== isPub) return false;
+    }
+    // 3. Date Filter
+    if (dateFilter !== 'All') {
+      const postDate = new Date(post.created_at);
+      const today = new Date();
+      if (dateFilter === 'Today') {
+        if (postDate.toDateString() !== today.toDateString()) return false;
+      } else if (dateFilter === 'Last 7 Days') {
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        if (postDate < sevenDaysAgo) return false;
+      } else if (dateFilter === 'This Month') {
+        if (postDate.getMonth() !== today.getMonth() || postDate.getFullYear() !== today.getFullYear()) return false;
+      }
+    }
+    return true;
   });
 
-  const cardsColumns = [
-    {
+  const columns = [
+    { header: 'SL NO', accessor: 'slno', cell: (_, i) => <span className="text-neutral-500 font-medium">{i + 1}</span> },
+    { 
+      header: 'Title', 
+      accessor: 'title', 
       cell: (row) => (
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0">
-            <FiFileText className="w-5 h-5 text-violet-600" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <Link to={`/admin/blog/${row.id}`} className="font-semibold text-neutral-900 hover:text-neutral-700 transition-colors">
-              {row.title}
-            </Link>
-            <div className="flex items-center gap-3 mt-0.5 text-xs text-neutral-400">
-              <span className="flex items-center gap-1">
-                <FiCalendar className="w-3 h-3 text-emerald-500" />
-                {row.published_at ? new Date(row.published_at).toLocaleDateString() : 'Not published'}
-              </span>
-              {row.blog_categories && <span className="px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded-full">{row.blog_categories.name}</span>}
-              {row.is_featured && <Badge variant="featured">Featured</Badge>}
-            </div>
-          </div>
-        </div>
-      ),
+        <Link to={`/admin/blog/${row.id}`} className="font-semibold text-neutral-900 hover:text-neutral-700 transition-colors">
+          {row.title}
+        </Link>
+      )
+    },
+    { 
+      header: 'Category', 
+      accessor: 'blog_categories', 
+      cell: (row) => row.blog_categories ? <span className="px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded-full text-xs">{row.blog_categories.name}</span> : <span className="text-neutral-400 italic">None</span>
+    },
+    { 
+      header: 'Date', 
+      accessor: 'published_at', 
+      cell: (row) => <span className="text-neutral-600">{row.published_at ? new Date(row.published_at).toLocaleDateString() : '—'}</span>
     },
     {
+      header: 'Status',
+      accessor: 'is_published',
       cell: (row) => (
         <div className="flex items-center gap-2">
           <label className="relative inline-flex items-center cursor-pointer">
@@ -82,6 +106,8 @@ export default function BlogManager() {
       ),
     },
     {
+      header: 'Actions',
+      className: 'text-right',
       cell: (row) => (
         <div className="flex items-center justify-end gap-1.5">
           <Link to={`/admin/blog/${row.id}`} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
@@ -90,7 +116,6 @@ export default function BlogManager() {
           <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
             <FiTrash2 className="w-4 h-4" />
           </button>
-          <FiChevronRight className="w-4 h-4 text-neutral-300 transition-colors shrink-0" />
         </div>
       ),
     },
@@ -118,21 +143,44 @@ export default function BlogManager() {
       }
     >
       {posts.length > 0 && (
-        <div className="flex items-center gap-2 mb-4 w-full sm:max-w-md">
-          <div className="relative flex-1">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
-              placeholder="Search posts by title..."
-              className="w-full pl-9 pr-4 py-1.5 h-9 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
-            />
+        <div className="mb-6 flex flex-col sm:flex-row gap-3">
+          <div className="flex items-center gap-2">
+            <div className="relative w-[200px]">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
+                placeholder="Search posts..."
+                className="w-full pl-9 pr-4 py-1.5 h-9 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+              />
+            </div>
+            <button onClick={() => setActiveSearch(search)} className="px-4 py-1.5 h-9 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors">
+              Search
+            </button>
           </div>
-          <button onClick={() => setActiveSearch(search)} className="px-4 py-1.5 h-9 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors">
-            Search
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="h-9 px-3 border border-admin-200 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500/20"
+            >
+              <option value="All">All Status</option>
+              <option value="Published">Published</option>
+              <option value="Draft">Draft</option>
+            </select>
+            <select
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="h-9 px-3 border border-admin-200 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500/20"
+            >
+              <option value="All">All Dates</option>
+              <option value="Today">Today</option>
+              <option value="Last 7 Days">Last 7 Days</option>
+              <option value="This Month">This Month</option>
+            </select>
+          </div>
         </div>
       )}
 
@@ -152,7 +200,7 @@ export default function BlogManager() {
           />
         )
       ) : (
-        <DataTable columns={cardsColumns} data={filteredPosts} searchable={false} variant="cards" />
+        <DataTable columns={columns} data={filteredPosts} searchable={false} />
       )}
       {confirmDialog}
     </PageShell>

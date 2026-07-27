@@ -62,6 +62,19 @@ export default function JobsList() {
     }
   ];
 
+  const exportColumns = [
+    { header: 'SL NO', accessor: 'slno', exportValue: (_, i) => i + 1 },
+    { header: 'Job Title', accessor: 'title' },
+    { header: 'Category', accessor: 'role_categories', exportValue: (row) => row.role_categories?.name || 'Uncategorized' },
+    { header: 'Location', accessor: 'location' },
+    { header: 'Type', accessor: 'type' },
+    { header: 'Experience', accessor: 'experience' },
+    { header: 'Salary', accessor: 'salary' },
+    { header: 'Apply URL', accessor: 'apply_url' },
+    { header: 'Description', accessor: 'description' },
+    { header: 'Status', accessor: 'is_active', exportValue: (row) => row.is_active ? 'Active' : 'Inactive' },
+  ];
+
   
 
   return (
@@ -70,10 +83,10 @@ export default function JobsList() {
       description="Manage your company's career opportunities"
       actions={
         <div className="flex items-center gap-2">
-          <AdminButton onClick={() => setExportModal('csv')} variant="ghost" size="sm">
+          <AdminButton onClick={() => setExportModal('csv')} variant="primary" size="sm">
             Export CSV
           </AdminButton>
-          <AdminButton onClick={() => setExportModal('pdf')} variant="ghost" size="sm">
+          <AdminButton onClick={() => setExportModal('pdf')} variant="primary" size="sm">
             Export PDF
           </AdminButton>
         </div>
@@ -93,7 +106,7 @@ export default function JobsList() {
         <ExportDialog 
           type={exportModal} 
           data={jobs} 
-          columns={columns.slice(0, -1)} 
+          columns={exportColumns} 
           exportFilename="jobs" 
           onClose={() => setExportModal(null)} 
         />
