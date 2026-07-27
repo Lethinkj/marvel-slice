@@ -5,7 +5,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function ImageUploader({ value, onChange, label }) {
@@ -193,9 +193,7 @@ export default function ContactPageEditor() {
           <button onClick={() => navigate('/admin')} className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
             <FiArrowLeft className="w-5 h-5" />
           </button>
-          <AdminButton to="/contact" target="_blank" variant="secondary" size="md">
-            <FiExternalLink className="w-4 h-4" /> View Page
-          </AdminButton>
+
         </div>
       }
     >

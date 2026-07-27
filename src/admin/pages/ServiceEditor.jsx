@@ -461,7 +461,7 @@ export default function ServiceEditor() {
       <div className="flex gap-6 items-start">
         <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
           {/* Hide menu button removed */}
-          <div className="sticky top-16 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+          <div className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
               {editorTabs.map((t) => {
                 const meta = tabMeta[t];
@@ -471,12 +471,12 @@ export default function ServiceEditor() {
                     onClick={() => setTab(t)}
                     className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
                       sidebarOpen
-                        ? `gap-3 ${tab === t ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]' : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'}`
-                        : `justify-center gap-0 ${tab === t ? 'bg-indigo-50 text-indigo-600' : 'text-gray-400 hover:bg-slate-50 hover:text-gray-600'}`
+                        ? `gap-3 ${tab === t ? 'bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600 -ml-[1px]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 border-l-4 border-transparent'}`
+                        : `justify-center gap-0 ${tab === t ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-blue-50 hover:text-blue-600'}`
                     }`}
                     title={meta.label}
                   >
-                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-indigo-600" : "text-gray-400"}`} />
+                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-blue-600" : "text-gray-400"}`} />
                     {sidebarOpen && <span className="flex-1 truncate">{meta.label}</span>}
                   </button>
                 );

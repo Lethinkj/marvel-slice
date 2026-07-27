@@ -6,7 +6,7 @@ import { useNavPage } from '../../hooks/useSupabase';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
-import { FiPlus, FiTrash2, FiChevronUp, FiChevronDown, FiArrowLeft, FiUpload, FiExternalLink, FiSave, FiCheck, FiFileText, FiSearch, FiBookOpen } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiChevronUp, FiChevronDown, FiArrowLeft, FiUpload, FiSave, FiCheck, FiFileText, FiSearch, FiBookOpen } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 const sectionTypes = [
@@ -231,16 +231,6 @@ export default function NavPageEditor() {
   return (
     <PageShell
       title={navItem ? navItem.label : 'Page Editor'}
-      subtitle={
-        pageUrl ? (
-          <Link to={pageUrl} target="_blank" className="text-sm text-admin-600 hover:underline inline-flex items-center gap-1">
-            <FiExternalLink className="w-3.5 h-3.5" />
-            {pageUrl}
-          </Link>
-        ) : (
-          <span className="text-sm text-warning-600">Set a path on this nav item for the page to be public.</span>
-        )
-      }
       actions={
         <Link to="/admin/nav-menu" className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
           <FiArrowLeft className="w-5 h-5" />

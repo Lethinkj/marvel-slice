@@ -181,7 +181,7 @@ function ImageUploader({ value, onChange, label, hideInput }) {
       <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+          className="flex-1 px-3.5 py-2.5 border border-indigo-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
           placeholder="Paste image URL or upload..." />
         <label className="cursor-pointer inline-flex items-center justify-center px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all bg-white shrink-0">
           {uploading ? (
@@ -522,28 +522,12 @@ function ServicesEditor({ data, onChange }) {
   );
 }
 
-function AccordionCard({ title, defaultOpen = false, action, children }) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm">
-      <div className="flex items-center justify-between px-5 py-3.5 bg-gray-50/50 hover:bg-gray-50 transition-colors">
-        <button type="button" onClick={() => setOpen(!open)}
-          className="flex-1 flex items-center gap-2 text-sm font-semibold text-gray-900 text-left">
-          {title}
-          <FiChevronUp className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? '' : 'rotate-180'}`} />
-        </button>
-        {action && <div>{action}</div>}
-      </div>
-      {open && <div className="px-5 py-4 space-y-4 border-t border-gray-100">{children}</div>}
-    </div>
-  );
-}
-
 function HeroEditor({ data, onChange }) {
   const content = data?.content || {};
   const mode = content.hero_mode || 'normal';
   const carouselType = content.carousel_type || 'image';
   const slides = Array.isArray(content.slides) ? content.slides : [];
+  const [twoColOpen, setTwoColOpen] = useState(!content.banner_image);
 
   function updateContent(name, value) {
     onChange({ ...data, content: { ...content, [name]: value } });
@@ -565,7 +549,7 @@ function HeroEditor({ data, onChange }) {
     updateContent('slides', slides.filter((_, i) => i !== idx));
   }
 
-  const inputClass = 'w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white';
+  const inputClass = 'w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white';
 
   return (
     <div className="space-y-6">
@@ -599,7 +583,7 @@ function HeroEditor({ data, onChange }) {
             <label className="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">Banner Image</label>
             <div className="flex gap-2 mb-3">
               <input type="text" value={content.banner_image || ''} onChange={(e) => updateContent('banner_image', e.target.value)}
-                className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                className="flex-1 px-3.5 py-2.5 border border-indigo-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
                 placeholder="Paste image URL or upload..." />
               <ImageUploader value={content.banner_image || ''} onChange={(v) => updateContent('banner_image', v)} label="" hideInput />
             </div>
@@ -698,7 +682,7 @@ function HeroEditor({ data, onChange }) {
                           <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Slide Image</label>
                           <div className="flex gap-2">
                             <input type="text" value={slide.image || ''} onChange={(e) => updateSlide(i, 'image', e.target.value)}
-                              className="flex-1 px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                              className="flex-1 px-3.5 py-2 border border-indigo-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
                               placeholder="Image URL" />
                             <ImageUploader value={slide.image || ''} onChange={(v) => updateSlide(i, 'image', v)} label="" hideInput />
                           </div>
@@ -734,40 +718,46 @@ function HeroEditor({ data, onChange }) {
         </div>
       )}
 
-      {/* Two-Column Layout Settings - Collapsible Card Accordion */}
-      <AccordionCard title="Two-Column Layout Settings">
-        <p className="text-xs text-gray-400">These fields apply when no banner image is set (gradient background layout).</p>
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
-          <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
-            className={inputClass} placeholder="Hero section description for two-column layout" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Two-Column Layout Settings */}
+      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <button type="button" onClick={() => setTwoColOpen(!twoColOpen)} className="w-full flex items-center justify-between px-5 py-3.5 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+          <span className="text-sm font-semibold text-gray-900">Two-Column Layout Settings</span>
+          <FiChevronUp className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${twoColOpen ? '' : 'rotate-180'}`} />
+        </button>
+        {twoColOpen && <div className="px-5 py-4 space-y-4">
+          <p className="text-xs text-gray-400">These fields apply when no banner image is set (gradient background layout).</p>
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Badge Text</label>
-            <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
-              className={inputClass} placeholder="e.g. New batch starting soon" />
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
+            <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
+              className={inputClass} placeholder="Hero section description for two-column layout" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Badge Text</label>
+              <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
+                className={inputClass} placeholder="e.g. New batch starting soon" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Student Image</label>
+              <ImageUploader value={content.student_image_url || ''} onChange={(v) => updateContent('student_image_url', v)} label="" hideInput />
+            </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Student Image</label>
-            <ImageUploader value={content.student_image_url || ''} onChange={(v) => updateContent('student_image_url', v)} label="" hideInput />
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Feature Bullets (one per line)</label>
+            <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
+              className={`${inputClass} font-mono text-xs`} placeholder="Industry-recognized certification&#10;Expert-led live sessions&#10;Flexible learning schedule" />
           </div>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Feature Bullets (one per line)</label>
-          <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
-            className={`${inputClass} font-mono text-xs`} placeholder="Industry-recognized certification&#10;Expert-led live sessions&#10;Flexible learning schedule" />
-        </div>
-        {content.student_image_url && (
-          <div className="relative rounded-lg overflow-hidden border border-gray-200">
-            <img src={content.student_image_url} alt="" className="h-32 w-full object-cover" />
-            <button type="button" onClick={() => updateContent('student_image_url', '')}
-              className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white transition-all border border-gray-200">
-              <FiTrash2 className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
-      </AccordionCard>
+          {content.student_image_url && (
+            <div className="relative rounded-lg overflow-hidden border border-gray-200">
+              <img src={content.student_image_url} alt="" className="h-32 w-full object-cover" />
+              <button type="button" onClick={() => updateContent('student_image_url', '')}
+                className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white transition-all border border-gray-200">
+                <FiTrash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+        </div>}
+      </div>
 
       {/* Stats Section */}
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
@@ -819,15 +809,17 @@ function HeroEditor({ data, onChange }) {
       </div>
 
       {/* Buttons Section */}
-      <AccordionCard title="Call-to-Action Buttons" defaultOpen={false} action={
-        <AdminButton type="button" onClick={() => {
-          const b = Array.isArray(content.buttons) ? content.buttons : [];
-          updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
-        }} variant="primary" size="sm">
-          <FiPlus className="w-4 h-4" /> Add Button
-        </AdminButton>
-      }>
-        <div className="space-y-3">
+      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-3.5">
+          <span className="text-sm font-semibold text-gray-900">Call-to-Action Buttons</span>
+          <AdminButton type="button" onClick={() => {
+            const b = Array.isArray(content.buttons) ? content.buttons : [];
+            updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
+          }} variant="primary" size="sm">
+            <FiPlus className="w-4 h-4" /> Add Button
+          </AdminButton>
+        </div>
+        <div className="px-5 py-4 space-y-3">
           {(!Array.isArray(content.buttons) || content.buttons.length === 0) ? (
             <p className="text-sm text-gray-400">No buttons yet.</p>
           ) : (
@@ -866,7 +858,7 @@ function HeroEditor({ data, onChange }) {
             ))
           )}
         </div>
-      </AccordionCard>
+      </div>
     </div>
   );
 }
@@ -1171,7 +1163,7 @@ export default function HomePageEditor() {
       <div className="flex gap-6 items-start">
         <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
           {/* Hide menu button removed as per request to keep it static */}
-          <nav className="sticky top-16 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
               {allNavItems.map((item) => (
                 <button
@@ -1180,13 +1172,13 @@ export default function HomePageEditor() {
                   onClick={() => navigate(`/admin/home/${item.key}`)}
                   className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
                     sidebarOpen
-                      ? `gap-3 ${selectedNav.key === item.key ? 'bg-indigo-50 text-indigo-600 font-semibold border-l-4 border-indigo-600 -ml-[1px]' : 'text-gray-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'}`
-                      : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-indigo-50 text-indigo-600' : 'text-gray-400 hover:bg-slate-50 hover:text-gray-600'}`
-                  }`}
-                  title={item.label}
-                >
-                  <item.icon className={`w-4 h-4 shrink-0 ${
-                    selectedNav.key === item.key ? 'text-indigo-600' : 'text-gray-400'
+                       ? `gap-3 ${selectedNav.key === item.key ? 'bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600 -ml-[1px]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 border-l-4 border-transparent'}`
+                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-blue-50 hover:text-blue-600'}`
+                   }`}
+                   title={item.label}
+                 >
+                   <item.icon className={`w-4 h-4 shrink-0 ${
+                     selectedNav.key === item.key ? 'text-blue-600' : 'text-gray-400'
                   }`} />
                   {sidebarOpen && <span className="flex-1 truncate">{item.label}</span>}
                 </button>

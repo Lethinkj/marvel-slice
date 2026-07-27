@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
-import { FiCopy, FiTrash2, FiUpload, FiSearch, FiCheck, FiX, FiGrid, FiList, FiFolder, FiFile, FiExternalLink, FiLayers } from 'react-icons/fi';
+import { FiCopy, FiTrash2, FiUpload, FiSearch, FiCheck, FiX, FiGrid, FiList, FiFolder, FiFile, FiLayers } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -68,7 +68,6 @@ function PreviewModal({ file, onClose }) {
             <div><span className="text-neutral-500">Uploaded</span><p className="font-medium text-black">{formatDate(file.created_at)}</p></div>
             <div className="pt-2 flex gap-2">
               <AdminButton variant="ghost" size="xs" onClick={() => { navigator.clipboard.writeText(url); }}><FiCopy className="w-3.5 h-3.5" /> Copy URL</AdminButton>
-              <AdminButton variant="ghost" size="xs" onClick={() => window.open(url, '_blank')}><FiExternalLink className="w-3.5 h-3.5" /> Open</AdminButton>
             </div>
           </div>
         </div>
@@ -333,9 +332,6 @@ export default function MediaLibrary() {
                   <div className="flex items-center gap-1 opacity-100 shrink-0">
                     <button onClick={() => copyUrl(file)} className="p-2 text-violet-500 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors" title="Copy URL">
                       {copied === file._path ? <FiCheck className="w-4 h-4 text-success-500" /> : <FiCopy className="w-4 h-4" />}
-                    </button>
-                    <button onClick={() => window.open(getUrl(file), '_blank')} className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors" title="Open">
-                      <FiExternalLink className="w-4 h-4" />
                     </button>
                     <button onClick={() => deleteFile(file)} className="px-2.5 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">
                       Delete

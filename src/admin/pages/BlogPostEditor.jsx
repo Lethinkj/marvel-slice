@@ -5,7 +5,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiExternalLink, FiTag, FiX } from 'react-icons/fi';
+import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiTag, FiX } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function ImageUploader({ value, onChange, label }) {
@@ -454,11 +454,6 @@ export default function BlogPostEditor() {
         </div>
 
         <div className="border-t border-admin-100 pt-6 flex justify-end gap-3">
-          {!isNew && form.slug && (
-            <AdminButton to={`/blog/${form.slug}`} target="_blank" variant="secondary" size="md">
-              <FiExternalLink className="w-4 h-4" /> View Post
-            </AdminButton>
-          )}
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={() => formRef.current?.requestSubmit()} onDiscard={() => window.location.reload()} label="Save Changes" dirty={dirty} />
         </div>
       </form>

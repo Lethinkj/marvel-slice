@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 const LUCIDE_ICON_NAMES = Object.keys(LuIcons).filter(k => k.startsWith('Lu')).map(k => k.slice(2)).sort();
@@ -546,9 +546,7 @@ export default function AboutPageEditor() {
           <button onClick={() => navigate('/admin')} className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
             <FiArrowLeft className="w-5 h-5" />
           </button>
-          <AdminButton to="/about" target="_blank" variant="secondary" size="md">
-            <FiExternalLink className="w-4 h-4" /> View Page
-          </AdminButton>
+
         </div>
       }
     >

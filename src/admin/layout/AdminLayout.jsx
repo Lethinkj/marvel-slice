@@ -105,7 +105,7 @@ export default function AdminLayout() {
             </button>
 
             <div className="relative" ref={notifRef}>
-              <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-2 text-neutral-400 hover:text-neutral-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
+              <button onClick={() => setNotifOpen(!notifOpen)} className={`relative p-2 rounded-lg transition-all duration-200 ${notifOpen ? 'bg-admin-100 text-admin-600' : 'text-neutral-400 hover:text-neutral-600 hover:bg-admin-100'}`}>
                 <FiBell className="w-5 h-5" />
                 {unreadChats.length > 0 && (
                   <span className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[11px] font-bold text-white bg-destructive-500 rounded-full ring-2 ring-white leading-none">
@@ -163,7 +163,7 @@ export default function AdminLayout() {
             </Link>
 
             <div className="relative" ref={menuRef}>
-              <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 ml-1 pl-3 pr-2 py-1.5 text-sm text-neutral-600 hover:text-neutral-900 hover:bg-admin-100 rounded-lg transition-all duration-200">
+              <button onClick={() => setMenuOpen(!menuOpen)} className={`flex items-center gap-2 ml-1 pl-3 pr-2 py-1.5 text-sm rounded-lg transition-all duration-200 ${menuOpen ? 'bg-admin-100 text-admin-900' : 'text-neutral-600 hover:text-neutral-900 hover:bg-admin-100'}`}>
                 <span className="w-6 h-6 rounded-full bg-gradient-to-br from-admin-500 to-admin-800 text-white flex items-center justify-center text-xs font-bold shadow-sm">{user?.name?.charAt(0)?.toUpperCase() || 'A'}</span>
                 <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || user?.email}</span>
               </button>

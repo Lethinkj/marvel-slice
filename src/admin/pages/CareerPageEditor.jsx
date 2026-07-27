@@ -8,7 +8,7 @@ import useDirty from '../hooks/useDirty';
 import EmptyState from '../components/EmptyState';
 import {
   FiSave, FiAlertCircle, FiPlus, FiTrash2, FiEdit2,
-  FiUpload, FiExternalLink, FiCheck, FiX, FiBriefcase,
+  FiUpload, FiCheck, FiX, FiBriefcase,
   FiAlignLeft, FiAlignCenter, FiAlignRight, FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
@@ -408,11 +408,6 @@ export default function CareerPageEditor() {
   return (
     <PageShell
       title="Career Page"
-      actions={
-        <AdminButton to="/career" target="_blank" variant="secondary" size="md">
-          <FiExternalLink className="w-4 h-4" /> View Page
-        </AdminButton>
-      }
     >
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />

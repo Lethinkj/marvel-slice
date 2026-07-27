@@ -5,9 +5,9 @@ import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers
 import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
-  { label: "Dashboard", icon: FiHome, iconColor: "#64748b", items: [{ to: "/admin", label: "Dashboard" }] },
+  { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
   {
-    label: "Edit Pages", icon: FiFile, iconColor: "#2563eb",
+    label: "Edit Pages", icon: FiFile,
     items: [
       { to: "/admin/home", label: "Home", catchSubRoutes: true },
       { to: "/admin/about-page", label: "About" },
@@ -15,13 +15,13 @@ const navGroups = [
       { to: "/admin/contact-page", label: "Contact" }
     ],
   },
-  { label: "Chat", icon: FiMessageCircle, iconColor: "#059669", items: [
+  { label: "Chat", icon: FiMessageCircle, items: [
     { to: "/admin/chats?tab=live", label: "Live Chat" },
     { to: "/admin/chats?tab=history", label: "Chat History" }
     ]},
   
   {
-    label: "Services", icon: FiServer, iconColor: "#d97706", parentTo: "/admin/services", items: [
+    label: "Services", icon: FiServer, parentTo: "/admin/services", items: [
       { to: "/admin/services/new", label: "Add Service" },
       { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
       { to: "/admin/service-categories", label: "Categories" },
@@ -29,7 +29,7 @@ const navGroups = [
     ],
   },
   {
-    label: "Training", icon: FiZap, iconColor: "#7c3aed", parentTo: "/admin/training", items: [
+    label: "Training", icon: FiZap, parentTo: "/admin/training", items: [
       { to: "/admin/training/new", label: "Add Program" },
       { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
       { to: "/admin/training-categories", label: "Categories" },
@@ -37,12 +37,12 @@ const navGroups = [
     ],
   },
   {
-    label: "Jobs", icon: FiBriefcase, iconColor: "#8b5cf6", items: [
+    label: "Jobs", icon: FiBriefcase, items: [
       { to: "/admin/jobs/new", label: "Add Job" },
       { to: "/admin/jobs", label: "View Jobs", catchSubRoutes: true, siblingRoutes: ["/admin/jobs/new"] }
     ],
   },
-  { label: "Submissions", icon: FiInbox, iconColor: "#e11d48", items: [
+  { label: "Submissions", icon: FiInbox, items: [
     { to: "/admin/career-submissions", label: "Career Submissions" },
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
@@ -50,7 +50,7 @@ const navGroups = [
     { to: "/admin/chat-submissions", label: "Chat Submissions" }
     ]},
   {
-    label: "Courses", icon: FiBookOpen, iconColor: "#0891b2", items: [
+    label: "Courses", icon: FiBookOpen, items: [
       { label: "Software Learning", children: [
         { to: "/admin/courses/wizard?category=Software%20Learning", label: "Add Course" },
         { to: "/admin/courses?category=Software%20Learning", label: "View Courses" }
@@ -67,13 +67,13 @@ const navGroups = [
     ],
   },
   {
-    label: "Blog", icon: FiFileText, iconColor: "#ea580c", items: [
+    label: "Blog", icon: FiFileText, items: [
       { to: "/admin/blog/new", label: "Add Blog" },
       { to: "/admin/blog", label: "View Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
       { to: "/admin/blog/categories", label: "Categories" }
     ],
   },
-  { label: "Navigation", icon: FiMenu, iconColor: "#0f766e", items: [
+  { label: "Navigation", icon: FiMenu, items: [
     { label: "Software Learning", children: [
       { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add" },
       { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View" }
@@ -91,10 +91,10 @@ const navGroups = [
       { to: "/admin/nav-menu?section=Training&tab=view", label: "View" }
     ]}
     ]},
-  { label: "Uploads", icon: FiLayers, iconColor: "#52525b", items: [
+  { label: "Uploads", icon: FiLayers, items: [
     { to: "/admin/media", label: "Media Library" }
     ]},
-  { label: "Settings", icon: FiSettings, iconColor: "#475569", items: [
+  { label: "Settings", icon: FiSettings, items: [
     { to: "/admin/site-settings?section=general", label: "Site Settings" },
     { to: "/admin/admin-users", label: "Admin Users" }
     ]}
@@ -303,8 +303,8 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
     return false;
   });
   const opened = isOpen(idx);
-  const iconColor = '#707897';
-  const groupIconColor = group.iconColor || iconColor;
+  const iconColor = '#64748b';
+  const groupIconColor = iconColor;
 
   if (group.items.length === 1 && group.items[0].to) {
     return (

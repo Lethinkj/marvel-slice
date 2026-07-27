@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiExternalLink } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function ImageUploader({ value, onChange, label }) {
@@ -147,9 +147,7 @@ export default function TrainingPageEditor() {
           <button onClick={() => navigate('/admin')} className="p-2 text-admin-400 hover:text-admin-900 rounded-lg hover:bg-admin-100 transition-colors">
             <FiArrowLeft className="w-5 h-5" />
           </button>
-          <Link to="/training" target="_blank" className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg transition-colors">
-            <FiExternalLink className="w-4 h-4" /> View Page
-          </Link>
+
         </div>
       }
     >
