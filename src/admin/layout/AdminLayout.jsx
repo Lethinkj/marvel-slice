@@ -4,11 +4,17 @@ import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import CommandPalette from "../components/ui/CommandPalette";
-import { ToastContainer } from "../components/Toast";
-import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock } from "react-icons/fi";
+import { ToastContainer, toast } from "../components/Toast";
+import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock, FiFile, FiClipboard, FiMail, FiBriefcase, FiX } from "react-icons/fi";
 import { trackLogout } from "../../lib/analytics";
 
-
+const submissionTypes = [
+  { key: 'brochure', table: 'brochure_downloads', label: 'Brochure', link: '/admin/brochure-downloads', icon: FiFile, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  { key: 'form', table: 'form_submissions', label: 'Form', link: '/admin/form-submissions', icon: FiClipboard, color: 'text-violet-600', bg: 'bg-violet-50' },
+  { key: 'contact', table: 'contact_submissions', label: 'Contact', link: '/admin/contact-submissions', icon: FiMail, color: 'text-amber-600', bg: 'bg-amber-50' },
+  { key: 'career', table: 'career_submissions', label: 'Career', link: '/admin/career-submissions', icon: FiBriefcase, color: 'text-rose-600', bg: 'bg-rose-50' },
+  { key: 'chat', table: 'conversations', label: 'Chat', link: '/admin/chats?tab=live', icon: FiMessageCircle, color: 'text-cyan-600', bg: 'bg-cyan-50' },
+];
 
 function relativeTime(dateStr) {
   if (!dateStr) return '';
@@ -30,7 +36,7 @@ export default function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [unreadChats, setUnreadChats] = useState([]);
+  const [unreadByType, setUnreadByType] = useState({});
   const menuRef = useRef(null);
   const notifRef = useRef(null);
 
@@ -44,24 +50,50 @@ export default function AdminLayout() {
   }, []);
 
   useEffect(() => {
-    async function fetchUnread() {
+    async function fetchUnread(type) {
+      const { table, key } = type;
+      if (key === 'chat') {
+        const { data } = await supabase
+          .from(table)
+          .select('id, user_name, last_message, last_message_sender, last_message_at, status')
+          .eq('notified', true)
+          .order('last_message_at', { ascending: false });
+        return data || [];
+      }
       const { data } = await supabase
-        .from('conversations')
-        .select('id, user_name, last_message, last_message_sender, last_message_at, status')
-        .eq('notified', true)
-        .order('last_message_at', { ascending: false });
-      setUnreadChats(data || []);
+        .from(table)
+        .select('id, full_name, created_at')
+        .eq('is_read', false)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      return data || [];
     }
-    fetchUnread();
 
-    const channel = supabase
-      .channel('admin-notifications')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, () => {
-        fetchUnread();
-      })
-      .subscribe();
+    async function fetchAll() {
+      const results = await Promise.all(submissionTypes.map(t => fetchUnread(t)));
+      const map = {};
+      submissionTypes.forEach((t, i) => { map[t.key] = results[i]; });
+      setUnreadByType(map);
+    }
+    fetchAll();
 
-    return () => { supabase.removeChannel(channel); };
+    const channels = submissionTypes.map(t => {
+      const filterKey = t.key === 'chat' ? 'notified' : 'is_read';
+      return supabase
+        .channel(`admin-notif-${t.key}`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: t.table }, async (payload) => {
+          const newItem = payload.new;
+          setUnreadByType(prev => {
+            const existing = prev[t.key] || [];
+            const updated = [{ ...newItem, full_name: newItem.full_name || newItem.name || newItem.user_name || 'Anonymous' }, ...existing].slice(0, 10);
+            return { ...prev, [t.key]: updated };
+          });
+          toast({ type: 'success', message: `New ${t.label.toLowerCase()} submission`, duration: 4000 });
+        })
+        .subscribe();
+    });
+
+    return () => { channels.forEach(c => supabase.removeChannel(c)); };
   }, []);
 
   useEffect(() => {
@@ -71,6 +103,21 @@ export default function AdminLayout() {
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, []);
+
+  const totalUnread = Object.values(unreadByType).reduce((sum, items) => sum + items.length, 0);
+
+  async function dismissNotification(type, item) {
+    const table = type.table;
+    if (type.key === 'chat') {
+      await supabase.from(table).update({ notified: false }).eq('id', item.id);
+    } else {
+      await supabase.from(table).update({ is_read: true }).eq('id', item.id);
+    }
+    setUnreadByType(prev => ({
+      ...prev,
+      [type.key]: (prev[type.key] || []).filter(n => n.id !== item.id),
+    }));
+  }
 
   return (
     <div className="flex h-screen bg-[#EEEEEE] overflow-hidden">
@@ -107,52 +154,62 @@ export default function AdminLayout() {
             <div className="relative" ref={notifRef}>
               <button onClick={() => setNotifOpen(!notifOpen)} className={`relative p-2 rounded-lg transition-all duration-200 ${notifOpen ? 'bg-admin-100 text-admin-600' : 'text-neutral-400 hover:text-neutral-600 hover:bg-admin-100'}`}>
                 <FiBell className="w-5 h-5" />
-                {unreadChats.length > 0 && (
+                {totalUnread > 0 && (
                   <span className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 text-[11px] font-bold text-white bg-destructive-500 rounded-full ring-2 ring-white leading-none">
-                    {unreadChats.length > 9 ? '9+' : unreadChats.length}
+                    {totalUnread > 9 ? '9+' : totalUnread}
                   </span>
                 )}
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-2xl border border-admin-200 z-50 max-h-96 flex flex-col">
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-admin-200 z-50 max-h-96 flex flex-col">
                   <div className="px-4 py-3 border-b border-admin-100">
                     <h3 className="text-sm font-semibold text-neutral-900">Notifications</h3>
-                    <p className="text-xs text-neutral-500">{unreadChats.length} unread chat{unreadChats.length !== 1 ? 's' : ''}</p>
+                    <p className="text-xs text-neutral-500">{totalUnread} unread submission{totalUnread !== 1 ? 's' : ''}</p>
                   </div>
                   <div className="overflow-y-auto flex-1">
-                    {unreadChats.length === 0 ? (
+                    {totalUnread === 0 ? (
                       <div className="px-4 py-8 text-center text-sm text-neutral-400">No new notifications</div>
                     ) : (
-                      unreadChats.map(chat => (
-                        <Link
-                          key={chat.id}
-                          to="/admin/chats?tab=live"
-                          onClick={() => setNotifOpen(false)}
-                          className="flex items-start gap-3 px-4 py-3 hover:bg-admin-50 transition-colors border-b border-admin-100 last:border-0"
-                        >
-                          <div className="w-8 h-8 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center shrink-0 mt-0.5">
-                            <FiMessageCircle className="w-4 h-4" />
+                      submissionTypes.filter(t => (unreadByType[t.key] || []).length > 0).map(type => {
+                        const items = unreadByType[type.key] || [];
+                        const Icon = type.icon;
+                        return (
+                          <div key={type.key}>
+                            <div className="px-4 py-2 text-[11px] font-semibold text-neutral-500 uppercase tracking-wider bg-gray-50/50">{type.label}</div>
+                            {items.slice(0, 3).map((item, i) => (
+                              <div key={item.id || i} className="group relative flex items-start gap-3 px-4 py-2.5 hover:bg-admin-50 transition-colors border-b border-admin-100 last:border-0">
+                                <Link
+                                  to={type.link}
+                                  onClick={() => { dismissNotification(type, item); setNotifOpen(false); }}
+                                  className="flex items-start gap-3 flex-1 min-w-0"
+                                >
+                                  <div className={`w-8 h-8 rounded-full ${type.bg} ${type.color} flex items-center justify-center shrink-0 mt-0.5`}>
+                                    <Icon className="w-4 h-4" />
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-medium text-neutral-900 truncate">{item.full_name || item.user_name || 'Anonymous'}</p>
+                                    <p className="text-xs text-neutral-500 truncate mt-0.5">{item.last_message || type.label}</p>
+                                    <p className="text-[11px] text-neutral-400 mt-1 flex items-center gap-1">
+                                      <FiClock className="w-3 h-3" />
+                                      {relativeTime(item.last_message_at || item.created_at) || 'Just now'}
+                                    </p>
+                                  </div>
+                                </Link>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); dismissNotification(type, item); }}
+                                  className="absolute top-2.5 right-2 p-0.5 rounded text-neutral-300 hover:text-neutral-600 hover:bg-white opacity-0 group-hover:opacity-100 transition-all"
+                                  title="Dismiss"
+                                >
+                                  <FiX className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ))}
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-neutral-900 truncate">{chat.user_name || 'Anonymous'}</p>
-                            <p className="text-xs text-neutral-500 truncate mt-0.5">{chat.last_message || 'New conversation'}</p>
-                            <p className="text-[11px] text-neutral-400 mt-1 flex items-center gap-1">
-                              <FiClock className="w-3 h-3" />
-                              {chat.last_message_at ? relativeTime(chat.last_message_at) : 'Just now'}
-                            </p>
-                          </div>
-                        </Link>
-                      ))
+                        );
+                      })
                     )}
                   </div>
-                  <Link
-                    to="/admin/chats?tab=live"
-                    onClick={() => setNotifOpen(false)}
-                    className="block px-4 py-2.5 text-center text-xs font-medium text-admin-600 hover:text-admin-700 hover:bg-admin-50 rounded-b-xl border-t border-admin-100 transition-colors"
-                  >
-                    View all chats
-                  </Link>
                 </div>
               )}
             </div>
