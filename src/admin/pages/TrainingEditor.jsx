@@ -223,7 +223,7 @@ export default function TrainingEditor() {
     statistics: [],
   });
 
-  const [loading, setLoading] = useState(!isNew);
+  const [loading, setLoading] = useState(true);
   const { dirty, reset } = useDirty([training], loading);
   const savingRef = useRef(false);
   const slugEditedRef = useRef(false);
@@ -243,40 +243,39 @@ export default function TrainingEditor() {
   }
 
   useEffect(() => {
-    supabase
-      .from("training_categories")
-      .select("*")
-      .order("sort_order")
-      .then(({ data }) => setCategories(data || []));
+    async function loadData() {
+      const { data: catData } = await supabase.from("training_categories").select("*").order("sort_order");
+      setCategories(catData || []);
 
-    if (isNew) return;
-
-    const related = [
-      ["trainingModules", "training_modules"],
-      ["trainingSkills", "training_skills"],
-      ["trainingBenefits", "training_benefits"],
-      ["faqs", "training_faqs"],
-      ["testimonials", "training_testimonials"],
-      ["gallery", "training_gallery"],
-      ["statistics", "training_statistics"],
-    ];
-    const relatedQueries = related.map(([key, table]) =>
-      supabase.from(table).select("*").eq("training_program_id", id).order("sort_order")
-    );
-    Promise.all([
-      supabase.from("training_programs").select("*").eq("id", id).single(),
-      ...relatedQueries,
-    ]).then(([progRes, ...relatedRes]) => {
-      if (progRes.data && !progRes.error) {
-        setTraining((p) => ({ ...p, ...progRes.data }));
-        slugEditedRef.current = true;
+      if (!isNew) {
+        const related = [
+          ["trainingModules", "training_modules"],
+          ["trainingSkills", "training_skills"],
+          ["trainingBenefits", "training_benefits"],
+          ["faqs", "training_faqs"],
+          ["testimonials", "training_testimonials"],
+          ["gallery", "training_gallery"],
+          ["statistics", "training_statistics"],
+        ];
+        const relatedQueries = related.map(([key, table]) =>
+          supabase.from(table).select("*").eq("training_program_id", id).order("sort_order")
+        );
+        const [progRes, ...relatedRes] = await Promise.all([
+          supabase.from("training_programs").select("*").eq("id", id).single(),
+          ...relatedQueries,
+        ]);
+        if (progRes.data && !progRes.error) {
+          setTraining((p) => ({ ...p, ...progRes.data }));
+          slugEditedRef.current = true;
+        }
+        relatedRes.forEach((res, i) => {
+          if (res.data) setTraining((prev) => ({ ...prev, [related[i][0]]: res.data }));
+        });
       }
-      relatedRes.forEach((res, i) => {
-        if (res.data) setTraining((prev) => ({ ...prev, [related[i][0]]: res.data }));
-      });
       setLoading(false);
-    });
-  }, [id]);
+    }
+    loadData();
+  }, [id, isNew]);
 
   const handleSaveRef = useRef(handleSave);
   handleSaveRef.current = handleSave;
@@ -1610,7 +1609,7 @@ export default function TrainingEditor() {
 
         </div>
       </div>
-      <SaveBar saving={saving} onSave={handleSave} label="Training" dirty={dirty} />
+      <SaveBar saving={saving} onSave={handleSave} label="Training" dirty={dirty}  onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

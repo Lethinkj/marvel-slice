@@ -222,7 +222,7 @@ export default function ServiceEditor() {
     statistics: [],
   });
 
-  const [loading, setLoading] = useState(!isNew);
+  const [loading, setLoading] = useState(true);
   const { dirty, reset } = useDirty([service], loading);
 
   const savingRef = useRef(false);
@@ -243,39 +243,38 @@ export default function ServiceEditor() {
   }
 
   useEffect(() => {
-    supabase
-      .from("service_categories")
-      .select("*")
-      .order("sort_order")
-      .then(({ data }) => setCategories(data || []));
+    async function loadData() {
+      const { data: catData } = await supabase.from("service_categories").select("*").order("sort_order");
+      setCategories(catData || []);
 
-    if (isNew) return;
-
-    const related = [
-      ["benefits", "service_benefits"],
-      ["steps", "service_steps"],
-      ["faqs", "service_faqs"],
-      ["testimonials", "service_testimonials"],
-      ["gallery", "service_gallery"],
-      ["statistics", "service_statistics"],
-    ];
-    const relatedQueries = related.map(([key, table]) =>
-      supabase.from(table).select("*").eq("service_id", id).order("sort_order")
-    );
-    Promise.all([
-      supabase.from("services").select("*").eq("id", id).single(),
-      ...relatedQueries,
-    ]).then(([svcRes, ...relatedRes]) => {
-      if (svcRes.data && !svcRes.error) {
-        setService((p) => ({ ...p, ...svcRes.data }));
-        slugEditedRef.current = true;
+      if (!isNew) {
+        const related = [
+          ["benefits", "service_benefits"],
+          ["steps", "service_steps"],
+          ["faqs", "service_faqs"],
+          ["testimonials", "service_testimonials"],
+          ["gallery", "service_gallery"],
+          ["statistics", "service_statistics"],
+        ];
+        const relatedQueries = related.map(([key, table]) =>
+          supabase.from(table).select("*").eq("service_id", id).order("sort_order")
+        );
+        const [svcRes, ...relatedRes] = await Promise.all([
+          supabase.from("services").select("*").eq("id", id).single(),
+          ...relatedQueries,
+        ]);
+        if (svcRes.data && !svcRes.error) {
+          setService((p) => ({ ...p, ...svcRes.data }));
+          slugEditedRef.current = true;
+        }
+        relatedRes.forEach((res, i) => {
+          if (res.data) setService((prev) => ({ ...prev, [related[i][0]]: res.data }));
+        });
       }
-      relatedRes.forEach((res, i) => {
-        if (res.data) setService((prev) => ({ ...prev, [related[i][0]]: res.data }));
-      });
       setLoading(false);
-    });
-  }, [id]);
+    }
+    loadData();
+  }, [id, isNew]);
 
   const handleSaveRef = useRef(handleSave);
   handleSaveRef.current = handleSave;
@@ -1381,7 +1380,7 @@ export default function ServiceEditor() {
 
         </div>
       </div>
-      <SaveBar saving={saving} onSave={handleSave} label="Service" dirty={dirty} />
+      <SaveBar saving={saving} onSave={handleSave} label="Service" dirty={dirty}  onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

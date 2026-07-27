@@ -1208,7 +1208,7 @@ export default function HomePageEditor() {
             ) : (
               <p className="text-sm text-gray-400">Section not found.</p>
             )}
-            <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} />
+            <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
           </div>
         </div>
       </div>

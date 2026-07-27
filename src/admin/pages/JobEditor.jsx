@@ -12,7 +12,7 @@ export default function JobEditor() {
   const navigate = useNavigate();
   const isNew = id === 'new';
   
-  const [loading, setLoading] = useState(!isNew);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -162,7 +162,7 @@ export default function JobEditor() {
           </div>
         </div>
         
-        <SaveBar saving={saving} saved={saved} onSave={handleSave} dirty={dirty} />
+        <SaveBar saving={saving} saved={saved} onSave={handleSave} dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>
     </PageShell>
   );

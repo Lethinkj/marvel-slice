@@ -1407,7 +1407,7 @@ export default function CourseEditor() {
 
         </div>
       </div>
-      <SaveBar saving={saving} onSave={handleSave} label="Course" dirty={dirty} />
+      <SaveBar saving={saving} onSave={handleSave} label="Course" dirty={dirty}  onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }
