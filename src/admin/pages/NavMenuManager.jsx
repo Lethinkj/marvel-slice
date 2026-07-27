@@ -48,8 +48,7 @@ export default function NavMenuManager() {
   // --- Table State ---
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState({});
-  const [highlightId, setHighlightId] = useState(null);
-  const highlightTimer = useRef(null);
+
 
   // --- Drill-Down Navigation ---
   const [drillStack, setDrillStack] = useState([]);
@@ -96,10 +95,6 @@ export default function NavMenuManager() {
     setStatusFilter("all");
     cancelForm();
   }, [sectionLabel]);
-
-  useEffect(() => {
-    return () => { if (highlightTimer.current) clearTimeout(highlightTimer.current); };
-  }, []);
 
   // =============================================
   // AUTH CHECK
@@ -262,9 +257,6 @@ export default function NavMenuManager() {
       if (parentItem) {
         setExpanded(p => ({ ...p, [parentItem.id]: true }));
       }
-      setHighlightId(savedId);
-      if (highlightTimer.current) clearTimeout(highlightTimer.current);
-      highlightTimer.current = setTimeout(() => setHighlightId(null), 2000);
     }
     setPage(1);
     goToTab("view");
@@ -513,7 +505,6 @@ export default function NavMenuManager() {
       const actualDepth = currentLevel + level;
       const subs = actualDepth < MAX_DEPTH ? getChildItems(item.id) : [];
       const open = expanded[item.id];
-      const isHighlighted = highlightId === item.id;
       const slNo = level === 0 ? (page - 1) * PAGE_SIZE + idx + 1 : idx + 1;
       const labelPrefix = level > 0 ? `${parentLabel}.${slNo}` : `${slNo}`;
       const hasSubs = subs.length > 0;
@@ -523,18 +514,18 @@ export default function NavMenuManager() {
         <div key={item.id}>
           <div
             onClick={() => {
-              if (hasSubs) setExpanded(p => ({ ...p, [item.id]: !open }));
+              if (hasSubs) setExpanded(open ? {} : { [item.id]: true });
             }}
-            className={`group grid grid-cols-12 gap-3 px-6 py-3.5 items-center transition-all ${hasSubs ? 'cursor-pointer' : ''} ${
-              isHighlighted ? 'bg-blue-50/60' : 'hover:bg-gray-50'
-            } ${level > 0 ? 'bg-gray-50/30 border-t border-gray-100' : 'bg-white'}`}
+            className={`group grid grid-cols-12 gap-3 px-6 py-3.5 items-center transition-all hover:bg-gray-50 ${
+              level > 0 ? 'bg-gray-50/30 border-t border-gray-100' : 'bg-white'
+            } ${hasSubs ? 'cursor-pointer' : ''}`}
             style={{ paddingLeft: `${24 + level * 28}px` }}
           >
             <div className="col-span-1 text-xs text-gray-400 font-mono">{labelPrefix}</div>
 
             <div className="col-span-3 flex items-center gap-2.5 min-w-0">
               {hasSubs ? (
-                <button onClick={(e) => { e.stopPropagation(); setExpanded(p => ({ ...p, [item.id]: !open })); }}
+                <button onClick={(e) => { e.stopPropagation(); setExpanded(open ? {} : { [item.id]: true }); }}
                   className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors focus:outline-none">
                   {open ? <FiChevronDown className="w-3.5 h-3.5" /> : <FiChevronRight className="w-3.5 h-3.5" />}
                 </button>
@@ -566,7 +557,7 @@ export default function NavMenuManager() {
 
             <div className="col-span-1">
               {hasSubs ? (
-                <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
                   {subs.length} sub{subs.length !== 1 ? 's' : ''}
                 </span>
               ) : (
