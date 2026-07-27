@@ -1,64 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import CommandPalette from "../components/ui/CommandPalette";
 import { ToastContainer } from "../components/Toast";
-import { FiMenu, FiExternalLink, FiLogOut, FiChevronRight, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock } from "react-icons/fi";
+import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock } from "react-icons/fi";
+import Breadcrumbs from "../components/ui/Breadcrumbs";
 import { trackLogout } from "../../lib/analytics";
 
-function Breadcrumbs() {
-  const { pathname } = useLocation();
-  const parts = pathname.split("/").filter(Boolean);
 
-  if (parts.length <= 1) return null;
-
-  const labels = {
-    courses: "Courses",
-    wizard: "Add Course",
-    reports: "Reports",
-    tags: "Tags",
-    home: "Home",
-    blog: "Blog",
-    categories: "Categories",
-    footer: "Footer",
-    media: "Media Library",
-    "nav-menu": "Navigation",
-    "site-settings": "Site Settings",
-    "admin-users": "Admin Users",
-    "about-page": "About",
-    "contact-page": "Contact",
-    "career-page": "Career",
-    "services-page": "Services",
-    "training-page": "Training",
-    "form-submissions": "Form Submissions",
-    "contact-submissions": "Contact Submissions",
-    "chat-submissions": "Chat Submissions",
-    "career-submissions": "Career Submissions",
-  };
-
-  return (
-    <nav className="flex items-center gap-1.5 text-xs text-neutral-500">
-      <Link to="/admin" className="hover:text-neutral-700 transition-colors font-medium">Dashboard</Link>
-      {parts.map((part, i) => {
-        const path = "/" + parts.slice(0, i + 1).join("/");
-        const label = labels[part] || part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, " ");
-        const isLast = i === parts.length - 1;
-        return (
-          <span key={path} className="flex items-center gap-1.5">
-            <FiChevronRight className="w-3 h-3 text-neutral-300" />
-            {isLast ? (
-              <span className="text-neutral-700 font-medium truncate max-w-[200px]">{label}</span>
-            ) : (
-              <Link to={path} className="hover:text-neutral-700 transition-colors truncate max-w-[150px] font-medium">{label}</Link>
-            )}
-          </span>
-        );
-      })}
-    </nav>
-  );
-}
 
 function relativeTime(dateStr) {
   if (!dateStr) return '';
@@ -133,7 +84,7 @@ export default function AdminLayout() {
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 text-neutral-600 hover:bg-admin-100 rounded-lg transition-all duration-200">
               <FiMenu className="w-5 h-5" />
             </button>
-            <div className="hidden lg:flex min-w-0"><Breadcrumbs /></div>
+            <div className="hidden lg:flex min-w-0"></div>
             <Link to="/admin" className="flex items-center gap-2 text-sm font-semibold text-neutral-900 lg:hidden">
               <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-admin-500 to-admin-800 flex items-center justify-center">
                 <FiGrid className="w-3 h-3 text-white" />

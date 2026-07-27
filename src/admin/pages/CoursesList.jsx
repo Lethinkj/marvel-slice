@@ -178,54 +178,72 @@ export default function CoursesList() {
     >
       {courses.length > 0 && (
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
-          <div className="flex items-center gap-2">
-            <div className="relative w-[200px]">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
-                placeholder="Search title or slug..."
-                className="w-full pl-10 pr-4 h-9 border border-admin-300 rounded-lg text-sm text-admin-900 placeholder-admin-400 focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 bg-white"
-              />
+          <div>
+            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
+            <div className="flex items-center gap-2">
+              <div className="relative w-[200px]">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
+                  placeholder="Search title or slug..."
+                  className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+                />
+              </div>
+              <button onClick={() => setActiveSearch(search)} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
+                Search
+              </button>
             </div>
-            <button onClick={() => setActiveSearch(search)} className="px-4 py-1.5 h-9 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
-              Search
-            </button>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <FiFilter className="w-4 h-4 text-admin-400 shrink-0" />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500"
-            >
-              <option value="All">All Status</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-            </select>
-            {l1Options.length > 0 && (
+          <div>
+            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
+            <div className="relative">
               <select
-                value={catL1}
-                onChange={(e) => { setCatL1(e.target.value); setCatL2('All'); }}
-                className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 max-w-[200px] truncate"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
               >
-                <option value="All">All Topics</option>
-                {l1Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+                <option value="All">All Status</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
               </select>
-            )}
-            {l2Options.length > 0 && (
-              <select
-                value={catL2}
-                onChange={(e) => setCatL2(e.target.value)}
-                className="h-9 px-3 border border-admin-300 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 max-w-[200px] truncate"
-              >
-                <option value="All">All Subtopics</option>
-                {l2Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
-              </select>
-            )}
+              <FiFilter className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+            </div>
           </div>
+          {l1Options.length > 0 && (
+            <div>
+              <label className="block text-[11px] font-medium text-neutral-500 mb-1">Topic</label>
+              <div className="relative">
+                <select
+                  value={catL1}
+                  onChange={(e) => { setCatL1(e.target.value); setCatL2('All'); }}
+                  className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none max-w-[200px] truncate"
+                >
+                  <option value="All">All Topics</option>
+                  {l1Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+                </select>
+                <FiFilter className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+              </div>
+            </div>
+          )}
+          {l2Options.length > 0 && (
+            <div>
+              <label className="block text-[11px] font-medium text-neutral-500 mb-1">Subtopic</label>
+              <div className="relative">
+                <select
+                  value={catL2}
+                  onChange={(e) => setCatL2(e.target.value)}
+                  className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none max-w-[200px] truncate"
+                >
+                  <option value="All">All Subtopics</option>
+                  {l2Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+                </select>
+                <FiFilter className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+              </div>
+            </div>
+          )}
         </div>
       )}
 

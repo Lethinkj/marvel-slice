@@ -5,7 +5,7 @@ import AdminButton from '../components/AdminButton';
 import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
 import DataTable from '../components/ui/DataTable';
-import { FiPlus, FiFileText, FiCalendar, FiChevronRight, FiSearch, FiEdit3, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiFileText, FiCalendar, FiSearch, FiEdit3, FiTrash2, FiFilter } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -136,42 +136,55 @@ export default function BlogManager() {
     >
       {posts.length > 0 && (
         <div className="mb-6 flex flex-col sm:flex-row gap-3">
-          <div className="flex items-center gap-2">
-            <div className="relative w-[200px]">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
-                placeholder="Search posts..."
-                className="w-full pl-9 pr-4 py-1.5 h-9 border border-admin-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
-              />
+          <div>
+            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
+            <div className="flex items-center gap-2">
+              <div className="relative w-[200px]">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search)}
+                  placeholder="Search posts..."
+                  className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+                />
+              </div>
+              <button onClick={() => setActiveSearch(search)} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
+                Search
+              </button>
             </div>
-            <button onClick={() => setActiveSearch(search)} className="px-4 py-1.5 h-9 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors">
-              Search
-            </button>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-9 px-3 border border-admin-200 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-            >
-              <option value="All">All Status</option>
-              <option value="Published">Published</option>
-              <option value="Draft">Draft</option>
-            </select>
-            <select
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="h-9 px-3 border border-admin-200 rounded-lg text-sm text-admin-700 bg-white focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-            >
-              <option value="All">All Dates</option>
-              <option value="Today">Today</option>
-              <option value="Last 7 Days">Last 7 Days</option>
-              <option value="This Month">This Month</option>
-            </select>
+          <div>
+            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+              >
+                <option value="All">All Status</option>
+                <option value="Published">Published</option>
+                <option value="Draft">Draft</option>
+              </select>
+              <FiFilter className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Date</label>
+            <div className="relative">
+              <select
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+              >
+                <option value="All">All Dates</option>
+                <option value="Today">Today</option>
+                <option value="Last 7 Days">Last 7 Days</option>
+                <option value="This Month">This Month</option>
+              </select>
+              <FiFilter className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+            </div>
           </div>
         </div>
       )}
