@@ -101,7 +101,7 @@ function PreChatForm({ onSubmit, initial }) {
           </div>
           <button
             type="submit"
-            className="w-full py-1 rounded-lg bg-brand-green text-white text-xs font-semibold hover:bg-brand-green/90 transition-colors cursor-pointer"
+            className="w-1/2 mx-auto block py-1 rounded-lg bg-brand-green text-white text-sm font-semibold hover:bg-brand-green/90 transition-colors cursor-pointer"
           >
             Next
           </button>
@@ -130,7 +130,7 @@ function PreChatForm({ onSubmit, initial }) {
         <button
           type="submit"
           disabled={!reason.trim() || submitting}
-          className="w-full py-1.5 rounded-lg bg-brand-green text-white text-sm font-semibold hover:bg-brand-green/90 transition-colors disabled:opacity-60 cursor-pointer"
+          className="w-3/5 mx-auto block py-1 rounded-lg bg-brand-green text-white text-sm font-semibold hover:bg-brand-green/90 transition-colors disabled:opacity-60 cursor-pointer"
         >
           {submitting ? 'Starting...' : 'Start Chat'}
         </button>
