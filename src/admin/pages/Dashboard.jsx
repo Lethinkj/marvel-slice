@@ -68,7 +68,8 @@ export default function Dashboard() {
         supabase.from('alumni_companies').select('*', { count: 'exact', head: true }),
         supabase.from('tags').select('*', { count: 'exact', head: true }),
         supabase.from('blog_posts').select('*', { count: 'exact', head: true }),
-        supabase.from('courses').select('id, title, created_at').order('created_at', { ascending: false }).limit(6),
+        supabase.from('courses').select('id, title, created_at').order('created_at', { ascending: false }).limit(10),
+        supabase.from('blog_posts').select('id, title, created_at').order('created_at', { ascending: false }).limit(10),
         supabase.from('career_submissions').select('*', { count: 'exact', head: true }),
         supabase.from('contact_submissions').select('*', { count: 'exact', head: true }),
         supabase.from('brochure_downloads').select('*', { count: 'exact', head: true }),
@@ -81,10 +82,15 @@ export default function Dashboard() {
         companies: getCount(results[2]), tags: getCount(results[3]), blogPosts: getCount(results[4]),
       });
       setPending({
-        career: getCount(results[6]), contact: getCount(results[7]), brochure: getCount(results[8]), form: getCount(results[9]), chat: getCount(results[10]),
+        career: getCount(results[7]), contact: getCount(results[8]), brochure: getCount(results[9]), form: getCount(results[10]), chat: getCount(results[11]),
       });
 
-      setRecentItems(results[5].status === 'fulfilled' ? (results[5].value.data ?? []).slice(0, 6) : []);
+      const courses = results[5].status === 'fulfilled' ? (results[5].value.data ?? []) : [];
+      const blogs = results[6].status === 'fulfilled' ? (results[6].value.data ?? []) : [];
+      const recent = [...courses.map(c => ({ ...c, _type: 'course' })), ...blogs.map(b => ({ ...b, _type: 'blog' }))]
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 6);
+      setRecentItems(recent);
       setLoading(false);
     }
     fetchData();
@@ -138,15 +144,18 @@ export default function Dashboard() {
               <div className="py-8 text-center text-sm text-neutral-400">No recent activity.</div>
             ) : (
               <div className="divide-y divide-admin-100 -mx-5 -mb-5">
-                {recentItems.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 px-5 py-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shrink-0">
-                      <FiBookOpen className="w-3.5 h-3.5 text-neutral-600" />
+                {recentItems.map((item) => {
+                  const isCourse = item._type === 'course';
+                  return (
+                    <div key={`${item._type}-${item.id}`} className="flex items-center gap-3 px-5 py-2.5">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isCourse ? 'bg-emerald-50' : 'bg-orange-50'}`}>
+                        {isCourse ? <FiBookOpen className="w-3.5 h-3.5 text-emerald-600" /> : <FiFileText className="w-3.5 h-3.5 text-orange-600" />}
+                      </div>
+                      <span className="flex-1 text-[0.95rem] text-neutral-500 truncate">{item.title}</span>
+                      <span className="text-xs text-neutral-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
                     </div>
-                    <span className="flex-1 text-[0.95rem] text-neutral-500 truncate">{item.title}</span>
-                    <span className="text-xs text-neutral-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </Card>
