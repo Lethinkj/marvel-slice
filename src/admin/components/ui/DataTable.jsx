@@ -84,8 +84,9 @@ export default function DataTable({
   }
 
   const renderSearchBar = () => (
-    <div className="flex items-center gap-2 px-4 py-3 border-b border-admin-100">
-      <div className="relative w-[200px]">
+    <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-admin-100">
+      <div className="flex items-center gap-2 w-full md:w-1/2 shrink-0">
+        <div className="relative flex-1">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"><SearchIcon /></div>
         <input
           type="text"
@@ -103,7 +104,8 @@ export default function DataTable({
         <button onClick={clearSearch} className="px-3 py-1.5 h-9 text-xs font-medium text-neutral-500 hover:text-neutral-700 transition-colors">
           Clear
         </button>
-      )}
+        )}
+      </div>
     </div>
   );
 

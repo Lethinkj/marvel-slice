@@ -182,11 +182,11 @@ const [confirm, confirmDialog] = useConfirm();
     >
       {programs.length > 0 && (
         <Card>
-          <div className="flex flex-wrap items-end gap-3">
-          <div>
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
-            <div className="flex items-center gap-2">
-              <div className="relative w-[200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
+            <div className="w-full">
+              <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
                 <input
                   type="text"
@@ -202,14 +202,14 @@ const [confirm, confirmDialog] = useConfirm();
               </button>
             </div>
           </div>
-          <div className="flex items-end gap-3 ml-auto flex-wrap">
-          <div>
+          <div className="flex items-end gap-3 w-full">
+          <div className="flex-1">
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
               >
                 <option value="All">All Status</option>
                 <option value="published">Published</option>
@@ -220,13 +220,13 @@ const [confirm, confirmDialog] = useConfirm();
             </div>
           </div>
           {categories.length > 0 && (
-            <div>
+            <div className="flex-1">
               <label className="block text-[11px] font-medium text-neutral-500 mb-1">Category</label>
               <div className="relative">
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                  className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
                 >
                   <option value="All">All Categories</option>
                   {categories.map((cat) => (

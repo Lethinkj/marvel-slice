@@ -178,11 +178,11 @@ const [confirm, confirmDialog] = useConfirm();
     >
       {courses.length > 0 && (
         <Card>
-          <div className="flex flex-wrap items-end gap-3">
-          <div>
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
-            <div className="flex items-center gap-2">
-              <div className="relative w-[200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
+            <div className="w-full">
+              <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
                 <input
                   type="text"
@@ -199,14 +199,14 @@ const [confirm, confirmDialog] = useConfirm();
               </div>
             </div>
           </div>
-          <div className="flex items-end gap-3 ml-auto flex-wrap">
-          <div>
+          <div className="flex items-end gap-3 w-full">
+          <div className="flex-1">
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
               >
                 <option value="All">All Status</option>
                 <option value="published">Published</option>
@@ -216,13 +216,13 @@ const [confirm, confirmDialog] = useConfirm();
             </div>
           </div>
           {l1Options.length > 0 && (
-            <div>
+            <div className="flex-1">
               <label className="block text-[11px] font-medium text-neutral-500 mb-1">Topic</label>
               <div className="relative">
                 <select
                   value={catL1}
                   onChange={(e) => { setCatL1(e.target.value); setCatL2('All'); }}
-                  className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none max-w-[200px] truncate"
+                  className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none truncate"
                 >
                   <option value="All">All Topics</option>
                   {l1Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
@@ -232,13 +232,13 @@ const [confirm, confirmDialog] = useConfirm();
             </div>
           )}
           {l2Options.length > 0 && (
-            <div>
+            <div className="flex-1">
               <label className="block text-[11px] font-medium text-neutral-500 mb-1">Subtopic</label>
               <div className="relative">
                 <select
                   value={catL2}
                   onChange={(e) => setCatL2(e.target.value)}
-                  className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none max-w-[200px] truncate"
+                  className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none truncate"
                 >
                   <option value="All">All Subtopics</option>
                   {l2Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}

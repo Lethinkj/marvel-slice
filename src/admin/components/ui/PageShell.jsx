@@ -6,12 +6,18 @@ export default function PageShell({ title, subtitle, actions, children, maxWidth
   const navigate = useNavigate();
   return (
     <div className={`relative min-h-[calc(100vh-4rem)] bg-white p-6 lg:p-8 space-y-6 ${maxWidth} ${className}`}>
-      {backTo && (
-        <button onClick={() => navigate(backTo)} className="absolute top-6 right-6 lg:top-8 lg:right-8 p-2 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors" title="Go back">
-          <FiArrowLeft className="w-5 h-5" />
-        </button>
-      )}
-      {breadcrumb && <Breadcrumbs />}
+      <div className="flex items-center gap-3">
+        {backTo && (
+          <button 
+            onClick={() => navigate(backTo)} 
+            className="flex items-center text-xs font-medium text-neutral-500 hover:text-neutral-700 hover:underline transition-colors"
+          >
+            &larr; Back
+          </button>
+        )}
+        {backTo && breadcrumb && <div className="h-3 w-px bg-neutral-300" />}
+        {breadcrumb && <Breadcrumbs />}
+      </div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-admin-200">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-black">{title}</h1>

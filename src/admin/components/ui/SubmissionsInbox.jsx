@@ -355,11 +355,11 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
       </div>
 
       <Card>
-        <div className="flex flex-wrap items-end gap-3">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
+          <div className="w-full">
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
-            <div className="relative flex gap-2">
-              <div className="relative w-[200px]">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
                 <input ref={searchRef} type="text" value={search} onChange={e => { setSearch(e.target.value); }}
                   onKeyDown={(e) => e.key === 'Enter' && (setActiveSearch(search), setPage(1))}
@@ -373,8 +373,8 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </div>
           </div>
 
-          <div className="flex items-end gap-3 ml-auto flex-wrap">
-          {!disableReply && <div>
+          <div className="flex items-end gap-3 w-full">
+          {!disableReply && <div className="flex-1">
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
@@ -389,7 +389,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           </div>}
 
           {extraFilters && extraFilters.map((f, i) => (
-            <div key={i}>
+            <div key={i} className="flex-1">
               <label className="block text-[11px] font-medium text-neutral-500 mb-1">{f.label}</label>
               <div className="relative">
                 <select value={f.value} onChange={e => { f.onChange(e.target.value); setPage(1); }}
@@ -402,7 +402,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </div>
           ))}
 
-          <div>
+          <div className="flex-1">
             <label className="block text-[11px] font-medium text-neutral-500 mb-1">Date</label>
             <div className="relative">
               <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); }}
@@ -420,13 +420,13 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
           {dateFilter === 'custom' && (
             <>
-              <div>
+              <div className="flex-1">
                 <label className="block text-[11px] font-medium text-neutral-500 mb-1">From</label>
                 <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)}
                   className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
               </div>
-              <div>
+              <div className="flex-1">
                 <label className="block text-[11px] font-medium text-neutral-500 mb-1">To</label>
                 <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)}
                   className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
