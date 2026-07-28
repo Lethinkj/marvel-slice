@@ -8,6 +8,7 @@ import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import SectionAccordion from '../components/ui/SectionAccordion';
 
 const LUCIDE_ICON_NAMES = Object.keys(LuIcons).filter(k => k.startsWith('Lu')).map(k => k.slice(2)).sort();
 
@@ -77,8 +78,8 @@ function ImageUploader({ value, onChange, label }) {
       <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder="Paste URL or upload..." />
-        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors">
+          className="flex-1 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder="Paste URL or upload..." />
+        <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2.5 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors">
           {uploading ? <span className="w-4 h-4 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /> : <FiUpload className="w-4 h-4" />}
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
         </label>
@@ -93,7 +94,7 @@ function TextInput({ value, onChange, placeholder, label, required, error }) {
     <div>
       {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
       <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
+        className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
       {error && <p className="text-xs text-destructive-500 mt-1">{error}</p>}
     </div>
   );
@@ -104,7 +105,7 @@ function TextArea({ value, onChange, placeholder, label, rows, required }) {
     <div>
       {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
       <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={rows || 3}
-        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
+        className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
     </div>
   );
 }
@@ -135,7 +136,7 @@ function IconPicker({ value, onChange }) {
     <div ref={ref} className="relative">
       <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Icon *</label>
       <button type="button" onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-3 py-2 border border-admin-200 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all cursor-pointer hover:border-admin-400">
+        className="w-full flex items-center gap-2 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all cursor-pointer hover:border-admin-400">
         {IconComp ? <IconComp className="w-5 h-5 text-admin-500" /> : <div className="w-5 h-5" />}
         <span className={`flex-1 ${value ? '' : 'text-admin-400'}`}>{value || 'Select an icon...'}</span>
         <FiChevronRight className={`w-4 h-4 text-admin-400 transition-transform ${open ? 'rotate-90' : ''}`} />
@@ -145,7 +146,7 @@ function IconPicker({ value, onChange }) {
         <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-admin-200 rounded-lg shadow-lg max-h-64 overflow-hidden flex flex-col">
           <div className="p-2 border-b border-admin-100">
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search icons..." autoFocus
-              className="w-full px-2 py-1.5 border border-admin-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-admin-500/20" />
+              className="w-full px-2 py-1.5 bg-white border border-admin-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-admin-500/20" />
           </div>
           <div className="overflow-y-auto flex-1">
             {filtered.length === 0 ? (
@@ -246,15 +247,15 @@ function SubEditor({ section, onChange }) {
           <hr className="border-admin-200" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
-            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Stat</AdminButton>
+            <button type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Stat</button>
           </div>
           <ReorderableList
             items={section.items || []}
             onChange={(v) => set({ items: v })}
             renderItem={(item, i, onItemChange) => (
               <div className="flex items-center gap-3">
-                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
-                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
+                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
               </div>
             )}
           />
@@ -274,15 +275,15 @@ function SubEditor({ section, onChange }) {
           </div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
-            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Stat</AdminButton>
+            <button type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Stat</button>
           </div>
           <ReorderableList
             items={section.items || []}
             onChange={(v) => set({ items: v })}
             renderItem={(item, i, onItemChange) => (
               <div className="flex items-center gap-3">
-                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
-                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" />
+                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
               </div>
             )}
           />
@@ -294,7 +295,7 @@ function SubEditor({ section, onChange }) {
           <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
           <div className="mt-3 flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Team Members</span>
-            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { name: '', role: '', bio: '', image_url: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Member</AdminButton>
+            <button type="button" onClick={() => set({ items: [...(section.items || []), { name: '', role: '', bio: '', image_url: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Member</button>
           </div>
           <ReorderableList
             items={section.items || []}
@@ -339,7 +340,7 @@ function SubEditor({ section, onChange }) {
           </div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Feature Items</span>
-            <AdminButton type="button" onClick={() => set({ items: [...(section.items || []), { icon: '', title: '', description: '' }] })} variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Feature</AdminButton>
+            <button type="button" onClick={() => set({ items: [...(section.items || []), { icon: '', title: '', description: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Feature</button>
           </div>
           <ReorderableList
             items={section.items || []}
@@ -551,38 +552,30 @@ const queryClient = useQueryClient();
         </div>
       )}
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-          <button type="button" onClick={() => setShowHeroImage(!showHeroImage)} className="w-full flex items-center justify-between px-5 py-3.5 bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-pointer">
-            <span className="text-sm font-semibold text-gray-900">Hero Image</span>
-            <FiChevronUp className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showHeroImage ? '' : 'rotate-180'}`} />
-          </button>
-          {showHeroImage && (
-            <div className="px-5 py-4 space-y-3">
-              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
-              {hero.hero_image && (
-                <button type="button" onClick={() => { setShowHeroImage(false); setHero({ ...hero, hero_image: '' }); }} className="text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
-              )}
-            </div>
-          )}
-        </div>
+        <SectionAccordion title="Hero Image" defaultExpanded={true}>
+          <div className="space-y-3">
+            <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+            {hero.hero_image && (
+              <button type="button" onClick={() => setHero({ ...hero, hero_image: '' })} className="text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
+            )}
+          </div>
+        </SectionAccordion>
 
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900">Sections</h2>
+        <SectionAccordion title="Sections" defaultExpanded={false}>
+          <div className="flex justify-end mb-4">
             <div className="flex items-center gap-2">
               <div className="relative">
                 <select value={newType} onChange={(e) => setNewType(e.target.value)}
-                  className="w-44 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white appearance-none cursor-pointer">
+                  className="w-44 px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white appearance-none cursor-pointer transition-all">
                   {SECTION_TYPES.map((t) => (
                     <option key={t.value} value={t.value}>{t.label}</option>
                   ))}
                 </select>
                 <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400 pointer-events-none" />
               </div>
-              <AdminButton type="button" onClick={addSection} variant="primary" size="sm"><FiPlus className="w-4 h-4" /> Add</AdminButton>
+              <button type="button" onClick={addSection} className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add</button>
             </div>
           </div>
-          <div className="px-5 py-4 space-y-4">
           {SECTION_TYPES.find(t => t.value === newType)?.desc && (
             <p className="text-xs text-neutral-400">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
           )}
@@ -630,8 +623,7 @@ const queryClient = useQueryClient();
               </div>
             ))}
           </div>
-          </div>
-        </div>
+        </SectionAccordion>
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>

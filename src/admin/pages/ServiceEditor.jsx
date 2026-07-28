@@ -25,7 +25,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
   const removeItem = (i) => onChange(items.filter((_, j) => j !== i));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {items.map((item, i) => (
         <div
           key={i}
@@ -42,7 +42,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
           </div>
           {fields.map((f) => (
             <div key={f.key}>
-              <label className="block text-xs font-medium text-neutral-500 mb-1">
+              <label className="block text-sm font-semibold text-black mb-1">
                 {f.label}
               </label>
               {f.type === "textarea" ? (
@@ -50,7 +50,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
                   value={item[f.key] || ""}
                   onChange={(e) => updateItem(i, f.key, e.target.value)}
                   rows={f.rows || 3}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               ) : f.type === "number" ? (
                 <input
@@ -59,13 +59,13 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
                   onChange={(e) =>
                     updateItem(i, f.key, e.target.valueAsNumber ?? null)
                   }
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               ) : (
                 <input
                   value={item[f.key] || ""}
                   onChange={(e) => updateItem(i, f.key, e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               )}
             </div>
@@ -91,7 +91,7 @@ function IconPicker({ value, onChange }) {
   const selected = ICON_OPTIONS.find((o) => o.key === value);
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-medium text-neutral-500 mb-1">Icon</label>
+      <label className="block text-sm font-semibold text-black mb-1">Icon</label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -469,14 +469,14 @@ export default function ServiceEditor() {
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
+                    className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
                       sidebarOpen
-                        ? `gap-3 ${tab === t ? 'bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600 -ml-[1px]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 border-l-4 border-transparent'}`
-                        : `justify-center gap-0 ${tab === t ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-blue-50 hover:text-blue-600'}`
+                        ? `gap-2 ${tab === t ? 'bg-admin-50 text-admin-600 font-semibold border-l-[3px] border-admin-600 -ml-[1px]' : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600 border-l-[3px] border-transparent'}`
+                        : `justify-center gap-0 ${tab === t ? 'bg-admin-50 text-admin-600' : 'text-neutral-500 hover:bg-admin-50 hover:text-admin-600'}`
                     }`}
                     title={meta.label}
                   >
-                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-blue-600" : "text-gray-400"}`} />
+                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-admin-600" : "text-neutral-400"}`} />
                     {sidebarOpen && <span className="flex-1 truncate">{meta.label}</span>}
                   </button>
                 );
@@ -487,19 +487,19 @@ export default function ServiceEditor() {
 
         <div className="flex-1 min-w-0">
           {tab === "basic" && (
-            <div className="space-y-4 max-w-2xl">
+            <div className="space-y-6">
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Title *
                 </label>
                 <input
                   value={service.title}
                   onChange={(e) => update("title", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Slug *
                 </label>
                 <input
@@ -508,17 +508,17 @@ export default function ServiceEditor() {
                     slugEditedRef.current = true;
                     update("slug", e.target.value);
                   }}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Category
                 </label>
                 <select
                   value={service.category_id}
                   onChange={(e) => update("category_id", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                 >
                   <option value="">— Select Category —</option>
                   {categories.map((cat) => (
@@ -531,36 +531,36 @@ export default function ServiceEditor() {
                 onChange={(val) => update("icon", val)}
               />
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Short Description
                 </label>
                 <textarea
                   value={service.short_description || ""}
                   onChange={(e) => update("short_description", e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Duration
                   </label>
                   <input
                     value={service.duration || ""}
                     onChange={(e) => update("duration", e.target.value)}
                     placeholder="e.g. 3 months"
-                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Mode
                   </label>
                   <select
                     value={service.mode}
                     onChange={(e) => update("mode", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                   >
                     <option value="Online">Online</option>
                     <option value="Offline">Offline</option>
@@ -573,37 +573,37 @@ export default function ServiceEditor() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Price
                   </label>
                   <input
                     type="number"
                     value={service.price ?? ""}
                     onChange={(e) => update("price", e.target.value ? e.target.valueAsNumber : null)}
-                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Discount
                   </label>
                   <input
                     type="number"
                     value={service.discount ?? ""}
                     onChange={(e) => update("discount", e.target.value ? e.target.valueAsNumber : null)}
-                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Badge
                   </label>
                   <select
                     value={service.badge}
                     onChange={(e) => update("badge", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                   >
                     <option value="none">None</option>
                     <option value="Trending">Trending</option>
@@ -612,13 +612,13 @@ export default function ServiceEditor() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Difficulty
                   </label>
                   <select
                     value={service.difficulty}
                     onChange={(e) => update("difficulty", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                   >
                     <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
@@ -629,24 +629,24 @@ export default function ServiceEditor() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Language
                   </label>
                   <input
                     value={service.language || ""}
                     onChange={(e) => update("language", e.target.value)}
                     placeholder="English"
-                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">
+                  <label className="block text-sm font-semibold text-black mb-1">
                     Status
                   </label>
                   <select
                     value={service.status}
                     onChange={(e) => update("status", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -655,14 +655,14 @@ export default function ServiceEditor() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Sort Order
                 </label>
                 <input
                   type="number"
                   value={service.sort_order ?? 0}
                   onChange={(e) => update("sort_order", e.target.valueAsNumber ?? 0)}
-                  className="w-32 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-32 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div className="flex flex-wrap gap-6 pt-2">
@@ -727,16 +727,16 @@ export default function ServiceEditor() {
           )}
 
           {tab === "description" && (
-            <div className="space-y-4 max-w-2xl">
+            <div className="space-y-6">
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Full Description
                 </label>
                 <textarea
                   value={service.full_description || ""}
                   onChange={(e) => update("full_description", e.target.value)}
                   rows={20}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 font-mono"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all font-mono"
                 />
               </div>
             </div>
@@ -745,7 +745,7 @@ export default function ServiceEditor() {
           {tab === "media" && (
             <div className="space-y-6 max-w-2xl">
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Thumbnail
                 </label>
                 <ImageUploader
@@ -755,7 +755,7 @@ export default function ServiceEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Banner / Hero Image
                 </label>
                 <ImageUploader
@@ -765,7 +765,7 @@ export default function ServiceEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Meta Image (OG)
                 </label>
                 <ImageUploader
@@ -780,14 +780,14 @@ export default function ServiceEditor() {
           {tab === "details" && (
             <div className="space-y-6 max-w-2xl">
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Eligibility
                 </label>
                 <textarea
                   value={service.eligibility || ""}
                   onChange={(e) => update("eligibility", e.target.value)}
                   rows={4}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   placeholder="Describe who this service is for..."
                 />
               </div>
@@ -854,7 +854,7 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], title: e.target.value };
                           update("curriculum", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 mb-3"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all mb-3"
                         placeholder="Module title"
                       />
                       <div className="space-y-2">
@@ -907,7 +907,7 @@ export default function ServiceEditor() {
           {tab === "benefits" && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">Benefits</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {service.benefits.map((b, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
@@ -925,7 +925,7 @@ export default function ServiceEditor() {
                       }}
                     />
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Title</label>
                       <input
                         value={b.title || ""}
                         onChange={(e) => {
@@ -933,11 +933,11 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], title: e.target.value };
                           update("benefits", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Description</label>
                       <textarea
                         value={b.description || ""}
                         onChange={(e) => {
@@ -946,7 +946,7 @@ export default function ServiceEditor() {
                           update("benefits", n);
                         }}
                         rows={2}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                   </div>
@@ -965,7 +965,7 @@ export default function ServiceEditor() {
           {tab === "steps" && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">Timeline Steps</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {service.steps.map((s, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
@@ -983,7 +983,7 @@ export default function ServiceEditor() {
                       }}
                     />
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Title</label>
                       <input
                         value={s.title || ""}
                         onChange={(e) => {
@@ -991,11 +991,11 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], title: e.target.value };
                           update("steps", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Description</label>
                       <textarea
                         value={s.description || ""}
                         onChange={(e) => {
@@ -1004,7 +1004,7 @@ export default function ServiceEditor() {
                           update("steps", n);
                         }}
                         rows={2}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                   </div>
@@ -1023,7 +1023,7 @@ export default function ServiceEditor() {
           {tab === "faqs" && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">FAQs</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {service.faqs.map((faq, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
@@ -1033,7 +1033,7 @@ export default function ServiceEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Question</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Question</label>
                       <input
                         value={faq.question || ""}
                         onChange={(e) => {
@@ -1041,11 +1041,11 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], question: e.target.value };
                           update("faqs", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Answer</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Answer</label>
                       <textarea
                         value={faq.answer || ""}
                         onChange={(e) => {
@@ -1054,12 +1054,12 @@ export default function ServiceEditor() {
                           update("faqs", n);
                         }}
                         rows={3}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Category</label>
+                        <label className="block text-sm font-semibold text-black mb-1">Category</label>
                         <input
                           value={faq.category || ""}
                           onChange={(e) => {
@@ -1067,7 +1067,7 @@ export default function ServiceEditor() {
                             n[i] = { ...n[i], category: e.target.value };
                             update("faqs", n);
                           }}
-                          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                           placeholder="e.g. Pricing, General"
                         />
                       </div>
@@ -1103,7 +1103,7 @@ export default function ServiceEditor() {
           {tab === "testimonials" && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">Testimonials</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {service.testimonials.map((t, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
@@ -1113,7 +1113,7 @@ export default function ServiceEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Student Name</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Student Name</label>
                       <input
                         value={t.student_name || ""}
                         onChange={(e) => {
@@ -1121,11 +1121,11 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], student_name: e.target.value };
                           update("testimonials", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Photo</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Photo</label>
                       <ImageUploader
                         bucket="service-images"
                         value={t.photo || ""}
@@ -1138,7 +1138,7 @@ export default function ServiceEditor() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Course / Role</label>
+                        <label className="block text-sm font-semibold text-black mb-1">Course / Role</label>
                         <input
                           value={t.course || ""}
                           onChange={(e) => {
@@ -1146,11 +1146,11 @@ export default function ServiceEditor() {
                             n[i] = { ...n[i], course: e.target.value };
                             update("testimonials", n);
                           }}
-                          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Company</label>
+                        <label className="block text-sm font-semibold text-black mb-1">Company</label>
                         <input
                           value={t.company || ""}
                           onChange={(e) => {
@@ -1158,12 +1158,12 @@ export default function ServiceEditor() {
                             n[i] = { ...n[i], company: e.target.value };
                             update("testimonials", n);
                           }}
-                          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Rating</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Rating</label>
                       <select
                         value={t.rating ?? 5}
                         onChange={(e) => {
@@ -1171,7 +1171,7 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], rating: Number(e.target.value) };
                           update("testimonials", n);
                         }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                       >
                         {[1, 2, 3, 4, 5].map((r) => (
                           <option key={r} value={r}>{r} Star{r > 1 ? "s" : ""}</option>
@@ -1179,7 +1179,7 @@ export default function ServiceEditor() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Review</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Review</label>
                       <textarea
                         value={t.review || ""}
                         onChange={(e) => {
@@ -1188,7 +1188,7 @@ export default function ServiceEditor() {
                           update("testimonials", n);
                         }}
                         rows={3}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                   </div>
@@ -1207,7 +1207,7 @@ export default function ServiceEditor() {
           {tab === "gallery" && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">Gallery</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {service.gallery.map((g, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
@@ -1217,7 +1217,7 @@ export default function ServiceEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Image</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Image</label>
                       <ImageUploader
                         bucket="service-images"
                         value={g.image || ""}
@@ -1229,7 +1229,7 @@ export default function ServiceEditor() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Caption</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Caption</label>
                       <input
                         value={g.caption || ""}
                         onChange={(e) => {
@@ -1237,11 +1237,11 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], caption: e.target.value };
                           update("gallery", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Type</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Type</label>
                       <select
                         value={g.type || "image"}
                         onChange={(e) => {
@@ -1249,7 +1249,7 @@ export default function ServiceEditor() {
                           n[i] = { ...n[i], type: e.target.value };
                           update("gallery", n);
                         }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                       >
                         <option value="image">Image</option>
                         <option value="video">Video</option>
@@ -1271,7 +1271,7 @@ export default function ServiceEditor() {
           {tab === "statistics" && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">Statistics</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {service.statistics.map((s, i) => (
                   <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
                     <button
@@ -1290,7 +1290,7 @@ export default function ServiceEditor() {
                     />
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Title</label>
+                        <label className="block text-sm font-semibold text-black mb-1">Title</label>
                         <input
                           value={s.title || ""}
                           onChange={(e) => {
@@ -1298,12 +1298,12 @@ export default function ServiceEditor() {
                             n[i] = { ...n[i], title: e.target.value };
                             update("statistics", n);
                           }}
-                          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                           placeholder="e.g. Students Trained"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Value</label>
+                        <label className="block text-sm font-semibold text-black mb-1">Value</label>
                         <input
                           value={s.value || ""}
                           onChange={(e) => {
@@ -1311,7 +1311,7 @@ export default function ServiceEditor() {
                             n[i] = { ...n[i], value: e.target.value };
                             update("statistics", n);
                           }}
-                          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                           placeholder="e.g. 10,000+"
                         />
                       </div>
@@ -1330,48 +1330,48 @@ export default function ServiceEditor() {
           )}
 
           {tab === "seo" && (
-            <div className="space-y-4 max-w-2xl">
+            <div className="space-y-6">
               <h3 className="font-semibold text-black mb-4">SEO Settings</h3>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   SEO Title
                 </label>
                 <input
                   value={service.seo_title || ""}
                   onChange={(e) => update("seo_title", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   SEO Description
                 </label>
                 <textarea
                   value={service.seo_description || ""}
                   onChange={(e) => update("seo_description", e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   SEO Keywords
                 </label>
                 <input
                   value={service.seo_keywords || ""}
                   onChange={(e) => update("seo_keywords", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   placeholder="keyword1, keyword2, keyword3"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Canonical URL
                 </label>
                 <input
                   value={service.canonical_url || ""}
                   onChange={(e) => update("canonical_url", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   placeholder="https://..."
                 />
               </div>

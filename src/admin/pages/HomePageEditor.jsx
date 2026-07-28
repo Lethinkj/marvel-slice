@@ -6,6 +6,7 @@ import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
+import SectionAccordion from '../components/ui/SectionAccordion';
 import {
   FiPlus, FiTrash2, FiSave, FiUpload, FiArrowLeft,
   FiHome, FiStar, FiAward, FiHelpCircle,
@@ -527,7 +528,6 @@ function HeroEditor({ data, onChange }) {
   const mode = content.hero_mode || 'normal';
   const carouselType = content.carousel_type || 'image';
   const slides = Array.isArray(content.slides) ? content.slides : [];
-  const [twoColOpen, setTwoColOpen] = useState(!content.banner_image);
 
   function updateContent(name, value) {
     onChange({ ...data, content: { ...content, [name]: value } });
@@ -719,64 +719,57 @@ function HeroEditor({ data, onChange }) {
       )}
 
       {/* Two-Column Layout Settings */}
-      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <button type="button" onClick={() => setTwoColOpen(!twoColOpen)} className="w-full flex items-center justify-between px-5 py-3.5 bg-gray-50/50 hover:bg-gray-50 transition-colors">
-          <span className="text-sm font-semibold text-gray-900">Two-Column Layout Settings</span>
-          <FiChevronUp className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${twoColOpen ? '' : 'rotate-180'}`} />
-        </button>
-        {twoColOpen && <div className="px-5 py-4 space-y-4">
-          <p className="text-xs text-gray-400">These fields apply when no banner image is set (gradient background layout).</p>
+      <SectionAccordion title="Two-Column Layout Settings" defaultExpanded={!content.banner_image}>
+        <p className="text-xs text-gray-400">These fields apply when no banner image is set (gradient background layout).</p>
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
+          <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
+            className={inputClass} placeholder="Hero section description for two-column layout" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
-            <textarea value={content.description || ''} onChange={(e) => updateContent('description', e.target.value)} rows={3}
-              className={inputClass} placeholder="Hero section description for two-column layout" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Badge Text</label>
-              <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
-                className={inputClass} placeholder="e.g. New batch starting soon" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Student Image</label>
-              <ImageUploader value={content.student_image_url || ''} onChange={(v) => updateContent('student_image_url', v)} label="" hideInput />
-            </div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Badge Text</label>
+            <input type="text" value={content.badge_text || ''} onChange={(e) => updateContent('badge_text', e.target.value)}
+              className={inputClass} placeholder="e.g. New batch starting soon" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Feature Bullets (one per line)</label>
-            <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
-              className={`${inputClass} font-mono text-xs`} placeholder="Industry-recognized certification&#10;Expert-led live sessions&#10;Flexible learning schedule" />
+            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Student Image</label>
+            <ImageUploader value={content.student_image_url || ''} onChange={(v) => updateContent('student_image_url', v)} label="" hideInput />
           </div>
-          {content.student_image_url && (
-            <div className="relative rounded-lg overflow-hidden border border-gray-200">
-              <img src={content.student_image_url} alt="" className="h-32 w-full object-cover" />
-              <button type="button" onClick={() => updateContent('student_image_url', '')}
-                className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white transition-all border border-gray-200">
-                <FiTrash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
-        </div>}
-      </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Feature Bullets (one per line)</label>
+          <textarea value={content.feature_bullets || ''} onChange={(e) => updateContent('feature_bullets', e.target.value)} rows={4}
+            className={`${inputClass} font-mono text-xs`} placeholder="Industry-recognized certification&#10;Expert-led live sessions&#10;Flexible learning schedule" />
+        </div>
+        {content.student_image_url && (
+          <div className="relative rounded-lg overflow-hidden border border-gray-200">
+            <img src={content.student_image_url} alt="" className="h-32 w-full object-cover" />
+            <button type="button" onClick={() => updateContent('student_image_url', '')}
+              className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm text-red-500 rounded-full shadow-sm hover:bg-white transition-all border border-gray-200">
+              <FiTrash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+      </SectionAccordion>
 
       {/* Stats Section */}
-      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-3.5 ">
-          <span className="text-sm font-semibold text-gray-900">Stats</span>
+      <SectionAccordion title="Stats" defaultExpanded={false}>
+        <div className="flex justify-end mb-4">
           <button type="button" onClick={() => {
             const s = Array.isArray(content.stats) ? content.stats : [];
             updateContent('stats', [...s, { value: '', label: '' }]);
           }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-admin-600 bg-white border border-admin-200 hover:bg-admin-50 hover:border-admin-300 rounded-lg transition-colors">
             <FiPlus className="w-3.5 h-3.5" /> Add Stat
           </button>
         </div>
         {(!Array.isArray(content.stats) || content.stats.length === 0) ? (
-          <div className="px-5 py-6 text-center">
+          <div className="text-center">
             <p className="text-sm text-gray-400">No stats yet.</p>
           </div>
         ) : (
-          <div className="px-5 py-4 space-y-3">
+          <div className="space-y-3">
             {content.stats.map((s, i) => (
               <div key={i} className="flex items-center gap-3">
                 <span className="text-xs font-semibold text-gray-400 w-16 shrink-0">STAT {i + 1}</span>
@@ -785,14 +778,14 @@ function HeroEditor({ data, onChange }) {
                   arr[i] = { ...arr[i], value: e.target.value };
                   updateContent('stats', arr);
                 }}
-                  className="w-28 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  className="w-28 px-3 py-2 border border-admin-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all bg-white"
                   placeholder="Value" />
                 <input type="text" value={s.label || ''} onChange={(e) => {
                   const arr = [...content.stats];
                   arr[i] = { ...arr[i], label: e.target.value };
                   updateContent('stats', arr);
                 }}
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all bg-white"
                   placeholder="Label" />
                 <button type="button" onClick={() => {
                   const arr = [...content.stats];
@@ -806,12 +799,11 @@ function HeroEditor({ data, onChange }) {
             ))}
           </div>
         )}
-      </div>
+      </SectionAccordion>
 
       {/* Buttons Section */}
-      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-3.5">
-          <span className="text-sm font-semibold text-gray-900">Call-to-Action Buttons</span>
+      <SectionAccordion title="Call-to-Action Buttons" defaultExpanded={false}>
+        <div className="flex justify-end mb-4">
           <AdminButton type="button" onClick={() => {
             const b = Array.isArray(content.buttons) ? content.buttons : [];
             updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
@@ -819,32 +811,32 @@ function HeroEditor({ data, onChange }) {
             <FiPlus className="w-4 h-4" /> Add Button
           </AdminButton>
         </div>
-        <div className="px-5 py-4 space-y-3">
+        <div>
           {(!Array.isArray(content.buttons) || content.buttons.length === 0) ? (
             <p className="text-sm text-gray-400">No buttons yet.</p>
           ) : (
             content.buttons.map((btn, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-3">
                 <input type="text" value={btn.label || ''} onChange={(e) => {
                   const arr = [...content.buttons];
                   arr[i] = { ...arr[i], label: e.target.value };
                   updateContent('buttons', arr);
                 }}
-                  className="w-40 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  className="w-40 px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                   placeholder="Label" />
                 <input type="text" value={btn.link || ''} onChange={(e) => {
                   const arr = [...content.buttons];
                   arr[i] = { ...arr[i], link: e.target.value };
                   updateContent('buttons', arr);
                 }}
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white"
+                  className="flex-1 px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                   placeholder="/courses" />
                 <input type="text" value={btn.color || ''} onChange={(e) => {
                   const arr = [...content.buttons];
                   arr[i] = { ...arr[i], color: e.target.value };
                   updateContent('buttons', arr);
                 }}
-                  className="w-28 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white font-mono"
+                  className="w-28 px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white font-mono"
                   placeholder="#F7941D" />
                 <button type="button" onClick={() => {
                   const arr = [...content.buttons];
@@ -854,11 +846,11 @@ function HeroEditor({ data, onChange }) {
                   className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0">
                   <FiTrash2 className="w-3.5 h-3.5" />
                 </button>
-                        </div>
+              </div>
             ))
           )}
         </div>
-      </div>
+      </SectionAccordion>
     </div>
   );
 }
@@ -1171,15 +1163,15 @@ export default function HomePageEditor() {
                   key={item.key}
                   type="button"
                   onClick={() => navigate(`/admin/home/${item.key}`)}
-                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
+                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
                     sidebarOpen
-                       ? `gap-3 ${selectedNav.key === item.key ? 'bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600 -ml-[1px]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 border-l-4 border-transparent'}`
-                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-blue-50 hover:text-blue-600'}`
+                       ? `gap-2 ${selectedNav.key === item.key ? 'bg-admin-50 text-admin-600 font-semibold border-l-[3px] border-admin-600 -ml-[1px]' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600 border-l-[3px] border-transparent'}`
+                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-admin-50 text-admin-600' : 'text-gray-400 hover:bg-admin-50 hover:text-admin-600'}`
                    }`}
                    title={item.label}
                  >
                    <item.icon className={`w-4 h-4 shrink-0 ${
-                     selectedNav.key === item.key ? 'text-blue-600' : 'text-gray-400'
+                     selectedNav.key === item.key ? 'text-admin-600' : 'text-gray-400'
                   }`} />
                   {sidebarOpen && <span className="flex-1 truncate">{item.label}</span>}
                 </button>

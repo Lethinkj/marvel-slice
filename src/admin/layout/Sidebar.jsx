@@ -14,7 +14,7 @@ const navGroups = [
       { to: "/admin/services-page", label: "Services" },
       { to: "/admin/training-page", label: "Training" },
       { to: "/admin/career-page", label: "Career" },
-      { to: "/admin/blog", label: "Blog" },
+      { to: "/admin/blog-page", label: "Blog" },
       { to: "/admin/contact-page", label: "Contact" },
     ],
   },
@@ -22,7 +22,7 @@ const navGroups = [
     { to: "/admin/chats?tab=live", label: "Live Chat" },
     { to: "/admin/chats?tab=history", label: "Chat History" }
     ]},
-  
+
   {
     label: "Services", icon: FiServer, parentTo: "/admin/services/new", items: [
       { to: "/admin/services/new", label: "Add Service" },
@@ -107,7 +107,7 @@ function isActive(pathname, item) {
   const fullSearch = pathname.includes("?") ? pathname.split("?").slice(1).join("?") : "";
   const itemPath = (item.to.split("?")[0].replace(/\/$/, "") || "/");
   const itemSearch = item.to.includes("?") ? item.to.split("?").slice(1).join("?") : "";
-  
+
   if (fullPath.replace(/\/$/, "") === itemPath) {
     if (!fullSearch && !itemSearch) return true;
     if (fullSearch && itemSearch) {
@@ -292,7 +292,7 @@ function NestedNavGroup({ item, pathname, onNavigate, isAccordionOpen, onToggleA
 
 function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
   const [activeNested, setActiveNested] = useState(() => {
-    const activeIdx = group.items.findIndex(item => 
+    const activeIdx = group.items.findIndex(item =>
       item.children && item.children.some(c => isActive(pathname, c))
     );
     return activeIdx >= 0 ? activeIdx : null;
@@ -361,10 +361,10 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
           <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
             {group.items.map((item, itemIdx) => {
               if (item.children) return (
-                <NestedNavGroup 
-                  key={item.label} 
-                  item={item} 
-                  pathname={pathname} 
+                <NestedNavGroup
+                  key={item.label}
+                  item={item}
+                  pathname={pathname}
                   onNavigate={onNavigate}
                   isAccordionOpen={activeNested === itemIdx}
                   onToggleAccordion={() => setActiveNested(prev => prev === itemIdx ? null : itemIdx)}
@@ -414,10 +414,10 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
         <div className="ml-2 pl-2 mt-0.5 space-y-0.5">
           {group.items.map((item, itemIdx) => {
             if (item.children) return (
-              <NestedNavGroup 
-                key={item.label} 
-                item={item} 
-                pathname={pathname} 
+              <NestedNavGroup
+                key={item.label}
+                item={item}
+                pathname={pathname}
                 onNavigate={onNavigate}
                 isAccordionOpen={activeNested === itemIdx}
                 onToggleAccordion={() => setActiveNested(prev => prev === itemIdx ? null : itemIdx)}

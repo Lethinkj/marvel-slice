@@ -7,6 +7,7 @@ import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import SectionAccordion from '../components/ui/SectionAccordion';
 
 function ImageUploader({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);
@@ -28,7 +29,7 @@ function ImageUploader({ value, onChange, label }) {
       <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Paste URL or upload..." />
+          className="flex-1 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" placeholder="Paste URL or upload..." />
         <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors">
           {uploading ? <span className="w-4 h-4 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /> : <FiUpload className="w-4 h-4" />}
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
@@ -181,7 +182,7 @@ const queryClient = useQueryClient();
 
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
-  const inputCls = "w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20";
+  const inputCls = "w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all";
   const labelCls = "block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider";
 
   return (
@@ -191,20 +192,18 @@ const queryClient = useQueryClient();
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
         {/* Hero Section */}
-        <div className="p-6">
-          <h2 className="font-semibold text-black mb-4">Hero Section</h2>
+        <SectionAccordion title="Hero Section" defaultExpanded={true}>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputCls} />
             <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className={inputCls} />
           </div>
           <div className="mt-4"><ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" /></div>
-        </div>
+        </SectionAccordion>
 
         {/* Contact Section Toggle */}
-        <div className="p-6">
+        <SectionAccordion title="Contact Section" defaultExpanded={false}>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-semibold text-black">Contact Section</h2>
               <p className="text-xs text-neutral-500 mt-0.5">Split-screen layout: company details on the left, contact form on the right.</p>
             </div>
             <button type="button" onClick={() => setShowContactSection(!showContactSection)}
@@ -212,13 +211,12 @@ const queryClient = useQueryClient();
               <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showContactSection ? 'translate-x-6' : 'translate-x-1'}`} />
             </button>
           </div>
-        </div>
+        </SectionAccordion>
 
         {/* Left Side: Company Details */}
         {showContactSection && (
           <>
-            <div className="p-6">
-              <h2 className="font-semibold text-black mb-4">Left Side — Company Details</h2>
+            <SectionAccordion title="Left Side — Company Details" defaultExpanded={false}>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -255,22 +253,20 @@ const queryClient = useQueryClient();
                   </div>
                 </div>
               </div>
-            </div>
+            </SectionAccordion>
 
             {/* Right Side: Form Settings */}
-            <div className="p-6">
-              <h2 className="font-semibold text-black mb-4">Right Side — Form Settings</h2>
+            <SectionAccordion title="Right Side — Form Settings" defaultExpanded={false}>
               <div className="space-y-4">
                 <div>
                   <label className={labelCls}>Success Message</label>
                   <input type="text" value={contactContent.success_message} onChange={(e) => updateContent('success_message', e.target.value)} className={inputCls} placeholder="Thank you! Your message has been received." />
                 </div>
               </div>
-            </div>
+            </SectionAccordion>
 
             {/* Style Settings */}
-            <div className="p-6">
-              <h2 className="font-semibold text-black mb-4">Style Settings</h2>
+            <SectionAccordion title="Style Settings" defaultExpanded={false}>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div>
@@ -296,15 +292,14 @@ const queryClient = useQueryClient();
                   <label className="text-sm text-neutral-700">Card Shadow</label>
                 </div>
               </div>
-            </div>
+            </SectionAccordion>
           </>
         )}
 
         {/* Map Embed */}
-        <div className="p-6">
+        <SectionAccordion title="Map Embed" defaultExpanded={false}>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-semibold text-black">Map Embed</h2>
               <p className="text-xs text-neutral-500 mt-0.5">Embed a Google Maps location below the contact section.</p>
             </div>
           </div>
@@ -313,17 +308,16 @@ const queryClient = useQueryClient();
             <input type="text" value={contactContent.map_embed_url || ''} onChange={(e) => updateContent('map_embed_url', e.target.value)} className={inputCls} placeholder="https://www.google.com/maps/embed?pb=..." />
             <p className="text-xs text-neutral-400 mt-1">Paste the <strong>src</strong> URL from a Google Maps embed iframe. Leave empty to hide the map.</p>
           </div>
-        </div>
+        </SectionAccordion>
 
         {/* FAQs */}
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-black">FAQs</h2>
-            <AdminButton type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} variant="ghost" size="sm"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
+        <SectionAccordion title="FAQs" defaultExpanded={false}>
+          <div className="flex justify-end mb-4">
+            <button type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-admin-600 bg-white border border-admin-200 rounded-lg hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add FAQ</button>
           </div>
           <div className="space-y-3">
             {faqs.map((f, i) => (
-              <div key={i} className="border border-admin-200 rounded-lg p-4">
+              <div key={i} className="border border-admin-200 rounded-lg p-4 bg-white">
                 <div className="flex justify-between mb-2">
                   <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
                   <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
@@ -333,7 +327,7 @@ const queryClient = useQueryClient();
               </div>
             ))}
           </div>
-        </div>
+        </SectionAccordion>
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>

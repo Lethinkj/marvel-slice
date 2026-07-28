@@ -8,7 +8,7 @@ import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useBlogPosts, useBlogCategories, useRecentPosts, usePopularTags, useBlogPost } from '../hooks/useBlog';
 import { useSiteSettings } from '../hooks/useSupabase';
 
-function Hero({ search, onSearchChange, onSearch, heroImage }) {
+function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading }) {
   return (
     <section className="relative text-white overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-10" />
@@ -18,8 +18,8 @@ function Hero({ search, onSearchChange, onSearch, heroImage }) {
       }} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 text-center relative z-20">
         <Reveal>
-          <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-extrabold leading-tight">Latest Articles & News</h1>
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/70 max-w-2xl mx-auto">Insights, tutorials, and stories from the Marvel Slice team</p>
+          <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-extrabold leading-tight">{heading || 'Latest Articles & News'}</h1>
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/70 max-w-2xl mx-auto">{subheading || 'Insights, tutorials, and stories from the Marvel Slice team'}</p>
         </Reveal>
         <div className="mt-6 sm:mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-2 sm:gap-0">
           <div className="relative flex-1">
@@ -305,7 +305,7 @@ export default function Blog() {
 
   return (
     <div>
-      <Hero search={search} onSearchChange={setSearch} onSearch={handleSearch} heroImage={settings?.blog_hero_image} />
+      <Hero search={search} onSearchChange={setSearch} onSearch={handleSearch} heroImage={settings?.blog_hero_image} heading={settings?.blog_heading} subheading={settings?.blog_subheading} />
               <CategoryPills categories={categories || []} active={category} onChange={(slug) => { const next = new URLSearchParams(); if (slug) next.set('category', slug); setSearchParams(next); }} />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {isLoading ? (

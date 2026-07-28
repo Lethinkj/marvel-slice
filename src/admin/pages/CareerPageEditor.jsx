@@ -11,6 +11,7 @@ import {
   FiAlignLeft, FiAlignCenter, FiAlignRight, FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import SectionAccordion from '../components/ui/SectionAccordion';
 import useConfirm from '../hooks/useConfirm';
 
 function AlignButtons({ value, onChange }) {
@@ -55,7 +56,7 @@ function ImageUploader({ value, onChange, label }) {
       <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}</label>
       <div className="flex gap-2">
         <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-          className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Paste URL or upload..." />
+          className="flex-1 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" placeholder="Paste URL or upload..." />
         <label className="cursor-pointer flex items-center gap-1.5 px-4 py-2 border-2 border-dashed border-admin-200 rounded-lg text-sm text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-colors">
           {uploading ? <span className="w-4 h-4 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /> : <FiUpload className="w-4 h-4" />}
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
@@ -400,7 +401,7 @@ const [confirm, confirmDialog] = useConfirm();
     setRoleCategories(prev => prev.map(c => c.id === cat.id ? { ...c, is_active: !c.is_active } : c));
   }
 
-  const inputClass = 'w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500';
+  const inputClass = 'w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all';
 
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
@@ -412,8 +413,7 @@ const [confirm, confirmDialog] = useConfirm();
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
 
-        <div className="p-6">
-          <h2 className="font-semibold text-black mb-4">Hero Section</h2>
+        <SectionAccordion title="Hero Section" defaultExpanded={true}>
           <div className="grid sm:grid-cols-2 gap-4">
             <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })}
               placeholder="Heading" className={inputClass} />
@@ -444,10 +444,9 @@ const [confirm, confirmDialog] = useConfirm();
               <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Upload Hero Image" />
             )}
           </div>
-        </div>
+        </SectionAccordion>
 
-        <div className="p-6">
-          <h2 className="font-semibold text-black mb-4">"We're Hiring!" Header</h2>
+        <SectionAccordion title="&quot;We're Hiring!&quot; Header" defaultExpanded={false}>
           <div className="mb-3">
             <label className="block text-xs font-medium text-neutral-500 mb-1">Headline</label>
             <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
@@ -463,10 +462,9 @@ const [confirm, confirmDialog] = useConfirm();
             <textarea value={section1.description} onChange={(e) => setSection1({ ...section1, description: e.target.value })}
               rows={2} placeholder="Brief description about working at your company..." className={inputClass} />
           </div>
-        </div>
+        </SectionAccordion>
 
-        <div className="p-6">
-          <h2 className="font-semibold text-black mb-4">Categories Section</h2>
+        <SectionAccordion title="Categories Section" defaultExpanded={false}>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-neutral-500 mb-1">Heading</label>
@@ -479,14 +477,13 @@ const [confirm, confirmDialog] = useConfirm();
                 placeholder="Find the role that fits you best" className={inputClass} />
             </div>
           </div>
-        </div>
+        </SectionAccordion>
 
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-black">Role Categories</h2>
-            <AdminButton type="button" onClick={openCategoryForm} variant="ghost" size="sm">
+        <SectionAccordion title="Role Categories" defaultExpanded={false}>
+          <div className="flex justify-end mb-4">
+            <button type="button" onClick={openCategoryForm} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors bg-white">
               <FiPlus className="w-4 h-4" /> Add Category
-            </AdminButton>
+            </button>
           </div>
 
           {roleCategories.length === 0 ? (
@@ -574,7 +571,7 @@ const [confirm, confirmDialog] = useConfirm();
               </div>
             </>
           )}
-        </div>
+        </SectionAccordion>
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>

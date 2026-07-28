@@ -43,6 +43,7 @@ import ChatPanel from './pages/ChatPanel';
 import BlogManager from './pages/BlogManager';
 import BlogPostEditor from './pages/BlogPostEditor';
 import BlogCategoriesManager from './pages/BlogCategoriesManager';
+import BlogPageEditor from './pages/BlogPageEditor';
 
 const pageSlugToEditor = { about: 'about', contact: 'contact', career: 'career', services: 'services', training: 'training' };
 
@@ -153,6 +154,7 @@ export default function Admin() {
           <Route path="chat-submissions" element={<ChatSubmissions />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
           <Route path="chats" element={<ChatPanel />} />
+          <Route path="blog-page" element={<BlogPageEditor />} />
           <Route path="blog" element={<BlogManager />} />
           <Route path="blog/:id" element={<BlogPostEditor />} />
           <Route path="blog/categories" element={<BlogCategoriesManager />} />

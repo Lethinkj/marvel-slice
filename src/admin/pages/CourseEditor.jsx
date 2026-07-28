@@ -25,7 +25,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
   const removeItem = (i) => onChange(items.filter((_, j) => j !== i));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {items.map((item, i) => (
         <div
           key={i}
@@ -42,7 +42,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
           </div>
           {fields.map((f) => (
             <div key={f.key}>
-              <label className="block text-xs font-medium text-neutral-500 mb-1">
+              <label className="block text-sm font-semibold text-black mb-1">
                 {f.label}
               </label>
               {f.type === "textarea" ? (
@@ -50,7 +50,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
                   value={item[f.key] || ""}
                   onChange={(e) => updateItem(i, f.key, e.target.value)}
                   rows={f.rows || 3}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               ) : f.type === "number" ? (
                 <input
@@ -59,13 +59,13 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
                   onChange={(e) =>
                     updateItem(i, f.key, e.target.valueAsNumber ?? null)
                   }
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               ) : (
                 <input
                   value={item[f.key] || ""}
                   onChange={(e) => updateItem(i, f.key, e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               )}
             </div>
@@ -91,7 +91,7 @@ function IconPicker({ value, onChange }) {
   const selected = ICON_OPTIONS.find((o) => o.key === value);
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-medium text-neutral-500 mb-1">Icon</label>
+      <label className="block text-sm font-semibold text-black mb-1">Icon</label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -523,15 +523,15 @@ export default function CourseEditor() {
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[44px] px-3.5 py-2.5 ${
+                    className={`w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
                       sidebarOpen
-                        ? `gap-3 ${tab === t ? 'bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600 -ml-[1px]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 border-l-4 border-transparent'}`
-                        : `justify-center gap-0 ${tab === t ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-blue-50 hover:text-blue-600'}`
+                        ? `gap-2 ${tab === t ? 'bg-admin-50 text-admin-600 font-semibold border-l-[3px] border-admin-600 -ml-[1px]' : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600 border-l-[3px] border-transparent'}`
+                        : `justify-center gap-0 ${tab === t ? 'bg-admin-50 text-admin-600' : 'text-neutral-500 hover:bg-admin-50 hover:text-admin-600'}`
                     }`}
                     title={meta.label}
                   >
                     <meta.Icon className={`w-4 h-4 shrink-0 ${
-                      tab === t ? "text-blue-600" : "text-gray-400"
+                      tab === t ? "text-admin-600" : "text-neutral-400"
                     }`} />
                     {sidebarOpen && <span className="flex-1 truncate">{meta.label}</span>}
                   </button>
@@ -543,72 +543,72 @@ export default function CourseEditor() {
 
         <div className="flex-1 min-w-0">
           {tab === "basic" && (
-            <div className="space-y-4 max-w-2xl">
+            <div className="space-y-6">
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Title *
                 </label>
                 <input
                   value={course.title}
                   onChange={(e) => update("title", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Slug *
                 </label>
                 <input
                   value={course.slug}
                   onChange={(e) => update("slug", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Subtitle
                 </label>
                 <input
                   value={course.subtitle || ""}
                   onChange={(e) => update("subtitle", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Description
                 </label>
                 <textarea
                   value={course.description || ""}
                   onChange={(e) => update("description", e.target.value)}
                   rows={4}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div className="border-t border-admin-200 pt-4 mt-4">
                 <h3 className="text-sm font-semibold text-neutral-700 mb-3">Hero Section</h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">Feature Bullet Points (one per line)</label>
+                    <label className="block text-sm font-semibold text-black mb-1">Feature Bullet Points (one per line)</label>
                     <textarea
                       value={(course.checklist_items || []).join('\n')}
                       onChange={(e) => update("checklist_items", e.target.value.split('\n').filter(Boolean))}
                       rows={4}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       placeholder="Expert Led Live Training Sessions&#10;Angular Fundamentals to Advanced Concepts&#10;Real Time Project Development Experience"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Left Button Label</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Left Button Label</label>
                       <input value={course.cta_left || ''} onChange={(e) => update('cta_left', e.target.value)}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         placeholder="Talk to Advisor" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Right Button Label</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Right Button Label</label>
                       <input value={course.cta_right || ''} onChange={(e) => update('cta_right', e.target.value)}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         placeholder="Download Brochure" />
                     </div>
                   </div>
@@ -642,11 +642,11 @@ export default function CourseEditor() {
                 function dd(label, items, val, setter) {
                   return (
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">{label}</label>
+                      <label className="block text-sm font-semibold text-black mb-1">{label}</label>
                       <select
                         value={val}
                         onChange={(e) => setter(e.target.value)}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                       >
                         <option value="">— Select —</option>
                         {items.map((item) => (
@@ -666,27 +666,27 @@ export default function CourseEditor() {
               })()}
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">Duration</label>
+                  <label className="block text-sm font-semibold text-black mb-1">Duration</label>
                   <select value={course.duration} onChange={(e) => update("duration", e.target.value)}
-                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white">
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white">
                     {["1 month","2 months","3 months","4 months","6 months","8 months","12 months"].map(d => (
                       <option key={d} value={d}>{d}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">Mode</label>
+                  <label className="block text-sm font-semibold text-black mb-1">Mode</label>
                   <select value={course.mode} onChange={(e) => update("mode", e.target.value)}
-                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white">
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white">
                     {["Online","Offline"].map(m => (
                       <option key={m} value={m}>{m}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-1">Status</label>
+                  <label className="block text-sm font-semibold text-black mb-1">Status</label>
                   <select value={course.status} onChange={(e) => update("status", e.target.value)}
-                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 bg-white">
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white">
                     <option value="Active">Active</option>
                     <option value="Coming Soon">Coming Soon</option>
                     <option value="Inactive">Inactive</option>
@@ -714,37 +714,37 @@ export default function CourseEditor() {
 
               <div className="border-t border-admin-200 pt-6 mt-6">
                 <h3 className="text-sm font-semibold text-neutral-700 mb-4">Call to Action</h3>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">CTA Heading</label>
+                    <label className="block text-sm font-semibold text-black mb-1">CTA Heading</label>
                     <input value={course.cta_heading || ''} onChange={(e) => update('cta_heading', e.target.value)}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       placeholder="Ready to start your learning journey?" />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">CTA Description</label>
+                    <label className="block text-sm font-semibold text-black mb-1">CTA Description</label>
                     <textarea value={course.cta_description || ''} onChange={(e) => update('cta_description', e.target.value)} rows={2}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       placeholder="Enroll now and gain industry-ready skills with expert mentors." />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Button Text</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Button Text</label>
                       <input value={course.cta_text || ''} onChange={(e) => update('cta_text', e.target.value)}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         placeholder="Enroll Now" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">Button Link (URL)</label>
+                      <label className="block text-sm font-semibold text-black mb-1">Button Link (URL)</label>
                       <input value={course.cta_link || ''} onChange={(e) => update('cta_link', e.target.value)}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         placeholder="/courses or https://..." />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">Phone Number (tel:)</label>
+                    <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:)</label>
                     <input value={course.cta_phone || ''} onChange={(e) => update('cta_phone', e.target.value)}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       placeholder="+916380957390" />
                   </div>
                   <div>
@@ -781,7 +781,7 @@ export default function CourseEditor() {
                     </div>
                     <input value={mod.title || ""}
                       onChange={(e) => { const n = [...course.curriculum]; n[i] = { ...n[i], title: e.target.value }; update("curriculum", n); }}
-                      className="w-full px-3 py-2 border border-admin-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 mb-3"
+                      className="w-full px-3 py-2.5 border border-admin-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-admin-500 focus:border-admin-500 mb-3"
                       placeholder="Module title (e.g. Introduction to HTML)" />
                     <div className="space-y-2">
                       {(mod.topics || []).map((topic, j) => (
@@ -807,9 +807,9 @@ export default function CourseEditor() {
           )}
 
           {tab === "hero" && (
-            <div className="space-y-4 max-w-2xl">
+            <div className="space-y-6">
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Hero Image
                 </label>
                 <ImageUploader
@@ -819,7 +819,7 @@ export default function CourseEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Video Thumbnail
                 </label>
                 <ImageUploader
@@ -829,13 +829,13 @@ export default function CourseEditor() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-neutral-500 mb-1">
+                <label className="block text-sm font-semibold text-black mb-1">
                   Course Introduction Video URL (YouTube)
                 </label>
                 <input
                   value={course.video_url || ""}
                   onChange={(e) => update("video_url", e.target.value)}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                   placeholder="https://www.youtube.com/watch?v=..."
                 />
               </div>
@@ -843,7 +843,7 @@ export default function CourseEditor() {
           )}
 
           {tab === "tabs" && !isNew && (
-            <div className="space-y-4 max-w-2xl">
+            <div className="space-y-6">
               <h3 className="font-semibold text-black mb-3">Course Tabs</h3>
               {course.tabs.map((t, i) => (
                 <div
@@ -852,7 +852,7 @@ export default function CourseEditor() {
                 >
                   <div className="flex gap-3">
                     <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                      <label className="block text-sm font-semibold text-black mb-1">
                         Label
                       </label>
                       <input
@@ -862,11 +862,11 @@ export default function CourseEditor() {
                           n[i] = { ...n[i], label: e.target.value };
                           update("tabs", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div className="flex-1">
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                      <label className="block text-sm font-semibold text-black mb-1">
                         Content Type
                       </label>
                       <select
@@ -876,7 +876,7 @@ export default function CourseEditor() {
                           n[i] = { ...n[i], content_type: e.target.value };
                           update("tabs", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       >
                         <option value="overview">Overview</option>
                         <option value="syllabus">Syllabus</option>
@@ -902,7 +902,7 @@ export default function CourseEditor() {
                       </button>
                     </div>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {["heading","paragraph","subheading","text"].map(field => {
                       const alignKey = field + "Align";
                       const align = t.content?.[alignKey] || "center";
@@ -941,7 +941,7 @@ export default function CourseEditor() {
                                 update("tabs", n);
                               }}
                               rows={field === "text" ? 6 : 2}
-                              className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                              className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                               placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)} content`}
                             />
                           ) : (
@@ -952,7 +952,7 @@ export default function CourseEditor() {
                                 n[i] = { ...n[i], content: { ...n[i].content, [field]: e.target.value } };
                                 update("tabs", n);
                               }}
-                              className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                              className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                               placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)} content`}
                             />
                           )}
@@ -1001,7 +1001,7 @@ export default function CourseEditor() {
                                 n[i] = { ...n[i], content: { ...n[i].content, qa } };
                                 update("tabs", n);
                               }}
-                              className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 mb-2"
+                              className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all mb-2"
                               placeholder="Question"
                             />
                             <div>
@@ -1086,7 +1086,7 @@ export default function CourseEditor() {
               <h3 className="font-semibold text-black mb-4">
                 Key Highlights
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {course.highlights.map((h, i) => (
                   <div
                     key={i}
@@ -1112,7 +1112,7 @@ export default function CourseEditor() {
                       }}
                     />
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                      <label className="block text-sm font-semibold text-black mb-1">
                         Label
                       </label>
                       <input
@@ -1122,7 +1122,7 @@ export default function CourseEditor() {
                           n[i] = { ...n[i], label: e.target.value };
                           update("highlights", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                   </div>
@@ -1146,7 +1146,7 @@ export default function CourseEditor() {
           {tab === "projects" && !isNew && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">Projects</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {course.projects.map((p, i) => (
                   <div
                     key={i}
@@ -1164,7 +1164,7 @@ export default function CourseEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                      <label className="block text-sm font-semibold text-black mb-1">
                         Title
                       </label>
                       <input
@@ -1174,11 +1174,11 @@ export default function CourseEditor() {
                           n[i] = { ...n[i], title: e.target.value };
                           update("projects", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                      <label className="block text-sm font-semibold text-black mb-1">
                         Description
                       </label>
                       <textarea
@@ -1189,7 +1189,7 @@ export default function CourseEditor() {
                           update("projects", n);
                         }}
                         rows={3}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                   </div>
@@ -1224,9 +1224,9 @@ export default function CourseEditor() {
                   ]
                 : course.certifications
               ).map((cert, i) => (
-                <div key={i} className="space-y-4">
+                <div key={i} className="space-y-6">
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">
+                    <label className="block text-sm font-semibold text-black mb-1">
                       Description
                     </label>
                     <textarea
@@ -1241,11 +1241,11 @@ export default function CourseEditor() {
                         update("certifications", n);
                       }}
                       rows={4}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">
+                    <label className="block text-sm font-semibold text-black mb-1">
                       Classroom Image
                     </label>
                     <ImageUploader
@@ -1263,7 +1263,7 @@ export default function CourseEditor() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">
+                    <label className="block text-sm font-semibold text-black mb-1">
                       Certificate Image
                     </label>
                     <ImageUploader
@@ -1281,7 +1281,7 @@ export default function CourseEditor() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-neutral-500 mb-1">
+                    <label className="block text-sm font-semibold text-black mb-1">
                       Recognized Companies (one per line)
                     </label>
                     <textarea
@@ -1300,7 +1300,7 @@ export default function CourseEditor() {
                         update("certifications", n);
                       }}
                       rows={4}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                     />
                   </div>
                 </div>
@@ -1311,7 +1311,7 @@ export default function CourseEditor() {
           {tab === "faqs" && !isNew && (
             <div className="max-w-2xl">
               <h3 className="font-semibold text-black mb-4">General FAQs</h3>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {course.faqs.map((faq, i) => (
                   <div
                     key={i}
@@ -1329,7 +1329,7 @@ export default function CourseEditor() {
                       <FiTrash2 className="w-4 h-4" />
                     </button>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                      <label className="block text-sm font-semibold text-black mb-1">
                         Question
                       </label>
                       <input
@@ -1339,11 +1339,11 @@ export default function CourseEditor() {
                           n[i] = { ...n[i], question: e.target.value };
                           update("faqs", n);
                         }}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-neutral-500 mb-1">
+                      <label className="block text-sm font-semibold text-black mb-1">
                         Answer
                       </label>
                       <textarea
@@ -1354,7 +1354,7 @@ export default function CourseEditor() {
                           update("faqs", n);
                         }}
                         rows={3}
-                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
                   </div>
