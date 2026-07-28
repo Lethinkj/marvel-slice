@@ -41,7 +41,7 @@ export default function Breadcrumbs({ className = "" }) {
           <span key={path} className="flex items-center gap-1.5">
             <FiChevronRight className="w-3 h-3 text-neutral-300" />
             {isLast ? (
-              <span className="text-neutral-700 font-medium truncate max-w-[200px]">{label}</span>
+              <span className="text-blue-600 font-medium truncate max-w-[200px]">{label}</span>
             ) : (
               <Link to={path} className="hover:text-neutral-700 transition-colors truncate max-w-[150px] font-medium">{label}</Link>
             )}

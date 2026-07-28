@@ -24,14 +24,14 @@ const navGroups = [
     ]},
   
   {
-    label: "Services", icon: FiServer, parentTo: "/admin/services", items: [
+    label: "Services", icon: FiServer, parentTo: "/admin/services/new", items: [
       { to: "/admin/services/new", label: "Add Service" },
       { to: "/admin/services", label: "All Services", catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
       { to: "/admin/service-categories", label: "Categories" }
     ],
   },
   {
-    label: "Training", icon: FiZap, parentTo: "/admin/training", items: [
+    label: "Training", icon: FiZap, parentTo: "/admin/training/new", items: [
       { to: "/admin/training/new", label: "Add Program" },
       { to: "/admin/training", label: "All Programs", catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },
       { to: "/admin/training-categories", label: "Categories" }
