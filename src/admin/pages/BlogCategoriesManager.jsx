@@ -6,7 +6,7 @@ import DataTable from '../components/ui/DataTable';
 import Badge from '../components/Badge';
 import EmptyState from '../components/EmptyState';
 import AdminButton from '../components/AdminButton';
-import { FiFolder, FiArrowLeft } , FiEdit3, FiTrash2 } from 'react-icons/fi';
+import { FiFolder, FiArrowLeft, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import useConfirm from '../hooks/useConfirm';
 
 export default function BlogCategoriesManager() {

@@ -9,8 +9,8 @@ import AdminButton from "../components/AdminButton";
 import {
   FiGrid, FiMonitor, FiServer, FiBookOpen, FiStar, FiAward,
   FiUsers, FiClock, FiCode, FiGlobe, FiZap, FiShield, FiHeart,
-  FiLayers, FiFileText, FiImage, FiVideo, FiChevronUp, FiArrowLeft, FiEdit3, FiTrash2,
-} , FiEdit3, FiTrash2 } from 'react-icons/fi';
+  FiLayers, FiFileText, FiImage, FiVideo, FiChevronUp, FiArrowLeft, FiEdit3, FiTrash2
+} from 'react-icons/fi';
 import useConfirm from '../hooks/useConfirm';
 
 const ICON_OPTIONS = [
