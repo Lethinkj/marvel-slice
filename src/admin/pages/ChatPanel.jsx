@@ -369,21 +369,22 @@ function MessageViewer({ conversation, onClose }) {
 function SessionsTable({ conversations }) {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
   const [viewingConv, setViewingConv] = useState(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     setPage(1);
-  }, [filter, search]);
+  }, [filter, activeSearch]);
 
   const filtered = conversations.filter((c) => {
     if (filter === 'new') return c.status === 'open';
     if (filter === 'closed') return c.status === 'closed';
     return true;
   }).filter((c) => {
-    if (!search.trim()) return true;
-    const q = search.toLowerCase();
+    if (!activeSearch.trim()) return true;
+    const q = activeSearch.toLowerCase();
     return (c.user_name || '').toLowerCase().includes(q)
       || (c.user_email || '').toLowerCase().includes(q)
       || (c.user_phone || '').toLowerCase().includes(q)
@@ -411,32 +412,33 @@ function SessionsTable({ conversations }) {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <div>
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by name, email, phone..."
-                className="w-64 pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
-              />
-            </div>
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && (setActiveSearch(search), setPage(1))}
+              placeholder="Search by name, email, phone..."
+              className="w-56 pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+            />
           </div>
-          <div>
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
-            <div className="relative">
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
-              >
-                <option value="all">All</option>
-                <option value="new">New</option>
-                <option value="closed">Closed</option>
-              </select>
-              <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
-            </div>
+          <button
+            onClick={() => { setActiveSearch(search); setPage(1); }}
+            className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0"
+          >
+            Search
+          </button>
+          <div className="relative">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
+            >
+              <option value="all">All</option>
+              <option value="new">New</option>
+              <option value="closed">Closed</option>
+            </select>
+            <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
           </div>
         </div>
       </div>
