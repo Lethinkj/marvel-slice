@@ -2,11 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
+import DataTable from '../components/ui/DataTable';
+import Badge from '../components/Badge';
+import EmptyState from '../components/EmptyState';
+import AdminButton from "../components/AdminButton";
 import {
   FiGrid, FiMonitor, FiServer, FiBookOpen, FiStar, FiAward,
   FiUsers, FiClock, FiCode, FiGlobe, FiZap, FiShield, FiHeart,
-  FiLayers, FiFileText, FiImage, FiVideo, FiChevronUp, FiArrowLeft,
-} from 'react-icons/fi';
+  FiLayers, FiFileText, FiImage, FiVideo, FiChevronUp, FiArrowLeft, FiEdit3, FiTrash2,
+} , FiEdit3, FiTrash2 } from 'react-icons/fi';
 import useConfirm from '../hooks/useConfirm';
 
 const ICON_OPTIONS = [
@@ -135,6 +139,47 @@ const [confirm, confirmDialog] = useConfirm();
       </div>
     );
   }
+  const columns = [
+    {
+      header: 'Name',
+      cell: (row) => (
+        <div>
+          <p className="text-sm font-medium text-neutral-900">{row.name}</p>
+          <p className="text-xs text-neutral-500">/{row.slug}</p>
+        </div>
+      )
+    },
+    {
+      header: 'Description',
+      cell: (row) => <p className="text-sm text-neutral-600 truncate max-w-xs">{row.description || '-'}</p>
+    },
+    {
+      header: 'Status',
+      cell: (row) => (
+        <Badge variant={row.status ? 'success' : 'default'}>
+          {row.status ? 'Active' : 'Inactive'}
+        </Badge>
+      )
+    },
+    {
+      header: 'Order',
+      accessor: 'sort_order'
+    },
+    {
+      header: 'Actions',
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <button onClick={() => startEdit(row)} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+            <FiEdit3 className="w-4 h-4" />
+          </button>
+          <button onClick={() => deleteCategory(row.id)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
+            <FiTrash2 className="w-4 h-4" />
+          </button>
+        </div>
+      )
+    }
+  ];
+
 
   return (
     <PageShell backTo="/admin" title="Service Categories" subtitle="Manage categories for services"
@@ -184,53 +229,23 @@ const [confirm, confirmDialog] = useConfirm();
             {editingId ? 'Update' : 'Add'}
           </button>
           {editingId && (
-            <button type="button" onClick={resetForm}
-              className="w-full px-3 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm font-medium px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-colors">
+            <AdminButton type="button" onClick={resetForm} variant="destructive" size="md">
               Cancel
-            </button>
+            </AdminButton>
           )}
         </div>
       </div>
 
       {categories.length === 0 ? (
-        <div className="bg-white rounded-lg border border-admin-200 p-12 text-center">
-          <FiServer className="w-12 h-12 text-neutral-200 mx-auto mb-4" />
-          <p className="text-sm text-neutral-400">No categories yet.</p>
+        <div className="border border-admin-200 rounded-lg">
+          <EmptyState
+            icon={FiServer}
+            title="No categories yet"
+            description="Get started by adding your first category."
+          />
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-admin-200 overflow-hidden">
-          <div className="divide-y divide-admin-100">
-            {categories.map((cat) => (
-              <div key={cat.id} className="flex items-center gap-4 px-5 py-4 hover:bg-white transition-colors group">
-                <div className="w-9 h-9 bg-cyan-50 rounded-xl flex items-center justify-center shrink-0">
-                  <FiServer className="w-4 h-4 text-cyan-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-black">{cat.name}</p>
-                  <p className="text-xs text-neutral-400">/{cat.slug}</p>
-                  {cat.description && (
-                    <p className="text-xs text-neutral-500 mt-0.5 truncate">{cat.description}</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cat.status ? 'bg-success-50 text-success-700' : 'bg-neutral-100 text-neutral-500'}`}>
-                    {cat.status ? 'Active' : 'Inactive'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 opacity-100">
-                  <button onClick={() => startEdit(cat)}
-                    className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 rounded-md transition-colors">
-                    Edit
-                  </button>
-                  <button onClick={() => deleteCategory(cat.id)}
-                    className="px-3 py-1.5 text-xs font-medium text-red-600 bg-white border border-red-200 hover:bg-red-50 hover:border-red-300 rounded-md transition-colors">
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <DataTable columns={columns} data={categories} searchable={false} />
       )}
       {confirmDialog}
     </PageShell>

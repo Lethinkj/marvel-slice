@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
+import DataTable from '../components/ui/DataTable';
+import Badge from '../components/Badge';
+import EmptyState from '../components/EmptyState';
 import AdminButton from '../components/AdminButton';
-import { FiFolder, FiArrowLeft } from 'react-icons/fi';
+import { FiFolder, FiArrowLeft } , FiEdit3, FiTrash2 } from 'react-icons/fi';
 import useConfirm from '../hooks/useConfirm';
 
 export default function BlogCategoriesManager() {
@@ -64,6 +67,47 @@ const [confirm, confirmDialog] = useConfirm();
       </div>
     );
   }
+  const columns = [
+    {
+      header: 'Name',
+      cell: (row) => (
+        <div>
+          <p className="text-sm font-medium text-neutral-900">{row.name}</p>
+          <p className="text-xs text-neutral-500">/{row.slug}</p>
+        </div>
+      )
+    },
+    {
+      header: 'Description',
+      cell: (row) => <p className="text-sm text-neutral-600 truncate max-w-xs">{row.description || '-'}</p>
+    },
+    {
+      header: 'Status',
+      cell: (row) => (
+        <Badge variant={row.status ? 'success' : 'default'}>
+          {row.status ? 'Active' : 'Inactive'}
+        </Badge>
+      )
+    },
+    {
+      header: 'Order',
+      accessor: 'sort_order'
+    },
+    {
+      header: 'Actions',
+      cell: (row) => (
+        <div className="flex items-center gap-2">
+          <button onClick={() => startEdit(row)} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+            <FiEdit3 className="w-4 h-4" />
+          </button>
+          <button onClick={() => deleteCategory(row.id)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
+            <FiTrash2 className="w-4 h-4" />
+          </button>
+        </div>
+      )
+    }
+  ];
+
 
   return (
     <PageShell backTo="/admin" title="Blog Categories" subtitle="Manage categories for blog posts"
@@ -91,36 +135,15 @@ const [confirm, confirmDialog] = useConfirm();
       </form>
 
       {categories.length === 0 ? (
-        <div className="bg-white rounded-lg border border-admin-200 p-12 text-center">
-          <FiFolder className="w-12 h-12 text-admin-200 mx-auto mb-4" />
-          <p className="text-sm text-neutral-400">No categories yet.</p>
+        <div className="border border-admin-200 rounded-lg">
+          <EmptyState
+            icon={FiFileText}
+            title="No categories yet"
+            description="Get started by adding your first category."
+          />
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-admin-200 overflow-hidden">
-          <div className="divide-y divide-admin-100">
-            {categories.map((cat) => (
-              <div key={cat.id} className="flex items-center gap-4 px-5 py-4 hover:bg-white transition-colors group">
-                <div className="w-9 h-9 bg-admin-100 rounded-xl flex items-center justify-center shrink-0">
-                  <FiFolder className="w-4 h-4 text-admin-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-black">{cat.name}</p>
-                  <p className="text-xs text-neutral-400">/{cat.slug}</p>
-                </div>
-                <div className="flex items-center gap-2 opacity-100">
-                  <button onClick={() => startEdit(cat)}
-                    className="px-3 py-1.5 text-xs font-medium text-admin-600 bg-white hover:bg-admin-100 rounded-md transition-colors">
-                    Edit
-                  </button>
-                  <button onClick={() => deleteCategory(cat.id)}
-                    className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <DataTable columns={columns} data={categories} searchable={false} />
       )}
       {confirmDialog}
     </PageShell>
