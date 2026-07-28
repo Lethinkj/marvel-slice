@@ -239,15 +239,7 @@ export default function BlogPostEditor() {
   }
 
   return (
-    <PageShell title={isNew ? 'New Post' : 'Edit Post'}>
-      <div className="flex items-center gap-4 mb-8">
-        <Link
-          to="/admin/blog"
-          className="p-2 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
-        >
-          <FiArrowLeft className="w-5 h-5" />
-        </Link>
-      </div>
+    <PageShell title={isNew ? 'New Post' : 'Edit Post'} backTo="/admin/blog">
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" top />
 

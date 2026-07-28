@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import PageShell from "../components/ui/PageShell";
+import AdminButton from "../components/AdminButton";
 import {
   FiGrid, FiMonitor, FiServer, FiBookOpen, FiStar, FiAward,
   FiUsers, FiClock, FiCode, FiGlobe, FiZap, FiShield, FiHeart,
@@ -179,15 +180,13 @@ const [confirm, confirmDialog] = useConfirm();
         </form>
 
         <div className="w-28 shrink-0 flex flex-col gap-2 pt-9">
-          <button type="button" onClick={handleSave} disabled={!form.name.trim()}
-            className="w-full px-3 py-2 rounded-lg text-sm font-medium text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          <AdminButton type="button" onClick={handleSave} disabled={!form.name.trim()} variant="primary" size="md">
             {editingId ? 'Update' : 'Add'}
-          </button>
+          </AdminButton>
           {editingId && (
-            <button type="button" onClick={resetForm}
-              className="w-full px-3 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm font-medium px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-colors">
+            <AdminButton type="button" onClick={resetForm} variant="secondary" size="md">
               Cancel
-            </button>
+            </AdminButton>
           )}
         </div>
       </div>

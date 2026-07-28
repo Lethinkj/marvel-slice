@@ -88,12 +88,10 @@ export default function JobEditor() {
 
   return (
     <PageShell 
+      backTo="/admin/jobs"
       title={isNew ? 'Add Job Opening' : 'Edit Job Opening'}
       actions={
         <div className="flex items-center gap-3">
-          <AdminButton onClick={() => navigate('/admin/jobs')} variant="ghost" size="md">
-            <FiArrowLeft className="w-4 h-4" /> Back to Jobs
-          </AdminButton>
           <AdminButton onClick={handleSave} disabled={saving} variant="primary" size="md">
             {saving ? 'Saving...' : 'Save Job'}
           </AdminButton>

@@ -413,15 +413,10 @@ export default function ServiceEditor() {
 
   return (
     <PageShell
+      backTo="/admin/services"
       title={isNew ? "New Service" : `Edit: ${service.title || "Untitled"}`}
       actions={
         <>
-          <Link
-            to="/admin/services"
-            className="p-2 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-          </Link>
           <AdminButton
             onClick={() => navigate("/admin/services")}
             variant="secondary"
@@ -471,12 +466,12 @@ export default function ServiceEditor() {
                     onClick={() => setTab(t)}
                     className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
                       sidebarOpen
-                        ? `gap-2 ${tab === t ? 'bg-admin-50 text-admin-600 font-semibold border-l-[3px] border-admin-600 -ml-[1px]' : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600 border-l-[3px] border-transparent'}`
-                        : `justify-center gap-0 ${tab === t ? 'bg-admin-50 text-admin-600' : 'text-neutral-500 hover:bg-admin-50 hover:text-admin-600'}`
+                        ? `gap-2 ${tab === t ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600'}`
+                        : `justify-center gap-0 ${tab === t ? 'bg-admin-600 text-white shadow-sm' : 'text-neutral-500 hover:bg-admin-50 hover:text-admin-600'}`
                     }`}
                     title={meta.label}
                   >
-                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-admin-600" : "text-neutral-400"}`} />
+                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? 'text-white' : 'text-neutral-400'}`} />
                     {sidebarOpen && <span className="flex-1 truncate">{meta.label}</span>}
                   </button>
                 );

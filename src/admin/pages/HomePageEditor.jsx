@@ -1139,13 +1139,13 @@ export default function HomePageEditor() {
                   onClick={() => navigate(`/admin/home/${item.key}`)}
                   className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
                     sidebarOpen
-                       ? `gap-2 ${selectedNav.key === item.key ? 'bg-admin-50 text-admin-600 font-semibold border-l-[3px] border-admin-600 -ml-[1px]' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600 border-l-[3px] border-transparent'}`
-                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-admin-50 text-admin-600' : 'text-gray-400 hover:bg-admin-50 hover:text-admin-600'}`
+                       ? `gap-2 ${selectedNav.key === item.key ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`
+                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-admin-600 text-white shadow-sm' : 'text-gray-400 hover:bg-admin-50 hover:text-admin-600'}`
                    }`}
                    title={item.label}
                  >
                    <item.icon className={`w-4 h-4 shrink-0 ${
-                     selectedNav.key === item.key ? 'text-admin-600' : 'text-gray-400'
+                     selectedNav.key === item.key ? 'text-white' : 'text-gray-400'
                   }`} />
                   {sidebarOpen && <span className="flex-1 truncate">{item.label}</span>}
                 </button>

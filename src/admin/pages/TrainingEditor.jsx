@@ -414,15 +414,10 @@ export default function TrainingEditor() {
 
   return (
     <PageShell
+      backTo="/admin/training"
       title={isNew ? "New Training Program" : `Edit: ${training.title || "Untitled"}`}
       actions={
         <>
-          <Link
-            to="/admin/training"
-            className="p-2 text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-          </Link>
           <AdminButton
             onClick={() => navigate("/admin/training")}
             variant="secondary"
@@ -459,27 +454,31 @@ export default function TrainingEditor() {
         </div>
       )}
 
-      {/* Step Indicator */}
-      <div className="flex items-center gap-1 mb-8 bg-white rounded-xl border border-admin-200 p-1.5">
-        {STEPS.map((s, i) => (
-          <div key={i} className="flex-1 flex items-center">
-            <button
-              onClick={() => handleStepClick(i)}
-              disabled={i > step && !canNext()}
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all w-full ${
-                step === i
-                  ? 'bg-admin-600 text-white shadow-sm'
-                  : i < step
-                  ? 'text-admin-600 hover:bg-admin-50'
-                  : 'text-neutral-400 cursor-not-allowed'
-              }`}
-            >
-              <s.icon className="w-4 h-4 shrink-0" />
-              <span className="hidden sm:inline">{s.label}</span>
-            </button>
-          </div>
-        ))}
-      </div>
+      <div className="flex gap-6 items-start">
+        <div className="transition-all duration-200 w-[220px] shrink-0 hidden md:block">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+              {STEPS.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleStepClick(i)}
+                  disabled={i > step && !canNext()}
+                  className={`w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
+                    step === i
+                      ? 'gap-2 bg-admin-600 text-white font-semibold shadow-sm'
+                      : i < step
+                      ? 'gap-2 text-neutral-600 hover:bg-admin-50 hover:text-admin-600'
+                      : 'gap-2 text-neutral-400 cursor-not-allowed opacity-50'
+                  }`}
+                  title={s.label}
+                >
+                  <s.icon className={`w-4 h-4 shrink-0 ${step === i ? "text-white" : "text-neutral-400"}`} />
+                  <span className="flex-1 truncate">{s.label}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
 
       <div className="flex-1 min-w-0">
         {step === 0 && (
@@ -1103,171 +1102,7 @@ export default function TrainingEditor() {
               </div>
             </div>
 
-            <div>
-              <h4 className="text-sm font-semibold text-black mb-2">Modules (JSON)</h4>
-              {training.modules.length === 0 && (
-                <div className="text-center py-8 text-neutral-400 bg-white rounded-xl border-2 border-dashed border-admin-200 mb-4">
-                  <FiBookOpen className="w-8 h-8 mx-auto mb-2 opacity-40" />
-                  <p className="text-sm">No modules yet.</p>
-                </div>
-              )}
-              <div className="space-y-3">
-                {training.modules.map((mod, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
-                      <button
-                        onClick={() => update("modules", training.modules.filter((_, j) => j !== i))}
-                        className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors"
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <div className="grid sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-semibold text-black mb-1">Title</label>
-                        <input
-                          value={mod.title || ""}
-                          onChange={(e) => {
-                            const n = [...training.modules];
-                            n[i] = { ...n[i], title: e.target.value };
-                            update("modules", n);
-                          }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                          placeholder="Module title"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-black mb-1">Duration</label>
-                        <input
-                          value={mod.duration || ""}
-                          onChange={(e) => {
-                            const n = [...training.modules];
-                            n[i] = { ...n[i], duration: e.target.value };
-                            update("modules", n);
-                          }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                          placeholder="e.g. 2 weeks"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Topics</label>
-                      <div className="space-y-1.5">
-                        {(mod.topics || []).map((topic, j) => (
-                          <div key={j} className="flex items-center gap-2">
-                            <input
-                              value={topic}
-                              onChange={(e) => {
-                                const n = [...training.modules];
-                                const topics = [...(n[i].topics || [])];
-                                topics[j] = e.target.value;
-                                n[i] = { ...n[i], topics };
-                                update("modules", n);
-                              }}
-                              className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                              placeholder="Topic"
-                            />
-                            <button
-                              onClick={() => {
-                                const n = [...training.modules];
-                                n[i] = { ...n[i], topics: n[i].topics.filter((_, k) => k !== j) };
-                                update("modules", n);
-                              }}
-                              className="p-1 text-destructive-300 hover:text-destructive-500"
-                            >
-                              <FiTrash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                        <AdminButton
-                          onClick={() => {
-                            const n = [...training.modules];
-                            n[i] = { ...n[i], topics: [...(n[i].topics || []), ""] };
-                            update("modules", n);
-                          }}
-                          variant="ghost"
-                          size="xs"
-                        >
-                          <FiPlus className="w-3 h-3" /> Add Topic
-                        </AdminButton>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Outcomes</label>
-                      <div className="space-y-1.5">
-                        {(mod.outcomes || []).map((outcome, j) => (
-                          <div key={j} className="flex items-center gap-2">
-                            <input
-                              value={outcome}
-                              onChange={(e) => {
-                                const n = [...training.modules];
-                                const outcomes = [...(n[i].outcomes || [])];
-                                outcomes[j] = e.target.value;
-                                n[i] = { ...n[i], outcomes };
-                                update("modules", n);
-                              }}
-                              className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                              placeholder="Outcome"
-                            />
-                            <button
-                              onClick={() => {
-                                const n = [...training.modules];
-                                n[i] = { ...n[i], outcomes: n[i].outcomes.filter((_, k) => k !== j) };
-                                update("modules", n);
-                              }}
-                              className="p-1 text-destructive-300 hover:text-destructive-500"
-                            >
-                              <FiTrash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                        <AdminButton
-                          onClick={() => {
-                            const n = [...training.modules];
-                            n[i] = { ...n[i], outcomes: [...(n[i].outcomes || []), ""] };
-                            update("modules", n);
-                          }}
-                          variant="ghost"
-                          size="xs"
-                        >
-                          <FiPlus className="w-3 h-3" /> Add Outcome
-                        </AdminButton>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-3">
-                <AdminButton
-                  onClick={() => update("modules", [...training.modules, { title: "", duration: "", topics: [], outcomes: [] }])}
-                  variant="ghost"
-                  size="sm"
-                >
-                  <FiPlus className="w-4 h-4" /> Add Module
-                </AdminButton>
-              </div>
-            </div>
 
-            <div>
-              <h4 className="text-sm font-semibold text-black mb-2">Skills (JSON)</h4>
-              <ListEditor
-                items={training.skills || []}
-                onChange={(val) => update("skills", val)}
-                fields={[{ key: "item", label: "Skill" }]}
-                labelKey="Skill"
-              />
-            </div>
-
-            <div>
-              <h4 className="text-sm font-semibold text-black mb-2">Benefits (JSON)</h4>
-              <ListEditor
-                items={training.benefits || []}
-                onChange={(val) => update("benefits", val)}
-                fields={[{ key: "item", label: "Benefit" }]}
-                labelKey="Benefit"
-              />
-            </div>
           </div>
         )}
 
@@ -1689,6 +1524,7 @@ export default function TrainingEditor() {
             </button>
           )}
         </div>
+      </div>
       </div>
 
       <SaveBar saving={saving} onSave={handleSave} label="Training" dirty={dirty} onDiscard={() => window.location.reload()} />
