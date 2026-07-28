@@ -8,6 +8,8 @@ import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
+import { RepeatableItemList } from '../components/ui/RepeatableItemList';
+import { RepeatableItemCard } from '../components/ui/RepeatableItemCard';
 
 function ImageUploader({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);
@@ -193,11 +195,21 @@ const queryClient = useQueryClient();
       <form onSubmit={handleSave} className="space-y-6">
         {/* Hero Section */}
         <SectionAccordion title="Hero Section" defaultExpanded={true}>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputCls} />
-            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className={inputCls} />
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelCls}>Heading</label>
+                <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Subheading</label>
+                <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className={inputCls} />
+              </div>
+            </div>
+            <div>
+              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+            </div>
           </div>
-          <div className="mt-4"><ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" /></div>
         </SectionAccordion>
 
         {/* Contact Section Toggle */}
@@ -298,35 +310,42 @@ const queryClient = useQueryClient();
 
         {/* Map Embed */}
         <SectionAccordion title="Map Embed" defaultExpanded={false}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-neutral-500 mt-0.5">Embed a Google Maps location below the contact section.</p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-neutral-500 mt-0.5">Embed a Google Maps location below the contact section.</p>
+              </div>
             </div>
-          </div>
-          <div className="mt-4">
-            <label className={labelCls}>Map Embed URL</label>
-            <input type="text" value={contactContent.map_embed_url || ''} onChange={(e) => updateContent('map_embed_url', e.target.value)} className={inputCls} placeholder="https://www.google.com/maps/embed?pb=..." />
-            <p className="text-xs text-neutral-400 mt-1">Paste the <strong>src</strong> URL from a Google Maps embed iframe. Leave empty to hide the map.</p>
+            <div>
+              <label className={labelCls}>Map Embed URL</label>
+              <input type="text" value={contactContent.map_embed_url || ''} onChange={(e) => updateContent('map_embed_url', e.target.value)} className={inputCls} placeholder="https://www.google.com/maps/embed?pb=..." />
+              <p className="text-xs text-neutral-400 mt-1">Paste the <strong>src</strong> URL from a Google Maps embed iframe. Leave empty to hide the map.</p>
+            </div>
           </div>
         </SectionAccordion>
 
         {/* FAQs */}
         <SectionAccordion title="FAQs" defaultExpanded={false}>
-          <div className="flex justify-end mb-4">
-            <button type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-admin-600 bg-white border border-admin-200 rounded-lg hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add FAQ</button>
-          </div>
-          <div className="space-y-3">
-            {faqs.map((f, i) => (
-              <div key={i} className="border border-admin-200 rounded-lg p-4 bg-white">
-                <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
-                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+          <RepeatableItemList 
+            title="FAQs" 
+            items={faqs} 
+            onAdd={() => setFaqs([...faqs, { question: '', answer: '' }])}
+            addLabel="Add FAQ"
+            renderItem={(f, i) => (
+              <RepeatableItemCard key={i} index={i} label="FAQ" onRemove={() => setFaqs(faqs.filter((_, j) => j !== i))}>
+                <div className="space-y-4">
+                  <div>
+                    <label className={labelCls}>Question</label>
+                    <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Answer</label>
+                    <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className={inputCls} />
+                  </div>
                 </div>
-                <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className={inputCls} />
-                <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className={`${inputCls} mt-2`} />
-              </div>
-            ))}
-          </div>
+              </RepeatableItemCard>
+            )}
+          />
         </SectionAccordion>
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />

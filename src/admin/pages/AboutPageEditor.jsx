@@ -92,7 +92,7 @@ function ImageUploader({ value, onChange, label }) {
 function TextInput({ value, onChange, placeholder, label, required, error }) {
   return (
     <div>
-      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
+      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
       <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
         className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
       {error && <p className="text-xs text-destructive-500 mt-1">{error}</p>}
@@ -103,7 +103,7 @@ function TextInput({ value, onChange, placeholder, label, required, error }) {
 function TextArea({ value, onChange, placeholder, label, rows, required }) {
   return (
     <div>
-      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
+      {label && <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{label}{required ? ' *' : ''}</label>}
       <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={rows || 3}
         className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-transparent transition-all" placeholder={placeholder} />
     </div>
@@ -134,7 +134,7 @@ function IconPicker({ value, onChange }) {
 
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-semibold text-neutral-700 mb-1 uppercase tracking-wider">Icon *</label>
+      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Icon *</label>
       <button type="button" onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-2 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm text-left focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all cursor-pointer hover:border-admin-400">
         {IconComp ? <IconComp className="w-5 h-5 text-admin-500" /> : <div className="w-5 h-5" />}
@@ -210,12 +210,12 @@ function SubEditor({ section, onChange }) {
   switch (section.section_type) {
     case 'text':
       return (
-        <div className="space-y-3">
-          <div className="flex items-start gap-4">
-            <div className="flex-1">
+        <div className="space-y-6">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
               <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
             </div>
-            <div className="pt-5">
+            <div>
               <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
               <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
             </div>
@@ -229,12 +229,12 @@ function SubEditor({ section, onChange }) {
       );
     case 'text_stats':
       return (
-        <div className="space-y-3">
-          <div className="flex items-start gap-4">
-            <div className="flex-1">
+        <div className="space-y-6">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
               <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
             </div>
-            <div className="pt-5">
+            <div>
               <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
               <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
             </div>
@@ -253,9 +253,15 @@ function SubEditor({ section, onChange }) {
             items={section.items || []}
             onChange={(v) => set({ items: v })}
             renderItem={(item, i, onItemChange) => (
-              <div className="flex items-center gap-3">
-                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Number</label>
+                  <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Label</label>
+                  <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                </div>
               </div>
             )}
           />
@@ -263,106 +269,118 @@ function SubEditor({ section, onChange }) {
       );
     case 'stats_row':
       return (
-        <div>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="flex-1">
+        <div className="space-y-6">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
               <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />
             </div>
-            <div className="pt-5">
+            <div>
               <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
               <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
             </div>
           </div>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
-            <button type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Stat</button>
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Stat Items</span>
+              <button type="button" onClick={() => set({ items: [...(section.items || []), { number: '', label: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Stat</button>
+            </div>
+            <ReorderableList
+              items={section.items || []}
+              onChange={(v) => set({ items: v })}
+              renderItem={(item, i, onItemChange) => (
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Number</label>
+                    <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Label</label>
+                    <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                  </div>
+                </div>
+              )}
+            />
           </div>
-          <ReorderableList
-            items={section.items || []}
-            onChange={(v) => set({ items: v })}
-            renderItem={(item, i, onItemChange) => (
-              <div className="flex items-center gap-3">
-                <input type="text" value={item.number} onChange={(e) => onItemChange({ ...item, number: e.target.value })} placeholder="Number (e.g. 500+)" className="w-1/3 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-                <input type="text" value={item.label} onChange={(e) => onItemChange({ ...item, label: e.target.value })} placeholder="Label (e.g. Students)" className="flex-1 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-              </div>
-            )}
-          />
         </div>
       );
     case 'team_grid':
       return (
-        <div>
+        <div className="space-y-6">
           <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
-          <div className="mt-3 flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Team Members</span>
-            <button type="button" onClick={() => set({ items: [...(section.items || []), { name: '', role: '', bio: '', image_url: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Member</button>
-          </div>
-          <ReorderableList
-            items={section.items || []}
-            onChange={(v) => set({ items: v })}
-            renderItem={(item, i, onItemChange) => (
-              <div className="space-y-3">
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <TextInput value={item.name} onChange={(v) => onItemChange({ ...item, name: v })} placeholder="Name" label="Name" required />
-                  <TextInput value={item.role} onChange={(v) => onItemChange({ ...item, role: v })} placeholder="Role" label="Role" />
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Team Members</span>
+              <button type="button" onClick={() => set({ items: [...(section.items || []), { name: '', role: '', bio: '', image_url: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Member</button>
+            </div>
+            <ReorderableList
+              items={section.items || []}
+              onChange={(v) => set({ items: v })}
+              renderItem={(item, i, onItemChange) => (
+                <div className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <TextInput value={item.name} onChange={(v) => onItemChange({ ...item, name: v })} placeholder="Name" label="Name" required />
+                    <TextInput value={item.role} onChange={(v) => onItemChange({ ...item, role: v })} placeholder="Role" label="Role" />
+                  </div>
+                  <TextArea value={item.bio} onChange={(v) => onItemChange({ ...item, bio: v })} placeholder="Short bio..." label="Bio" rows={2} />
+                  <ImageUploader value={item.image_url} onChange={(v) => onItemChange({ ...item, image_url: v })} label="Photo" />
                 </div>
-                <TextArea value={item.bio} onChange={(v) => onItemChange({ ...item, bio: v })} placeholder="Short bio..." label="Bio" rows={2} />
-                <ImageUploader value={item.image_url} onChange={(v) => onItemChange({ ...item, image_url: v })} label="Photo" />
-              </div>
-            )}
-          />
+              )}
+            />
+          </div>
         </div>
       );
     case 'feature_grid':
       return (
-        <div>
-          <div className="space-y-3 mb-4">
-            <div className="flex items-start gap-4">
-              <div className="flex-1">
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
                 <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading" label="Heading" />
               </div>
-              <div className="pt-5">
+              <div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
                 <AlignButtons value={section.headingAlign || 'center'} onChange={(v) => set({ headingAlign: v })} />
               </div>
             </div>
-            <div>
-              <div className="flex items-start gap-4">
-                <div className="flex-1">
-                  <TextArea value={section.subheading} onChange={(v) => set({ subheading: v })} placeholder="Subheading (optional)" label="Subheading" rows={2} />
-                </div>
-                <div className="pt-5">
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
-                  <AlignButtons value={section.subheadingAlign || 'center'} onChange={(v) => set({ subheadingAlign: v })} />
-                </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <TextArea value={section.subheading} onChange={(v) => set({ subheading: v })} placeholder="Subheading (optional)" label="Subheading" rows={2} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Align</label>
+                <AlignButtons value={section.subheadingAlign || 'center'} onChange={(v) => set({ subheadingAlign: v })} />
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Feature Items</span>
-            <button type="button" onClick={() => set({ items: [...(section.items || []), { icon: '', title: '', description: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Feature</button>
-          </div>
-          <ReorderableList
-            items={section.items || []}
-            onChange={(v) => set({ items: v })}
-            renderItem={(item, i, onItemChange) => (
-              <div className="space-y-3">
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <IconPicker value={item.icon} onChange={(v) => onItemChange({ ...item, icon: v })} />
-                  <TextInput value={item.title} onChange={(v) => onItemChange({ ...item, title: v })} placeholder="Title" label="Title" required />
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Feature Items</span>
+              <button type="button" onClick={() => set({ items: [...(section.items || []), { icon: '', title: '', description: '' }] })} className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add Feature</button>
+            </div>
+            <ReorderableList
+              items={section.items || []}
+              onChange={(v) => set({ items: v })}
+              renderItem={(item, i, onItemChange) => (
+                <div className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <IconPicker value={item.icon} onChange={(v) => onItemChange({ ...item, icon: v })} />
+                    <TextInput value={item.title} onChange={(v) => onItemChange({ ...item, title: v })} placeholder="Title" label="Title" required />
+                  </div>
+                  <TextArea value={item.description} onChange={(v) => onItemChange({ ...item, description: v })} placeholder="Description..." label="Description" rows={2} />
                 </div>
-                <TextArea value={item.description} onChange={(v) => onItemChange({ ...item, description: v })} placeholder="Description..." label="Description" rows={2} />
-              </div>
-            )}
-          />
+              )}
+            />
+          </div>
         </div>
       );
     case 'cta':
       return (
-        <div className="space-y-3">
-          <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Ready to get started?" label="Heading" />
+        <div className="space-y-6">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Ready to get started?" label="Heading" />
+            <TextInput value={section.cta_link} onChange={(v) => set({ cta_link: v })} placeholder="/contact" label="Button Link" />
+          </div>
           <TextArea value={section.content} onChange={(v) => set({ content: v })} placeholder="Short description..." label="Description" rows={2} />
-          <TextInput value={section.cta_link} onChange={(v) => set({ cta_link: v })} placeholder="/contact" label="Button Link" />
         </div>
       );
     default:

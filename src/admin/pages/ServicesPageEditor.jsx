@@ -7,6 +7,8 @@ import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
+import { RepeatableItemList } from '../components/ui/RepeatableItemList';
+import { RepeatableItemCard } from '../components/ui/RepeatableItemCard';
 
 function ImageUploader({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);
@@ -142,59 +144,86 @@ const queryClient = useQueryClient();
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
         <SectionAccordion title="Hero Section" defaultExpanded={true}>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
+                <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+                <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+              </div>
+            </div>
+            <div>
+              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+            </div>
           </div>
-          <div className="mt-4"><ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" /></div>
         </SectionAccordion>
 
         <SectionAccordion title="Services" defaultExpanded={false}>
-          <div className="flex justify-end mb-4">
-            <button type="button" onClick={() => setServices([...services, { title: '', description: '' }])} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-admin-600 bg-white border border-admin-200 hover:bg-admin-50 hover:border-admin-300 rounded-lg transition-colors"><FiPlus className="w-4 h-4" /> Add Service</button>
-          </div>
-          {services.length > 0 && (
-          <div className="space-y-6">
-            {services.map((s, i) => (
-              <div key={i} className="border border-admin-200 rounded-lg p-4 bg-white">
-                <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-neutral-500 uppercase">Service {i + 1}</span>
-                  <button type="button" onClick={() => setServices(services.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
-                </div>
-                <input type="text" value={s.title} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], title: e.target.value }; setServices(u); }} placeholder="Service title" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-                <textarea value={s.description} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], description: e.target.value }; setServices(u); }} rows={2} placeholder="Brief description..." className="w-full mt-2 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-              </div>
-            ))}
-          </div>
-          )}
+          <RepeatableItemList 
+             title="Services" 
+             items={services} 
+             onAdd={() => setServices([...services, { title: '', description: '' }])}
+             addLabel="Add Service"
+             renderItem={(s, i) => (
+               <RepeatableItemCard key={i} index={i} label="Service" onRemove={() => setServices(services.filter((_, j) => j !== i))}>
+                 <div className="space-y-4">
+                   <div>
+                     <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Service Title</label>
+                     <input type="text" value={s.title} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], title: e.target.value }; setServices(u); }} placeholder="Service title" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                   </div>
+                   <div>
+                     <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
+                     <textarea value={s.description} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], description: e.target.value }; setServices(u); }} rows={2} placeholder="Brief description..." className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                   </div>
+                 </div>
+               </RepeatableItemCard>
+             )}
+          />
         </SectionAccordion>
 
         <SectionAccordion title="Call to Action" defaultExpanded={false}>
-          <div className="grid sm:grid-cols-3 gap-4">
-            <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-            <input type="text" value={cta.content} onChange={(e) => setCta({ ...cta, content: e.target.value })} placeholder="Subtext" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-            <input type="text" value={cta.link} onChange={(e) => setCta({ ...cta, link: e.target.value })} placeholder="Button link URL" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+          <div className="space-y-4">
+             <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
+                  <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtext</label>
+                  <input type="text" value={cta.content} onChange={(e) => setCta({ ...cta, content: e.target.value })} placeholder="Subtext" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                </div>
+             </div>
+             <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Button Link</label>
+                <input type="text" value={cta.link} onChange={(e) => setCta({ ...cta, link: e.target.value })} placeholder="Button link URL" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+             </div>
           </div>
         </SectionAccordion>
 
         <SectionAccordion title="FAQs" defaultExpanded={false}>
-          <div className="flex justify-end mb-4">
-            <button type="button" onClick={() => setFaqs([...faqs, { question: '', answer: '' }])} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-admin-600 bg-white border border-admin-200 hover:bg-admin-50 hover:border-admin-300 rounded-lg transition-colors"><FiPlus className="w-4 h-4" /> Add FAQ</button>
-          </div>
-          {faqs.length > 0 && (
-          <div className="space-y-3">
-            {faqs.map((f, i) => (
-              <div key={i} className="border border-admin-200 rounded-lg p-4 bg-white">
-                <div className="flex justify-between mb-2">
-                  <span className="text-xs font-semibold text-neutral-500 uppercase">FAQ {i + 1}</span>
-                  <button type="button" onClick={() => setFaqs(faqs.filter((_, j) => j !== i))} className="p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
-                </div>
-                <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-                <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className="w-full mt-2 px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-              </div>
-            ))}
-          </div>
-          )}
+          <RepeatableItemList 
+             title="FAQs" 
+             items={faqs} 
+             onAdd={() => setFaqs([...faqs, { question: '', answer: '' }])}
+             addLabel="Add FAQ"
+             renderItem={(f, i) => (
+               <RepeatableItemCard key={i} index={i} label="FAQ" onRemove={() => setFaqs(faqs.filter((_, j) => j !== i))}>
+                 <div className="space-y-4">
+                   <div>
+                     <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Question</label>
+                     <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                   </div>
+                   <div>
+                     <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Answer</label>
+                     <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                   </div>
+                 </div>
+               </RepeatableItemCard>
+             )}
+          />
         </SectionAccordion>
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />

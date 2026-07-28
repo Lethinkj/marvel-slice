@@ -414,65 +414,75 @@ const [confirm, confirmDialog] = useConfirm();
       <form onSubmit={handleSave} className="space-y-6">
 
         <SectionAccordion title="Hero Section" defaultExpanded={true}>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })}
-              placeholder="Heading" className={inputClass} />
-            <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })}
-              placeholder="Subheading" className={inputClass} />
-          </div>
-          <div className="mt-4">
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Hero Image</label>
-              <button type="button" onClick={() => {
-                if (hero.hero_image) {
-                  setHero({ ...hero, hero_image: '' });
-                }
-              }}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${hero.hero_image ? 'bg-admin-600' : 'bg-admin-300'}`}>
-                <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${hero.hero_image ? 'translate-x-4' : 'translate-x-0.5'}`} />
-              </button>
+          <div className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
+                <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })}
+                  placeholder="Heading" className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+                <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })}
+                  placeholder="Subheading" className={inputClass} />
+              </div>
             </div>
-            {hero.hero_image ? (
-              <div className="relative">
-                <img src={hero.hero_image} alt="" className="w-full h-32 object-cover rounded-lg" />
-                <button type="button" onClick={() => setHero({ ...hero, hero_image: '' })}
-                  className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-lg shadow-sm transition-colors cursor-pointer">
-                  <FiX className="w-4 h-4 text-admin-600" />
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Hero Image</label>
+                <button type="button" onClick={() => {
+                  if (hero.hero_image) {
+                    setHero({ ...hero, hero_image: '' });
+                  }
+                }}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 ${hero.hero_image ? 'bg-admin-600' : 'bg-admin-300'}`}>
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${hero.hero_image ? 'translate-x-4' : 'translate-x-0.5'}`} />
                 </button>
               </div>
-            ) : (
-              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Upload Hero Image" />
-            )}
+              {hero.hero_image ? (
+                <div className="relative">
+                  <img src={hero.hero_image} alt="" className="w-full h-32 object-cover rounded-lg" />
+                  <button type="button" onClick={() => setHero({ ...hero, hero_image: '' })}
+                    className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-lg shadow-sm transition-colors cursor-pointer">
+                    <FiX className="w-4 h-4 text-admin-600" />
+                  </button>
+                </div>
+              ) : (
+                <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Upload Hero Image" />
+              )}
+            </div>
           </div>
         </SectionAccordion>
 
         <SectionAccordion title="&quot;We're Hiring!&quot; Header" defaultExpanded={false}>
-          <div className="mb-3">
-            <label className="block text-xs font-medium text-neutral-500 mb-1">Headline</label>
-            <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
-              placeholder="We're Hiring!" className={`${inputClass} w-full`} />
-          </div>
-          <div className="mb-3">
-            <label className="block text-xs font-medium text-neutral-500 mb-1">Subtitle</label>
-            <input type="text" value={section1.subtitle} onChange={(e) => setSection1({ ...section1, subtitle: e.target.value })}
-              placeholder="Find Your Role. Find Your Fit." className={inputClass} />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-neutral-500 mb-1">Description</label>
-            <textarea value={section1.description} onChange={(e) => setSection1({ ...section1, description: e.target.value })}
-              rows={2} placeholder="Brief description about working at your company..." className={inputClass} />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Headline</label>
+              <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
+                placeholder="We're Hiring!" className={`${inputClass} w-full`} />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtitle</label>
+              <input type="text" value={section1.subtitle} onChange={(e) => setSection1({ ...section1, subtitle: e.target.value })}
+                placeholder="Find Your Role. Find Your Fit." className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
+              <textarea value={section1.description} onChange={(e) => setSection1({ ...section1, description: e.target.value })}
+                rows={2} placeholder="Brief description about working at your company..." className={inputClass} />
+            </div>
           </div>
         </SectionAccordion>
 
         <SectionAccordion title="Categories Section" defaultExpanded={false}>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-neutral-500 mb-1">Heading</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
               <input type="text" value={section1.categoriesHeading} onChange={(e) => setSection1({ ...section1, categoriesHeading: e.target.value })}
                 placeholder="Explore Opportunities" className={inputClass} />
             </div>
             <div>
-              <label className="block text-xs font-medium text-neutral-500 mb-1">Subtitle</label>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtitle</label>
               <input type="text" value={section1.categoriesSubtitle} onChange={(e) => setSection1({ ...section1, categoriesSubtitle: e.target.value })}
                 placeholder="Find the role that fits you best" className={inputClass} />
             </div>
