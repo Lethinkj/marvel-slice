@@ -152,22 +152,12 @@ const ICON_OPTIONS = [
   { key: "trending", label: "Trending", Icon: FiTrendingUp },
 ];
 
-const tabMeta = {
-  basic: { label: "Basic", Icon: FiSettings },
-  description: { label: "Description", Icon: FiFileText },
-  media: { label: "Media", Icon: FiImage },
-  details: { label: "Details", Icon: FiLayers },
-  modules: { label: "Modules", Icon: FiBookOpen },
-  skills: { label: "Skills", Icon: FiZap },
-  benefits: { label: "Benefits", Icon: FiHeart },
-  faqs: { label: "FAQs", Icon: FiMessageCircle },
-  testimonials: { label: "Testimonials", Icon: FiStar },
-  gallery: { label: "Gallery", Icon: FiVideo },
-  statistics: { label: "Stats", Icon: FiBarChart2 },
-  seo: { label: "SEO", Icon: FiGlobe },
-};
-
-const editorTabs = Object.keys(tabMeta);
+const STEPS = [
+  { label: "Basics", icon: FiSettings },
+  { label: "Media & Content", icon: FiFileText },
+  { label: "Curriculum & Skills", icon: FiBookOpen },
+  { label: "More", icon: FiGlobe },
+];
 
 export default function TrainingEditor() {
   const { user: currentUser } = useAuth();
@@ -176,8 +166,7 @@ export default function TrainingEditor() {
   const queryClient = useQueryClient();
 
   const isNew = id === 'new';
-  const [tab, setTab] = useState('basic');
-  const sidebarOpen = true;
+  const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [categories, setCategories] = useState([]);
@@ -187,7 +176,7 @@ export default function TrainingEditor() {
     category_id: "",
     icon: "",
     short_description: "",
-    full_description: "",
+    description: "",
     duration: "",
     mode: "Online",
     difficulty: "Beginner",
@@ -200,9 +189,9 @@ export default function TrainingEditor() {
     popular: false,
     trending: false,
     certificate: false,
-    thumbnail_url: "",
-    banner_url: "",
-    meta_image_url: "",
+    thumbnail: "",
+    banner: "",
+    meta_image: "",
     eligibility: "",
     learning_outcomes: [],
     modules: [],
@@ -277,7 +266,7 @@ export default function TrainingEditor() {
     loadData();
   }, [id, isNew]);
 
-  const handleSaveRef = useRef(handleSave);
+  const handleSaveRef = useRef();
   handleSaveRef.current = handleSave;
 
   useEffect(() => {
@@ -342,7 +331,7 @@ export default function TrainingEditor() {
         category_id: training.category_id || null,
         icon: training.icon,
         short_description: training.short_description,
-        full_description: training.full_description,
+        description: training.description,
         duration: training.duration,
         mode: training.mode,
         difficulty: training.difficulty,
@@ -355,9 +344,9 @@ export default function TrainingEditor() {
         popular: training.popular,
         trending: training.trending,
         certificate: training.certificate,
-        thumbnail_url: training.thumbnail_url,
-        banner_url: training.banner_url,
-        meta_image_url: training.meta_image_url,
+        thumbnail: training.thumbnail,
+        banner: training.banner,
+        meta_image: training.meta_image,
         eligibility: training.eligibility,
         learning_outcomes: training.learning_outcomes || [],
         modules: training.modules || [],
@@ -413,6 +402,16 @@ export default function TrainingEditor() {
     savingRef.current = false;
   }
 
+  function canNext() {
+    if (step === 0) return training.title.trim() !== "" && training.slug.trim() !== "";
+    return true;
+  }
+
+  function handleStepClick(targetStep) {
+    if (targetStep > step && !canNext()) return;
+    setStep(targetStep);
+  }
+
   return (
     <PageShell
       title={isNew ? "New Training Program" : `Edit: ${training.title || "Untitled"}`}
@@ -460,36 +459,32 @@ export default function TrainingEditor() {
         </div>
       )}
 
-      <div className="flex gap-6 items-start">
-        <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
-          {/* Hide menu button removed */}
-          <div className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-              {editorTabs.map((t) => {
-                const meta = tabMeta[t];
-                return (
-                  <button
-                    key={t}
-                    onClick={() => setTab(t)}
-                    className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
-                      sidebarOpen
-                        ? `gap-2 ${tab === t ? 'bg-admin-50 text-admin-600 font-semibold border-l-[3px] border-admin-600 -ml-[1px]' : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600 border-l-[3px] border-transparent'}`
-                        : `justify-center gap-0 ${tab === t ? 'bg-admin-50 text-admin-600' : 'text-neutral-500 hover:bg-admin-50 hover:text-admin-600'}`
-                    }`}
-                    title={meta.label}
-                  >
-                    <meta.Icon className={`w-4 h-4 shrink-0 ${tab === t ? "text-admin-600" : "text-neutral-400"}`} />
-                    {sidebarOpen && <span className="flex-1 truncate">{meta.label}</span>}
-                  </button>
-                );
-              })}
-            </div>
+      {/* Step Indicator */}
+      <div className="flex items-center gap-1 mb-8 bg-white rounded-xl border border-admin-200 p-1.5">
+        {STEPS.map((s, i) => (
+          <div key={i} className="flex-1 flex items-center">
+            <button
+              onClick={() => handleStepClick(i)}
+              disabled={i > step && !canNext()}
+              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all w-full ${
+                step === i
+                  ? 'bg-admin-600 text-white shadow-sm'
+                  : i < step
+                  ? 'text-admin-600 hover:bg-admin-50'
+                  : 'text-neutral-400 cursor-not-allowed'
+              }`}
+            >
+              <s.icon className="w-4 h-4 shrink-0" />
+              <span className="hidden sm:inline">{s.label}</span>
+            </button>
           </div>
-        </div>
+        ))}
+      </div>
 
-        <div className="flex-1 min-w-0">
-          {tab === "basic" && (
-            <div className="space-y-6">
+      <div className="flex-1 min-w-0">
+        {step === 0 && (
+          <div className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">
                   Title *
@@ -497,7 +492,7 @@ export default function TrainingEditor() {
                 <input
                   value={training.title}
                   onChange={(e) => update("title", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
@@ -510,9 +505,22 @@ export default function TrainingEditor() {
                     slugEditedRef.current = true;
                     update("slug", e.target.value);
                   }}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all font-mono"
                 />
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-black mb-1">
+                Short Description
+              </label>
+              <textarea
+                value={training.short_description || ""}
+                onChange={(e) => update("short_description", e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">
                   Category
@@ -520,7 +528,7 @@ export default function TrainingEditor() {
                 <select
                   value={training.category_id}
                   onChange={(e) => update("category_id", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
                 >
                   <option value="">— Select Category —</option>
                   {categories.map((cat) => (
@@ -532,6 +540,8 @@ export default function TrainingEditor() {
                 value={training.icon}
                 onChange={(val) => update("icon", val)}
               />
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">
                   Duration
@@ -540,186 +550,162 @@ export default function TrainingEditor() {
                   value={training.duration || ""}
                   onChange={(e) => update("duration", e.target.value)}
                   placeholder="e.g. 3 months"
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
-                    Mode
-                  </label>
-                  <select
-                    value={training.mode}
-                    onChange={(e) => update("mode", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                  >
-                    <option value="Online">Online</option>
-                    <option value="Offline">Offline</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
-                    Difficulty
-                  </label>
-                  <select
-                    value={training.difficulty}
-                    onChange={(e) => update("difficulty", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                  >
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                    <option value="All Levels">All Levels</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    value={training.price ?? ""}
-                    onChange={(e) => update("price", e.target.value ? e.target.valueAsNumber : null)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
-                    Discount
-                  </label>
-                  <input
-                    type="number"
-                    value={training.discount ?? ""}
-                    onChange={(e) => update("discount", e.target.value ? e.target.valueAsNumber : null)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
-                    Badge
-                  </label>
-                  <select
-                    value={training.badge}
-                    onChange={(e) => update("badge", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                  >
-                    <option value="none">None</option>
-                    <option value="Trending">Trending</option>
-                    <option value="New">New</option>
-                    <option value="Popular">Popular</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-1">
-                    Status
-                  </label>
-                  <select
-                    value={training.status}
-                    onChange={(e) => update("status", e.target.value)}
-                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                  >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                </div>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">
-                  Sort Order
+                  Mode
+                </label>
+                <select
+                  value={training.mode}
+                  onChange={(e) => update("mode", e.target.value)}
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                >
+                  <option value="Online">Online</option>
+                  <option value="Offline">Offline</option>
+                  <option value="Hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">
+                  Difficulty
+                </label>
+                <select
+                  value={training.difficulty}
+                  onChange={(e) => update("difficulty", e.target.value)}
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                >
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                  <option value="All Levels">All Levels</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">
+                  Price
                 </label>
                 <input
                   type="number"
-                  value={training.sort_order ?? 0}
-                  onChange={(e) => update("sort_order", e.target.valueAsNumber ?? 0)}
-                  className="w-32 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                />
-              </div>
-              <div className="flex flex-wrap gap-6 pt-2">
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={training.certificate}
-                    onChange={(e) => update("certificate", e.target.checked)}
-                    className="rounded"
-                  />
-                  Certificate
-                </label>
-              </div>
-              <div className="flex flex-wrap gap-6 pt-2">
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={training.featured}
-                    onChange={(e) => update("featured", e.target.checked)}
-                    className="rounded"
-                  />
-                  Featured
-                </label>
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={training.popular}
-                    onChange={(e) => update("popular", e.target.checked)}
-                    className="rounded"
-                  />
-                  Popular
-                </label>
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={training.trending}
-                    onChange={(e) => update("trending", e.target.checked)}
-                    className="rounded"
-                  />
-                  Trending
-                </label>
-              </div>
-            </div>
-          )}
-
-          {tab === "description" && (
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Short Description
-                </label>
-                <textarea
-                  value={training.short_description || ""}
-                  onChange={(e) => update("short_description", e.target.value)}
-                  rows={4}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  value={training.price ?? ""}
+                  onChange={(e) => update("price", e.target.value ? e.target.valueAsNumber : null)}
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">
-                  Full Description
+                  Discount
                 </label>
-                <textarea
-                  value={training.full_description || ""}
-                  onChange={(e) => update("full_description", e.target.value)}
-                  rows={16}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all font-mono"
+                <input
+                  type="number"
+                  value={training.discount ?? ""}
+                  onChange={(e) => update("discount", e.target.value ? e.target.valueAsNumber : null)}
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                 />
               </div>
             </div>
-          )}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">
+                  Badge
+                </label>
+                <select
+                  value={training.badge}
+                  onChange={(e) => update("badge", e.target.value)}
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                >
+                  <option value="none">None</option>
+                  <option value="Trending">Trending</option>
+                  <option value="New">New</option>
+                  <option value="Popular">Popular</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">
+                  Status
+                </label>
+                <select
+                  value={training.status}
+                  onChange={(e) => update("status", e.target.value)}
+                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-black mb-1">
+                Sort Order
+              </label>
+              <input
+                type="number"
+                value={training.sort_order ?? 0}
+                onChange={(e) => update("sort_order", e.target.valueAsNumber ?? 0)}
+                className="w-32 px-3 py-2 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+              />
+            </div>
+            <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-admin-200">
+              <input
+                type="checkbox"
+                checked={training.certificate}
+                onChange={(e) => update("certificate", e.target.checked)}
+                className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-admin-500/20"
+              />
+              <label className="text-sm font-medium text-black cursor-pointer">
+                Certificate
+              </label>
+            </div>
+            <div className="flex flex-wrap gap-6 pt-2">
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={training.featured}
+                  onChange={(e) => update("featured", e.target.checked)}
+                  className="rounded"
+                />
+                Featured
+              </label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={training.popular}
+                  onChange={(e) => update("popular", e.target.checked)}
+                  className="rounded"
+                />
+                Popular
+              </label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={training.trending}
+                  onChange={(e) => update("trending", e.target.checked)}
+                  className="rounded"
+                />
+                Trending
+              </label>
+            </div>
+          </div>
+        )}
 
-          {tab === "media" && (
-            <div className="space-y-6 max-w-2xl">
+        {step === 1 && (
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-black flex items-center gap-2">
+              <FiImage className="w-5 h-5 text-cyan-600" /> Media
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-4 max-w-2xl">
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">
                   Thumbnail
                 </label>
                 <ImageUploader
                   bucket="training-images"
-                  value={training.thumbnail_url}
-                  onChange={(url) => update("thumbnail_url", url)}
+                  value={training.thumbnail}
+                  onChange={(url) => update("thumbnail", url)}
                 />
               </div>
               <div>
@@ -728,249 +714,120 @@ export default function TrainingEditor() {
                 </label>
                 <ImageUploader
                   bucket="training-images"
-                  value={training.banner_url}
-                  onChange={(url) => update("banner_url", url)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Meta Image (OG)
-                </label>
-                <ImageUploader
-                  bucket="training-images"
-                  value={training.meta_image_url}
-                  onChange={(url) => update("meta_image_url", url)}
+                  value={training.banner}
+                  onChange={(url) => update("banner", url)}
                 />
               </div>
             </div>
-          )}
+            <div className="max-w-2xl">
+              <label className="block text-sm font-semibold text-black mb-1">
+                Meta Image (OG)
+              </label>
+              <ImageUploader
+                bucket="training-images"
+                value={training.meta_image}
+                onChange={(url) => update("meta_image", url)}
+              />
+            </div>
 
-          {tab === "details" && (
-            <div className="space-y-6 max-w-2xl">
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Eligibility
-                </label>
-                <textarea
-                  value={training.eligibility || ""}
-                  onChange={(e) => update("eligibility", e.target.value)}
-                  rows={4}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  placeholder="Describe who this training is for..."
-                />
+            <hr className="border-admin-200" />
+
+            <h2 className="text-lg font-semibold text-black flex items-center gap-2">
+              <FiFileText className="w-5 h-5 text-violet-600" /> Content
+            </h2>
+            <div>
+              <label className="block text-sm font-semibold text-black mb-1">
+                Full Description
+              </label>
+              <textarea
+                value={training.description || ""}
+                onChange={(e) => update("description", e.target.value)}
+                rows={10}
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all font-mono"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-black mb-1">
+                Eligibility
+              </label>
+              <textarea
+                value={training.eligibility || ""}
+                onChange={(e) => update("eligibility", e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                placeholder="Describe who this training is for..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-black mb-1">
+                Placement Support
+              </label>
+              <textarea
+                value={training.placement_support || ""}
+                onChange={(e) => update("placement_support", e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                placeholder="Describe placement support offered..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-black mb-1">
+                Assessment
+              </label>
+              <textarea
+                value={training.assessment || ""}
+                onChange={(e) => update("assessment", e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                placeholder="Describe assessment methods..."
+              />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-black mb-2">Learning Outcomes</h4>
+              <ListEditor
+                items={training.learning_outcomes || []}
+                onChange={(val) => update("learning_outcomes", val)}
+                fields={[{ key: "item", label: "Outcome" }]}
+                labelKey="Outcome"
+              />
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="space-y-8">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-black flex items-center gap-2">
+                  <FiBookOpen className="w-5 h-5 text-cyan-600" /> Modules
+                </h2>
+                <AdminButton
+                  onClick={() => update("trainingModules", [...training.trainingModules, { title: "", duration: "", topics: [], outcomes: [], sort_order: training.trainingModules.length }])}
+                  variant="ghost"
+                  size="sm"
+                >
+                  <FiPlus className="w-4 h-4" /> Add Module
+                </AdminButton>
               </div>
-              <div>
-                <h4 className="text-sm font-semibold text-neutral-700 mb-2">Learning Outcomes</h4>
-                <ListEditor
-                  items={training.learning_outcomes || []}
-                  onChange={(val) => update("learning_outcomes", val)}
-                  fields={[{ key: "item", label: "Outcome" }]}
-                  labelKey="Outcome"
-                />
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-semibold text-neutral-700">Modules (JSON)</h4>
-                  <AdminButton
-                    onClick={() => update("modules", [...training.modules, { title: "", duration: "", topics: [], outcomes: [] }])}
-                    variant="ghost"
-                    size="sm"
-                  >
-                    <FiPlus className="w-4 h-4" /> Add Module
-                  </AdminButton>
-                </div>
-                {training.modules.length === 0 && (
-                  <div className="text-center py-8 text-neutral-400 bg-white rounded-xl border-2 border-dashed border-admin-200">
-                    <FiBookOpen className="w-8 h-8 mx-auto mb-2 opacity-40" />
-                    <p className="text-sm">No modules yet.</p>
+              <div className="space-y-3">
+                {training.trainingModules.length === 0 && (
+                  <div className="text-center py-8 text-neutral-400 bg-white rounded-lg border-2 border-dashed border-admin-200">
+                    <FiBookOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No modules yet. Click "Add Module" to build your curriculum.</p>
                   </div>
                 )}
-                <div className="space-y-3">
-                  {training.modules.map((mod, i) => (
-                    <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
-                        <button
-                          onClick={() => update("modules", training.modules.filter((_, j) => j !== i))}
-                          className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors"
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-semibold text-black mb-1">Title</label>
-                          <input
-                            value={mod.title || ""}
-                            onChange={(e) => {
-                              const n = [...training.modules];
-                              n[i] = { ...n[i], title: e.target.value };
-                              update("modules", n);
-                            }}
-                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                            placeholder="Module title"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-semibold text-black mb-1">Duration</label>
-                          <input
-                            value={mod.duration || ""}
-                            onChange={(e) => {
-                              const n = [...training.modules];
-                              n[i] = { ...n[i], duration: e.target.value };
-                              update("modules", n);
-                            }}
-                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                            placeholder="e.g. 2 weeks"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-black mb-1">Topics</label>
-                        <div className="space-y-1.5">
-                          {(mod.topics || []).map((topic, j) => (
-                            <div key={j} className="flex items-center gap-2">
-                              <input
-                                value={topic}
-                                onChange={(e) => {
-                                  const n = [...training.modules];
-                                  const topics = [...(n[i].topics || [])];
-                                  topics[j] = e.target.value;
-                                  n[i] = { ...n[i], topics };
-                                  update("modules", n);
-                                }}
-                                className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                                placeholder="Topic"
-                              />
-                              <button
-                                onClick={() => {
-                                  const n = [...training.modules];
-                                  n[i] = { ...n[i], topics: n[i].topics.filter((_, k) => k !== j) };
-                                  update("modules", n);
-                                }}
-                                className="p-1 text-destructive-300 hover:text-destructive-500"
-                              >
-                                <FiTrash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          ))}
-                          <AdminButton
-                            onClick={() => {
-                              const n = [...training.modules];
-                              n[i] = { ...n[i], topics: [...(n[i].topics || []), ""] };
-                              update("modules", n);
-                            }}
-                            variant="ghost"
-                            size="xs"
-                          >
-                            <FiPlus className="w-3 h-3" /> Add Topic
-                          </AdminButton>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-black mb-1">Outcomes</label>
-                        <div className="space-y-1.5">
-                          {(mod.outcomes || []).map((outcome, j) => (
-                            <div key={j} className="flex items-center gap-2">
-                              <input
-                                value={outcome}
-                                onChange={(e) => {
-                                  const n = [...training.modules];
-                                  const outcomes = [...(n[i].outcomes || [])];
-                                  outcomes[j] = e.target.value;
-                                  n[i] = { ...n[i], outcomes };
-                                  update("modules", n);
-                                }}
-                                className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                                placeholder="Outcome"
-                              />
-                              <button
-                                onClick={() => {
-                                  const n = [...training.modules];
-                                  n[i] = { ...n[i], outcomes: n[i].outcomes.filter((_, k) => k !== j) };
-                                  update("modules", n);
-                                }}
-                                className="p-1 text-destructive-300 hover:text-destructive-500"
-                              >
-                                <FiTrash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          ))}
-                          <AdminButton
-                            onClick={() => {
-                              const n = [...training.modules];
-                              n[i] = { ...n[i], outcomes: [...(n[i].outcomes || []), ""] };
-                              update("modules", n);
-                            }}
-                            variant="ghost"
-                            size="xs"
-                          >
-                            <FiPlus className="w-3 h-3" /> Add Outcome
-                          </AdminButton>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-neutral-700 mb-2">Skills (JSON)</h4>
-                <ListEditor
-                  items={training.skills || []}
-                  onChange={(val) => update("skills", val)}
-                  fields={[{ key: "item", label: "Skill" }]}
-                  labelKey="Skill"
-                />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-neutral-700 mb-2">Benefits (JSON)</h4>
-                <ListEditor
-                  items={training.benefits || []}
-                  onChange={(val) => update("benefits", val)}
-                  fields={[{ key: "item", label: "Benefit" }]}
-                  labelKey="Benefit"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Placement Support
-                </label>
-                <textarea
-                  value={training.placement_support || ""}
-                  onChange={(e) => update("placement_support", e.target.value)}
-                  rows={4}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  placeholder="Describe placement support offered..."
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Assessment
-                </label>
-                <textarea
-                  value={training.assessment || ""}
-                  onChange={(e) => update("assessment", e.target.value)}
-                  rows={4}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  placeholder="Describe assessment methods..."
-                />
-              </div>
-            </div>
-          )}
-
-          {tab === "modules" && (
-            <div className="max-w-2xl">
-              <h3 className="font-semibold text-black mb-4">Modules</h3>
-              <div className="space-y-6">
                 {training.trainingModules.map((mod, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
-                    <button
-                      onClick={() => update("trainingModules", training.trainingModules.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                    <div className="grid grid-cols-2 gap-3">
+                  <div key={i} className="border border-admin-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
+                      <button
+                        onClick={() => update("trainingModules", training.trainingModules.filter((_, j) => j !== i))}
+                        className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-3 mb-3">
                       <div>
                         <label className="block text-sm font-semibold text-black mb-1">Title</label>
                         <input
@@ -980,7 +837,8 @@ export default function TrainingEditor() {
                             n[i] = { ...n[i], title: e.target.value };
                             update("trainingModules", n);
                           }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          className="w-full px-3 py-2 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          placeholder="Module title"
                         />
                       </div>
                       <div>
@@ -992,7 +850,303 @@ export default function TrainingEditor() {
                             n[i] = { ...n[i], duration: e.target.value };
                             update("trainingModules", n);
                           }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          className="w-full px-3 py-2 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          placeholder="e.g. 2 weeks"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2 mb-3">
+                      <label className="block text-sm font-semibold text-black mb-1">Topics</label>
+                      {(mod.topics || []).map((topic, j) => (
+                        <div key={j} className="flex items-center gap-2">
+                          <input
+                            value={typeof topic === "string" ? topic : ""}
+                            onChange={(e) => {
+                              const n = [...training.trainingModules];
+                              const topics = [...(n[i].topics || [])];
+                              topics[j] = e.target.value;
+                              n[i] = { ...n[i], topics };
+                              update("trainingModules", n);
+                            }}
+                            className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
+                            placeholder="Topic"
+                          />
+                          <button
+                            onClick={() => {
+                              const n = [...training.trainingModules];
+                              n[i] = { ...n[i], topics: n[i].topics.filter((_, k) => k !== j) };
+                              update("trainingModules", n);
+                            }}
+                            className="p-1 text-destructive-300 hover:text-destructive-500"
+                          >
+                            <FiTrash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                      <AdminButton
+                        onClick={() => {
+                          const n = [...training.trainingModules];
+                          n[i] = { ...n[i], topics: [...(n[i].topics || []), ""] };
+                          update("trainingModules", n);
+                        }}
+                        variant="ghost"
+                        size="xs"
+                      >
+                        <FiPlus className="w-3 h-3" /> Add Topic
+                      </AdminButton>
+                    </div>
+                    <div className="space-y-2 mb-3">
+                      <label className="block text-sm font-semibold text-black mb-1">Outcomes</label>
+                      {(mod.outcomes || []).map((outcome, j) => (
+                        <div key={j} className="flex items-center gap-2">
+                          <input
+                            value={typeof outcome === "string" ? outcome : ""}
+                            onChange={(e) => {
+                              const n = [...training.trainingModules];
+                              const outcomes = [...(n[i].outcomes || [])];
+                              outcomes[j] = e.target.value;
+                              n[i] = { ...n[i], outcomes };
+                              update("trainingModules", n);
+                            }}
+                            className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
+                            placeholder="Outcome"
+                          />
+                          <button
+                            onClick={() => {
+                              const n = [...training.trainingModules];
+                              n[i] = { ...n[i], outcomes: n[i].outcomes.filter((_, k) => k !== j) };
+                              update("trainingModules", n);
+                            }}
+                            className="p-1 text-destructive-300 hover:text-destructive-500"
+                          >
+                            <FiTrash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                      <AdminButton
+                        onClick={() => {
+                          const n = [...training.trainingModules];
+                          n[i] = { ...n[i], outcomes: [...(n[i].outcomes || []), ""] };
+                          update("trainingModules", n);
+                        }}
+                        variant="ghost"
+                        size="xs"
+                      >
+                        <FiPlus className="w-3 h-3" /> Add Outcome
+                      </AdminButton>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-black mb-1">Sort Order</label>
+                      <input
+                        type="number"
+                        value={mod.sort_order ?? i}
+                        onChange={(e) => {
+                          const n = [...training.trainingModules];
+                          n[i] = { ...n[i], sort_order: e.target.valueAsNumber ?? i };
+                          update("trainingModules", n);
+                        }}
+                        className="w-24 px-3 py-2 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-black flex items-center gap-2">
+                  <FiZap className="w-5 h-5 text-amber-600" /> Skills
+                </h3>
+                <AdminButton
+                  onClick={() => update("trainingSkills", [...training.trainingSkills, { icon: "", title: "", description: "", sort_order: training.trainingSkills.length }])}
+                  variant="ghost"
+                  size="sm"
+                >
+                  <FiPlus className="w-4 h-4" /> Add Skill
+                </AdminButton>
+              </div>
+              <div className="space-y-3">
+                {training.trainingSkills.map((s, i) => (
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
+                    <button
+                      onClick={() => update("trainingSkills", training.trainingSkills.filter((_, j) => j !== i))}
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <IconPicker
+                        value={s.icon || ""}
+                        onChange={(val) => {
+                          const n = [...training.trainingSkills];
+                          n[i] = { ...n[i], icon: val };
+                          update("trainingSkills", n);
+                        }}
+                      />
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Title</label>
+                        <input
+                          value={s.title || ""}
+                          onChange={(e) => {
+                            const n = [...training.trainingSkills];
+                            n[i] = { ...n[i], title: e.target.value };
+                            update("trainingSkills", n);
+                          }}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <label className="block text-sm font-semibold text-black mb-1">Description</label>
+                      <textarea
+                        value={s.description || ""}
+                        onChange={(e) => {
+                          const n = [...training.trainingSkills];
+                          n[i] = { ...n[i], description: e.target.value };
+                          update("trainingSkills", n);
+                        }}
+                        rows={2}
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <label className="block text-sm font-semibold text-black mb-1">Sort Order</label>
+                      <input
+                        type="number"
+                        value={s.sort_order ?? i}
+                        onChange={(e) => {
+                          const n = [...training.trainingSkills];
+                          n[i] = { ...n[i], sort_order: e.target.valueAsNumber ?? i };
+                          update("trainingSkills", n);
+                        }}
+                        className="w-24 px-3 py-2 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-black flex items-center gap-2">
+                  <FiHeart className="w-5 h-5 text-rose-600" /> Benefits
+                </h3>
+                <AdminButton
+                  onClick={() => update("trainingBenefits", [...training.trainingBenefits, { icon: "", title: "", description: "", sort_order: training.trainingBenefits.length }])}
+                  variant="ghost"
+                  size="sm"
+                >
+                  <FiPlus className="w-4 h-4" /> Add Benefit
+                </AdminButton>
+              </div>
+              <div className="space-y-3">
+                {training.trainingBenefits.map((b, i) => (
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
+                    <button
+                      onClick={() => update("trainingBenefits", training.trainingBenefits.filter((_, j) => j !== i))}
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <IconPicker
+                        value={b.icon || ""}
+                        onChange={(val) => {
+                          const n = [...training.trainingBenefits];
+                          n[i] = { ...n[i], icon: val };
+                          update("trainingBenefits", n);
+                        }}
+                      />
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Title</label>
+                        <input
+                          value={b.title || ""}
+                          onChange={(e) => {
+                            const n = [...training.trainingBenefits];
+                            n[i] = { ...n[i], title: e.target.value };
+                            update("trainingBenefits", n);
+                          }}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <label className="block text-sm font-semibold text-black mb-1">Description</label>
+                      <textarea
+                        value={b.description || ""}
+                        onChange={(e) => {
+                          const n = [...training.trainingBenefits];
+                          n[i] = { ...n[i], description: e.target.value };
+                          update("trainingBenefits", n);
+                        }}
+                        rows={2}
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <label className="block text-sm font-semibold text-black mb-1">Sort Order</label>
+                      <input
+                        type="number"
+                        value={b.sort_order ?? i}
+                        onChange={(e) => {
+                          const n = [...training.trainingBenefits];
+                          n[i] = { ...n[i], sort_order: e.target.valueAsNumber ?? i };
+                          update("trainingBenefits", n);
+                        }}
+                        className="w-24 px-3 py-2 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-black mb-2">Modules (JSON)</h4>
+              {training.modules.length === 0 && (
+                <div className="text-center py-8 text-neutral-400 bg-white rounded-xl border-2 border-dashed border-admin-200 mb-4">
+                  <FiBookOpen className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                  <p className="text-sm">No modules yet.</p>
+                </div>
+              )}
+              <div className="space-y-3">
+                {training.modules.map((mod, i) => (
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
+                      <button
+                        onClick={() => update("modules", training.modules.filter((_, j) => j !== i))}
+                        className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Title</label>
+                        <input
+                          value={mod.title || ""}
+                          onChange={(e) => {
+                            const n = [...training.modules];
+                            n[i] = { ...n[i], title: e.target.value };
+                            update("modules", n);
+                          }}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
+                          placeholder="Module title"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Duration</label>
+                        <input
+                          value={mod.duration || ""}
+                          onChange={(e) => {
+                            const n = [...training.modules];
+                            n[i] = { ...n[i], duration: e.target.value };
+                            update("modules", n);
+                          }}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
                           placeholder="e.g. 2 weeks"
                         />
                       </div>
@@ -1003,22 +1157,22 @@ export default function TrainingEditor() {
                         {(mod.topics || []).map((topic, j) => (
                           <div key={j} className="flex items-center gap-2">
                             <input
-                              value={typeof topic === "string" ? topic : ""}
+                              value={topic}
                               onChange={(e) => {
-                                const n = [...training.trainingModules];
+                                const n = [...training.modules];
                                 const topics = [...(n[i].topics || [])];
                                 topics[j] = e.target.value;
                                 n[i] = { ...n[i], topics };
-                                update("trainingModules", n);
+                                update("modules", n);
                               }}
-                              className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
+                              className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
                               placeholder="Topic"
                             />
                             <button
                               onClick={() => {
-                                const n = [...training.trainingModules];
+                                const n = [...training.modules];
                                 n[i] = { ...n[i], topics: n[i].topics.filter((_, k) => k !== j) };
-                                update("trainingModules", n);
+                                update("modules", n);
                               }}
                               className="p-1 text-destructive-300 hover:text-destructive-500"
                             >
@@ -1028,9 +1182,9 @@ export default function TrainingEditor() {
                         ))}
                         <AdminButton
                           onClick={() => {
-                            const n = [...training.trainingModules];
+                            const n = [...training.modules];
                             n[i] = { ...n[i], topics: [...(n[i].topics || []), ""] };
-                            update("trainingModules", n);
+                            update("modules", n);
                           }}
                           variant="ghost"
                           size="xs"
@@ -1045,22 +1199,22 @@ export default function TrainingEditor() {
                         {(mod.outcomes || []).map((outcome, j) => (
                           <div key={j} className="flex items-center gap-2">
                             <input
-                              value={typeof outcome === "string" ? outcome : ""}
+                              value={outcome}
                               onChange={(e) => {
-                                const n = [...training.trainingModules];
+                                const n = [...training.modules];
                                 const outcomes = [...(n[i].outcomes || [])];
                                 outcomes[j] = e.target.value;
                                 n[i] = { ...n[i], outcomes };
-                                update("trainingModules", n);
+                                update("modules", n);
                               }}
-                              className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
+                              className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20"
                               placeholder="Outcome"
                             />
                             <button
                               onClick={() => {
-                                const n = [...training.trainingModules];
+                                const n = [...training.modules];
                                 n[i] = { ...n[i], outcomes: n[i].outcomes.filter((_, k) => k !== j) };
-                                update("trainingModules", n);
+                                update("modules", n);
                               }}
                               className="p-1 text-destructive-300 hover:text-destructive-500"
                             >
@@ -1070,9 +1224,9 @@ export default function TrainingEditor() {
                         ))}
                         <AdminButton
                           onClick={() => {
-                            const n = [...training.trainingModules];
+                            const n = [...training.modules];
                             n[i] = { ...n[i], outcomes: [...(n[i].outcomes || []), ""] };
-                            update("trainingModules", n);
+                            update("modules", n);
                           }}
                           variant="ghost"
                           size="xs"
@@ -1081,23 +1235,12 @@ export default function TrainingEditor() {
                         </AdminButton>
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Sort Order</label>
-                      <input
-                        type="number"
-                        value={mod.sort_order ?? i}
-                        onChange={(e) => {
-                          const n = [...training.trainingModules];
-                          n[i] = { ...n[i], sort_order: e.target.valueAsNumber ?? i };
-                          update("trainingModules", n);
-                        }}
-                        className="w-24 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
                   </div>
                 ))}
+              </div>
+              <div className="mt-3">
                 <AdminButton
-                  onClick={() => update("trainingModules", [...training.trainingModules, { title: "", duration: "", topics: [], outcomes: [], sort_order: training.trainingModules.length }])}
+                  onClick={() => update("modules", [...training.modules, { title: "", duration: "", topics: [], outcomes: [] }])}
                   variant="ghost"
                   size="sm"
                 >
@@ -1105,219 +1248,34 @@ export default function TrainingEditor() {
                 </AdminButton>
               </div>
             </div>
-          )}
 
-          {tab === "skills" && (
-            <div className="max-w-2xl">
-              <h3 className="font-semibold text-black mb-4">Skills</h3>
-              <div className="space-y-6">
-                {training.trainingSkills.map((s, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
-                    <button
-                      onClick={() => update("trainingSkills", training.trainingSkills.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                    <IconPicker
-                      value={s.icon || ""}
-                      onChange={(val) => {
-                        const n = [...training.trainingSkills];
-                        n[i] = { ...n[i], icon: val };
-                        update("trainingSkills", n);
-                      }}
-                    />
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Title</label>
-                      <input
-                        value={s.title || ""}
-                        onChange={(e) => {
-                          const n = [...training.trainingSkills];
-                          n[i] = { ...n[i], title: e.target.value };
-                          update("trainingSkills", n);
-                        }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Description</label>
-                      <textarea
-                        value={s.description || ""}
-                        onChange={(e) => {
-                          const n = [...training.trainingSkills];
-                          n[i] = { ...n[i], description: e.target.value };
-                          update("trainingSkills", n);
-                        }}
-                        rows={2}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Sort Order</label>
-                      <input
-                        type="number"
-                        value={s.sort_order ?? i}
-                        onChange={(e) => {
-                          const n = [...training.trainingSkills];
-                          n[i] = { ...n[i], sort_order: e.target.valueAsNumber ?? i };
-                          update("trainingSkills", n);
-                        }}
-                        className="w-24 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                  </div>
-                ))}
-                <AdminButton
-                  onClick={() => update("trainingSkills", [...training.trainingSkills, { icon: "", title: "", description: "", sort_order: training.trainingSkills.length }])}
-                  variant="ghost"
-                  size="sm"
-                >
-                  <FiPlus className="w-4 h-4" /> Add Skill
-                </AdminButton>
-              </div>
+            <div>
+              <h4 className="text-sm font-semibold text-black mb-2">Skills (JSON)</h4>
+              <ListEditor
+                items={training.skills || []}
+                onChange={(val) => update("skills", val)}
+                fields={[{ key: "item", label: "Skill" }]}
+                labelKey="Skill"
+              />
             </div>
-          )}
 
-          {tab === "benefits" && (
-            <div className="max-w-2xl">
-              <h3 className="font-semibold text-black mb-4">Benefits</h3>
-              <div className="space-y-6">
-                {training.trainingBenefits.map((b, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
-                    <button
-                      onClick={() => update("trainingBenefits", training.trainingBenefits.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                    <IconPicker
-                      value={b.icon || ""}
-                      onChange={(val) => {
-                        const n = [...training.trainingBenefits];
-                        n[i] = { ...n[i], icon: val };
-                        update("trainingBenefits", n);
-                      }}
-                    />
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Title</label>
-                      <input
-                        value={b.title || ""}
-                        onChange={(e) => {
-                          const n = [...training.trainingBenefits];
-                          n[i] = { ...n[i], title: e.target.value };
-                          update("trainingBenefits", n);
-                        }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Description</label>
-                      <textarea
-                        value={b.description || ""}
-                        onChange={(e) => {
-                          const n = [...training.trainingBenefits];
-                          n[i] = { ...n[i], description: e.target.value };
-                          update("trainingBenefits", n);
-                        }}
-                        rows={2}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Sort Order</label>
-                      <input
-                        type="number"
-                        value={b.sort_order ?? i}
-                        onChange={(e) => {
-                          const n = [...training.trainingBenefits];
-                          n[i] = { ...n[i], sort_order: e.target.valueAsNumber ?? i };
-                          update("trainingBenefits", n);
-                        }}
-                        className="w-24 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                  </div>
-                ))}
-                <AdminButton
-                  onClick={() => update("trainingBenefits", [...training.trainingBenefits, { icon: "", title: "", description: "", sort_order: training.trainingBenefits.length }])}
-                  variant="ghost"
-                  size="sm"
-                >
-                  <FiPlus className="w-4 h-4" /> Add Benefit
-                </AdminButton>
-              </div>
+            <div>
+              <h4 className="text-sm font-semibold text-black mb-2">Benefits (JSON)</h4>
+              <ListEditor
+                items={training.benefits || []}
+                onChange={(val) => update("benefits", val)}
+                fields={[{ key: "item", label: "Benefit" }]}
+                labelKey="Benefit"
+              />
             </div>
-          )}
+          </div>
+        )}
 
-          {tab === "faqs" && (
-            <div className="max-w-2xl">
-              <h3 className="font-semibold text-black mb-4">FAQs</h3>
-              <div className="space-y-6">
-                {training.faqs.map((faq, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
-                    <button
-                      onClick={() => update("faqs", training.faqs.filter((_, j) => j !== i))}
-                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Question</label>
-                      <input
-                        value={faq.question || ""}
-                        onChange={(e) => {
-                          const n = [...training.faqs];
-                          n[i] = { ...n[i], question: e.target.value };
-                          update("faqs", n);
-                        }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Answer</label>
-                      <textarea
-                        value={faq.answer || ""}
-                        onChange={(e) => {
-                          const n = [...training.faqs];
-                          n[i] = { ...n[i], answer: e.target.value };
-                          update("faqs", n);
-                        }}
-                        rows={3}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-semibold text-black mb-1">Category</label>
-                        <input
-                          value={faq.category || ""}
-                          onChange={(e) => {
-                            const n = [...training.faqs];
-                            n[i] = { ...n[i], category: e.target.value };
-                            update("faqs", n);
-                          }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                          placeholder="e.g. Pricing, General"
-                        />
-                      </div>
-                      <div className="flex items-end pb-2">
-                        <label className="flex items-center gap-2 text-sm cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={faq.is_active !== false}
-                            onChange={(e) => {
-                              const n = [...training.faqs];
-                              n[i] = { ...n[i], is_active: e.target.checked };
-                              update("faqs", n);
-                            }}
-                            className="rounded"
-                          />
-                          Active
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+        {step === 3 && (
+          <div className="space-y-8">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-black">FAQs</h3>
                 <AdminButton
                   onClick={() => update("faqs", [...training.faqs, { question: "", answer: "", category: "", is_active: true }])}
                   variant="ghost"
@@ -1326,102 +1284,82 @@ export default function TrainingEditor() {
                   <FiPlus className="w-4 h-4" /> Add FAQ
                 </AdminButton>
               </div>
-            </div>
-          )}
-
-          {tab === "testimonials" && (
-            <div className="max-w-2xl">
-              <h3 className="font-semibold text-black mb-4">Testimonials</h3>
-              <div className="space-y-6">
-                {training.testimonials.map((t, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
+              <div className="space-y-3">
+                {training.faqs.map((faq, i) => (
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
                     <button
-                      onClick={() => update("testimonials", training.testimonials.filter((_, j) => j !== i))}
+                      onClick={() => update("faqs", training.faqs.filter((_, j) => j !== i))}
                       className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Student Name</label>
-                      <input
-                        value={t.student_name || ""}
-                        onChange={(e) => {
-                          const n = [...training.testimonials];
-                          n[i] = { ...n[i], student_name: e.target.value };
-                          update("testimonials", n);
-                        }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Photo</label>
-                      <ImageUploader
-                        bucket="training-images"
-                        value={t.photo || ""}
-                        onChange={(url) => {
-                          const n = [...training.testimonials];
-                          n[i] = { ...n[i], photo: url };
-                          update("testimonials", n);
-                        }}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-3">
                       <div>
-                        <label className="block text-sm font-semibold text-black mb-1">College</label>
+                        <label className="block text-sm font-semibold text-black mb-1">Question</label>
                         <input
-                          value={t.college || ""}
+                          value={faq.question || ""}
                           onChange={(e) => {
-                            const n = [...training.testimonials];
-                            n[i] = { ...n[i], college: e.target.value };
-                            update("testimonials", n);
+                            const n = [...training.faqs];
+                            n[i] = { ...n[i], question: e.target.value };
+                            update("faqs", n);
                           }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-black mb-1">Company</label>
-                        <input
-                          value={t.company || ""}
+                        <label className="block text-sm font-semibold text-black mb-1">Answer</label>
+                        <textarea
+                          value={faq.answer || ""}
                           onChange={(e) => {
-                            const n = [...training.testimonials];
-                            n[i] = { ...n[i], company: e.target.value };
-                            update("testimonials", n);
+                            const n = [...training.faqs];
+                            n[i] = { ...n[i], answer: e.target.value };
+                            update("faqs", n);
                           }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          rows={3}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         />
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Rating</label>
-                      <select
-                        value={t.rating ?? 5}
-                        onChange={(e) => {
-                          const n = [...training.testimonials];
-                          n[i] = { ...n[i], rating: Number(e.target.value) };
-                          update("testimonials", n);
-                        }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                      >
-                        {[1, 2, 3, 4, 5].map((r) => (
-                          <option key={r} value={r}>{r} Star{r > 1 ? "s" : ""}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Review</label>
-                      <textarea
-                        value={t.review || ""}
-                        onChange={(e) => {
-                          const n = [...training.testimonials];
-                          n[i] = { ...n[i], review: e.target.value };
-                          update("testimonials", n);
-                        }}
-                        rows={3}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-black mb-1">Category</label>
+                          <input
+                            value={faq.category || ""}
+                            onChange={(e) => {
+                              const n = [...training.faqs];
+                              n[i] = { ...n[i], category: e.target.value };
+                              update("faqs", n);
+                            }}
+                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                            placeholder="e.g. Pricing, General"
+                          />
+                        </div>
+                        <div className="flex items-end pb-2">
+                          <label className="flex items-center gap-2 text-sm cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={faq.is_active !== false}
+                              onChange={(e) => {
+                                const n = [...training.faqs];
+                                n[i] = { ...n[i], is_active: e.target.checked };
+                                update("faqs", n);
+                              }}
+                              className="rounded"
+                            />
+                            Active
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            <hr className="border-admin-200" />
+
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-black">Testimonials</h3>
                 <AdminButton
                   onClick={() => update("testimonials", [...training.testimonials, { student_name: "", photo: "", college: "", company: "", rating: 5, review: "" }])}
                   variant="ghost"
@@ -1430,62 +1368,108 @@ export default function TrainingEditor() {
                   <FiPlus className="w-4 h-4" /> Add Testimonial
                 </AdminButton>
               </div>
-            </div>
-          )}
-
-          {tab === "gallery" && (
-            <div className="max-w-2xl">
-              <h3 className="font-semibold text-black mb-4">Gallery</h3>
-              <div className="space-y-6">
-                {training.gallery.map((g, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
+              <div className="space-y-3">
+                {training.testimonials.map((t, i) => (
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
                     <button
-                      onClick={() => update("gallery", training.gallery.filter((_, j) => j !== i))}
+                      onClick={() => update("testimonials", training.testimonials.filter((_, j) => j !== i))}
                       className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Image</label>
-                      <ImageUploader
-                        bucket="training-images"
-                        value={g.image || ""}
-                        onChange={(url) => {
-                          const n = [...training.gallery];
-                          n[i] = { ...n[i], image: url };
-                          update("gallery", n);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Caption</label>
-                      <input
-                        value={g.caption || ""}
-                        onChange={(e) => {
-                          const n = [...training.gallery];
-                          n[i] = { ...n[i], caption: e.target.value };
-                          update("gallery", n);
-                        }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Type</label>
-                      <select
-                        value={g.type || "image"}
-                        onChange={(e) => {
-                          const n = [...training.gallery];
-                          n[i] = { ...n[i], type: e.target.value };
-                          update("gallery", n);
-                        }}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                      >
-                        <option value="image">Image</option>
-                        <option value="video">Video</option>
-                      </select>
+                    <div className="space-y-3">
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-black mb-1">Student Name</label>
+                          <input
+                            value={t.student_name || ""}
+                            onChange={(e) => {
+                              const n = [...training.testimonials];
+                              n[i] = { ...n[i], student_name: e.target.value };
+                              update("testimonials", n);
+                            }}
+                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-black mb-1">Photo</label>
+                          <ImageUploader
+                            bucket="training-images"
+                            value={t.photo || ""}
+                            onChange={(url) => {
+                              const n = [...training.testimonials];
+                              n[i] = { ...n[i], photo: url };
+                              update("testimonials", n);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-black mb-1">College</label>
+                          <input
+                            value={t.college || ""}
+                            onChange={(e) => {
+                              const n = [...training.testimonials];
+                              n[i] = { ...n[i], college: e.target.value };
+                              update("testimonials", n);
+                            }}
+                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-black mb-1">Company</label>
+                          <input
+                            value={t.company || ""}
+                            onChange={(e) => {
+                              const n = [...training.testimonials];
+                              n[i] = { ...n[i], company: e.target.value };
+                              update("testimonials", n);
+                            }}
+                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Rating</label>
+                        <select
+                          value={t.rating ?? 5}
+                          onChange={(e) => {
+                            const n = [...training.testimonials];
+                            n[i] = { ...n[i], rating: Number(e.target.value) };
+                            update("testimonials", n);
+                          }}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                        >
+                          {[1, 2, 3, 4, 5].map((r) => (
+                            <option key={r} value={r}>{r} Star{r > 1 ? "s" : ""}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Review</label>
+                        <textarea
+                          value={t.review || ""}
+                          onChange={(e) => {
+                            const n = [...training.testimonials];
+                            n[i] = { ...n[i], review: e.target.value };
+                            update("testimonials", n);
+                          }}
+                          rows={3}
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            <hr className="border-admin-200" />
+
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-black">Gallery</h3>
                 <AdminButton
                   onClick={() => update("gallery", [...training.gallery, { image: "", caption: "", type: "image" }])}
                   variant="ghost"
@@ -1494,30 +1478,86 @@ export default function TrainingEditor() {
                   <FiPlus className="w-4 h-4" /> Add Gallery Item
                 </AdminButton>
               </div>
+              <div className="space-y-3">
+                {training.gallery.map((g, i) => (
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
+                    <button
+                      onClick={() => update("gallery", training.gallery.filter((_, j) => j !== i))}
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-600"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Image</label>
+                        <ImageUploader
+                          bucket="training-images"
+                          value={g.image || ""}
+                          onChange={(url) => {
+                            const n = [...training.gallery];
+                            n[i] = { ...n[i], image: url };
+                            update("gallery", n);
+                          }}
+                        />
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-black mb-1">Caption</label>
+                          <input
+                            value={g.caption || ""}
+                            onChange={(e) => {
+                              const n = [...training.gallery];
+                              n[i] = { ...n[i], caption: e.target.value };
+                              update("gallery", n);
+                            }}
+                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-semibold text-black mb-1">Type</label>
+                          <select
+                            value={g.type || "image"}
+                            onChange={(e) => {
+                              const n = [...training.gallery];
+                              n[i] = { ...n[i], type: e.target.value };
+                              update("gallery", n);
+                            }}
+                            className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                          >
+                            <option value="image">Image</option>
+                            <option value="video">Video</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          )}
 
-          {tab === "statistics" && (
-            <div className="max-w-2xl">
-              <h3 className="font-semibold text-black mb-4">Statistics</h3>
-              <div className="space-y-6">
+            <hr className="border-admin-200" />
+
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-black">Statistics</h3>
+                <AdminButton
+                  onClick={() => update("statistics", [...training.statistics, { title: "", value: "", icon: "" }])}
+                  variant="ghost"
+                  size="sm"
+                >
+                  <FiPlus className="w-4 h-4" /> Add Statistic
+                </AdminButton>
+              </div>
+              <div className="space-y-3">
                 {training.statistics.map((s, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-3 relative">
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
                     <button
                       onClick={() => update("statistics", training.statistics.filter((_, j) => j !== i))}
                       className="absolute top-3 right-3 text-red-500 hover:text-red-600"
                     >
                       <FiTrash2 className="w-4 h-4" />
                     </button>
-                    <IconPicker
-                      value={s.icon || ""}
-                      onChange={(val) => {
-                        const n = [...training.statistics];
-                        n[i] = { ...n[i], icon: val };
-                        update("statistics", n);
-                      }}
-                    />
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-black mb-1">Title</label>
                         <input
@@ -1527,7 +1567,7 @@ export default function TrainingEditor() {
                             n[i] = { ...n[i], title: e.target.value };
                             update("statistics", n);
                           }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                           placeholder="e.g. Students Trained"
                         />
                       </div>
@@ -1540,76 +1580,118 @@ export default function TrainingEditor() {
                             n[i] = { ...n[i], value: e.target.value };
                             update("statistics", n);
                           }}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                           placeholder="e.g. 10,000+"
                         />
                       </div>
                     </div>
+                    <div className="mt-3">
+                      <IconPicker
+                        value={s.icon || ""}
+                        onChange={(val) => {
+                          const n = [...training.statistics];
+                          n[i] = { ...n[i], icon: val };
+                          update("statistics", n);
+                        }}
+                      />
+                    </div>
                   </div>
                 ))}
-                <AdminButton
-                  onClick={() => update("statistics", [...training.statistics, { title: "", value: "", icon: "" }])}
-                  variant="ghost"
-                  size="sm"
-                >
-                  <FiPlus className="w-4 h-4" /> Add Statistic
-                </AdminButton>
               </div>
             </div>
-          )}
 
-          {tab === "seo" && (
-            <div className="space-y-6">
-              <h3 className="font-semibold text-black mb-4">SEO Settings</h3>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  SEO Title
-                </label>
-                <input
-                  value={training.seo_title || ""}
-                  onChange={(e) => update("seo_title", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  SEO Description
-                </label>
-                <textarea
-                  value={training.seo_description || ""}
-                  onChange={(e) => update("seo_description", e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  SEO Keywords
-                </label>
-                <input
-                  value={training.seo_keywords || ""}
-                  onChange={(e) => update("seo_keywords", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  placeholder="keyword1, keyword2, keyword3"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Canonical URL
-                </label>
-                <input
-                  value={training.canonical_url || ""}
-                  onChange={(e) => update("canonical_url", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  placeholder="https://..."
-                />
+            <hr className="border-admin-200" />
+
+            <div>
+              <h3 className="text-sm font-semibold text-black mb-4">SEO Settings</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">
+                    SEO Title
+                  </label>
+                  <input
+                    value={training.seo_title || ""}
+                    onChange={(e) => update("seo_title", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">
+                    SEO Description
+                  </label>
+                  <textarea
+                    value={training.seo_description || ""}
+                    onChange={(e) => update("seo_description", e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">
+                    SEO Keywords
+                  </label>
+                  <input
+                    value={training.seo_keywords || ""}
+                    onChange={(e) => update("seo_keywords", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                    placeholder="keyword1, keyword2, keyword3"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">
+                    Canonical URL
+                  </label>
+                  <input
+                    value={training.canonical_url || ""}
+                    onChange={(e) => update("canonical_url", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                    placeholder="https://..."
+                  />
+                </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
+      </div>
 
+      <div className="flex justify-between items-center mt-8 pt-6 border-t border-admin-200">
+        <div></div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-200 hover:bg-red-50 rounded-lg transition-colors shadow-sm"
+          >
+            Cancel
+          </button>
+          {step > 0 && (
+            <button
+              onClick={() => setStep(step - 1)}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-neutral-600 bg-white border border-admin-200 hover:bg-admin-50 rounded-lg transition-colors"
+            >
+              Back
+            </button>
+          )}
+          {step < STEPS.length - 1 ? (
+            <button
+              onClick={() => handleStepClick(step + 1)}
+              disabled={!canNext()}
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            >
+              Next Step
+            </button>
+          ) : (
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            >
+              {saving ? "Saving..." : "Save Training"}
+            </button>
+          )}
         </div>
       </div>
-      <SaveBar saving={saving} onSave={handleSave} label="Training" dirty={dirty}  onDiscard={() => window.location.reload()} />
+
+      <SaveBar saving={saving} onSave={handleSave} label="Training" dirty={dirty} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

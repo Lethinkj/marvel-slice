@@ -174,6 +174,11 @@ const [confirm, confirmDialog] = useConfirm();
     <PageShell backTo="/admin"
       title="Training Programs"
       subtitle={`${programs.length} program${programs.length !== 1 ? 's' : ''} total`}
+      actions={
+        <Link to="/admin/training/new" className="inline-flex items-center gap-2 px-4 py-2 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
+          <FiPlus className="w-4 h-4" /> Add Training
+        </Link>
+      }
     >
       {programs.length > 0 && (
         <Card>
