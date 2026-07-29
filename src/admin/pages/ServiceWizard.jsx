@@ -34,7 +34,7 @@ import {
   FiSettings,
   FiFileText,
   FiImage
-} from "react-icons/fi";
+, FiChevronDown} from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 
@@ -93,10 +93,10 @@ function IconPicker({ value, onChange }) {
         ) : (
           <span className="text-neutral-400">Select icon</span>
         )}
-        <FiChevronUp className={`w-4 h-4 ml-auto text-admin-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <FiChevronDown className={`w-4 h-4 ml-auto text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-1 z-50 bg-white border border-admin-200 rounded-lg max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-admin-200 rounded-lg max-h-60 overflow-y-auto">
           {ICON_OPTIONS.map((opt) => (
             <button
               key={opt.key}
@@ -318,21 +318,23 @@ export default function ServiceWizard() {
           {step === 0 && (
             <div className="space-y-6">
               <h2 className="text-lg font-semibold text-black mb-4">Basic Information</h2>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">Title *</label>
-                <input
-                  value={service.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">Slug *</label>
-                <input
-                  value={service.slug}
-                  onChange={(e) => update("slug", slugify(e.target.value))}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 font-mono text-sm transition-all"
-                />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Title *</label>
+                  <input
+                    value={service.title}
+                    onChange={(e) => handleTitleChange(e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Slug *</label>
+                  <input
+                    value={service.slug}
+                    onChange={(e) => update("slug", slugify(e.target.value))}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 font-mono text-sm transition-all"
+                  />
+                </div>
               </div>
               <div className="grid sm:grid-cols-3 gap-4">
                 <div>

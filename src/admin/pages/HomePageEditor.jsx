@@ -17,7 +17,7 @@ import {
   FiClock, FiVideo, FiCode, FiCalendar, FiRefreshCw,
   FiBarChart2, FiBookOpen, FiBriefcase, FiGlobe, FiCpu,
   FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiChevronLeft, FiChevronRight,
-} from 'react-icons/fi';
+FiChevronDown} from 'react-icons/fi';
 
 const ICON_LIST = [
   { key: "briefcase", label: "Briefcase", Icon: FiBriefcase },
@@ -70,10 +70,10 @@ function IconPicker({ value, onChange }) {
         ) : (
           <span className="text-admin-400">Select icon</span>
         )}
-        <FiChevronUp className={`w-4 h-4 ml-auto text-admin-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <FiChevronDown className={`w-4 h-4 ml-auto text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-1 z-50 bg-white border border-admin-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-admin-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {ICON_LIST.map((opt) => (
             <button
               key={opt.key}

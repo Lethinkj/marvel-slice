@@ -100,6 +100,7 @@ export default function JobEditor() {
     >
       <div className="flex gap-6 items-start">
         <div className="flex-1 min-w-0">
+          <SaveBar top saved={saved} />
           <form onSubmit={handleSave} className="space-y-6 max-w-3xl">
             <div className="space-y-4">
               <div>

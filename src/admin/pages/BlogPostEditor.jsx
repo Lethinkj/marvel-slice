@@ -247,7 +247,7 @@ export default function BlogPostEditor() {
         <div>
           <h2 className="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Basic Information</h2>
           <div className="grid sm:grid-cols-2 gap-4">
-            <div className="sm:col-span-2">
+            <div>
               <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Title</label>
               <input
                 type="text"

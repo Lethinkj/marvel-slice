@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import AdminButton from "../components/AdminButton";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronUp, FiSettings, FiFileText, FiTag, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronDown, FiChevronUp, FiSettings, FiFileText, FiTag, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
@@ -105,10 +105,10 @@ function IconPicker({ value, onChange }) {
         ) : (
           <span className="text-neutral-400">Select icon</span>
         )}
-        <FiChevronUp className={`w-4 h-4 ml-auto text-admin-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <FiChevronDown className={`w-4 h-4 ml-auto text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-1 z-50 bg-white border border-admin-200 rounded-lg max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-admin-200 rounded-lg max-h-60 overflow-y-auto">
           {ICON_OPTIONS.map((opt) => (
             <button
               key={opt.key}
@@ -492,17 +492,19 @@ export default function CourseEditor() {
     >
 
       {message && (
-        <div className={`mb-6 p-4 rounded-lg flex items-center gap-2 text-sm ${
-          message.includes("successfully")
-            ? "bg-success-50 border border-success-500 text-success-700"
-            : "bg-destructive-50 border border-destructive-500 text-destructive-700"
-        }`}>
-          {message.includes("successfully") ? (
-            <FiCheck className="w-4 h-4 shrink-0" />
-          ) : (
-            <FiAlertCircle className="w-4 h-4 shrink-0" />
-          )}
-          <span>{message}</span>
+        <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+          <div className={`p-4 rounded-xl flex items-center gap-3 text-sm shadow-xl animate-fade-in-up pointer-events-auto min-w-[300px] ${
+            message.includes("successfully") || message.includes("success")
+              ? "bg-success-50 border border-success-500 text-success-700"
+              : "bg-destructive-50 border border-destructive-500 text-destructive-700"
+          }`}>
+            {message.includes("successfully") || message.includes("success") ? (
+              <FiCheck className="w-5 h-5 shrink-0 text-success-600" />
+            ) : (
+              <FiAlertCircle className="w-5 h-5 shrink-0" />
+            )}
+            <span className="font-medium">{message}</span>
+          </div>
         </div>
       )}
 
@@ -538,25 +540,27 @@ export default function CourseEditor() {
         <div className="flex-1 min-w-0">
           {tab === "basic" && (
             <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Title *
-                </label>
-                <input
-                  value={course.title}
-                  onChange={(e) => update("title", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Slug *
-                </label>
-                <input
-                  value={course.slug}
-                  onChange={(e) => update("slug", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">
+                    Title *
+                  </label>
+                  <input
+                    value={course.title}
+                    onChange={(e) => update("title", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">
+                    Slug *
+                  </label>
+                  <input
+                    value={course.slug}
+                    onChange={(e) => update("slug", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">

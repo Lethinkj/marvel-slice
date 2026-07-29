@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import { FiPlus, FiEdit2, FiTrash2, FiArrowLeft, FiBookOpen, FiX, FiCheck, FiChevronDown } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiArrowLeft, FiBookOpen, FiX, FiCheck, FiChevronDown , FiChevronDown} from 'react-icons/fi';
 import PageShell from "../components/ui/PageShell";
 import useConfirm from '../hooks/useConfirm';
 
