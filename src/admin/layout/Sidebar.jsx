@@ -47,6 +47,7 @@ const navGroups = [
     { to: "/admin/career-submissions", label: "Career Submissions" },
     { to: "/admin/brochure-downloads", label: "Brochure Downloads" },
     { to: "/admin/form-submissions", label: "Form Submissions" },
+    { to: "/admin/newsletter-subscribers", label: "Newsletter Subscribers" },
     { to: "/admin/contact-submissions", label: "Contact Submissions" },
     { to: "/admin/chat-submissions", label: "Chat Submissions" },
     { to: "/admin/courses/reports", label: "Reports" }

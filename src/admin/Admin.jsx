@@ -38,7 +38,8 @@ import ServicesPageEditor from './pages/ServicesPageEditor';
 import TrainingPageEditor from './pages/TrainingPageEditor';
 import CareerSubmissions from './pages/CareerSubmissions';
 import BrochureDownloads from './pages/BrochureDownloads';
-import FormSubmissions from './pages/FormSubmissions';
+import FormSubmissions from "./pages/FormSubmissions";
+import NewsletterSubscribers from "./pages/NewsletterSubscribers";
 import ContactSubmissions from './pages/ContactSubmissions';
 import ChatSubmissions from './pages/ChatSubmissions';
 import ChatPanel from './pages/ChatPanel';
@@ -152,6 +153,7 @@ export default function Admin() {
           <Route path="career-submissions" element={<CareerSubmissions />} />
           <Route path="brochure-downloads" element={<BrochureDownloads />} />
           <Route path="form-submissions" element={<FormSubmissions />} />
+          <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
           <Route path="contact-submissions" element={<ContactSubmissions />} />
           <Route path="chat-submissions" element={<ChatSubmissions />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />

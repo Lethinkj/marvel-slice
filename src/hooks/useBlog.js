@@ -106,11 +106,17 @@ export function usePopularTags() {
   return useQuery({
     queryKey: ['popularTags'],
     queryFn: async () => {
+      const { data: usedIds } = await supabase
+        .from('blog_post_tags')
+        .select('tag_id');
+      const ids = [...new Set((usedIds || []).map(t => t.tag_id))];
+      if (ids.length === 0) return [];
       const { data, error } = await supabase
         .from('tags')
         .select('id, name')
+        .in('id', ids)
         .order('name')
-        .limit(50);
+        .limit(15);
       if (error) throw error;
       return data || [];
     },

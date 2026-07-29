@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { trackSearch } from '../lib/analytics';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -145,19 +145,14 @@ function RecentPostsWidget({ posts }) {
         <FiCalendar className="w-4 h-4 text-brand-orange" />
         Recent Posts
       </h3>
-      <Stagger className="space-y-3">
+      <Stagger className="divide-y divide-gray-100">
         {posts.map((post, i) => (
           <StaggerItem key={post.id}>
-            <Link to={`/blog/${post.slug}`} className="block group p-3 -mx-3 rounded-xl hover:bg-gray-50 transition-all duration-200">
-              <div className="flex items-start gap-3">
-                <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-orange/10 to-brand-blue/10 flex items-center justify-center text-xs font-bold text-brand-orange shrink-0 mt-0.5">
-                  {i + 1}
-                </span>
-                <div className="min-w-0">
+            <Link to={`/blog/${post.slug}`} className="block group py-3 hover:bg-gray-50 transition-all duration-200">
+              <div className="min-w-0">
                   <p className="text-sm font-medium text-dark-navy group-hover:text-brand-orange transition-colors line-clamp-2">{post.title}</p>
                   {post.published_at && <p className="text-xs text-gray-400 mt-1 flex items-center gap-1"><FiCalendar className="w-3 h-3" />{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>}
                 </div>
-              </div>
             </Link>
           </StaggerItem>
         ))}
@@ -179,15 +174,14 @@ function NewsletterForm() {
     setEmail('');
   }
   return (
-    <div className="bg-gradient-to-br from-brand-blue to-dark-navy rounded-2xl p-6 text-white">
-      <h3 className="font-bold text-lg mb-2">Newsletter</h3>
-      <p className="text-sm text-white/70 mb-4">Get the latest posts delivered to your inbox.</p>
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+      <h3 className="font-bold text-lg mb-2 text-gray-900">Newsletter</h3>
       {subscribed ? (
-        <p className="text-brand-green text-sm font-medium">Thanks for subscribing!</p>
+        <p className="text-green-400 text-sm font-medium">Thanks for subscribing!</p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email address" required
-            className="w-full px-4 py-2.5 rounded-xl bg-white text-dark-navy text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange" />
+            className="w-full px-4 py-2.5 rounded-xl bg-white text-dark-navy text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 border border-gray-400" />
           <Button type="submit" variant="primary" size="lg" shape="md" className="w-full">
             Subscribe <FiArrowRight className="w-4 h-4" /></Button>
         </form>
@@ -274,6 +268,14 @@ export default function Blog() {
   const page = parseInt(searchParams.get('page') || '1', 10);
   const [search, setSearch] = useState('');
 
+  useEffect(() => {
+    if (search && page !== 1) {
+      const next = new URLSearchParams(searchParams);
+      next.delete('page');
+      setSearchParams(next, { replace: true });
+    }
+  }, [search]);
+
   const { data: settings } = useSiteSettings();
   const perPage = page === 1 ? 5 : 6;
   const { data: postsData, isLoading } = useBlogPosts({ category, tag, search, page, perPage });
@@ -288,7 +290,7 @@ export default function Blog() {
   const posts = postsData?.posts || [];
   const total = postsData?.total || 0;
 
-  const isAllPage = !category && !tag && page === 1;
+  const isAllPage = !category && !tag && page === 1 && !search.trim();
   const featured = isAllPage ? (posts.find((p) => p.is_featured) || posts[0]) : null;
   const gridPosts = featured ? posts.filter((p) => p.id !== featured.id) : posts;
 

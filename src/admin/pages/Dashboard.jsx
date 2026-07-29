@@ -143,11 +143,11 @@ export default function Dashboard() {
             {recentItems.length === 0 ? (
               <div className="py-8 text-center text-sm text-neutral-400">No recent activity.</div>
             ) : (
-              <div className="divide-y divide-admin-100 -mx-5 -mb-5">
+              <div className="-mx-5 -mb-5">
                 {recentItems.map((item) => {
                   const isCourse = item._type === 'course';
                   return (
-                    <div key={`${item._type}-${item.id}`} className="flex items-center gap-3 px-5 py-2.5">
+                    <div key={`${item._type}-${item.id}`} className="flex items-center gap-3 px-5 py-2.5 border-b border-gray-200">
                         <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isCourse ? 'bg-emerald-600' : 'bg-orange-600'}`}>
                           {isCourse ? <FiBookOpen className="w-3.5 h-3.5 text-white" /> : <FiFileText className="w-3.5 h-3.5 text-white" />}
                       </div>
