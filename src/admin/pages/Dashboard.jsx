@@ -108,7 +108,7 @@ export default function Dashboard() {
 
   const submissionCards = [
     { label: 'Career Submissions', value: pending.career, icon: FiInbox, link: '/admin/career-submissions', subtitle: 'Submissions', iconTone: 'rose' },
-    { label: 'Brochure Downloads', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'emerald' },
+    { label: 'Brochure Downloads', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'orange' },
     { label: 'Form Submissions', value: pending.form, icon: FiInbox, link: '/admin/form-submissions', subtitle: 'Submissions', iconTone: 'violet' },
     { label: 'Contact Submissions', value: pending.contact, icon: FiInbox, link: '/admin/contact-submissions', subtitle: 'Submissions', iconTone: 'amber' },
     { label: 'Chat Submissions', value: pending.chat, icon: FiMessageCircle, link: '/admin/chat-submissions', subtitle: 'Submissions', iconTone: 'cyan' },
