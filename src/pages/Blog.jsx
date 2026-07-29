@@ -318,7 +318,7 @@ export default function Blog() {
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
             <div className="lg:w-[70%] space-y-6 sm:space-y-8">
               {isAllPage && featured && <FeaturedPost post={featured} />}
-              <Stagger className="grid md:grid-cols-2 gap-6">
+              <Stagger key={`${category || 'all'}-${tag || 'all'}-${search}-${page}`} className="grid md:grid-cols-2 gap-6">
                 {gridPosts.map((post) => (
                   <StaggerItem key={post.id} className="h-full">
                     <PostCard post={post} />
