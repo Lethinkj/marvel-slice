@@ -13,14 +13,14 @@ export function SectionSidebar({ navItems, activeItemKey, onNavClick }) {
                 key={item.key}
                 type="button"
                 onClick={() => onNavClick(item.key)}
-                className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 gap-2 ${
+                className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-2 pr-2.5 py-2 gap-2 ${
                   isActive 
-                    ? 'bg-admin-50 text-admin-600 font-semibold border-l-[3px] border-admin-600 -ml-[1px]' 
-                    : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600 border-l-[3px] border-transparent'
+                    ? 'bg-blue-50 text-brand-blue font-semibold border-l-[3px] border-brand-blue -ml-[1px]' 
+                    : 'text-neutral-600 hover:bg-blue-50 hover:text-brand-blue border-l-[3px] border-transparent'
                 }`}
                 title={item.label}
               >
-                {Icon && <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-admin-600' : 'text-neutral-400'}`} />}
+                {Icon && <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-brand-blue' : 'text-neutral-400'}`} />}
                 <span className="flex-1 truncate">{item.label}</span>
               </button>
             );

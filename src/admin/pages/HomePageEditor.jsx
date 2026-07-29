@@ -1137,10 +1137,10 @@ export default function HomePageEditor() {
                   key={item.key}
                   type="button"
                   onClick={() => navigate(`/admin/home/${item.key}`)}
-                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
+                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-2 pr-2.5 py-2 ${
                     sidebarOpen
-                       ? `gap-2 ${selectedNav.key === item.key ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`
-                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-admin-600 text-white shadow-sm' : 'text-gray-400 hover:bg-admin-50 hover:text-admin-600'}`
+                       ? `gap-2 ${selectedNav.key === item.key ? 'bg-brand-blue text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-blue-50 hover:text-brand-blue'}`
+                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-brand-blue text-white shadow-sm' : 'text-gray-400 hover:bg-blue-50 hover:text-brand-blue'}`
                    }`}
                    title={item.label}
                  >
@@ -1161,7 +1161,7 @@ export default function HomePageEditor() {
             </div>
           </div>
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-          <div>
+          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
             {def && sec ? (
               <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />
             ) : (

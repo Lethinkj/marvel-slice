@@ -7,7 +7,7 @@ import { useSiteSettings } from "../../hooks/useSupabase";
 const navGroups = [
   { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard" }] },
   {
-    label: "Edit Pages", icon: FiFile,
+    label: "All Pages", icon: FiFile,
     items: [
       { to: "/admin/home", label: "Home", catchSubRoutes: true },
       { to: "/admin/about-page", label: "About" },

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Montserrat';
+  --font-sans: 'Roboto';
   --color-neutral-50: #f8fafc;
   --color-neutral-100: #f1f5f9;
   --color-neutral-200: #e2e8f0;
@@ -38,7 +38,7 @@
   --color-brand-green: #74a916;
   --color-brand-blue: #175cdd;
   --color-dark-navy: #175cdd;
-  --color-text-gray: #333333;
+  --color-text-gray: #6a7282;
   --color-bg-light: #f5f5f5;
   --color-admin-50: #f8fafc;
   --color-admin-100: #f1f5f9;
@@ -96,13 +96,18 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+}
+
+p, li, .text-paragraph {
+  color: #6a7282;
 }
 
 body {
-  font-family: 'Montserrat';
+  font-family: 'Roboto', sans-serif !important;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--color-neutral-900);
+  color: #6a7282;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

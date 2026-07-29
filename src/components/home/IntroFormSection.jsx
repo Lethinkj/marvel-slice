@@ -85,7 +85,7 @@ export default function IntroFormSection({ section }) {
               </h2>
             )}
             {introText && (
-              <p className="text-sm sm:text-base leading-relaxed text-justify" style={{ fontFamily: '"Roboto", sans-serif', fontSize: '16px', color: '#3a3a3a' }}>
+              <p className="text-sm sm:text-base leading-relaxed text-justify">
                 {introText}
               </p>
             )}
