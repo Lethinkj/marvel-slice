@@ -60,6 +60,8 @@ const DEFAULT_CONTACT_CONTENT = {
 };
 
 export default function ContactPageEditor() {
+
+  const [activeTab, setActiveTab] = useState('hero-section');
 const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [navItem, setNavItem] = useState(null);
@@ -192,9 +194,39 @@ const queryClient = useQueryClient();
       title={`${navItem?.label || 'Contact'} Page`}
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-      <form onSubmit={handleSave} className="space-y-6">
+      
+      <div className="flex gap-6 items-start">
+        <div className="w-[220px]">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+              {[
+                { id: 'hero-section', title: "Hero Section" },
+                { id: 'contact-section', title: "Contact Section" },
+                { id: 'left-side-company-details', title: "Left Side — Company Details" },
+                { id: 'right-side-form-settings', title: "Right Side — Form Settings" },
+                { id: 'style-settings', title: "Style Settings" },
+                { id: 'map-embed', title: "Map Embed" },
+                { id: 'faqs', title: "FAQs" }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-3 pr-2.5 py-2 ${activeTab === tab.id ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`}
+                >
+                  <span className="flex-1 truncate">{tab.title}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
+        <div className="flex-1 min-w-0">
+          <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
+
         {/* Hero Section */}
-        <SectionAccordion title="Hero Section" defaultExpanded={true}>
+        {activeTab === 'hero-section' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Section</h2>
           <div className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
@@ -210,10 +242,13 @@ const queryClient = useQueryClient();
               <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
             </div>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
         {/* Contact Section Toggle */}
-        <SectionAccordion title="Contact Section" defaultExpanded={false}>
+        {activeTab === 'contact-section' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Contact Section</h2>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-neutral-500 mt-0.5">Split-screen layout: company details on the left, contact form on the right.</p>
@@ -223,12 +258,15 @@ const queryClient = useQueryClient();
               <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showContactSection ? 'translate-x-6' : 'translate-x-1'}`} />
             </button>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
         {/* Left Side: Company Details */}
         {showContactSection && (
           <>
-            <SectionAccordion title="Left Side — Company Details" defaultExpanded={false}>
+            {activeTab === 'left-side-company-details' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Left Side — Company Details</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -265,20 +303,26 @@ const queryClient = useQueryClient();
                   </div>
                 </div>
               </div>
-            </SectionAccordion>
+            </div>
+      )}
 
             {/* Right Side: Form Settings */}
-            <SectionAccordion title="Right Side — Form Settings" defaultExpanded={false}>
+            {activeTab === 'right-side-form-settings' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Right Side — Form Settings</h2>
               <div className="space-y-4">
                 <div>
                   <label className={labelCls}>Success Message</label>
                   <input type="text" value={contactContent.success_message} onChange={(e) => updateContent('success_message', e.target.value)} className={inputCls} placeholder="Thank you! Your message has been received." />
                 </div>
               </div>
-            </SectionAccordion>
+            </div>
+      )}
 
             {/* Style Settings */}
-            <SectionAccordion title="Style Settings" defaultExpanded={false}>
+            {activeTab === 'style-settings' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Style Settings</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div>
@@ -304,12 +348,15 @@ const queryClient = useQueryClient();
                   <label className="text-sm text-neutral-700">Card Shadow</label>
                 </div>
               </div>
-            </SectionAccordion>
+            </div>
+      )}
           </>
         )}
 
         {/* Map Embed */}
-        <SectionAccordion title="Map Embed" defaultExpanded={false}>
+        {activeTab === 'map-embed' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Map Embed</h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -322,10 +369,13 @@ const queryClient = useQueryClient();
               <p className="text-xs text-neutral-400 mt-1">Paste the <strong>src</strong> URL from a Google Maps embed iframe. Leave empty to hide the map.</p>
             </div>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
         {/* FAQs */}
-        <SectionAccordion title="FAQs" defaultExpanded={false}>
+        {activeTab === 'faqs' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">FAQs</h2>
           <RepeatableItemList 
             title="FAQs" 
             items={faqs} 
@@ -346,10 +396,13 @@ const queryClient = useQueryClient();
               </RepeatableItemCard>
             )}
           />
-        </SectionAccordion>
+        </div>
+      )}
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>
+        </div>
+      </div>
     </PageShell>
   );
 }

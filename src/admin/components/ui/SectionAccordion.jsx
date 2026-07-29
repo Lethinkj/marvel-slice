@@ -9,13 +9,13 @@ export default function SectionAccordion({ title, defaultExpanded = false, child
       <button 
         type="button" 
         onClick={() => setExpanded(!expanded)} 
-        className={`w-full flex items-center justify-between px-6 py-4 bg-gray-50/50 hover:bg-gray-50 transition-colors ${expanded ? 'border-b border-admin-100' : ''}`}
+        className={`w-full flex items-center justify-between px-6 py-4 bg-brand-blue hover:bg-blue-700 transition-colors ${expanded ? 'border-b border-white/20' : ''}`}
       >
-        <h2 className="text-base font-semibold text-black">{title}</h2>
+        <h2 className="text-base font-semibold text-white">{title}</h2>
         {expanded ? (
-          <FiChevronUp className="w-5 h-5 text-gray-400" />
+          <FiChevronUp className="w-5 h-5 text-white" />
         ) : (
-          <FiChevronDown className="w-5 h-5 text-gray-400" />
+          <FiChevronDown className="w-5 h-5 text-white" />
         )}
       </button>
       {expanded && (

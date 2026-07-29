@@ -103,6 +103,8 @@ const defaultJobForm = {
 };
 
 export default function CareerPageEditor() {
+
+  const [activeTab, setActiveTab] = useState('hero-section');
 const [confirm, confirmDialog] = useConfirm();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
@@ -411,9 +413,36 @@ const [confirm, confirmDialog] = useConfirm();
     >
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-      <form onSubmit={handleSave} className="space-y-6">
+      
+      <div className="flex gap-6 items-start">
+        <div className="w-[220px]">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+              {[
+                { id: 'hero-section', title: "Hero Section" },
+                { id: 'were-hiring-header', title: "&quot;We're Hiring!&quot; Header" },
+                { id: 'categories-section', title: "Categories Section" },
+                { id: 'role-categories', title: "Role Categories" }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-3 pr-2.5 py-2 ${activeTab === tab.id ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`}
+                >
+                  <span className="flex-1 truncate">{tab.title}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
+        <div className="flex-1 min-w-0">
+          <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
 
-        <SectionAccordion title="Hero Section" defaultExpanded={true}>
+
+        {activeTab === 'hero-section' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Section</h2>
           <div className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
@@ -452,9 +481,12 @@ const [confirm, confirmDialog] = useConfirm();
               )}
             </div>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
-        <SectionAccordion title="&quot;We're Hiring!&quot; Header" defaultExpanded={false}>
+        {activeTab === 'were-hiring-header' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">&quot;We're Hiring!&quot; Header</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Headline</label>
@@ -472,9 +504,12 @@ const [confirm, confirmDialog] = useConfirm();
                 rows={2} placeholder="Brief description about working at your company..." className={inputClass} />
             </div>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
-        <SectionAccordion title="Categories Section" defaultExpanded={false}>
+        {activeTab === 'categories-section' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Categories Section</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
@@ -487,9 +522,12 @@ const [confirm, confirmDialog] = useConfirm();
                 placeholder="Find the role that fits you best" className={inputClass} />
             </div>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
-        <SectionAccordion title="Role Categories" defaultExpanded={false}>
+        {activeTab === 'role-categories' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Role Categories</h2>
           <div className="flex justify-end mb-4">
             <button type="button" onClick={openCategoryForm} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors bg-white">
               <FiPlus className="w-4 h-4" /> Add Category
@@ -581,10 +619,13 @@ const [confirm, confirmDialog] = useConfirm();
               </div>
             </>
           )}
-        </SectionAccordion>
+        </div>
+      )}
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>
+        </div>
+      </div>
 
       {confirmDialog}
     </PageShell>

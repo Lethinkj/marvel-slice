@@ -393,6 +393,8 @@ const SECTION_TYPE_LABELS = Object.fromEntries(SECTION_TYPES.map(t => [t.value, 
 const PAGE_PATH = '/about';
 
 export default function AboutPageEditor() {
+
+  const [activeTab, setActiveTab] = useState('hero-image');
 const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [navItem, setNavItem] = useState(null);
@@ -569,17 +571,45 @@ const queryClient = useQueryClient();
           </ul>
         </div>
       )}
-      <form onSubmit={handleSave} className="space-y-6">
-        <SectionAccordion title="Hero Image" defaultExpanded={true}>
+      
+      <div className="flex gap-6 items-start">
+        <div className="w-[220px]">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+              {[
+                { id: 'hero-image', title: "Hero Image" },
+                { id: 'sections', title: "Sections" }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-3 pr-2.5 py-2 ${activeTab === tab.id ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`}
+                >
+                  <span className="flex-1 truncate">{tab.title}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
+        <div className="flex-1 min-w-0">
+          <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
+
+        {activeTab === 'hero-image' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Image</h2>
           <div className="space-y-3">
             <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
             {hero.hero_image && (
               <button type="button" onClick={() => setHero({ ...hero, hero_image: '' })} className="text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
             )}
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
-        <SectionAccordion title="Sections" defaultExpanded={false}>
+        {activeTab === 'sections' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Sections</h2>
           <div className="flex justify-end mb-4">
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -641,10 +671,13 @@ const queryClient = useQueryClient();
               </div>
             ))}
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>
+        </div>
+      </div>
     </PageShell>
   );
 }

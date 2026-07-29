@@ -334,31 +334,33 @@ export default function ServiceWizard() {
                   className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 font-mono text-sm transition-all"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">Category</label>
-                <select
-                  value={service.category_id}
-                  onChange={(e) => update("category_id", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                >
-                  <option value="">— Select Category —</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
-              </div>
-              <IconPicker value={service.icon} onChange={(val) => update("icon", val)} />
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">Status</label>
-                <select
-                  value={service.status}
-                  onChange={(e) => update("status", e.target.value)}
-                  className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
-                >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="archived">Archived</option>
-                </select>
+              <div className="grid sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Category</label>
+                  <select
+                    value={service.category_id}
+                    onChange={(e) => update("category_id", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                  >
+                    <option value="">— Select Category —</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <IconPicker value={service.icon} onChange={(val) => update("icon", val)} />
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">Status</label>
+                  <select
+                    value={service.status}
+                    onChange={(e) => update("status", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
               </div>
               <div className="flex flex-wrap gap-6 pt-2">
                 <label className="flex items-center gap-2 text-sm cursor-pointer">

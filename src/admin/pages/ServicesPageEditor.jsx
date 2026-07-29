@@ -44,6 +44,8 @@ function ImageUploader({ value, onChange, label }) {
 const PAGE_PATH = '/services';
 
 export default function ServicesPageEditor() {
+
+  const [activeTab, setActiveTab] = useState('hero-section');
 const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [navItem, setNavItem] = useState(null);
@@ -142,8 +144,35 @@ const queryClient = useQueryClient();
       title={`${navItem?.label || 'Services'} Page`}
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-      <form onSubmit={handleSave} className="space-y-6">
-        <SectionAccordion title="Hero Section" defaultExpanded={true}>
+      
+      <div className="flex gap-6 items-start">
+        <div className="w-[220px]">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
+              {[
+                { id: 'hero-section', title: "Hero Section" },
+                { id: 'services', title: "Services" },
+                { id: 'call-to-action', title: "Call to Action" },
+                { id: 'faqs', title: "FAQs" }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-3 pr-2.5 py-2 ${activeTab === tab.id ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`}
+                >
+                  <span className="flex-1 truncate">{tab.title}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
+        </div>
+        <div className="flex-1 min-w-0">
+          <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
+
+        {activeTab === 'hero-section' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Section</h2>
           <div className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
@@ -159,9 +188,12 @@ const queryClient = useQueryClient();
               <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
             </div>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
-        <SectionAccordion title="Services" defaultExpanded={false}>
+        {activeTab === 'services' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Services</h2>
           <RepeatableItemList 
              title="Services" 
              items={services} 
@@ -182,9 +214,12 @@ const queryClient = useQueryClient();
                </RepeatableItemCard>
              )}
           />
-        </SectionAccordion>
+        </div>
+      )}
 
-        <SectionAccordion title="Call to Action" defaultExpanded={false}>
+        {activeTab === 'call-to-action' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Call to Action</h2>
           <div className="space-y-4">
              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
@@ -201,9 +236,12 @@ const queryClient = useQueryClient();
                 <input type="text" value={cta.link} onChange={(e) => setCta({ ...cta, link: e.target.value })} placeholder="Button link URL" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
              </div>
           </div>
-        </SectionAccordion>
+        </div>
+      )}
 
-        <SectionAccordion title="FAQs" defaultExpanded={false}>
+        {activeTab === 'faqs' && (
+        <div className="space-y-6">
+          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">FAQs</h2>
           <RepeatableItemList 
              title="FAQs" 
              items={faqs} 
@@ -224,10 +262,13 @@ const queryClient = useQueryClient();
                </RepeatableItemCard>
              )}
           />
-        </SectionAccordion>
+        </div>
+      )}
 
         <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
       </form>
+        </div>
+      </div>
     </PageShell>
   );
 }
