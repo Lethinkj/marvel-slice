@@ -266,6 +266,7 @@ export function useSiteSettings() {
       if (error) throw error;
       return data;
     },
+    refetchOnMount: 'always',
   });
 }
 

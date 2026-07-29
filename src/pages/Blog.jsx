@@ -13,7 +13,7 @@ function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading
     <section className="relative text-white overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-10" />
       <div className="absolute inset-0" style={{
-        backgroundImage: `url(${heroImage || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&q=75'})`,
+        backgroundImage: heroImage ? `url(${heroImage})` : 'none',
         backgroundSize: 'cover', backgroundPosition: 'center',
       }} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 text-center relative z-20">
@@ -305,7 +305,7 @@ export default function Blog() {
 
   return (
     <div>
-      <Hero search={search} onSearchChange={setSearch} onSearch={handleSearch} heroImage={settings?.blog_hero_image} heading={settings?.blog_heading} subheading={settings?.blog_subheading} />
+      <Hero key={[settings?.blog_hero_image, settings?.blog_heading, settings?.blog_subheading].filter(Boolean).join('|') || 'default'} search={search} onSearchChange={setSearch} onSearch={handleSearch} heroImage={settings?.blog_hero_image} heading={settings?.blog_heading} subheading={settings?.blog_subheading} />
               <CategoryPills categories={categories || []} active={category} onChange={(slug) => { const next = new URLSearchParams(); if (slug) next.set('category', slug); setSearchParams(next); }} />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {isLoading ? (

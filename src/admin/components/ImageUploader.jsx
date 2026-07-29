@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { FiUpload, FiX, FiCopy, FiLink } from 'react-icons/fi';
 
@@ -12,6 +12,10 @@ export default function ImageUploader({
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    setPreview(value);
+  }, [value]);
 
   async function handleFile(e) {
     const file = e.target.files?.[0];

@@ -6,6 +6,8 @@
 -- Uncomment to reset:
 -- drop schema public cascade; create schema public;
 -- ============================================================
+-- NOTE: If site_settings already exists without blog_heading/blog_subheading,
+-- run the alter statements at the bottom of this file (search "ALTER TABLE site_settings").
 
 create extension if not exists "pgcrypto";
 
@@ -912,5 +914,18 @@ do $$ begin
     create policy "Anyone can update brochure_downloads"
     on brochure_downloads for update to anon, authenticated
     using (true);
+  end if;
+end $$;
+
+-- Add missing blog page columns to site_settings (safe to re-run)
+do $$ begin
+  if not exists (select 1 from information_schema.columns where table_name = 'site_settings' and column_name = 'blog_hero_image') then
+    alter table site_settings add column blog_hero_image text;
+  end if;
+  if not exists (select 1 from information_schema.columns where table_name = 'site_settings' and column_name = 'blog_heading') then
+    alter table site_settings add column blog_heading text;
+  end if;
+  if not exists (select 1 from information_schema.columns where table_name = 'site_settings' and column_name = 'blog_subheading') then
+    alter table site_settings add column blog_subheading text;
   end if;
 end $$;

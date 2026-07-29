@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
 import ImageUploader from '../components/ImageUploader';
-import SectionAccordion from '../components/ui/SectionAccordion';
 
 export default function BlogPageEditor() {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [settingsId, setSettingsId] = useState(null);
   const [heroImage, setHeroImage] = useState('');
   const [heading, setHeading] = useState('Latest Articles & News');
@@ -21,50 +20,64 @@ export default function BlogPageEditor() {
   const { dirty, reset } = useDirty([heroImage, heading, subheading], loading);
 
   useEffect(() => {
-    async function load() {
-      const { data } = await supabase
-        .from('site_settings')
-        .select('*')
-        .maybeSingle();
-      if (data) {
-        setSettingsId(data.id);
-        if (data.blog_hero_image) setHeroImage(data.blog_hero_image);
-        if (data.blog_heading) setHeading(data.blog_heading);
-        if (data.blog_subheading) setSubheading(data.blog_subheading);
-      }
-      setLoading(false);
-    }
-    load();
+    supabase
+      .from('site_settings')
+      .select('*')
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!data && error?.code === 'PGRST116') {
+          return supabase.from('site_settings').select('*').limit(1).then(({ data: rows }) => {
+            data = rows?.[0] || null;
+          });
+        }
+        return data;
+      })
+      .then((data) => {
+        if (data) {
+          setSettingsId(data.id);
+          if (data.blog_hero_image) setHeroImage(data.blog_hero_image);
+          if (data.blog_heading) setHeading(data.blog_heading);
+          if (data.blog_subheading) setSubheading(data.blog_subheading);
+        }
+        setLoading(false);
+      });
   }, []);
 
   async function handleSave(e) {
     e.preventDefault();
     setSaving(true);
+    setSaveError('');
     const payload = {
       blog_hero_image: heroImage || null,
       blog_heading: heading,
       blog_subheading: subheading,
     };
+    let res;
     if (settingsId) {
-      await supabase.from('site_settings').update(payload).eq('id', settingsId);
+      res = await supabase.from('site_settings').update(payload).eq('id', settingsId);
     } else {
-      const { data } = await supabase.from('site_settings').insert(payload).select('id').single();
-      if (data) setSettingsId(data.id);
+      res = await supabase.from('site_settings').insert(payload).select().single();
+      if (res.data) setSettingsId(res.data.id);
+    }
+    if (res.error) {
+      setSaveError(res.error.message);
+    } else {
+      queryClient.invalidateQueries({ queryKey: ['siteSettings'] });
+      setSaved(true);
+      reset();
+      setTimeout(() => setSaved(false), 2000);
     }
     setSaving(false);
-    setSaved(true);
-    reset();
-    queryClient.invalidateQueries({ queryKey: ['siteSettings'] });
-    setTimeout(() => setSaved(false), 3000);
   }
 
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
     <PageShell title="Blog Page">
-      <SaveBar saving={saving} saved={saved} onSave={handleSave} label="Blog Page" top />
+      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
       <form onSubmit={handleSave} className="space-y-6">
-        <SectionAccordion title="Hero Section" defaultExpanded={true}>
+        <div className="bg-white rounded-xl border border-admin-200 p-6">
+          <h2 className="font-semibold text-black mb-4">Hero Section</h2>
           <div className="space-y-6">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
@@ -85,8 +98,8 @@ export default function BlogPageEditor() {
               <ImageUploader value={heroImage} onChange={(url) => setHeroImage(url)} />
             </div>
           </div>
-        </SectionAccordion>
-        <SaveBar saving={saving} saved={saved} onSave={handleSave} label="Blog Page" dirty={dirty} onDiscard={() => window.location.reload()} />
+        </div>
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} onDiscard={() => window.location.reload()} />
       </form>
     </PageShell>
   );
