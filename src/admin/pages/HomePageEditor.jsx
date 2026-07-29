@@ -739,9 +739,10 @@ function HeroEditor({ data, onChange }) {
         <div className="flex justify-end mb-4">
           <button type="button" onClick={() => {
             const s = Array.isArray(content.stats) ? content.stats : [];
+            if (s.length >= 3) return;
             updateContent('stats', [...s, { value: '', label: '' }]);
           }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-admin-600 bg-white border border-admin-200 hover:bg-admin-50 hover:border-admin-300 rounded-lg transition-colors">
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${(content.stats || []).length >= 3 ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-admin-600 bg-white border border-admin-200 hover:bg-admin-50 hover:border-admin-300'}`}>
             <FiPlus className="w-3.5 h-3.5" /> Add Stat
           </button>
         </div>

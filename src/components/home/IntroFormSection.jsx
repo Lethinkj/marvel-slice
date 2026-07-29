@@ -91,17 +91,17 @@ export default function IntroFormSection({ section }) {
             )}
 
             {stats.length > 0 && (
-              <Stagger className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <Stagger className="grid grid-cols-3 gap-4">
                 {stats.map((stat, i) => {
                   const Icon = getStatIcon(stat.label);
                   return (
                     <StaggerItem key={i}>
-                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+                      <div className="bg-white rounded-xl border border-gray-100 p-4 text-center hover:-translate-y-1 transition-all duration-300 max-w-[238px] mx-auto" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
                         <div className="w-10 h-10 mx-auto rounded-lg bg-brand-orange/10 flex items-center justify-center mb-2">
                           <Icon className="w-4 h-4 text-brand-orange" />
                         </div>
-                        <p className="text-xl sm:text-2xl font-extrabold text-dark-navy">{stat.value}</p>
-                        <p className="text-xs text-text-gray mt-0.5">{stat.label}</p>
+                        <p className="text-xl sm:text-2xl font-extrabold" style={{ color: '#175cdd' }}>{stat.value}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#000000' }}>{stat.label}</p>
                       </div>
                     </StaggerItem>
                   );
@@ -189,11 +189,11 @@ export default function IntroFormSection({ section }) {
                   const Icon = feat.icon;
                   return (
                     <StaggerItem key={i}>
-                      <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                      <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 shadow-sm">
                         <div className="w-7 h-7 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
                           <Icon className="w-3.5 h-3.5 text-brand-blue" />
                         </div>
-                        <span className="text-xs font-bold text-dark-navy">{feat.label}</span>
+                        <span className="text-xs font-bold text-brand-blue">{feat.label}</span>
                       </div>
                     </StaggerItem>
                   );

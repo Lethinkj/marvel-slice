@@ -98,15 +98,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
 }
 
-nav * {
-  font-family: 'Montserrat', sans-serif !important;
-}
-
-.admin-scrollbar,
-.admin-scrollbar * {
-  font-family: 'Roboto', sans-serif !important;
-}
-
 p, li, .text-paragraph {
   color: #6a7282;
 }
@@ -244,6 +235,11 @@ button:not(:disabled) { cursor: pointer; }
 /* Keep max-w-2xl at its natural width for text readability */
 .max-w-2xl {
   max-width: 42rem;
+}
+
+.admin-scrollbar table,
+.admin-scrollbar table * {
+  border-color: #e2e8f0 !important;
 }
 
 .admin-scrollbar input:not([type="checkbox"]):not([type="radio"]),

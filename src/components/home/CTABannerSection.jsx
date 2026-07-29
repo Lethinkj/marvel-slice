@@ -72,7 +72,7 @@ export default function CTABannerSection({ section }) {
                   )}
                 </h2>
                 {displayDescription && (
-                  <p className="mt-5 text-base sm:text-lg text-white leading-relaxed max-w-xl mx-auto lg:mx-0">
+                  <p className="mt-5 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0" style={{ color: '#ffffff' }}>
                     {displayDescription}
                   </p>
                 )}

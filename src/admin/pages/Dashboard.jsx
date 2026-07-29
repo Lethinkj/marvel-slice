@@ -11,18 +11,18 @@ import {
 } from 'react-icons/fi';
 
 const toneClasses = {
-  slate: 'bg-neutral-100 text-neutral-700',
-  rose: 'bg-rose-50 text-rose-600',
-  amber: 'bg-amber-50 text-amber-600',
-  emerald: 'bg-emerald-50 text-emerald-600',
-  violet: 'bg-violet-50 text-violet-600',
-  cyan: 'bg-cyan-50 text-cyan-600',
-  orange: 'bg-orange-50 text-orange-600',
+  slate: 'bg-neutral-700 text-white',
+  rose: 'bg-rose-600 text-white',
+  amber: 'bg-amber-600 text-white',
+  emerald: 'bg-emerald-600 text-white',
+  violet: 'bg-violet-600 text-white',
+  cyan: 'bg-cyan-600 text-white',
+  orange: 'bg-orange-600 text-white',
 };
 
 function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
   return (
-    <div className="block bg-white rounded-xl border border-admin-200 shadow-lg p-5 hover:shadow-elevated hover:border-admin-300 transition-all group">
+    <div className="block bg-white rounded-xl border border-admin-200 p-5 hover:shadow-elevated hover:border-admin-300 transition-all group" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
       <div className="flex items-start justify-between mb-2">
         <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${toneClasses[iconTone] || toneClasses.slate}`}>
           <Icon className="w-4 h-4" />
@@ -36,7 +36,7 @@ function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
 
 function ActionTile({ to, icon: Icon, label, tone = 'slate' }) {
   return (
-    <Link to={to} className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white rounded-xl border border-admin-200 shadow-lg hover:border-admin-300 hover:shadow-elevated transition-all text-center group">
+    <Link to={to} className="flex flex-col items-center justify-center gap-1.5 p-4 bg-white rounded-xl border border-admin-200 hover:border-admin-300 hover:shadow-elevated transition-all text-center group" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${toneClasses[tone] || toneClasses.slate} group-hover:scale-105`}>
         <Icon className="w-4 h-4" />
       </div>
@@ -148,8 +148,8 @@ export default function Dashboard() {
                   const isCourse = item._type === 'course';
                   return (
                     <div key={`${item._type}-${item.id}`} className="flex items-center gap-3 px-5 py-2.5">
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isCourse ? 'bg-emerald-50' : 'bg-orange-50'}`}>
-                        {isCourse ? <FiBookOpen className="w-3.5 h-3.5 text-emerald-600" /> : <FiFileText className="w-3.5 h-3.5 text-orange-600" />}
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isCourse ? 'bg-emerald-600' : 'bg-orange-600'}`}>
+                          {isCourse ? <FiBookOpen className="w-3.5 h-3.5 text-white" /> : <FiFileText className="w-3.5 h-3.5 text-white" />}
                       </div>
                       <span className="flex-1 text-[0.95rem] text-neutral-500 truncate">{item.title}</span>
                       <span className="text-xs text-neutral-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>

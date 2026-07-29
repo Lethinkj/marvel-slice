@@ -17,7 +17,7 @@ export default function AccordionItem({ title, children, defaultOpen = false, is
         onClick={handleToggle}
         className="w-full flex items-center justify-between p-4 text-left text-white bg-brand-orange hover:bg-brand-orange/90 transition-colors gap-3 cursor-pointer"
       >
-        <span className="text-sm sm:text-base leading-snug flex-1">{title}</span>
+        <span className="text-sm sm:text-base leading-snug flex-1 font-semibold">{title}</span>
         <span className="shrink-0 w-6 h-6 p-1 flex items-center justify-center rounded-full bg-white text-brand-orange">
           {open ? <FiMinus className="w-3.5 h-3.5" strokeWidth={3} /> : <FiPlus className="w-3.5 h-3.5" strokeWidth={3} />}
         </span>
