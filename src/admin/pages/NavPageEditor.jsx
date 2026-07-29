@@ -232,7 +232,7 @@ export default function NavPageEditor() {
   return (
     <PageShell
       backTo="/admin/nav-menu"
-      title={navItem ? navItem.label : 'Page Editor'}
+      title={navItem ? navItem.label : 'Page'}
     >
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />

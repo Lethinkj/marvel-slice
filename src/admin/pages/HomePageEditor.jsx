@@ -1125,7 +1125,7 @@ export default function HomePageEditor() {
   const sec = sections.find(s => s.section_key === section);
 
   return (
-    <PageShell backTo="/admin" title="Home Page Editor" maxWidth="max-w-none"
+    <PageShell backTo="/admin" title="Home Page" maxWidth="max-w-none"
     >
       <div className="flex gap-6 items-start">
         <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
