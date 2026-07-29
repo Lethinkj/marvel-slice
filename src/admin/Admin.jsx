@@ -47,6 +47,7 @@ import BlogManager from './pages/BlogManager';
 import BlogPostEditor from './pages/BlogPostEditor';
 import BlogCategoriesManager from './pages/BlogCategoriesManager';
 import BlogPageEditor from './pages/BlogPageEditor';
+import ProfileSettings from './pages/ProfileSettings';
 
 const pageSlugToEditor = { about: 'about', contact: 'contact', career: 'career', services: 'services', training: 'training' };
 
@@ -162,6 +163,7 @@ export default function Admin() {
           <Route path="blog" element={<BlogManager />} />
           <Route path="blog/:id" element={<BlogPostEditor />} />
           <Route path="blog/categories" element={<BlogCategoriesManager />} />
+          <Route path="profile" element={<ProfileSettings />} />
         </Route>
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>

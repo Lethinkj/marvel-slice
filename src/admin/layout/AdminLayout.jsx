@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import CommandPalette from "../components/ui/CommandPalette";
 import { ToastContainer, toast } from "../components/Toast";
-import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock, FiFile, FiClipboard, FiMail, FiBriefcase, FiX } from "react-icons/fi";
+import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock, FiFile, FiClipboard, FiMail, FiBriefcase, FiX, FiSettings } from "react-icons/fi";
 import { trackLogout } from "../../lib/analytics";
 
 const submissionTypes = [
@@ -222,7 +222,13 @@ export default function AdminLayout() {
 
             <div className="relative" ref={menuRef}>
               <button onClick={() => setMenuOpen(!menuOpen)} className={`flex items-center gap-2 ml-1 pl-3 pr-2 py-1.5 text-sm rounded-lg transition-all duration-200 ${menuOpen ? 'bg-admin-100 text-admin-900' : 'text-neutral-600 hover:text-neutral-900 hover:bg-admin-100'}`}>
-                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-admin-500 to-admin-800 text-white flex items-center justify-center text-xs font-bold shadow-sm">{user?.name?.charAt(0)?.toUpperCase() || 'A'}</span>
+                <span className="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-admin-500 to-admin-800 text-white flex items-center justify-center text-xs font-bold shadow-sm shrink-0">
+                  {user?.profile_pic ? (
+                    <img src={user.profile_pic} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    user?.name?.charAt(0)?.toUpperCase() || 'A'
+                  )}
+                </span>
                 <span className="hidden sm:inline max-w-[100px] truncate">{user?.name || user?.email}</span>
               </button>
 
@@ -235,6 +241,9 @@ export default function AdminLayout() {
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-white text-neutral-700">{user?.role}</span>
                     </div>
                   </div>
+                  <Link to="/admin/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-neutral-600 hover:bg-admin-50 transition-all duration-200">
+                    <FiSettings className="w-4 h-4" /> Profile Settings
+                  </Link>
                   <button onClick={() => { trackLogout(); logout(); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive-500 hover:bg-destructive-50 transition-all duration-200">
                     <FiLogOut className="w-4 h-4" /> Sign Out
                   </button>

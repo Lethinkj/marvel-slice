@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
     if (error) throw new Error(error.message);
     if (!data) throw new Error('Invalid email or password');
 
-    const userData = { id: data.id, email: data.email, name: data.full_name, role: data.role };
+    const userData = { id: data.id, email: data.email, name: data.full_name, role: data.role, profile_pic: data.profile_pic };
     localStorage.setItem('adminUser', JSON.stringify(userData));
     setUser(userData);
     return userData;
@@ -37,8 +37,16 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
+  const updateUser = useCallback((updates) => {
+    setUser(prev => {
+      const updated = { ...prev, ...updates };
+      localStorage.setItem('adminUser', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

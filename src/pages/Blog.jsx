@@ -165,11 +165,21 @@ function RecentPostsWidget({ posts }) {
 function NewsletterForm() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [error, setError] = useState('');
   async function handleSubmit(e) {
     e.preventDefault();
     if (!email) return;
+    setError('');
     const { supabase } = await import('../lib/supabaseClient');
-    await supabase.from('newsletter_subscribers').insert({ email }).select();
+    const { error: err } = await supabase.from('newsletter_subscribers').insert({ email });
+    if (err) {
+      if (err.code === '23505') {
+        setError('This email is already subscribed.');
+      } else {
+        setError('Failed to subscribe. Please try again.');
+      }
+      return;
+    }
     setSubscribed(true);
     setEmail('');
   }
@@ -182,6 +192,7 @@ function NewsletterForm() {
         <form onSubmit={handleSubmit} className="space-y-3">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email address" required
             className="w-full px-4 py-2.5 rounded-xl bg-white text-dark-navy text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 border border-gray-400" />
+          {error && <p className="text-xs text-red-500">{error}</p>}
           <Button type="submit" variant="primary" size="lg" shape="md" className="w-full">
             Subscribe <FiArrowRight className="w-4 h-4" /></Button>
         </form>

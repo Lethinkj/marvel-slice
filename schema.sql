@@ -257,6 +257,23 @@ create table if not exists newsletter_subscribers (
   subscribed_at timestamptz default now()
 );
 
+alter table newsletter_subscribers enable row level security;
+alter table newsletter_subscribers add column if not exists is_read boolean default false;
+alter table newsletter_subscribers add column if not exists created_at timestamptz default now();
+update newsletter_subscribers set created_at = subscribed_at where created_at is null and subscribed_at is not null;
+
+drop policy if exists "Anyone can insert newsletter subscribers" on newsletter_subscribers;
+create policy "Anyone can insert newsletter subscribers"
+  on newsletter_subscribers for insert
+  to anon, authenticated
+  with check (true);
+
+drop policy if exists "Authenticated can view newsletter subscribers" on newsletter_subscribers;
+create policy "Authenticated can view newsletter subscribers"
+  on newsletter_subscribers for select
+  to authenticated
+  using (true);
+
 -- 22. Admin profiles
 create table if not exists admin_profiles (
   id uuid primary key default gen_random_uuid(),
@@ -411,6 +428,9 @@ create extension if not exists pgcrypto;
 -- Enable RLS on admin_profiles (only RPC functions can access it)
 alter table admin_profiles enable row level security;
 
+-- Ensure profile_pic column exists before functions reference it
+alter table admin_profiles add column if not exists profile_pic text;
+
 -- Verify admin credentials with auto-upgrade from SHA-256 to bcrypt
 drop function if exists verify_admin(text, text);
 create or replace function verify_admin(p_email text, p_password text)
@@ -426,11 +446,11 @@ as $$
         (admin_profiles.password_hash like '$2%' and admin_profiles.password_hash = crypt(p_password, admin_profiles.password_hash))
         or admin_profiles.password_hash = encode(digest(p_password, 'sha256'), 'hex')
       )
-    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role
+    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role, admin_profiles.profile_pic
   )
   select to_jsonb(t.*)
   from (
-    select m.id, m.email, m.full_name, m.role
+    select m.id, m.email, m.full_name, m.role, m.profile_pic
     from matched m
     limit 1
   ) t;
@@ -438,6 +458,7 @@ $$;
 
 -- Add created_by to admin_profiles for audit trail
 alter table admin_profiles add column if not exists created_by uuid references admin_profiles(id);
+alter table admin_profiles add column if not exists profile_pic text;
 
 -- Role hierarchy helper: higher rank = more privileges
 drop function if exists role_rank(text);
@@ -929,3 +950,69 @@ do $$ begin
     alter table site_settings add column blog_subheading text;
   end if;
 end $$;
+
+-- Allow admin to change their own password (requires current password verification)
+drop function if exists change_own_password(uuid, text, text);
+create or replace function change_own_password(
+  p_admin_id uuid,
+  p_current_password text,
+  p_new_password text
+)
+returns jsonb
+language plpgsql
+security definer
+as $$
+declare
+  v_stored_hash text;
+begin
+  select password_hash into v_stored_hash
+  from admin_profiles
+  where admin_profiles.id = p_admin_id;
+
+  if v_stored_hash is null then
+    return jsonb_build_object('error', 'Admin not found');
+  end if;
+
+  if v_stored_hash like '$2%' then
+    if v_stored_hash != crypt(p_current_password, v_stored_hash) then
+      return jsonb_build_object('error', 'Current password is incorrect');
+    end if;
+  else
+    if v_stored_hash != encode(digest(p_current_password, 'sha256'), 'hex') then
+      return jsonb_build_object('error', 'Current password is incorrect');
+    end if;
+  end if;
+
+  update admin_profiles
+  set password_hash = crypt(p_new_password, gen_salt('bf', 10))
+  where admin_profiles.id = p_admin_id;
+
+  return jsonb_build_object('success', true);
+end;
+$$;
+
+-- Allow admin to update their own profile (name, profile_pic)
+drop function if exists update_own_profile(uuid, text, text);
+create or replace function update_own_profile(
+  p_admin_id uuid,
+  p_full_name text default null,
+  p_profile_pic text default null
+)
+returns jsonb
+language plpgsql
+security definer
+as $$
+begin
+  update admin_profiles
+  set
+    full_name = coalesce(p_full_name, admin_profiles.full_name),
+    profile_pic = coalesce(p_profile_pic, admin_profiles.profile_pic)
+  where admin_profiles.id = p_admin_id;
+
+  return (select to_jsonb(t.*) from (
+    select id, email, full_name, role, profile_pic
+    from admin_profiles
+    where id = p_admin_id
+  ) t);
+end;
+$$;
