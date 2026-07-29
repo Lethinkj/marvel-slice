@@ -123,7 +123,7 @@ export default function ProfileSettings() {
           </div>
 
           {message && (
-            <p className={`text-sm ${message.type === 'error' ? 'text-destructive-500' : 'text-emerald-600'}`}>{message.text}</p>
+            <p className="text-sm" style={{ color: message.type === 'error' ? '#dc3545' : '#059669' }}>{message.text}</p>
           )}
 
           <AdminButton type="submit" disabled={saving}>
@@ -152,7 +152,7 @@ export default function ProfileSettings() {
           </div>
 
           {pwMessage && (
-            <p className={`text-sm ${pwMessage.type === 'error' ? 'text-destructive-500' : 'text-emerald-600'}`}>{pwMessage.text}</p>
+            <p className="text-sm" style={{ color: pwMessage.type === 'error' ? '#dc3545' : '#059669' }}>{pwMessage.text}</p>
           )}
 
           <AdminButton type="submit" disabled={pwSaving}>
