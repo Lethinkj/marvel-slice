@@ -72,26 +72,26 @@ const navGroups = [
   {
     label: "Blog", icon: FiFileText, items: [
       { to: "/admin/blog/new", label: "Add Blog" },
-      { to: "/admin/blog", label: "View Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories"] },
+      { to: "/admin/blog", label: "View Posts", catchSubRoutes: true, siblingRoutes: ["/admin/blog/categories", "/admin/blog/new"] },
       { to: "/admin/blog/categories", label: "Categories" }
     ],
   },
   { label: "Navigation", icon: FiMenu, items: [
     { label: "Software Learning", children: [
-      { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add" },
-      { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View" }
+      { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add Menu" },
+      { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View Menu" }
     ]},
     { label: "Competitive Exam", children: [
-      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=add", label: "Add" },
-      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=view", label: "View" }
+      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=add", label: "Add Menu" },
+      { to: "/admin/nav-menu?section=Competitive%20Exam&tab=view", label: "View Menu" }
     ]},
     { label: "Services", children: [
-      { to: "/admin/nav-menu?section=Services&tab=add", label: "Add" },
-      { to: "/admin/nav-menu?section=Services&tab=view", label: "View" }
+      { to: "/admin/nav-menu?section=Services&tab=add", label: "Add Menu" },
+      { to: "/admin/nav-menu?section=Services&tab=view", label: "View Menu" }
     ]},
     { label: "Training", children: [
-      { to: "/admin/nav-menu?section=Training&tab=add", label: "Add" },
-      { to: "/admin/nav-menu?section=Training&tab=view", label: "View" }
+      { to: "/admin/nav-menu?section=Training&tab=add", label: "Add Menu" },
+      { to: "/admin/nav-menu?section=Training&tab=view", label: "View Menu" }
     ]}
     ]},
   { label: "Uploads", icon: FiLayers, items: [

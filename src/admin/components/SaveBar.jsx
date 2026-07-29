@@ -22,7 +22,7 @@ export default function SaveBar({ saving, saved, saveError, onSave, onDiscard, l
 
   // Standard inline action buttons at the bottom of forms/editors
   return (
-    <div className="mt-8 pt-6 border-t border-admin-200 flex items-center justify-end gap-4 w-full">
+    <div className="mt-8 pt-6 border-t border-admin-200 flex items-center justify-center gap-4 w-full">
       {onDiscard && (
         <button 
           type="button"
