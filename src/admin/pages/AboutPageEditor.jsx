@@ -148,7 +148,7 @@ function IconPicker({ value, onChange }) {
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search icons..." autoFocus
               className="w-full px-2 py-1.5 bg-white border border-admin-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-admin-500/20" />
           </div>
-          <div className="overflow-y-auto flex-1">
+          <div className="overflow-y-auto admin-scrollbar flex-1">
             {filtered.length === 0 ? (
               <p className="p-3 text-sm text-neutral-400 text-center">No icons found</p>
             ) : (
@@ -574,7 +574,7 @@ const queryClient = useQueryClient();
       
       <div className="flex gap-6 items-start">
         <div className="w-[220px]">
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
               {[
                 { id: 'hero-image', title: "Hero Image" },

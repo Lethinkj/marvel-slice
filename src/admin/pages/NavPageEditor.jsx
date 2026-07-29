@@ -339,7 +339,7 @@ export default function NavPageEditor() {
               No courses available. Create courses in the Courses section first.
             </p>
           ) : (
-            <div className="max-h-64 overflow-y-auto space-y-1 -mx-2 px-2">
+            <div className="max-h-64 overflow-y-auto admin-scrollbar space-y-1 -mx-2 px-2">
               {allCourses
                 .filter((c) => !courseSearch || c.title.toLowerCase().includes(courseSearch.toLowerCase()))
                 .map((course) => (

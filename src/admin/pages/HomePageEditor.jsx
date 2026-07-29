@@ -73,7 +73,7 @@ function IconPicker({ value, onChange }) {
         <FiChevronDown className={`w-4 h-4 ml-auto text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-admin-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-admin-200 rounded-lg shadow-lg max-h-60 overflow-y-auto admin-scrollbar">
           {ICON_LIST.map((opt) => (
             <button
               key={opt.key}
@@ -1131,7 +1131,7 @@ export default function HomePageEditor() {
       <div className="flex gap-6 items-start">
         <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
           {/* Hide menu button removed as per request to keep it static */}
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
               {allNavItems.map((item) => (
                 <button

@@ -72,7 +72,7 @@ function IconPicker({ value, onChange }) {
         <FiChevronDown className={`w-4 h-4 ml-auto text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-admin-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-admin-200 rounded-lg shadow-lg max-h-60 overflow-y-auto admin-scrollbar">
           {ICON_OPTIONS.map((opt) => (
             <button
               key={opt.key}
@@ -331,8 +331,8 @@ export default function TrainingWizard() {
       <div className="flex gap-6 items-start">        <div className="flex-1 min-w-0">
           {step === 0 && (
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+              <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex-[2]">
                   <label className="block text-sm font-semibold text-black mb-1">Title *</label>
                   <input
                     value={t.title}
@@ -341,7 +341,7 @@ export default function TrainingWizard() {
                     placeholder="e.g. Advanced React Training"
                   />
                 </div>
-                <div>
+                <div className="flex-[2]">
                   <label className="block text-sm font-semibold text-black mb-1">Slug *</label>
                   <input
                     value={t.slug}
@@ -350,20 +350,20 @@ export default function TrainingWizard() {
                     placeholder="advanced-react-training"
                   />
                 </div>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-1">Category</label>
-                    <select
-                      value={t.category_id}
-                      onChange={(e) => u("category_id", e.target.value)}
-                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
-                    >
-                      <option value="">— Select Category —</option>
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="w-full lg:w-48 shrink-0">
+                  <label className="block text-sm font-semibold text-black mb-1">Category</label>
+                  <select
+                    value={t.category_id}
+                    onChange={(e) => u("category_id", e.target.value)}
+                    className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
+                  >
+                    <option value="">— Select Category —</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="w-full lg:w-32 shrink-0">
                   <IconPicker value={t.icon} onChange={(val) => u("icon", val)} />
                 </div>
               </div>

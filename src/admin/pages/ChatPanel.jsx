@@ -267,7 +267,7 @@ function LiveChat({ conversations, onConversationsChange }) {
 
 
 
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-white">
+          <div className="flex-1 overflow-y-auto admin-scrollbar px-5 py-4 space-y-3 bg-white">
             {messages.length === 0 && (
               <div className="text-center text-neutral-400 text-sm py-16">
                 <p>No messages yet. Send a reply to start the conversation.</p>
@@ -337,7 +337,7 @@ function MessageViewer({ conversation, onClose }) {
           </div>
           <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-neutral-600 cursor-pointer"><FiX className="w-5 h-5" /></button>
         </div>
-        <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-white/50">
+        <div className="flex-1 overflow-y-auto admin-scrollbar p-5 space-y-3 bg-white/50">
           {loading ? (
             <div className="flex items-center justify-center py-10"><FiLoader className="w-6 h-6 text-neutral-400 animate-spin" /></div>
           ) : messages.length === 0 ? (

@@ -393,7 +393,7 @@ export default function BlogPostEditor() {
                   {tagsDropdownOpen && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setTagsDropdownOpen(false)} />
-                      <div className="absolute top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-admin-200 rounded-lg shadow-lg z-20 py-1">
+                      <div className="absolute top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto admin-scrollbar bg-white border border-admin-200 rounded-lg shadow-lg z-20 py-1">
                         {allTags.map(tag => (
                           <label key={tag.id} className="flex items-center gap-2 px-3 py-2 hover:bg-neutral-50 cursor-pointer">
                             <input 

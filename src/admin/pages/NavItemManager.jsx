@@ -102,7 +102,7 @@ const [items, setItems] = useState([]);
                             </button>
                             {courseDropdown === item.id && (
                               <div className="absolute top-full right-0 mt-1 bg-white border border-admin-200 rounded-lg shadow-lg z-50 min-w-[220px] max-h-[280px] flex flex-col">
-                                <div className="overflow-y-auto">
+                                <div className="overflow-y-auto admin-scrollbar">
                                   {courses.length === 0 ? (
                                     <p className="px-3 py-4 text-xs text-neutral-400 text-center">No courses available.</p>
                                   ) : (

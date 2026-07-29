@@ -132,7 +132,7 @@ export default function ReplyModal({ submission, type, onClose }) {
         ) : (
           <>
             {/* Body */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+            <div className="flex-1 overflow-y-auto admin-scrollbar px-6 py-5 space-y-4">
               {/* Brochure tabs */}
               {type === 'brochure' && (
                 <div>
@@ -190,7 +190,7 @@ export default function ReplyModal({ submission, type, onClose }) {
                           className="w-full pl-9 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-admin-500"
                         />
                       </div>
-                      <div className="max-h-36 overflow-y-auto divide-y divide-admin-100">
+                      <div className="max-h-36 overflow-y-auto admin-scrollbar divide-y divide-admin-100">
                         {coursesLoading ? (
                           <div className="flex items-center justify-center py-6"><FiLoader className="w-5 h-5 animate-spin text-admin-400" /></div>
                         ) : filteredCourses.length === 0 ? (

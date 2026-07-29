@@ -58,7 +58,7 @@ function IconPicker({ value, onChange }) {
         <FiChevronUp className={`w-3.5 h-3.5 ml-auto text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 z-50 w-44 bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 z-50 w-44 bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-y-auto admin-scrollbar">
           {ICON_OPTIONS.map((opt) => (
             <button key={opt.key} type="button" onClick={() => { onChange(opt.key); setOpen(false); }}
               className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${

@@ -147,7 +147,7 @@ const queryClient = useQueryClient();
       
       <div className="flex gap-6 items-start">
         <div className="w-[220px]">
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
               {[
                 { id: 'hero-section', title: "Hero Section" },

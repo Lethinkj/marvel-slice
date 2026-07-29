@@ -191,7 +191,7 @@ const [confirm, confirmDialog] = useConfirm();
       }
     >
       <div className="flex gap-6">
-        <div className="w-48 shrink-0 flex flex-col gap-1 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto">
+        <div className="w-48 shrink-0 flex flex-col gap-1 sticky top-6 self-start max-h-[calc(100vh-48px)] overflow-y-auto admin-scrollbar">
           <button onClick={() => setBucket('all')}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
               bucket === 'all' ? 'bg-admin-600 text-white' : 'text-admin-600 hover:bg-admin-50'

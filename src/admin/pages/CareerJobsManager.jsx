@@ -146,7 +146,7 @@ const [jobs, setJobs] = useState([]);
                 <FiX className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 overflow-y-auto">
+            <div className="p-6 overflow-y-auto admin-scrollbar">
               <form id="jobForm" onSubmit={saveJob} className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>

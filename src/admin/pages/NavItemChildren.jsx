@@ -159,7 +159,7 @@ export default function NavItemChildren() {
                   <FiChevronDown className={`w-4 h-4 text-admin-400 transition-transform ${coursePickerOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {coursePickerOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-admin-200 rounded-lg shadow-lg z-50 max-h-56 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-admin-200 rounded-lg shadow-lg z-50 max-h-56 overflow-y-auto admin-scrollbar">
                     {courses.map(c => {
                       const linkedToOther = c.nav_item_id && c.nav_item_id !== (editing?.id || null);
                       return (

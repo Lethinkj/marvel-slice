@@ -5,7 +5,7 @@ export default function SectionAccordion({ title, defaultExpanded = false, child
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-admin-200 overflow-hidden mb-6">
+    <div className="bg-white rounded-xl shadow-sm border border-admin-200 overflow-hidden mb-6 w-full lg:w-[90%] mx-auto">
       <button 
         type="button" 
         onClick={() => setExpanded(!expanded)} 

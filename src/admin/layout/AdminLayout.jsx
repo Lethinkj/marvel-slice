@@ -167,7 +167,7 @@ export default function AdminLayout() {
                     <h3 className="text-sm font-semibold text-neutral-900">Notifications</h3>
                     <p className="text-xs text-neutral-500">{totalUnread} unread submission{totalUnread !== 1 ? 's' : ''}</p>
                   </div>
-                  <div className="overflow-y-auto flex-1">
+                  <div className="overflow-y-auto admin-scrollbar flex-1">
                     {totalUnread === 0 ? (
                       <div className="px-4 py-8 text-center text-sm text-neutral-400">No new notifications</div>
                     ) : (
@@ -243,7 +243,7 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-6 admin-scrollbar">
+        <main className="flex-1 overflow-y-auto admin-scrollbar p-6 admin-scrollbar">
           <Outlet />
         </main>
       </div>

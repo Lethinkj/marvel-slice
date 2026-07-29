@@ -93,7 +93,7 @@ export default function CommandPalette({ open, onClose }) {
           <kbd className="text-[10px] text-neutral-400 bg-admin-100 border border-admin-200 rounded px-1.5 py-0.5 font-mono shrink-0">ESC</kbd>
         </div>
 
-        <div className="max-h-[320px] overflow-y-auto py-2">
+        <div className="max-h-[320px] overflow-y-auto admin-scrollbar py-2">
           {query.trim() && results.length === 0 && (
             <div className="flex flex-col items-center py-8 text-center">
               <p className="text-sm text-neutral-400">No results for "{query}"</p>

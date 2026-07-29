@@ -335,7 +335,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+        <div className="flex-1 overflow-y-auto admin-scrollbar px-6 py-5 space-y-5">
           <div>
             <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">By Category</p>
             <div className="flex flex-wrap gap-2">
@@ -371,7 +371,7 @@ function GenerateDialog({ courses, navItems, getCourseCategory, onClose }) {
               <input ref={searchRef} value={search} placeholder="Search courses..." onChange={e => { setSearch(e.target.value); setPage(1); }}
                 className="w-full pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white" />
             </div>
-            <div className="max-h-52 overflow-y-auto border border-admin-100 rounded-lg divide-y divide-admin-50">
+            <div className="max-h-52 overflow-y-auto admin-scrollbar border border-admin-100 rounded-lg divide-y divide-admin-50">
               {(() => {
                 const display = search.trim() ? searchedCourses : courses;
                 const totalPages = Math.ceil(display.length / 5);

@@ -478,7 +478,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5 admin-scrollbar">
+      <nav className="flex-1 overflow-y-auto admin-scrollbar py-3 px-2 space-y-0.5 admin-scrollbar">
         {navGroups.map((group, idx) => (
           <SidebarNav key={group.label} group={group} idx={idx} pathname={fullPath} isOpen={isOpen} onToggle={toggleGroup} onNavigate={onMobileClose} />
         ))}

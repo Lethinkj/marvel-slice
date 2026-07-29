@@ -462,7 +462,7 @@ export default function NavMenuManager() {
           )}
 
           {courseLinkOpen && (
-            <div className="mt-3 border border-gray-200 rounded-lg bg-white shadow-sm max-h-56 overflow-y-auto">
+            <div className="mt-3 border border-gray-200 rounded-lg bg-white shadow-sm max-h-56 overflow-y-auto admin-scrollbar">
               {courses.length === 0 ? (
                 <p className="px-3 py-4 text-xs text-gray-400 text-center">No courses available.</p>
               ) : (
@@ -645,7 +645,7 @@ export default function NavMenuManager() {
                         <FiChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${parentOpen ? 'rotate-180' : ''}`} />
                       </button>
                       {parentOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[300px] overflow-y-auto admin-scrollbar">
                           <button type="button" onClick={() => { setForm(p => ({ ...p, parent_id: null })); setParentOpen(false); }}
                             className={`w-full text-left px-4 py-2.5 text-sm ${!form.parent_id ? 'bg-blue-50 text-blue-700 font-bold border-l-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}>
                             — None (Top Level) —
