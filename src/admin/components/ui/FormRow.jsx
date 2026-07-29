@@ -20,7 +20,7 @@ export default function FormRow({ label, error, required, hint, children, classN
 export function Input({ className = '', ...props }) {
   return (
     <input
-      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-admin-400 ${className}`}
+      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-neutral-50 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all disabled:bg-neutral-50 disabled:text-admin-400 ${className}`}
       {...props}
     />
   );
@@ -29,7 +29,7 @@ export function Input({ className = '', ...props }) {
 export function Select({ className = '', children, ...props }) {
   return (
     <select
-      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-white text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-neutral-400 appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")] bg-[length:12px] bg-[right_12px_center] bg-no-repeat ${className}`}
+      className={`w-full h-9 px-3 rounded-lg border border-admin-300 bg-neutral-50 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all disabled:bg-neutral-50 disabled:text-neutral-400 appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")] bg-[length:12px] bg-[right_12px_center] bg-no-repeat ${className}`}
       {...props}
     >
       {children}
@@ -40,7 +40,7 @@ export function Select({ className = '', children, ...props }) {
 export function Textarea({ className = '', ...props }) {
   return (
     <textarea
-      className={`w-full px-3 py-2 rounded-lg border border-admin-300 bg-white text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all disabled:bg-white disabled:text-neutral-400 resize-y min-h-[80px] ${className}`}
+      className={`w-full px-3 py-2 rounded-lg border border-admin-300 bg-neutral-50 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all disabled:bg-neutral-50 disabled:text-neutral-400 resize-y min-h-[80px] ${className}`}
       {...props}
     />
   );
@@ -85,7 +85,7 @@ export function ImageUpload({ value, onChange, label }) {
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Paste URL or upload..."
-          className="flex-1 h-9 px-3 rounded-lg border border-admin-300 text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all"
+          className="flex-1 h-9 px-3 rounded-lg border border-admin-300 bg-neutral-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue transition-all"
         />
         <label className="cursor-pointer flex items-center gap-1.5 px-3 py-2 border-2 border-dashed border-admin-300 rounded-lg text-xs text-admin-500 hover:border-admin-500 hover:text-admin-600 transition-all shrink-0">
           {uploading ? (
