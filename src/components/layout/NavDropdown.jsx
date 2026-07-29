@@ -137,7 +137,7 @@ function DesktopNavItem({
               ? "text-brand-blue"
               : hasActiveChild
               ? "text-brand-blue"
-              : "text-gray-400 hover:text-brand-blue"
+              : "text-gray-500 hover:text-brand-blue"
           }`}
           onClick={() => (isOpen ? onClose() : onOpen())}
         >
@@ -332,7 +332,7 @@ export default function NavDropdown({
             className={`group relative px-3 py-2 text-sm font-medium whitespace-nowrap rounded-t-md transition-all duration-200 ease-out ${
               currentPath === item.path
                 ? "text-brand-blue"
-                : "text-gray-400 hover:text-brand-blue"
+                : "text-gray-500 hover:text-brand-blue"
             }`}
             onClick={onItemClick}
           >
