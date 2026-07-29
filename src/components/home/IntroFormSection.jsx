@@ -85,7 +85,7 @@ export default function IntroFormSection({ section }) {
               </h2>
             )}
             {introText && (
-              <p className="text-sm sm:text-base leading-relaxed text-justify">
+              <p className="text-sm sm:text-base leading-relaxed text-justify text-text-gray">
                 {introText}
               </p>
             )}
@@ -126,7 +126,7 @@ export default function IntroFormSection({ section }) {
           </Reveal>
 
           <Reveal variant="right" className="lg:col-span-2 self-start">
-            <p className="text-red-500 text-base font-[600] text-center mb-2">Book Your Demo Now!</p>
+            <p className="text-base font-[600] text-center mb-2" style={{ color: '#ef4444' }}>Book Your Demo Now!</p>
             <div className="rounded-2xl shadow-lg overflow-hidden max-w-sm w-full lg:ml-auto" style={{ backgroundColor: '#74a916' }}>
               {/* diagonal header: white left / orange right */}
               <div className="relative h-16" style={{ backgroundColor: '#ff8415' }}>

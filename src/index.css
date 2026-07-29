@@ -96,7 +96,15 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
-  font-family: 'Montserrat', sans-serif;
+}
+
+nav * {
+  font-family: 'Roboto', sans-serif !important;
+}
+
+.admin-scrollbar,
+.admin-scrollbar * {
+  font-family: 'Roboto', sans-serif !important;
 }
 
 p, li, .text-paragraph {
@@ -104,7 +112,7 @@ p, li, .text-paragraph {
 }
 
 body {
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   font-size: 14px;
   line-height: 1.5;
   color: #6a7282;
