@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { useNavPage } from '../../hooks/useSupabase';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import { FiPlus, FiTrash2, FiChevronUp, FiChevronDown, FiArrowLeft, FiUpload, FiSave, FiCheck, FiFileText, FiSearch, FiBookOpen } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
@@ -364,7 +365,7 @@ export default function NavPageEditor() {
         </SectionAccordion>
 
         <div className="mt-8">
-          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
+          <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
         </div>
       </form>
     </PageShell>

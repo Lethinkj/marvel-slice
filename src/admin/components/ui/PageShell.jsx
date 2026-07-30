@@ -8,7 +8,7 @@ export default function PageShell({ title, subtitle, actions, children, maxWidth
           <Breadcrumbs />
         </div>
       )}
-      <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 mb-6 ${hideBorder ? '' : 'border-b-[3px] border-[#175cdd]'}`}>
+      <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 mb-6 ${hideBorder ? '' : 'border-b-[2px] border-[#175cdd]'}`}>
         <div>
           <h1 className="text-[18px] font-bold tracking-tight text-black">{title}</h1>
           {subtitle && <p className="text-sm text-neutral-700 mt-1">{subtitle}</p>}

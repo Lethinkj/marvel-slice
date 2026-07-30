@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+not that import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
-import SaveBar from '../components/SaveBar';
 import useDirty from '../hooks/useDirty';
 import EmptyState from '../components/EmptyState';
 import {
@@ -74,7 +73,7 @@ function ImageUploader({ value, onChange, label }) {
 /* ------------------------------------------------------------------ */
 function FolderTabs({ tabs, activeTab, onChange }) {
   return (
-    <div className="relative flex items-end w-full overflow-x-auto pt-2 z-20">
+    <div className="relative flex items-end flex-1 overflow-x-auto pt-2 z-20">
       {tabs.map((tab, i) => {
         const isActive = activeTab === tab.id;
         return (
@@ -85,7 +84,6 @@ function FolderTabs({ tabs, activeTab, onChange }) {
             className="relative outline-none flex-shrink-0"
             style={{
               marginLeft: i === 0 ? 0 : -16,
-              // Active tab sits on top (40), inactive tabs sit in the back (<=10)
               zIndex: isActive ? 40 : tabs.length - i,
             }}
           >
@@ -97,8 +95,8 @@ function FolderTabs({ tabs, activeTab, onChange }) {
                 transform: 'skewX(-14deg)',
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
-                paddingLeft: 30,
-                paddingRight: 30,
+                paddingLeft: 20,
+                paddingRight: 20,
                 border: isActive ? 'none' : '1px solid #E5E7EB',
                 borderBottom: 'none',
                 boxShadow: isActive
@@ -107,7 +105,7 @@ function FolderTabs({ tabs, activeTab, onChange }) {
               }}
             >
               <span
-                className={`block text-sm font-semibold uppercase tracking-wide whitespace-nowrap ${
+                className={`block text-sm font-semibold whitespace-nowrap ${
                   isActive ? 'text-white' : 'text-gray-500'
                 }`}
                 style={{ transform: 'skewX(14deg)' }}
@@ -270,7 +268,7 @@ export default function CareerPageEditor() {
   }, []);
 
   async function handleSave(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setSaving(true);
     setSaveError('');
 
@@ -463,28 +461,51 @@ export default function CareerPageEditor() {
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   const tabs = [
-    { id: 'hero-section', title: 'Hero Section' },
-    { id: 'were-hiring-header', title: '"We\'re Hiring!" Header' },
-    { id: 'categories-section', title: 'Categories Section' },
-    { id: 'role-categories', title: 'Role Categories' },
+    { id: 'hero-section', title: 'Hero' },
+    { id: 'hiring-header', title: 'Hiring' },
+    { id: 'categories-section', title: 'Categories' },
+    { id: 'role-categories', title: 'View Role' },
   ];
 
   return (
-    <PageShell backTo="/admin" title="Career Page">
+    <PageShell backTo="/admin" title="">
       <div className="flex flex-col">
-        <FolderTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+        <div className="flex items-end justify-between">
+          <FolderTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+          <div className="pb-2 pr-1 relative z-40">
+            <button type="button" onClick={openCategoryForm} className="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium rounded-[20px] text-white bg-admin-600 hover:bg-admin-700 transition-colors shadow-sm shrink-0">
+              <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center"><FiPlus className="w-3 h-3 text-admin-600" /></span> Add Role
+            </button>
+          </div>
+        </div>
 
-        {/*
-          1. -mt-[2px] forces the form to slide slightly beneath the tabs.
-          2. z-30 lets the form render over inactive tabs (hiding their bottoms).
-          3. border-2 ensures a uniform top border connecting nicely with the tabs.
-          4. rounded-b-xl rounded-tr-xl handles the corners perfectly.
-        */}
-        <form onSubmit={handleSave} className="bg-white border-2 border-admin-600 rounded-b-xl rounded-tr-xl shadow-sm p-6 space-y-6 relative z-30 -mt-[2px]">
+        <div className="flex justify-end items-center gap-4 pb-1 relative z-40">
+          <button type="button" onClick={() => window.location.reload()} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm cursor-pointer disabled:opacity-50">
+            <FiX className="w-4 h-4" /> Cancel
+          </button>
+          <button type="button" onClick={handleSave} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
+            {saving ? (
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : saved ? (
+              <FiCheck className="w-4 h-4" />
+            ) : (
+              <FiSave className="w-4 h-4" />
+            )}
+            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save'}
+          </button>
+        </div>
+        {saveError && (
+          <div className="flex justify-end text-red-500 text-xs mt-0.5 font-medium pr-2">
+            <FiAlertCircle className="w-4 h-4 mr-1.5" />
+            {saveError}
+          </div>
+        )}
+        <form onSubmit={handleSave} className="bg-white border border-gray-300 rounded-b-[20px] rounded-tr-[20px] shadow-sm p-6 space-y-6 relative z-30 -mt-[2px]">
 
           {activeTab === 'hero-section' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Section</h2>
             <div className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
@@ -526,14 +547,13 @@ export default function CareerPageEditor() {
           </div>
         )}
 
-          {activeTab === 'were-hiring-header' && (
+          {activeTab === 'hiring-header' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">"We're Hiring!" Header</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Headline</label>
                 <input type="text" value={section1.headline} onChange={(e) => setSection1({ ...section1, headline: e.target.value })}
-                  placeholder="We're Hiring!" className={`${inputClass} w-full`} />
+                  placeholder="Hiring" className={`${inputClass} w-full`} />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtitle</label>
@@ -551,7 +571,6 @@ export default function CareerPageEditor() {
 
           {activeTab === 'categories-section' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Categories Section</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
@@ -569,12 +588,6 @@ export default function CareerPageEditor() {
 
           {activeTab === 'role-categories' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Role Categories</h2>
-            <div className="flex justify-end mb-4">
-              <button type="button" onClick={openCategoryForm} className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors bg-white">
-                <FiPlus className="w-4 h-4" /> Add Category
-              </button>
-            </div>
 
             {roleCategories.length === 0 ? (
               <EmptyState
@@ -585,7 +598,7 @@ export default function CareerPageEditor() {
               />
             ) : (
               <>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto border border-gray-300 rounded-lg">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-admin-200 bg-blue-600">
@@ -663,11 +676,61 @@ export default function CareerPageEditor() {
             )}
           </div>
         )}
-
-          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} onDiscard={() => window.location.reload()} />
         </form>
+
       </div>
 
+      {showCategoryForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={closeCategoryForm} />
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">{editingCategory ? 'Edit Category' : 'Add Category'}</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={categoryForm.name}
+                  onChange={handleCategoryChange}
+                  placeholder="Category name"
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Display Order</label>
+                <input
+                  type="number"
+                  name="display_order"
+                  value={categoryForm.display_order}
+                  onChange={handleCategoryChange}
+                  className={inputClass}
+                />
+              </div>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="is_active"
+                  checked={categoryForm.is_active}
+                  onChange={handleCategoryChange}
+                  className="w-4 h-4 rounded border-gray-300 text-admin-600 focus:ring-admin-500"
+                />
+                <span className="text-sm font-medium text-neutral-700">Active</span>
+              </label>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button type="button" onClick={closeCategoryForm}
+                className="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                Cancel
+              </button>
+              <button type="button" onClick={handleCategorySave}
+                className="px-4 py-2 text-sm font-medium text-white bg-admin-600 rounded-lg hover:bg-admin-700 transition-colors cursor-pointer">
+                {editingCategory ? 'Update' : 'Create'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {confirmDialog}
     </PageShell>
   );

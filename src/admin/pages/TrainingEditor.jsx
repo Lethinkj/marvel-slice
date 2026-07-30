@@ -8,6 +8,7 @@ import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVi
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
+import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 
 function ListEditor({ items, onChange, fields, labelKey = "label" }) {
@@ -1529,7 +1530,7 @@ export default function TrainingEditor() {
       </div>
       </div>
 
-      <SaveBar saving={saving} onSave={handleSave} label="Training" dirty={dirty} onDiscard={() => window.location.reload()} />
+      <SaveCancelBar saving={saving} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

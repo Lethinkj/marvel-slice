@@ -22,19 +22,19 @@ export default function SaveBar({ saving, saved, saveError, onSave, onDiscard, l
 
   // Standard inline action buttons at the bottom of forms/editors
   return (
-    <div className="mt-8 pt-6 border-t border-admin-200 flex items-center justify-center gap-4 w-full">
+    <div className="mt-8 pt-6 border-t border-admin-200 flex items-center justify-center gap-2 w-full">
       {onDiscard && (
         <button 
           type="button"
           onClick={onDiscard} 
           disabled={saving} 
-          className="px-4 py-2.5 text-sm font-semibold text-white bg-destructive-500 hover:bg-destructive-600 rounded-lg shadow-sm transition-colors flex items-center gap-2 active:scale-[0.98]"
+          className="px-4 py-2 text-sm font-semibold text-white bg-destructive-500 hover:bg-destructive-600 rounded-lg shadow-sm transition-colors flex items-center gap-2 active:scale-[0.98]"
         >
           <FiX className="w-4 h-4" /> Cancel
         </button>
       )}
-      <AdminButton onClick={onSave} disabled={saving} variant="primary" size="lg" className="!px-6">
-        <FiSave className="w-4.5 h-4.5" /> {saving ? 'Saving...' : `Save ${label}`}
+      <AdminButton onClick={onSave} disabled={saving} variant="primary" size="md" className="!px-6">
+        <FiSave className="w-4.5 h-4.5" /> {saving ? 'Saving...' : label ? `Save ${label}` : 'Save'}
       </AdminButton>
     </div>
   );

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import SaveCancelBar from '../components/SaveCancelBar';
 import PageShell from '../components/ui/PageShell';
 import { FiArrowLeft } from 'react-icons/fi';
 import useDirty from '../hooks/useDirty';
@@ -170,7 +171,7 @@ export default function JobEditor() {
           </div>
         </div>
 
-        <SaveBar saving={saving} saved={saved} onSave={handleSave} dirty={dirty} onDiscard={() => window.location.reload()} />
+        <SaveCancelBar saving={saving} saved={saved} onSave={handleSave} onDiscard={() => window.location.reload()} />
       </form>
     </PageShell>
   );

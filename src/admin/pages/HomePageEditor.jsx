@@ -7,6 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
@@ -1148,10 +1149,7 @@ export default function HomePageEditor() {
                     <div className="font-semibold text-sm">
                       {item.label}
                     </div>
-                    {/* Subtitle mimicking the "Not restricted" format from the image */}
-                    <div className={`text-xs mt-0.5 ${isActive ? 'text-admin-100' : 'text-gray-400'}`}>
-                      {isActive ? 'Editing Section' : 'Click to Edit'}
-                    </div>
+
 
                     {/* Arrow Pointer using CSS borders */}
                     {isActive && (
@@ -1168,21 +1166,21 @@ export default function HomePageEditor() {
 
         {/* Main Content Editor Area */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">{selectedNav.label}</h2>
-              <p className="text-sm text-gray-500 mt-0.5">Manage {selectedNav.label.toLowerCase()} section assets, content, and display settings.</p>
-            </div>
-          </div>
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-gray-300 rounded-xl shadow-sm p-6">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">{selectedNav.label}</h2>
+                <p className="text-sm text-gray-500 mt-0.5">Manage {selectedNav.label.toLowerCase()} section assets, content, and display settings.</p>
+              </div>
+            </div>
             {def && sec ? (
               <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />
             ) : (
               <p className="text-sm text-gray-400">Section not found.</p>
             )}
-            <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
           </div>
+          <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
         </div>
       </div>
     </PageShell>

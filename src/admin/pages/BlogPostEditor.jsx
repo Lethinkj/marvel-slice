@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
+import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import { FiSave, FiArrowLeft, FiUpload, FiTrash2, FiTag, FiX } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
@@ -403,7 +404,7 @@ export default function BlogPostEditor() {
           </div>
         </div>
 
-        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={() => formRef.current?.requestSubmit()} onDiscard={() => window.location.reload()} label="Save Changes" dirty={dirty} />
+        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={() => formRef.current?.requestSubmit()} onDiscard={() => window.location.reload()} />
       </form>
     </PageShell>
   );
