@@ -376,7 +376,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           {!disableReply && <div className="flex-1">
             <div className="relative">
               <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
+                className="h-9 px-3 pl-0 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
               >
                 <option value="all">All</option>
                 <option value="unread">Unread</option>
@@ -389,7 +389,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             <div key={i} className="flex-1">
               <div className="relative">
                 <select value={f.value} onChange={e => { f.onChange(e.target.value); setPage(1); }}
-                  className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+                  className="h-9 px-3 pl-0 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 >
                   {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -400,7 +400,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           <div className="flex-1">
             <div className="relative">
               <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
+                className="h-9 px-3 pl-0 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
               >
                 <option value="all">All time</option>
                 <option value="today">Today</option>
@@ -451,7 +451,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                           {col.header}
                         </th>
                       ))}
-                      <th className="text-right text-xs font-semibold text-white uppercase tracking-wider px-4 py-3">Actions</th>
+                      <th className="text-left text-xs font-semibold text-white uppercase tracking-wider px-4 py-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -460,7 +460,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                         onClick={() => { setSelected(selected?.id === row.id ? null : row); if (!row.is_read) markRead(row); }}
                         className={`border-b border-gray-100 last:border-0 cursor-pointer transition-colors ${idx % 2 === 1 ? 'bg-gray-50' : 'bg-white'} ${selected?.id === row.id ? 'bg-indigo-50' : 'hover:bg-gray-50'} ${!disableReply && !row.is_read ? 'border-l-2 border-l-warning-500 bg-warning-50/30' : ''}`}
                       >
-                        <td className="px-4 py-3 text-xs text-neutral-400 font-mono whitespace-nowrap">{(page - 1) * pageSize + idx + 1}</td>
+                        <td className="px-4 py-3 text-xs text-neutral-400 font-mono whitespace-nowrap text-left">{(page - 1) * pageSize + idx + 1}</td>
                         {columns.map((col, i) => (
                           <td key={i} className={`px-4 py-3 text-sm ${col.className || ''}`}>
                             <div className={!disableReply && !row.is_read ? 'font-semibold text-neutral-900' : 'text-neutral-700'}>
@@ -468,7 +468,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                             </div>
                           </td>
                         ))}
-                        <td className="px-4 py-3 whitespace-nowrap">
+                        <td className="px-4 py-3 whitespace-nowrap text-left">
                           <div className="flex items-center gap-1">
                             {!disableReply && <button onClick={e => { e.stopPropagation(); row.is_read ? markUnread(row, e) : markRead(row, e); }}
                               className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-all ${row.is_read ? 'bg-success-50 text-success-700' : 'bg-neutral-100 text-neutral-500'}`}
@@ -513,7 +513,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           <div className="bg-white rounded-xl border border-admin-200 shadow-lg overflow-hidden sticky top-4">
             <div className="flex items-center justify-between px-5 py-4 border-b border-admin-100">
               <h3 className="text-sm font-semibold text-black">Details</h3>
-              <button onClick={() => setSelected(null)} className="p-1 text-neutral-400 hover:text-neutral-600 rounded-md hover:bg-neutral-100 transition-all">
+              <button onClick={() => setSelected(null)} className="p-1 text-destructive-500 hover:text-destructive-700 rounded-md hover:bg-destructive-50 transition-all">
                 <FiX className="w-4 h-4" />
               </button>
             </div>

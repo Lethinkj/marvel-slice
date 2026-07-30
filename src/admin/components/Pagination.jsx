@@ -13,25 +13,25 @@ export default function Pagination({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   const pages = useMemo(() => {
-    const range = [];
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) range.push(i);
-    } else {
-      range.push(1);
-      if (currentPage > 3) range.push('...');
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-      for (let i = start; i <= end; i++) range.push(i);
-      if (currentPage < totalPages - 2) range.push('...');
-      range.push(totalPages);
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
-    return range;
+
+    if (currentPage <= 3) {
+      return [1, 2, 3, 4, '...', totalPages];
+    }
+
+    if (currentPage >= totalPages - 2) {
+      return [1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
   }, [totalPages, currentPage]);
 
   if (totalItems === 0) return null;
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex items-center justify-between w-full gap-x-4 gap-y-2 flex-wrap">
       <div className="text-sm text-neutral-600 font-sans">
         {startItem.toLocaleString()}-{endItem.toLocaleString()} of {totalItems.toLocaleString()}
       </div>
@@ -47,17 +47,17 @@ export default function Pagination({
 
         {pages.map((p, i) =>
           p === '...' ? (
-            <span key={`ellipsis-${i}`} className="w-10 h-10 flex items-center justify-center text-sm text-neutral-400">
+            <span key={`ellipsis-${i}`} className="w-7 h-7 flex items-center justify-center text-xs text-neutral-400">
               ...
             </span>
           ) : (
             <button
               key={p}
               onClick={() => onPageChange(p)}
-              className={`w-10 h-10 rounded-md flex items-center justify-center text-sm font-medium transition-colors ${
+              className={`w-7 h-7 rounded flex items-center justify-center text-xs font-medium transition-colors ${
                 p === currentPage
-                  ? 'bg-black text-white'
-                  : 'bg-white border border-gray-200 text-black hover:bg-gray-100'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white border border-gray-200 text-neutral-600 hover:bg-gray-100'
               }`}
             >
               {p}
@@ -74,13 +74,13 @@ export default function Pagination({
         </button>
       </div>
 
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-neutral-600">Result per page</span>
-        <div className="relative">
+      <div className="flex items-center gap-2 shrink-0">
+        <span className="text-sm text-neutral-600 whitespace-nowrap">Result per page</span>
+        <div className="relative min-w-[80px]">
           <select
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="h-9 pl-3 pr-8 rounded-md border border-gray-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+            className="w-full h-8 pl-2.5 pr-7 rounded border border-gray-200 bg-white text-xs text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all cursor-pointer"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>
@@ -88,9 +88,6 @@ export default function Pagination({
             <option value={100}>100</option>
             <option value={150}>150</option>
           </select>
-          <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
         </div>
       </div>
     </div>
