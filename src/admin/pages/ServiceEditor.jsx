@@ -887,7 +887,8 @@ export default function ServiceEditor() {
                                 update("curriculum", n);
                               }}
                               className="p-1 text-destructive-300 hover:text-destructive-500 transition-colors"
-                            >
+    >
+      <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
                               <FiTrash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>

@@ -100,7 +100,7 @@ export default function JobEditor() {
       backTo="/admin/jobs"
       title={isNew ? 'Add Job Opening' : 'Edit Job Opening'}
     >
-      <SaveBar top saved={saved} />
+      <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
       <form onSubmit={handleSave} className="space-y-4">
 
         {/* Row 1: Title | Category | Type */}

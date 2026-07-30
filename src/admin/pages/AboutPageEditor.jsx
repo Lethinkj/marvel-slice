@@ -3,6 +3,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import * as LuIcons from 'react-icons/lu';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
+import SaveBar from '../components/SaveBar';
+import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove, FiX, FiCheck } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
@@ -564,6 +566,7 @@ const queryClient = useQueryClient();
 
   return (
     <PageShell backTo="/admin" title="">
+      <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
       <div className="flex flex-col">
         <div className="flex items-end justify-between">
           <FolderTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
@@ -655,29 +658,7 @@ const queryClient = useQueryClient();
         )}
 
       </form>
-        <div className="flex justify-center items-center gap-4 pt-4">
-          <button type="button" onClick={() => window.location.reload()} disabled={saving}
-            className="w-32 min-w-[120px] flex justify-center items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm cursor-pointer disabled:opacity-50">
-            <FiX className="w-4 h-4" /> Cancel
-          </button>
-          <button type="button" onClick={handleSave} disabled={saving}
-            className="w-32 min-w-[120px] flex justify-center items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
-            {saving ? (
-              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : saved ? (
-              <FiCheck className="w-4 h-4" />
-            ) : (
-              <FiSave className="w-4 h-4" />
-            )}
-            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save'}
-          </button>
-        </div>
-        {saveError && (
-          <div className="flex justify-center text-red-500 text-xs mt-2 font-medium">
-            <FiAlertCircle className="w-4 h-4 mr-1.5" />
-            {saveError}
-          </div>
-        )}
+        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
       </div>
     </PageShell>
   );

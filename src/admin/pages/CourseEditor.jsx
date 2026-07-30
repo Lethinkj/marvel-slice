@@ -1050,7 +1050,8 @@ export default function CourseEditor() {
                                       update("tabs", n);
                                     }}
                                     className="text-xs text-red-500 hover:text-red-600"
-                                  >
+    >
+      <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
                                     ×
                                   </button>
                                 </div>
