@@ -5,6 +5,7 @@ import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
 import ImageUploader from '../components/ImageUploader';
 import SaveCancelBar from '../components/SaveCancelBar';
+import SaveBar from '../components/SaveBar';
 
 export default function BlogPageEditor() {
   const queryClient = useQueryClient();
