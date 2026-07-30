@@ -169,6 +169,8 @@ export default function TrainingEditor() {
   const isNew = id === 'new';
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [message, setMessage] = useState("");
   const [categories, setCategories] = useState([]);
   const [training, setTraining] = useState({
@@ -395,9 +397,12 @@ export default function TrainingEditor() {
       queryClient.invalidateQueries({ queryKey: ['trainingProgram', training.slug] });
       queryClient.invalidateQueries({ queryKey: ['trainingProgram', id] });
       setMessage("Training program saved successfully.");
+      setSaved(true);
       reset();
+      setTimeout(() => setSaved(false), 2000);
     } catch (err) {
       setMessage(err.message);
+      setSaveError(err.message);
     }
     setSaving(false);
     savingRef.current = false;
@@ -1530,7 +1535,6 @@ export default function TrainingEditor() {
       </div>
       </div>
 
-      <SaveCancelBar saving={saving} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

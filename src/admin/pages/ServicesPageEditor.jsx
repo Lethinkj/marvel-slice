@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import SaveBar from '../components/SaveBar';
-import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiX, FiCheck } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
+import FolderTabs from '../components/ui/FolderTabs';
 import { RepeatableItemList } from '../components/ui/RepeatableItemList';
 import { RepeatableItemCard } from '../components/ui/RepeatableItemCard';
 
@@ -138,63 +136,45 @@ const queryClient = useQueryClient();
     }
   }
 
+  const inputClass = 'w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all';
+
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
-  return (
-    <PageShell backTo="/admin"
-      title={`${navItem?.label || 'Services'} Page`}
-    >
-      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-      
-      <div className="flex gap-6 items-start">
-        <div className="w-[220px]">
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-              {[
-                { id: 'hero-section', title: "Hero Section" },
-                { id: 'services', title: "Services" },
-                { id: 'call-to-action', title: "Call to Action" },
-                { id: 'faqs', title: "FAQs" }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-3 pr-2.5 py-2 ${activeTab === tab.id ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`}
-                >
-                  <span className="flex-1 truncate">{tab.title}</span>
-                </button>
-              ))}
-            </div>
-          </nav>
-        </div>
-        <div className="flex-1 min-w-0">
-          <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
+  const tabs = [
+    { id: 'hero-section', title: 'Hero' },
+    { id: 'services', title: 'Services' },
+    { id: 'call-to-action', title: 'CTA' },
+    { id: 'faqs', title: 'FAQs' },
+  ];
 
-        {activeTab === 'hero-section' && (
+  return (
+    <PageShell backTo="/admin" title="">
+      <div className="flex flex-col">
+        <div className="flex items-end justify-between">
+          <FolderTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+        </div>
+        <form onSubmit={handleSave} className="bg-white border border-gray-300 rounded-b-[20px] rounded-tr-[20px] shadow-sm p-6 space-y-6 relative z-30 -mt-[2px]">
+
+      {activeTab === 'hero-section' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Section</h2>
-          <div className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
-                <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
-                <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-              </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
+              <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputClass} />
             </div>
             <div>
-              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+              <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className={inputClass} />
             </div>
+          </div>
+          <div>
+            <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
           </div>
         </div>
       )}
 
-        {activeTab === 'services' && (
+      {activeTab === 'services' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Services</h2>
           <RepeatableItemList 
              title="Services" 
              items={services} 
@@ -205,11 +185,11 @@ const queryClient = useQueryClient();
                  <div className="space-y-4">
                    <div>
                      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Service Title</label>
-                     <input type="text" value={s.title} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], title: e.target.value }; setServices(u); }} placeholder="Service title" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                     <input type="text" value={s.title} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], title: e.target.value }; setServices(u); }} placeholder="Service title" className={inputClass} />
                    </div>
                    <div>
                      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
-                     <textarea value={s.description} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], description: e.target.value }; setServices(u); }} rows={2} placeholder="Brief description..." className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                     <textarea value={s.description} onChange={(e) => { const u = [...services]; u[i] = { ...u[i], description: e.target.value }; setServices(u); }} rows={2} placeholder="Brief description..." className={inputClass} />
                    </div>
                  </div>
                </RepeatableItemCard>
@@ -218,31 +198,27 @@ const queryClient = useQueryClient();
         </div>
       )}
 
-        {activeTab === 'call-to-action' && (
+      {activeTab === 'call-to-action' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Call to Action</h2>
-          <div className="space-y-4">
-             <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
-                  <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtext</label>
-                  <input type="text" value={cta.content} onChange={(e) => setCta({ ...cta, content: e.target.value })} placeholder="Subtext" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-                </div>
-             </div>
-             <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Button Link</label>
-                <input type="text" value={cta.link} onChange={(e) => setCta({ ...cta, link: e.target.value })} placeholder="Button link URL" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
-             </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
+              <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })} placeholder="Heading" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtext</label>
+              <input type="text" value={cta.content} onChange={(e) => setCta({ ...cta, content: e.target.value })} placeholder="Subtext" className={inputClass} />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Button Link</label>
+            <input type="text" value={cta.link} onChange={(e) => setCta({ ...cta, link: e.target.value })} placeholder="Button link URL" className={inputClass} />
           </div>
         </div>
       )}
 
-        {activeTab === 'faqs' && (
+      {activeTab === 'faqs' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">FAQs</h2>
           <RepeatableItemList 
              title="FAQs" 
              items={faqs} 
@@ -253,11 +229,11 @@ const queryClient = useQueryClient();
                  <div className="space-y-4">
                    <div>
                      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Question</label>
-                     <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                     <input type="text" value={f.question} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], question: e.target.value }; setFaqs(u); }} placeholder="Question" className={inputClass} />
                    </div>
                    <div>
                      <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Answer</label>
-                     <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                     <textarea value={f.answer} onChange={(e) => { const u = [...faqs]; u[i] = { ...u[i], answer: e.target.value }; setFaqs(u); }} rows={2} placeholder="Answer..." className={inputClass} />
                    </div>
                  </div>
                </RepeatableItemCard>
@@ -266,9 +242,30 @@ const queryClient = useQueryClient();
         </div>
       )}
 
-        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
       </form>
+        <div className="flex justify-center items-center gap-4 pt-4">
+          <button type="button" onClick={() => window.location.reload()} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm cursor-pointer disabled:opacity-50">
+            <FiX className="w-4 h-4" /> Cancel
+          </button>
+          <button type="button" onClick={handleSave} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
+            {saving ? (
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : saved ? (
+              <FiCheck className="w-4 h-4" />
+            ) : (
+              <FiSave className="w-4 h-4" />
+            )}
+            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save'}
+          </button>
         </div>
+        {saveError && (
+          <div className="flex justify-center text-red-500 text-xs mt-2 font-medium">
+            <FiAlertCircle className="w-4 h-4 mr-1.5" />
+            {saveError}
+          </div>
+        )}
       </div>
     </PageShell>
   );

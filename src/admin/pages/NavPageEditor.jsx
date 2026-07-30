@@ -233,7 +233,7 @@ export default function NavPageEditor() {
   return (
     <PageShell
       backTo="/admin/nav-menu"
-      title={navItem ? navItem.label : 'Page'}
+      title=""
     >
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
@@ -364,10 +364,10 @@ export default function NavPageEditor() {
           )}
         </SectionAccordion>
 
+      </form>
         <div className="mt-8">
           <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
         </div>
-      </form>
     </PageShell>
   );
 }

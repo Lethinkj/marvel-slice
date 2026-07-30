@@ -179,6 +179,8 @@ export default function ServiceEditor() {
   const [tab, setTab] = useState('basic');
   const sidebarOpen = true;
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [message, setMessage] = useState("");
   const [categories, setCategories] = useState([]);
   const [service, setService] = useState({
@@ -404,9 +406,12 @@ export default function ServiceEditor() {
       queryClient.invalidateQueries({ queryKey: ['service', service.slug] });
       queryClient.invalidateQueries({ queryKey: ['service', id] });
       setMessage("Service saved successfully.");
+      setSaved(true);
       reset();
+      setTimeout(() => setSaved(false), 2000);
     } catch (err) {
       setMessage(err.message);
+      setSaveError(err.message);
     }
     setSaving(false);
     savingRef.current = false;
@@ -1382,7 +1387,7 @@ export default function ServiceEditor() {
 
         </div>
       </div>
-      <SaveCancelBar saving={saving} onSave={handleSave} onDiscard={() => window.location.reload()} />
+      <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

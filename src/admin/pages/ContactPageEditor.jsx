@@ -190,44 +190,63 @@ const queryClient = useQueryClient();
   const inputCls = "w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all";
   const labelCls = "block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider";
 
+  const tabs = [
+    { id: 'hero-section', title: 'Hero' },
+    { id: 'contact-section', title: 'Contact' },
+    { id: 'left-side-company-details', title: 'Company Details' },
+    { id: 'right-side-form-settings', title: 'Form' },
+    { id: 'style-settings', title: 'Style' },
+    { id: 'map-embed', title: 'Map' },
+    { id: 'faqs', title: 'FAQs' },
+  ];
+  const currentTab = tabs.find(t => t.id === activeTab) || tabs[0];
+
   return (
     <PageShell backTo="/admin"
-      title={`${navItem?.label || 'Contact'} Page`}
+      title=""
+      maxWidth="max-w-none"
     >
-      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-      
       <div className="flex gap-6 items-start">
-        <div className="w-[220px]">
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-              {[
-                { id: 'hero-section', title: "Hero Section" },
-                { id: 'contact-section', title: "Contact Section" },
-                { id: 'left-side-company-details', title: "Left Side — Company Details" },
-                { id: 'right-side-form-settings', title: "Right Side — Form Settings" },
-                { id: 'style-settings', title: "Style Settings" },
-                { id: 'map-embed', title: "Map Embed" },
-                { id: 'faqs', title: "FAQs" }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-3 pr-2.5 py-2 ${activeTab === tab.id ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`}
-                >
-                  <span className="flex-1 truncate">{tab.title}</span>
-                </button>
-              ))}
+
+        <div className="transition-all duration-200 w-[240px] shrink-0">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
+            <div className="bg-white rounded-md shadow-sm flex flex-col overflow-visible ring-1 ring-gray-200">
+              {tabs.map((tab, index) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`relative w-full flex flex-col text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none ${
+                      index === 0 ? 'rounded-t-md' : ''
+                    } ${
+                      index === tabs.length - 1 ? 'rounded-b-md' : ''
+                    } ${
+                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="font-semibold text-sm">
+                      {tab.title}
+                    </div>
+                    {isActive && (
+                      <div className="absolute top-1/2 -translate-y-1/2 -right-[10px] w-0 h-0 border-y-[12px] border-y-transparent border-l-[10px] border-l-admin-600" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </nav>
         </div>
+
         <div className="flex-1 min-w-0">
-          <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
+          <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
+          <div className="bg-white border border-gray-300 rounded-xl shadow-sm p-6">
+            <form onSubmit={handleSave} className="space-y-6">
 
         {/* Hero Section */}
         {activeTab === 'hero-section' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Section</h2>
           <div className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
@@ -249,7 +268,6 @@ const queryClient = useQueryClient();
         {/* Contact Section Toggle */}
         {activeTab === 'contact-section' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Contact Section</h2>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-neutral-500 mt-0.5">Split-screen layout: company details on the left, contact form on the right.</p>
@@ -267,7 +285,6 @@ const queryClient = useQueryClient();
           <>
             {activeTab === 'left-side-company-details' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Left Side — Company Details</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -310,7 +327,6 @@ const queryClient = useQueryClient();
             {/* Right Side: Form Settings */}
             {activeTab === 'right-side-form-settings' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Right Side — Form Settings</h2>
               <div className="space-y-4">
                 <div>
                   <label className={labelCls}>Success Message</label>
@@ -323,7 +339,6 @@ const queryClient = useQueryClient();
             {/* Style Settings */}
             {activeTab === 'style-settings' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Style Settings</h2>
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div>
@@ -357,7 +372,6 @@ const queryClient = useQueryClient();
         {/* Map Embed */}
         {activeTab === 'map-embed' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Map Embed</h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -376,7 +390,6 @@ const queryClient = useQueryClient();
         {/* FAQs */}
         {activeTab === 'faqs' && (
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">FAQs</h2>
           <RepeatableItemList 
             title="FAQs" 
             items={faqs} 
@@ -400,8 +413,9 @@ const queryClient = useQueryClient();
         </div>
       )}
 
-        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
       </form>
+        </div>
+        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
         </div>
       </div>
     </PageShell>

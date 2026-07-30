@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import * as LuIcons from 'react-icons/lu';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
-import SaveBar from '../components/SaveBar';
-import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove, FiX, FiCheck } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
+import FolderTabs from '../components/ui/FolderTabs';
 
 const LUCIDE_ICON_NAMES = Object.keys(LuIcons).filter(k => k.startsWith('Lu')).map(k => k.slice(2)).sort();
 
@@ -559,48 +557,29 @@ const queryClient = useQueryClient();
 
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
+  const tabs = [
+    { id: 'hero-image', title: 'Hero Image' },
+    { id: 'sections', title: 'Sections' },
+  ];
+
   return (
-    <PageShell backTo="/admin"
-      title={`${navItem?.label || 'About'} Page`}
-    >
-      <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-      {validationErrors.length > 0 && (
-        <div className="mb-6 p-4 bg-warning-50 border border-warning-500 rounded-lg">
-          <p className="text-sm font-semibold text-warning-700 mb-1">Validation warnings</p>
-          <ul className="list-disc pl-5 text-sm text-warning-700 space-y-0.5">
-            {validationErrors.map((err, i) => <li key={i}>{err}</li>)}
-          </ul>
+    <PageShell backTo="/admin" title="">
+      <div className="flex flex-col">
+        <div className="flex items-end justify-between">
+          <FolderTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
         </div>
-      )}
-
-      {/* Horizontal Tab Bar */}
-      <div className="mb-6">
-        <div className="flex gap-2">
-          {[
-            { id: 'hero-image', title: 'Hero Image' },
-            { id: 'sections', title: 'Sections' },
-          ].map(tab => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-2.5 text-sm font-medium transition-all rounded-lg ${
-                activeTab === tab.id
-                  ? 'bg-admin-600 text-white font-semibold shadow-sm'
-                  : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600'
-              }`}
-            >
-              {tab.title}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
+        {validationErrors.length > 0 && (
+          <div className="mb-6 p-4 bg-warning-50 border border-warning-500 rounded-lg">
+            <p className="text-sm font-semibold text-warning-700 mb-1">Validation warnings</p>
+            <ul className="list-disc pl-5 text-sm text-warning-700 space-y-0.5">
+              {validationErrors.map((err, i) => <li key={i}>{err}</li>)}
+            </ul>
+          </div>
+        )}
+        <form onSubmit={handleSave} className="bg-white border border-gray-300 rounded-b-[20px] rounded-tr-[20px] shadow-sm p-6 space-y-6 relative z-30 -mt-[2px]">
 
         {activeTab === 'hero-image' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Image</h2>
             <div className="space-y-3">
               <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
               {hero.hero_image && (
@@ -612,7 +591,6 @@ const queryClient = useQueryClient();
 
         {activeTab === 'sections' && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Sections</h2>
             <div className="flex justify-end mb-4">
               <div className="flex items-center gap-2">
                 <div className="relative">
@@ -676,8 +654,31 @@ const queryClient = useQueryClient();
           </div>
         )}
 
-        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
       </form>
+        <div className="flex justify-center items-center gap-4 pt-4">
+          <button type="button" onClick={() => window.location.reload()} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm cursor-pointer disabled:opacity-50">
+            <FiX className="w-4 h-4" /> Cancel
+          </button>
+          <button type="button" onClick={handleSave} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
+            {saving ? (
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : saved ? (
+              <FiCheck className="w-4 h-4" />
+            ) : (
+              <FiSave className="w-4 h-4" />
+            )}
+            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save'}
+          </button>
+        </div>
+        {saveError && (
+          <div className="flex justify-center text-red-500 text-xs mt-2 font-medium">
+            <FiAlertCircle className="w-4 h-4 mr-1.5" />
+            {saveError}
+          </div>
+        )}
+      </div>
     </PageShell>
   );
 }

@@ -404,8 +404,8 @@ export default function BlogPostEditor() {
           </div>
         </div>
 
-        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={() => formRef.current?.requestSubmit()} onDiscard={() => window.location.reload()} />
       </form>
+        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={() => formRef.current?.requestSubmit()} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

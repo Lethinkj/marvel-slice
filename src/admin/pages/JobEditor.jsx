@@ -16,6 +16,7 @@ export default function JobEditor() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [categories, setCategories] = useState([]);
 
   const defaultJobForm = {
@@ -58,6 +59,7 @@ export default function JobEditor() {
     if (!jobForm.title.trim()) return;
     setSaving(true);
     setSaved(false);
+    setSaveError('');
 
     const payload = {
       title: jobForm.title.trim(),
@@ -72,10 +74,16 @@ export default function JobEditor() {
       sort_order: jobForm.sort_order,
     };
 
+    let res;
     if (isNew) {
-      await supabase.from('job_openings').insert(payload);
+      res = await supabase.from('job_openings').insert(payload);
     } else {
-      await supabase.from('job_openings').update(payload).eq('id', id);
+      res = await supabase.from('job_openings').update(payload).eq('id', id);
+    }
+    if (res?.error) {
+      setSaveError(res.error.message);
+      setSaving(false);
+      return;
     }
     setSaving(false);
     setSaved(true);
@@ -171,8 +179,8 @@ export default function JobEditor() {
           </div>
         </div>
 
-        <SaveCancelBar saving={saving} saved={saved} onSave={handleSave} onDiscard={() => window.location.reload()} />
       </form>
+        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

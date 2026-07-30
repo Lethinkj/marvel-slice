@@ -1,4 +1,4 @@
-not that import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
 import AdminButton from '../components/AdminButton';
@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
+import FolderTabs from '../components/ui/FolderTabs';
 import useConfirm from '../hooks/useConfirm';
 
 function AlignButtons({ value, onChange }) {
@@ -62,60 +63,6 @@ function ImageUploader({ value, onChange, label }) {
         </label>
       </div>
       {value && <img src={value} alt="" className="mt-2 h-28 w-full object-cover rounded-lg border border-admin-200" />}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Folder-tab navigation — skewed rectangles with rounded top corners, */
-/* overlapping slightly like real file-folder tabs.                   */
-/* Z-Index logic pushes inactive tabs behind the form border.         */
-/* ------------------------------------------------------------------ */
-function FolderTabs({ tabs, activeTab, onChange }) {
-  return (
-    <div className="relative flex items-end flex-1 overflow-x-auto pt-2 z-20">
-      {tabs.map((tab, i) => {
-        const isActive = activeTab === tab.id;
-        return (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => onChange(tab.id)}
-            className="relative outline-none flex-shrink-0"
-            style={{
-              marginLeft: i === 0 ? 0 : -16,
-              zIndex: isActive ? 40 : tabs.length - i,
-            }}
-          >
-            <div
-              className={`h-11 flex items-center transition-colors duration-150 ${
-                isActive ? 'bg-admin-600' : 'bg-white hover:bg-gray-50'
-              }`}
-              style={{
-                transform: 'skewX(-14deg)',
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-                paddingLeft: 20,
-                paddingRight: 20,
-                border: isActive ? 'none' : '1px solid #E5E7EB',
-                borderBottom: 'none',
-                boxShadow: isActive
-                  ? '0 -3px 10px rgba(37,99,235,0.28)'
-                  : '0 -2px 6px rgba(0,0,0,0.06)',
-              }}
-            >
-              <span
-                className={`block text-sm font-semibold whitespace-nowrap ${
-                  isActive ? 'text-white' : 'text-gray-500'
-                }`}
-                style={{ transform: 'skewX(14deg)' }}
-              >
-                {tab.title}
-              </span>
-            </div>
-          </button>
-        );
-      })}
     </div>
   );
 }
@@ -479,29 +426,6 @@ export default function CareerPageEditor() {
           </div>
         </div>
 
-        <div className="flex justify-end items-center gap-4 pb-1 relative z-40">
-          <button type="button" onClick={() => window.location.reload()} disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm cursor-pointer disabled:opacity-50">
-            <FiX className="w-4 h-4" /> Cancel
-          </button>
-          <button type="button" onClick={handleSave} disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
-            {saving ? (
-              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : saved ? (
-              <FiCheck className="w-4 h-4" />
-            ) : (
-              <FiSave className="w-4 h-4" />
-            )}
-            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save'}
-          </button>
-        </div>
-        {saveError && (
-          <div className="flex justify-end text-red-500 text-xs mt-0.5 font-medium pr-2">
-            <FiAlertCircle className="w-4 h-4 mr-1.5" />
-            {saveError}
-          </div>
-        )}
         <form onSubmit={handleSave} className="bg-white border border-gray-300 rounded-b-[20px] rounded-tr-[20px] shadow-sm p-6 space-y-6 relative z-30 -mt-[2px]">
 
           {activeTab === 'hero-section' && (
@@ -677,6 +601,30 @@ export default function CareerPageEditor() {
           </div>
         )}
         </form>
+
+        <div className="flex justify-center items-center gap-4 pt-4">
+          <button type="button" onClick={() => window.location.reload()} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm cursor-pointer disabled:opacity-50">
+            <FiX className="w-4 h-4" /> Cancel
+          </button>
+          <button type="button" onClick={handleSave} disabled={saving}
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
+            {saving ? (
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : saved ? (
+              <FiCheck className="w-4 h-4" />
+            ) : (
+              <FiSave className="w-4 h-4" />
+            )}
+            {saving ? 'Saving...' : saved ? 'Saved!' : 'Save'}
+          </button>
+        </div>
+        {saveError && (
+          <div className="flex justify-center text-red-500 text-xs mt-2 font-medium">
+            <FiAlertCircle className="w-4 h-4 mr-1.5" />
+            {saveError}
+          </div>
+        )}
 
       </div>
 

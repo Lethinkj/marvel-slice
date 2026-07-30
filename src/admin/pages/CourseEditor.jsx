@@ -177,6 +177,8 @@ export default function CourseEditor() {
   const [tab, setTab] = useState("basic");
   const sidebarOpen = true;
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [message, setMessage] = useState("");
   const [allTags, setAllTags] = useState([]);
   const [courseTags, setCourseTags] = useState([]);
@@ -467,9 +469,12 @@ export default function CourseEditor() {
       queryClient.invalidateQueries({ queryKey: ['featuredCourses'] });
       queryClient.invalidateQueries({ queryKey: ['courseNavCategories'] });
       setMessage("Course saved successfully.");
+      setSaved(true);
       reset();
+      setTimeout(() => setSaved(false), 2000);
     } catch (err) {
       setMessage(err.message);
+      setSaveError(err.message);
     }
     setSaving(false);
   }
@@ -1435,7 +1440,7 @@ export default function CourseEditor() {
 
         </div>
       </div>
-      <SaveCancelBar saving={saving} onSave={handleSave} onDiscard={() => window.location.reload()} />
+      <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }

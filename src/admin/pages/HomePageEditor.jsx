@@ -98,11 +98,11 @@ function IconPicker({ value, onChange }) {
 
 const sectionDefs = [
   {
-    key: 'hero', label: 'Hero Banner', icon: FiHome, color: 'from-admin-500 to-admin-500/80',
+    key: 'hero', label: 'Hero', icon: FiHome, color: 'from-admin-500 to-admin-500/80',
     isHero: true,
   },
   {
-    key: 'intro_form', label: 'Intro + Form', icon: FiMail, color: 'from-emerald-400 to-emerald-600',
+    key: 'intro_form', label: 'Intro', icon: FiMail, color: 'from-emerald-400 to-emerald-600',
     fields: [
       { name: 'intro_text', label: 'Intro Paragraph', type: 'textarea' },
       { name: 'pill_buttons', label: 'Pill Buttons (one per line)', type: 'multiline' },
@@ -114,7 +114,7 @@ const sectionDefs = [
     ],
   },
   {
-    key: 'empowering', label: 'Empowering Careers', icon: FiStar, color: 'from-blue-500 to-blue-600',
+    key: 'empowering', label: 'Empowering', icon: FiStar, color: 'from-blue-500 to-blue-600',
     fields: [
       { name: 'heading', label: 'Heading', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
@@ -129,7 +129,7 @@ const sectionDefs = [
     isServices: true,
   },
   {
-    key: 'cta_banner', label: 'CTA Banner', icon: FiMessageSquare, color: 'from-teal-500 to-teal-600',
+    key: 'cta_banner', label: 'CTA', icon: FiMessageSquare, color: 'from-teal-500 to-teal-600',
     contentOnly: true,
     fields: [
       { name: 'heading', label: 'Heading', type: 'text' },
@@ -1124,13 +1124,13 @@ export default function HomePageEditor() {
   const sec = sections.find(s => s.section_key === section);
 
   return (
-    <PageShell backTo="/admin" title="Home Page" maxWidth="max-w-none">
+    <PageShell backTo="/admin" title="" maxWidth="max-w-none">
       <div className="flex gap-6 items-start">
 
         {/* Redesigned Sidebar Matching the Image */}
         <div className="transition-all duration-200 w-[240px] shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
-            <div className="bg-white rounded-md border border-gray-200 shadow-sm flex flex-col overflow-visible">
+            <div className="bg-white rounded-md shadow-sm flex flex-col overflow-visible ring-1 ring-gray-200">
               {allNavItems.map((item, index) => {
                 const isActive = selectedNav.key === item.key;
                 return (
@@ -1138,7 +1138,7 @@ export default function HomePageEditor() {
                     key={item.key}
                     type="button"
                     onClick={() => navigate(`/admin/home/${item.key}`)}
-                    className={`relative w-full flex flex-col text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none transition-colors ${
+                    className={`relative w-full flex flex-col text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none ${
                       index === 0 ? 'rounded-t-md' : ''
                     } ${
                       index === allNavItems.length - 1 ? 'rounded-b-md' : ''
@@ -1150,8 +1150,6 @@ export default function HomePageEditor() {
                       {item.label}
                     </div>
 
-
-                    {/* Arrow Pointer using CSS borders */}
                     {isActive && (
                       <div
                         className="absolute top-1/2 -translate-y-1/2 -right-[10px] w-0 h-0 border-y-[12px] border-y-transparent border-l-[10px] border-l-admin-600"
@@ -1168,12 +1166,6 @@ export default function HomePageEditor() {
         <div className="flex-1 min-w-0">
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
           <div className="bg-white border border-gray-300 rounded-xl shadow-sm p-6">
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">{selectedNav.label}</h2>
-                <p className="text-sm text-gray-500 mt-0.5">Manage {selectedNav.label.toLowerCase()} section assets, content, and display settings.</p>
-              </div>
-            </div>
             {def && sec ? (
               <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />
             ) : (

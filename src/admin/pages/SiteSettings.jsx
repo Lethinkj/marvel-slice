@@ -155,7 +155,7 @@ const queryClient = useQueryClient();
   }
 
   return (
-    <PageShell backTo="/admin" title="Site Settings" subtitle="Contact info, social links, and logo"
+    <PageShell backTo="/admin" title=""
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
 
@@ -240,8 +240,8 @@ const queryClient = useQueryClient();
           </div>
         </div>
 
-        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
       </form>
+        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>
   );
 }
