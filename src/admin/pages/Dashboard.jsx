@@ -30,8 +30,9 @@ const toneClasses = {
 };
 
 function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
+  const Wrapper = link ? Link : 'div';
   return (
-    <div className="block bg-white rounded-xl border border-admin-200 p-5 hover:shadow-elevated hover:border-admin-300 transition-all group" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+    <Wrapper to={link} className="block bg-white rounded-xl border border-admin-200 p-5 hover:shadow-elevated hover:border-admin-300 transition-all group" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
       <div className="flex items-start justify-between mb-2">
         <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${toneClasses[iconTone] || toneClasses.slate}`}>
           <Icon className="w-4 h-4" />
@@ -39,7 +40,7 @@ function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
         <span className="text-[1.375rem] font-semibold tabular-nums text-black leading-none">{value}</span>
       </div>
       <p className="text-[0.95rem] font-medium text-neutral-500">{label}</p>
-    </div>
+    </Wrapper>
   );
 }
 
