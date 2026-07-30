@@ -28,7 +28,14 @@ const labels = {
 export default function Breadcrumbs({ className = "" }) {
   const { pathname } = useLocation();
   const parts = pathname.split("/").filter(Boolean).filter(p => p !== "admin");
-  if (parts.length <= 0) return null;
+  if (parts.length <= 0) {
+    return (
+      <nav className={`flex items-center gap-1.5 text-xs text-neutral-500 ${className}`}>
+        <span className="text-blue-600 font-medium">Dashboard</span>
+        <FiChevronRight className="w-3 h-3 text-neutral-300" />
+      </nav>
+    );
+  }
 
   return (
     <nav className={`flex items-center gap-1.5 text-xs text-neutral-500 ${className}`}>

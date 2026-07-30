@@ -177,10 +177,9 @@ const [confirm, confirmDialog] = useConfirm();
       subtitle={`${courses.length} course${courses.length !== 1 ? 's' : ''} total`}
     >
       {courses.length > 0 && (
-        <Card>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
             <div className="w-full">
-              <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
@@ -201,55 +200,49 @@ const [confirm, confirmDialog] = useConfirm();
           </div>
           <div className="flex items-end gap-3 w-full">
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
               >
                 <option value="All">All Status</option>
                 <option value="published">Published</option>
                 <option value="draft">Draft</option>
               </select>
-              <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
             </div>
           </div>
           {l1Options.length > 0 && (
             <div className="flex-1">
-              <label className="block text-[11px] font-medium text-neutral-500 mb-1">Topic</label>
               <div className="relative">
                 <select
                   value={catL1}
                   onChange={(e) => { setCatL1(e.target.value); setCatL2('All'); }}
-                  className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none truncate"
-                >
-                  <option value="All">All Topics</option>
-                  {l1Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
-                </select>
-                <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all truncate"
+              >
+                <option value="All">All Topics</option>
+                {l1Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+              </select>
               </div>
             </div>
           )}
           {l2Options.length > 0 && (
             <div className="flex-1">
-              <label className="block text-[11px] font-medium text-neutral-500 mb-1">Subtopic</label>
               <div className="relative">
                 <select
                   value={catL2}
                   onChange={(e) => setCatL2(e.target.value)}
-                  className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none truncate"
-                >
-                  <option value="All">All Subtopics</option>
-                  {l2Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
-                </select>
-                <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all truncate"
+              >
+                <option value="All">All Subtopics</option>
+                {l2Options.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+              </select>
               </div>
             </div>
           )}
           </div>
           </div>
-        </Card>
+
       )}
 
       {courses.length === 0 ? (

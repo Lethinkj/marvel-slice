@@ -691,10 +691,9 @@ export default function NavMenuManager() {
             <ParentInfoCard />
 
             {/* Filter Bar — outside the table container */}
-            <Card>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
               <div className="w-full">
-                <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
                     <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
@@ -714,23 +713,21 @@ export default function NavMenuManager() {
               </div>
               <div className="flex items-end gap-3 w-full">
               <div className="flex-1">
-                <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
                 <div className="relative">
                   <select
                     value={statusFilter}
                     onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-                    className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="all">All Statuses</option>
-                    <option value="active">Active Only</option>
-                    <option value="inactive">Inactive Only</option>
-                  </select>
-                  <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                  className="w-full h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all cursor-pointer"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="active">Active Only</option>
+                  <option value="inactive">Inactive Only</option>
+                </select>
                 </div>
               </div>
               </div>
               </div>
-            </Card>
+
 
             <div className="border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
 

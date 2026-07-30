@@ -571,113 +571,112 @@ const queryClient = useQueryClient();
           </ul>
         </div>
       )}
-      
-      <div className="flex gap-6 items-start">
-        <div className="w-[220px]">
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-              {[
-                { id: 'hero-image', title: "Hero Image" },
-                { id: 'sections', title: "Sections" }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-3 pr-2.5 py-2 ${activeTab === tab.id ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-admin-50 hover:text-admin-600'}`}
-                >
-                  <span className="flex-1 truncate">{tab.title}</span>
-                </button>
-              ))}
-            </div>
-          </nav>
-        </div>
-        <div className="flex-1 min-w-0">
-          <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
 
-        {activeTab === 'hero-image' && (
-        <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Image</h2>
-          <div className="space-y-3">
-            <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
-            {hero.hero_image && (
-              <button type="button" onClick={() => setHero({ ...hero, hero_image: '' })} className="text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
-            )}
-          </div>
-        </div>
-      )}
-
-        {activeTab === 'sections' && (
-        <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Sections</h2>
-          <div className="flex justify-end mb-4">
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <select value={newType} onChange={(e) => setNewType(e.target.value)}
-                  className="w-44 px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white appearance-none cursor-pointer transition-all">
-                  {SECTION_TYPES.map((t) => (
-                    <option key={t.value} value={t.value}>{t.label}</option>
-                  ))}
-                </select>
-                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-400 pointer-events-none" />
-              </div>
-              <button type="button" onClick={addSection} className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add</button>
-            </div>
-          </div>
-          {SECTION_TYPES.find(t => t.value === newType)?.desc && (
-            <p className="text-xs text-neutral-400">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
-          )}
-          {sections.length === 0 && (
-            <p className="text-sm text-neutral-400 text-center py-8">No sections yet. Select a type above and click "Add".</p>
-          )}
-          <div className="space-y-3">
-            {sections.map((sec, i) => (
-              <div
-                key={i}
-                draggable
-                onDragStart={() => handleDragStart(i)}
-                onDragOver={(e) => handleDragOver(e, i)}
-                onDragEnd={handleDragEnd}
-                className={`border border-admin-200 rounded-lg overflow-hidden transition-shadow ${dragIdx === i ? 'shadow-lg ring-2 ring-admin-500' : ''} ${sec.hidden ? 'opacity-50' : ''}`}
-              >
-                <div className="flex items-center justify-between px-4 py-3 bg-white cursor-pointer" onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-neutral-300 hover:text-neutral-500 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
-                      <FiMove className="w-4 h-4" />
-                    </span>
-                    <span className="text-xs font-bold text-neutral-400">{i + 1}</span>
-                    <span className="text-sm font-medium text-neutral-700">{SECTION_TYPE_LABELS[sec.section_type] || sec.section_type}</span>
-                    {sec.heading && <span className="text-xs text-neutral-400 max-w-48 truncate">— {sec.heading}</span>}
-                    {sec.hidden && <span className="text-xs text-warning-500 font-medium">Hidden</span>}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <button type="button" onClick={(e) => { e.stopPropagation(); toggleVisibility(i); }}
-                      className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer" title={sec.hidden ? 'Show section' : 'Hide section'}>
-                      {sec.hidden ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
-                    </button>
-                    <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, -1); }} disabled={i === 0}
-                      className="p-1 text-emerald-500 hover:text-emerald-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
-                    <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, 1); }} disabled={i === sections.length - 1}
-                      className="p-1 text-cyan-500 hover:text-cyan-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
-                    <button type="button" onClick={(e) => { e.stopPropagation(); removeSection(i); }}
-                      className="p-1 text-red-500 hover:text-red-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
-                  </div>
-                </div>
-                {expandedIdx === i && (
-                  <div className="p-4 border-t border-admin-200">
-                    <SubEditor section={sec} onChange={(updated) => updateSection(i, updated)} />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty}  onDiscard={() => window.location.reload()} />
-      </form>
+      {/* Horizontal Tab Bar */}
+      <div className="mb-6">
+        <div className="flex gap-2">
+          {[
+            { id: 'hero-image', title: 'Hero Image' },
+            { id: 'sections', title: 'Sections' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-5 py-2.5 text-sm font-medium transition-all rounded-lg ${
+                activeTab === tab.id
+                  ? 'bg-admin-600 text-white font-semibold shadow-sm'
+                  : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600'
+              }`}
+            >
+              {tab.title}
+            </button>
+          ))}
         </div>
       </div>
+
+      <form onSubmit={handleSave} className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-6">
+
+        {activeTab === 'hero-image' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Hero Image</h2>
+            <div className="space-y-3">
+              <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
+              {hero.hero_image && (
+                <button type="button" onClick={() => setHero({ ...hero, hero_image: '' })} className="text-xs text-destructive-500 hover:text-destructive-700 cursor-pointer">Remove image</button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'sections' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">Sections</h2>
+            <div className="flex justify-end mb-4">
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <select value={newType} onChange={(e) => setNewType(e.target.value)}
+                    className="w-44 px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white cursor-pointer transition-all">
+                    {SECTION_TYPES.map((t) => (
+                      <option key={t.value} value={t.value}>{t.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <button type="button" onClick={addSection} className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg text-admin-600 border border-admin-200 hover:bg-admin-50 hover:border-admin-300 transition-colors"><FiPlus className="w-4 h-4" /> Add</button>
+              </div>
+            </div>
+            {SECTION_TYPES.find(t => t.value === newType)?.desc && (
+              <p className="text-xs text-neutral-400">{SECTION_TYPES.find(t => t.value === newType)?.desc}</p>
+            )}
+            {sections.length === 0 && (
+              <p className="text-sm text-neutral-400 text-center py-8">No sections yet. Select a type above and click "Add".</p>
+            )}
+            <div className="space-y-3">
+              {sections.map((sec, i) => (
+                <div
+                  key={i}
+                  draggable
+                  onDragStart={() => handleDragStart(i)}
+                  onDragOver={(e) => handleDragOver(e, i)}
+                  onDragEnd={handleDragEnd}
+                  className={`border border-admin-200 rounded-lg overflow-hidden transition-shadow ${dragIdx === i ? 'shadow-lg ring-2 ring-admin-500' : ''} ${sec.hidden ? 'opacity-50' : ''}`}
+                >
+                  <div className="flex items-center justify-between px-4 py-3 bg-white cursor-pointer" onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}>
+                    <div className="flex items-center gap-3">
+                      <span className="text-neutral-300 hover:text-neutral-500 cursor-grab active:cursor-grabbing" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+                        <FiMove className="w-4 h-4" />
+                      </span>
+                      <span className="text-xs font-bold text-neutral-400">{i + 1}</span>
+                      <span className="text-sm font-medium text-neutral-700">{SECTION_TYPE_LABELS[sec.section_type] || sec.section_type}</span>
+                      {sec.heading && <span className="text-xs text-neutral-400 max-w-48 truncate">— {sec.heading}</span>}
+                      {sec.hidden && <span className="text-xs text-warning-500 font-medium">Hidden</span>}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button type="button" onClick={(e) => { e.stopPropagation(); toggleVisibility(i); }}
+                        className="p-1 text-blue-500 hover:text-blue-700 cursor-pointer" title={sec.hidden ? 'Show section' : 'Hide section'}>
+                        {sec.hidden ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
+                      </button>
+                      <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, -1); }} disabled={i === 0}
+                        className="p-1 text-emerald-500 hover:text-emerald-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronUp className="w-4 h-4" /></button>
+                      <button type="button" onClick={(e) => { e.stopPropagation(); moveSection(i, 1); }} disabled={i === sections.length - 1}
+                        className="p-1 text-cyan-500 hover:text-cyan-700 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"><FiChevronDown className="w-4 h-4" /></button>
+                      <button type="button" onClick={(e) => { e.stopPropagation(); removeSection(i); }}
+                        className="p-1 text-red-500 hover:text-red-600 cursor-pointer"><FiTrash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                  {expandedIdx === i && (
+                    <div className="p-4 border-t border-admin-200">
+                      <SubEditor section={sec} onChange={(updated) => updateSection(i, updated)} />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" dirty={dirty} onDiscard={() => window.location.reload()} />
+      </form>
     </PageShell>
   );
 }

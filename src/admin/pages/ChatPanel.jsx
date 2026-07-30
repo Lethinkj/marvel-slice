@@ -432,13 +432,12 @@ function SessionsTable({ conversations }) {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none cursor-pointer"
+              className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all cursor-pointer"
             >
               <option value="all">All</option>
               <option value="new">New</option>
               <option value="closed">Closed</option>
             </select>
-            <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
           </div>
         </div>
       </div>

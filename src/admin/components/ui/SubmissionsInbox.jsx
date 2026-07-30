@@ -354,10 +354,9 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
         </div>
       </div>
 
-      <Card>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
           <div className="w-full">
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Search</label>
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
@@ -375,38 +374,33 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
           <div className="flex items-end gap-3 w-full">
           {!disableReply && <div className="flex-1">
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Status</label>
             <div className="relative">
               <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none w-full"
+                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
               >
                 <option value="all">All</option>
                 <option value="unread">Unread</option>
                 <option value="read">Read</option>
               </select>
-              <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
             </div>
           </div>}
 
           {extraFilters && extraFilters.map((f, i) => (
             <div key={i} className="flex-1">
-              <label className="block text-[11px] font-medium text-neutral-500 mb-1">{f.label}</label>
               <div className="relative">
                 <select value={f.value} onChange={e => { f.onChange(e.target.value); setPage(1); }}
-                  className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none"
+                  className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 >
                   {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
-                <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
               </div>
             </div>
           ))}
 
           <div className="flex-1">
-            <label className="block text-[11px] font-medium text-neutral-500 mb-1">Date</label>
             <div className="relative">
               <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all appearance-none w-full"
+                className="h-9 px-3 pr-8 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
               >
                 <option value="all">All time</option>
                 <option value="today">Today</option>
@@ -414,20 +408,17 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
                 <option value="30d">Last 30 days</option>
                 <option value="custom">Custom range</option>
               </select>
-              <FiChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
             </div>
           </div>
 
           {dateFilter === 'custom' && (
             <>
               <div className="flex-1">
-                <label className="block text-[11px] font-medium text-neutral-500 mb-1">From</label>
                 <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)}
                   className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-[11px] font-medium text-neutral-500 mb-1">To</label>
                 <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)}
                   className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
@@ -442,7 +433,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           )}
           </div>
         </div>
-      </Card>
+
 
       <div className="grid xl:grid-cols-3 gap-4 items-start">
         <div className={`${selected ? 'xl:col-span-2' : 'xl:col-span-3'}`}>

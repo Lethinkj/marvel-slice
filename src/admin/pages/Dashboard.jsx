@@ -18,6 +18,11 @@ const toneClasses = {
   violet: 'bg-violet-600 text-white',
   cyan: 'bg-cyan-600 text-white',
   orange: 'bg-orange-600 text-white',
+  blue: 'bg-blue-600 text-white',
+  indigo: 'bg-indigo-600 text-white',
+  pink: 'bg-pink-600 text-white',
+  teal: 'bg-teal-600 text-white',
+  purple: 'bg-purple-600 text-white',
 };
 
 function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
@@ -46,12 +51,12 @@ function ActionTile({ to, icon: Icon, label, tone = 'slate' }) {
 }
 
 const quickLinks = [
-  { to: '/admin/courses/wizard', label: 'New Course', icon: FiPlusCircle, tone: 'violet' },
-  { to: '/admin/blog', label: 'Blog Post', icon: FiFileText, tone: 'orange' },
-  { to: '/admin/media', label: 'Upload Media', icon: FiImage, tone: 'emerald' },
-  { to: '/admin/site-settings?section=general', label: 'Settings', icon: FiSettings, tone: 'slate' },
-  { to: '/admin/courses/reports', label: 'Reports', icon: FiBarChart2, tone: 'amber' },
-  { to: '/admin/chats?tab=live', label: 'Chat', icon: FiMessageCircle, tone: 'cyan' },
+  { to: '/admin/courses/wizard', label: 'New Course', icon: FiPlusCircle, tone: 'emerald' },
+  { to: '/admin/blog', label: 'Blog Post', icon: FiFileText, tone: 'pink' },
+  { to: '/admin/media', label: 'Upload Media', icon: FiImage, tone: 'indigo' },
+  { to: '/admin/site-settings?section=general', label: 'Settings', icon: FiSettings, tone: 'teal' },
+  { to: '/admin/courses/reports', label: 'Reports', icon: FiBarChart2, tone: 'blue' },
+  { to: '/admin/chats?tab=live', label: 'Chat', icon: FiMessageCircle, tone: 'purple' },
 ];
 
 export default function Dashboard() {
@@ -99,23 +104,23 @@ export default function Dashboard() {
   if (loading) return <LoadingState />;
 
   const mainCards = [
-    { label: 'Courses', value: stats.courses, icon: FiBookOpen, link: '/admin/courses', subtitle: 'Course library', iconTone: 'emerald' },
-    { label: 'Blog Posts', value: stats.blogPosts, icon: FiFileText, link: '/admin/blog', subtitle: 'Articles & updates', iconTone: 'emerald' },
-    { label: 'Nav Items', value: stats.navItems, icon: FiMenu, link: '/admin/nav-menu', subtitle: 'Menus & links', iconTone: 'emerald' },
-    { label: 'Alumni', value: stats.companies, icon: FiUsers, link: '/admin/alumni', subtitle: 'Partner companies', iconTone: 'emerald' },
-    { label: 'Tags', value: stats.tags, icon: FiTag, link: '/admin/tags', subtitle: 'Course categories', iconTone: 'emerald' },
+    { label: 'Courses', value: stats.courses, icon: FiBookOpen, link: '/admin/courses', subtitle: 'Course library', iconTone: 'violet' },
+    { label: 'Blog Posts', value: stats.blogPosts, icon: FiFileText, link: '/admin/blog', subtitle: 'Articles & updates', iconTone: 'amber' },
+    { label: 'Nav Items', value: stats.navItems, icon: FiMenu, link: '/admin/nav-menu', subtitle: 'Menus & links', iconTone: 'cyan' },
+    { label: 'Alumni', value: stats.companies, icon: FiUsers, link: '/admin/alumni', subtitle: 'Partner companies', iconTone: 'rose' },
+    { label: 'Tags', value: stats.tags, icon: FiTag, link: '/admin/tags', subtitle: 'Course categories', iconTone: 'orange' },
   ];
 
   const submissionCards = [
-    { label: 'Career Submissions', value: pending.career, icon: FiInbox, link: '/admin/career-submissions', subtitle: 'Submissions', iconTone: 'rose' },
-    { label: 'Brochure Downloads', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'orange' },
-    { label: 'Form Submissions', value: pending.form, icon: FiInbox, link: '/admin/form-submissions', subtitle: 'Submissions', iconTone: 'violet' },
-    { label: 'Contact Submissions', value: pending.contact, icon: FiInbox, link: '/admin/contact-submissions', subtitle: 'Submissions', iconTone: 'amber' },
-    { label: 'Chat Submissions', value: pending.chat, icon: FiMessageCircle, link: '/admin/chat-submissions', subtitle: 'Submissions', iconTone: 'cyan' },
+    { label: 'Career Submissions', value: pending.career, icon: FiInbox, link: '/admin/career-submissions', subtitle: 'Submissions', iconTone: 'blue' },
+    { label: 'Brochure Downloads', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'teal' },
+    { label: 'Form Submissions', value: pending.form, icon: FiInbox, link: '/admin/form-submissions', subtitle: 'Submissions', iconTone: 'purple' },
+    { label: 'Contact Submissions', value: pending.contact, icon: FiInbox, link: '/admin/contact-submissions', subtitle: 'Submissions', iconTone: 'pink' },
+    { label: 'Chat Submissions', value: pending.chat, icon: FiMessageCircle, link: '/admin/chat-submissions', subtitle: 'Submissions', iconTone: 'indigo' },
   ];
 
   return (
-    <PageShell>
+    <PageShell hideBorder>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
         {mainCards.map((card, i) => (
           <StatCard key={i} {...card} />
