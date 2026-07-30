@@ -527,6 +527,7 @@ function HeroEditor({ data, onChange }) {
   const mode = content.hero_mode || 'normal';
   const carouselType = content.carousel_type || 'image';
   const slides = Array.isArray(content.slides) ? content.slides : [];
+  const [openSection, setOpenSection] = useState(!content.banner_image ? 'two-column' : null);
 
   function updateContent(name, value) {
     onChange({ ...data, content: { ...content, [name]: value } });
@@ -701,7 +702,7 @@ function HeroEditor({ data, onChange }) {
       )}
 
       {/* Two-Column Layout Settings */}
-      <SectionAccordion title="Two-Column Layout Settings" defaultExpanded={!content.banner_image}>
+      <SectionAccordion title="Two-Column Layout Settings" expanded={openSection === 'two-column'} onToggle={() => setOpenSection(openSection === 'two-column' ? null : 'two-column')}>
         <p className="text-xs text-gray-400">These fields apply when no banner image is set (gradient background layout).</p>
         <div>
           <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
@@ -736,7 +737,7 @@ function HeroEditor({ data, onChange }) {
       </SectionAccordion>
 
       {/* Stats Section */}
-      <SectionAccordion title="Stats" defaultExpanded={false}>
+      <SectionAccordion title="Stats" expanded={openSection === 'stats'} onToggle={() => setOpenSection(openSection === 'stats' ? null : 'stats')}>
         <div className="flex justify-end mb-4">
           <button type="button" onClick={() => {
             const s = Array.isArray(content.stats) ? content.stats : [];
@@ -785,7 +786,7 @@ function HeroEditor({ data, onChange }) {
       </SectionAccordion>
 
       {/* Buttons Section */}
-      <SectionAccordion title="Call-to-Action Buttons" defaultExpanded={false}>
+      <SectionAccordion title="Call-to-Action Buttons" expanded={openSection === 'buttons'} onToggle={() => setOpenSection(openSection === 'buttons' ? null : 'buttons')}>
         <div className="flex justify-end mb-4">
           <AdminButton type="button" onClick={() => {
             const b = Array.isArray(content.buttons) ? content.buttons : [];
@@ -1130,7 +1131,7 @@ export default function HomePageEditor() {
         {/* Redesigned Sidebar Matching the Image */}
         <div className="transition-all duration-200 w-[240px] shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
-            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-200" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {allNavItems.map((item, index) => {
                 const isActive = selectedNav.key === item.key;
                 return (
@@ -1152,7 +1153,7 @@ export default function HomePageEditor() {
 
                     {isActive && (
                       <div
-                        className="absolute top-1/2 -translate-y-1/2 -right-[10px] w-0 h-0 border-y-[12px] border-y-transparent border-l-[10px] border-l-admin-600"
+                        className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[30px] border-l-admin-600"
                       />
                     )}
                   </button>

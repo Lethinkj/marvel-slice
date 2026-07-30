@@ -101,7 +101,8 @@ export default function JobEditor() {
       title={isNew ? 'Add Job Opening' : 'Edit Job Opening'}
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
-      <form onSubmit={handleSave} className="space-y-4">
+      <form onSubmit={handleSave}>
+        <div className="bg-white border border-gray-300 rounded-xl p-6 space-y-4" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
 
         {/* Row 1: Title | Category | Type */}
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1fr] gap-4">
@@ -179,6 +180,7 @@ export default function JobEditor() {
           </div>
         </div>
 
+        </div>
       </form>
         <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>

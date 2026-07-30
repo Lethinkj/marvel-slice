@@ -179,6 +179,7 @@ export default function BlogPostEditor() {
       ...form,
       category_id: form.category_id || null,
       slug: form.slug || slugify(form.title),
+      ...(isNew ? { created_at: new Date().toISOString() } : {}),
       published_at: form.is_published && !isNew ? undefined : form.is_published ? new Date().toISOString() : null,
     };
     let postId = id;

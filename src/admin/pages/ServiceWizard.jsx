@@ -315,6 +315,7 @@ export default function ServiceWizard() {
 
       <div className="flex gap-6 items-start">
         <div className="flex-1 min-w-0">
+          <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
           {step === 0 && (
             <div className="space-y-6">
               <h2 className="text-lg font-semibold text-black mb-4">Basic Information</h2>
@@ -524,7 +525,7 @@ export default function ServiceWizard() {
               </div>
             </div>
           )}
-
+          </div>
         </div>
       </div>
 

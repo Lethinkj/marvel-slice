@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
 import AdminButton from "../components/AdminButton";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronDown, FiChevronUp, FiSettings, FiFileText, FiTag, FiImage, FiHeart, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiMove, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronDown, FiSettings, FiFileText, FiImage, FiHeart, FiAlertCircle } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
-import SaveCancelBar from '../components/SaveCancelBar';
+import FolderTabs from '../components/ui/FolderTabs';
 import useDirty from '../hooks/useDirty';
 
 function ListEditor({ items, onChange, fields, labelKey = "label" }) {
@@ -168,6 +168,7 @@ export default function TrainingEditor() {
 
   const isNew = id === 'new';
   const [step, setStep] = useState(0);
+  const folderTabs = STEPS.map((s, i) => ({ id: i, title: s.label }));
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
@@ -442,33 +443,9 @@ export default function TrainingEditor() {
         </div>
       )}
 
-      <div className="flex gap-6 items-start">
-        <div className="transition-all duration-200 w-[220px] shrink-0 hidden md:block">
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-              {STEPS.map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleStepClick(i)}
-                  disabled={i > step && !canNext()}
-                  className={`w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
-                    step === i
-                      ? 'gap-2 bg-admin-600 text-white font-semibold shadow-sm'
-                      : i < step
-                      ? 'gap-2 text-neutral-600 hover:bg-admin-50 hover:text-admin-600'
-                      : 'gap-2 text-neutral-400 cursor-not-allowed opacity-50'
-                  }`}
-                  title={s.label}
-                >
-                  <s.icon className={`w-4 h-4 shrink-0 ${step === i ? "text-white" : "text-neutral-400"}`} />
-                  <span className="flex-1 truncate">{s.label}</span>
-                </button>
-              ))}
-            </div>
-          </nav>
-        </div>
-
-      <div className="flex-1 min-w-0">
+      <div className="-mt-4">
+        <FolderTabs tabs={folderTabs} activeTab={step} onChange={(id) => handleStepClick(id)} />
+        <div className="bg-white border border-gray-300 rounded-b-[20px] rounded-tr-[20px] shadow-sm p-6 relative z-30 -mt-[2px]">
         {step === 0 && (
           <div className="space-y-6">
             <div className="grid sm:grid-cols-2 gap-4">
@@ -1482,18 +1459,10 @@ export default function TrainingEditor() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-200 hover:bg-red-50 rounded-lg transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
           >
             Cancel
           </button>
-          {step > 0 && (
-            <button
-              onClick={() => setStep(step - 1)}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium text-neutral-600 bg-white border border-admin-200 hover:bg-admin-50 rounded-lg transition-colors"
-            >
-              Back
-            </button>
-          )}
           {step < STEPS.length - 1 ? (
             <button
               onClick={() => handleStepClick(step + 1)}

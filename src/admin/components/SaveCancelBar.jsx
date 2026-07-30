@@ -6,12 +6,12 @@ export default function SaveCancelBar({ saving, saved, saveError, onSave, onDisc
       <div className="flex justify-center items-center gap-4 mt-4 mb-2">
         {onDiscard && (
           <button type="button" onClick={onDiscard} disabled={saving}
-            className="w-32 min-w-[120px] flex justify-center items-center gap-2 px-4 py-2 text-sm font-medium rounded-[20px] text-white bg-[#FF0000] hover:bg-[#CC0000] transition-colors shadow-sm cursor-pointer disabled:opacity-50">
+            className="w-28 min-w-[100px] flex justify-center items-center gap-2 px-4 py-2 text-sm font-medium rounded-[20px] text-white bg-[#FF0000] hover:bg-[#CC0000] transition-colors shadow-sm cursor-pointer disabled:opacity-50">
             <FiX className="w-4 h-4" /> Cancel
           </button>
         )}
         <button type="button" onClick={onSave} disabled={saving}
-          className="w-32 min-w-[120px] flex justify-center items-center gap-2 px-4 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-700 hover:bg-blue-800 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
+          className="w-28 min-w-[100px] flex justify-center items-center gap-2 px-4 py-2 text-sm font-medium rounded-[20px] text-white bg-blue-700 hover:bg-blue-800 transition-colors shadow-sm cursor-pointer disabled:opacity-70">
           {saving ? (
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : saved ? (

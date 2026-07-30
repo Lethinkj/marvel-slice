@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import PageShell from '../components/ui/PageShell';
 import Card from '../components/ui/Card';
@@ -69,6 +69,7 @@ export default function Dashboard() {
   const [pending, setPending] = useState({ career: 0, contact: 0, brochure: 0, form: 0, chat: 0 });
   const [recentItems, setRecentItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     async function fetchData() {
@@ -104,7 +105,7 @@ export default function Dashboard() {
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [location.pathname]);
 
   if (loading) return <LoadingState />;
 
@@ -162,7 +163,7 @@ export default function Dashboard() {
                           {isCourse ? <FiBookOpen className="w-3.5 h-3.5 text-white" /> : <FiFileText className="w-3.5 h-3.5 text-white" />}
                       </div>
                       <span className="flex-1 text-[0.95rem] text-neutral-500 truncate">{item.title}</span>
-                      <span className="text-xs text-neutral-400 shrink-0">{new Date(item.created_at).toLocaleDateString()}</span>
+                      <span className="text-xs text-neutral-400 shrink-0">{item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}</span>
                     </div>
                   );
                 })}

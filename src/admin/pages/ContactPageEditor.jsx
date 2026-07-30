@@ -210,7 +210,7 @@ const queryClient = useQueryClient();
 
         <div className="transition-all duration-200 w-[240px] shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
-            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-200" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {tabs.map((tab, index) => {
                 const isActive = activeTab === tab.id;
                 return (
@@ -230,7 +230,7 @@ const queryClient = useQueryClient();
                       {tab.title}
                     </div>
                     {isActive && (
-                      <div className="absolute top-1/2 -translate-y-1/2 -right-[10px] w-0 h-0 border-y-[12px] border-y-transparent border-l-[10px] border-l-admin-600" />
+                      <div className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[30px] border-l-admin-600" />
                     )}
                   </button>
                 );
@@ -390,9 +390,9 @@ const queryClient = useQueryClient();
         {/* FAQs */}
         {activeTab === 'faqs' && (
         <div className="space-y-6">
-          <RepeatableItemList 
-            title="FAQs" 
-            items={faqs} 
+          <RepeatableItemList
+            title="FAQs"
+            items={faqs}
             onAdd={() => setFaqs([...faqs, { question: '', answer: '' }])}
             addLabel="Add FAQ"
             renderItem={(f, i) => (
