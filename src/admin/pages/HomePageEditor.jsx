@@ -1130,7 +1130,7 @@ export default function HomePageEditor() {
         {/* Redesigned Sidebar Matching the Image */}
         <div className="transition-all duration-200 w-[240px] shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
-            <div className="bg-white rounded-md shadow-sm flex flex-col overflow-visible ring-1 ring-gray-200">
+            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-200" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {allNavItems.map((item, index) => {
                 const isActive = selectedNav.key === item.key;
                 return (
@@ -1165,7 +1165,7 @@ export default function HomePageEditor() {
         {/* Main Content Editor Area */}
         <div className="flex-1 min-w-0">
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
-          <div className="bg-white border border-gray-300 rounded-xl shadow-sm p-6">
+          <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
             {def && sec ? (
               <SectionEditor def={def} data={sec} onChange={(data) => updateSection(section, data)} />
             ) : (
