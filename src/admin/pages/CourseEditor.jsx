@@ -472,6 +472,7 @@ export default function CourseEditor() {
       setSaved(true);
       reset();
       setTimeout(() => setSaved(false), 2000);
+      setTimeout(() => setMessage(""), 3000);
     } catch (err) {
       setMessage(err.message);
       setSaveError(err.message);
@@ -502,27 +503,32 @@ export default function CourseEditor() {
       )}
 
       <div className="flex gap-6 items-start">
-        <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
-          {/* Hide menu button removed */}
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-              {editorTabs.map((t) => {
+        <div className="transition-all duration-200 w-[220px] shrink-0">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
+            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-200" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+              {editorTabs.map((t, index) => {
                 const meta = tabMeta[t];
+                const isActive = tab === t;
                 return (
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] px-2.5 py-2 ${
-                      sidebarOpen
-                        ? `gap-2 ${tab === t ? 'bg-admin-600 text-white font-semibold shadow-sm' : 'text-neutral-600 hover:bg-admin-50 hover:text-admin-600'}`
-                        : `justify-center gap-0 ${tab === t ? 'bg-admin-600 text-white shadow-sm' : 'text-neutral-500 hover:bg-admin-50 hover:text-admin-600'}`
+                    className={`relative w-full flex items-center gap-2 text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none ${
+                      index === 0 ? 'rounded-t-md' : ''
+                    } ${
+                      index === editorTabs.length - 1 ? 'rounded-b-md' : ''
+                    } ${
+                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                     title={meta.label}
                   >
                     <meta.Icon className={`w-4 h-4 shrink-0 ${
-                      tab === t ? 'text-white' : 'text-neutral-400'
+                      isActive ? 'text-white' : 'text-neutral-400'
                     }`} />
-                    {sidebarOpen && <span className="flex-1 truncate">{meta.label}</span>}
+                    <span className="font-semibold text-sm flex-1 truncate">{meta.label}</span>
+                    {isActive && (
+                      <div className="absolute top-1/2 -translate-y-1/2 -right-[10px] w-0 h-0 border-y-[12px] border-y-transparent border-l-[10px] border-l-admin-600" />
+                    )}
                   </button>
                 );
               })}
@@ -531,6 +537,8 @@ export default function CourseEditor() {
         </div>
 
         <div className="flex-1 min-w-0">
+          <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
+          <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
           {tab === "basic" && (
             <div className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-4">
@@ -1037,8 +1045,7 @@ export default function CourseEditor() {
                                       update("tabs", n);
                                     }}
                                     className="text-xs text-red-500 hover:text-red-600"
-    >
-      <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
+                                    >
                                     ×
                                   </button>
                                 </div>
@@ -1427,6 +1434,7 @@ export default function CourseEditor() {
           )}
 
         </div>
+      </div>
       </div>
       <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>

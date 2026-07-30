@@ -18,6 +18,7 @@ const [confirm, confirmDialog] = useConfirm();
   const [searchParams] = useSearchParams();
   const activeCategory = searchParams.get("category");
   const [search, setSearch] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [catL1, setCatL1] = useState('All');
   const [catL2, setCatL2] = useState('All');
@@ -77,8 +78,8 @@ const [confirm, confirmDialog] = useConfirm();
     if (statusFilter === 'draft' && c.is_published) return false;
     
     // 3. Search
-    if (search) {
-      const q = search.toLowerCase();
+    if (activeSearch) {
+      const q = activeSearch.toLowerCase();
       if (!(c.title || "").toLowerCase().includes(q) && !(c.slug || "").toLowerCase().includes(q)) {
         return false;
       }
@@ -180,23 +181,27 @@ const [confirm, confirmDialog] = useConfirm();
         <div className="bg-white border border-admin-200 p-5 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
             <div className="w-full">
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search title or slug..."
-                  className="w-full pl-9 pr-8 h-9 border border-admin-200 text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
-                />
-                {search && (
-                  <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-neutral-400 hover:text-neutral-600 transition-colors" title="Clear search">
-                    <FiX className="w-4 h-4" />
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && setActiveSearch(search.trim())}
+                    placeholder="Search title or slug..."
+                    className="w-full pl-9 pr-8 h-9 border border-admin-200 text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+                  />
+                  {search && (
+                    <button onClick={() => { setSearch(''); setActiveSearch(''); }} className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-neutral-400 hover:text-neutral-600 transition-colors" title="Clear search">
+                      <FiX className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                <button onClick={() => setActiveSearch(search.trim())} className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0">
+                  Search
+                </button>
               </div>
-            </div>
           </div>
           <div className="flex items-end gap-3 w-full">
           <div className="flex-1">

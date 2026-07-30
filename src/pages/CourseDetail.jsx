@@ -6,6 +6,7 @@ import TabBar from '../components/ui/TabBar';
 import { trackFormSubmit, trackDownload, trackCtaClick, trackVideoPlay } from '../lib/analytics';
 import CourseCard from '../components/ui/CourseCard';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
+import AccordionItem from '../components/ui/AccordionItem';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
 import { supabase } from '../lib/supabaseClient';
 
@@ -38,7 +39,7 @@ function AccordionQA({ items }) {
       {items.map((item, i) => (
         <div key={i} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
           <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
-            className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-gray-900 hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
+            className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-gray-900 bg-gray-100 hover:bg-gray-200 transition-colors gap-3 cursor-pointer"
           >
             <span className="text-sm sm:text-base leading-snug flex-1">{item.question}</span>
             <span className="shrink-0 w-8 h-8 flex items-center justify-center text-gray-400">
@@ -46,7 +47,7 @@ function AccordionQA({ items }) {
             </span>
           </button>
           {openIdx === i && (
-            <div className="px-4 sm:px-5 pb-4 text-sm text-gray-500 leading-relaxed space-y-1">
+            <div className="px-4 sm:px-5 pb-4 text-sm text-gray-500 leading-relaxed bg-white space-y-1">
               {item.answers?.map((ans, ai) => (
                 <p key={ai}>{ans}</p>
               ))}
@@ -237,29 +238,26 @@ function CertificationSection({ certifications }) {
 
 function FAQSection({ faqs }) {
   if (!faqs || faqs.length === 0) return null;
-  const [open, setOpen] = useState(null);
+  const [openIdx, setOpenIdx] = useState(null);
   return (
-    <section id="faqs" data-section="faqs" className="py-16 bg-gray-50/50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-2xl font-bold text-dark-navy mb-8 text-center">Frequently Asked Questions</Reveal>
-        <div className="space-y-3">
+    <section id="faqs" data-section="faqs" className="py-10">
+      <div className="w-full max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
+        <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">
+          Frequently Asked Questions
+        </Reveal>
+        <Stagger className="space-y-2">
           {faqs.map((f, i) => (
-            <div key={f.id || i} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-              <button
-                onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-brand-orange hover:bg-gray-50 transition-colors gap-3 cursor-pointer"
+            <StaggerItem key={f.id || i}>
+              <AccordionItem
+                title={f.question}
+                isOpen={openIdx === i}
+                onToggle={() => setOpenIdx(openIdx === i ? null : i)}
               >
-                <span>{f.question}</span>
-                <span className="shrink-0 w-8 h-8 p-1.5 flex items-center justify-center rounded-full bg-white text-brand-orange">
-                  {open === i ? <FiMinus className="w-3.5 h-3.5" strokeWidth={3} /> : <FiPlus className="w-3.5 h-3.5" strokeWidth={3} />}
-                </span>
-              </button>
-              {open === i && (
-                <div className="px-6 pb-4 text-gray-500 leading-relaxed">{f.answer}</div>
-              )}
-            </div>
+                <p className="text-gray-500 text-base leading-relaxed">{f.answer}</p>
+              </AccordionItem>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
