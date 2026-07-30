@@ -9,8 +9,6 @@ import {
 } from 'react-icons/fi';
 import useConfirm from '../../hooks/useConfirm';
 
-const PAGE_OPTIONS = [10, 20, 30, 50, 100];
-
 function ReplyModal({ row, onClose, pageTitle }) {
   const [subject, setSubject] = useState(`Re: ${pageTitle || 'Your Submission'}`);
   const [message, setMessage] = useState('');
@@ -499,27 +497,14 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               </div>
             )}
 
-            <div className="flex items-center justify-between px-4 py-3 border-t border-admin-100 bg-white text-xs text-neutral-400 font-medium">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  <span>Rows per page:</span>
-                  <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                    className="h-7 px-1.5 rounded border border-admin-200 bg-white text-xs text-neutral-500 focus:outline-none"
-                  >
-                    {PAGE_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
-                  </select>
-                </div>
-                <span>{filtered.length} total</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}
-                  className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                ><FiChevronLeft className="w-4 h-4" /></button>
-                <span className="px-1 text-neutral-400">{page} / {totalPages || 1}</span>
-                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages}
-                  className="p-1 rounded text-neutral-400 hover:bg-admin-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                ><FiChevronRight className="w-4 h-4" /></button>
-              </div>
+            <div className="px-4 py-3 border-t border-admin-100 bg-white">
+              <Pagination
+                totalItems={filtered.length}
+                itemsPerPage={pageSize}
+                currentPage={page}
+                onPageChange={setPage}
+                onItemsPerPageChange={(size) => { setPageSize(size); setPage(1); }}
+              />
             </div>
           </div>
         </div>
