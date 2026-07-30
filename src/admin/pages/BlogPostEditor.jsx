@@ -244,7 +244,8 @@ export default function BlogPostEditor() {
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" top />
 
-      <form ref={formRef} onSubmit={handleSave} className="space-y-4">
+      <form ref={formRef} onSubmit={handleSave}>
+        <div className="bg-white border border-gray-300 rounded-xl p-6 space-y-4" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
 
         {/* Row 1: Title | Slug | Author */}
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_2fr_1fr] gap-4">
@@ -404,6 +405,7 @@ export default function BlogPostEditor() {
           </div>
         </div>
 
+        </div>
       </form>
         <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={() => formRef.current?.requestSubmit()} onDiscard={() => window.location.reload()} />
     </PageShell>

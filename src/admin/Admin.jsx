@@ -161,7 +161,8 @@ export default function Admin() {
           <Route path="chats" element={<ChatPanel />} />
           <Route path="blog-page" element={<BlogPageEditor />} />
           <Route path="blog" element={<BlogManager />} />
-          <Route path="blog/:id" element={<BlogPostEditor />} />
+          <Route path="blog/new" element={<BlogPostEditor key="new" />} />
+          <Route path="blog/:id" element={<BlogPostEditor key="edit" />} />
           <Route path="blog/categories" element={<BlogCategoriesManager />} />
           <Route path="profile" element={<ProfileSettings />} />
         </Route>

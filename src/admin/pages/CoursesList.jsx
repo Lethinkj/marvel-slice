@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import AdminButton from "../components/AdminButton";
 import Badge from "../components/Badge";
@@ -11,6 +11,7 @@ import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
 export default function CoursesList() {
+  const location = useLocation();
 const [confirm, confirmDialog] = useConfirm();
   const [courses, setCourses] = useState([]);
   const [navItems, setNavItems] = useState([]);
@@ -126,7 +127,7 @@ const [confirm, confirmDialog] = useConfirm();
     {
       header: 'Title',
       cell: (row) => (
-        <Link to={`/admin/courses/${row.id}`} className="text-sm font-medium text-neutral-900 hover:text-neutral-700 transition-colors">
+        <Link to={`/admin/courses/${row.id}?return=${encodeURIComponent(location.pathname + location.search)}`} className="text-sm font-medium text-neutral-900 hover:text-neutral-700 transition-colors">
           {row.title?.trim() || 'Untitled'}
         </Link>
       ),
@@ -153,7 +154,7 @@ const [confirm, confirmDialog] = useConfirm();
       className: 'w-24 text-right',
       cell: (row) => (
         <div className="flex items-center justify-end gap-1.5">
-          <Link to={`/admin/courses/${row.id}`} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+          <Link to={`/admin/courses/${row.id}?return=${encodeURIComponent(location.pathname + location.search)}`} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
             <FiEdit3 className="w-4 h-4" />
           </Link>
           <button onClick={() => handleDelete(row.id, row.title)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">

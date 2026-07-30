@@ -53,7 +53,8 @@ const navGroups = [
     { to: "/admin/courses/reports", label: "Reports" }
     ]},
   {
-    label: "Courses", icon: FiBookOpen, items: [
+    label: "Courses", icon: FiBookOpen, parentTo: "/admin/courses", items: [
+      { to: "/admin/courses", label: "All Courses", catchSubRoutes: true, siblingRoutes: ["/admin/courses/wizard", "/admin/courses/reports", "/admin/courses/brochure", "/admin/courses/new"] },
       { label: "Software Learning", children: [
         { to: "/admin/courses/wizard?category=Software%20Learning", label: "Add Course" },
         { to: "/admin/courses?category=Software%20Learning", label: "View Courses" }

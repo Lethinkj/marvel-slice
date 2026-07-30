@@ -46,16 +46,18 @@ export default function TagAdd() {
       title="Add Tag" 
       subtitle="Create a new tag for your courses and posts"
     >
-      <div className="flex items-center justify-center py-32">
-        <AdminButton 
-          onClick={() => { setModalOpen(true); setSuccess(false); setName(''); }} 
-          size="lg" 
-          variant="primary"
-          className="shadow-md hover:shadow-lg"
-        >
-          <FiPlus className="w-5 h-5 mr-1" />
-          Add a tag
-        </AdminButton>
+      <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+        <div className="flex items-center justify-center py-20">
+          <AdminButton 
+            onClick={() => { setModalOpen(true); setSuccess(false); setName(''); }} 
+            size="lg" 
+            variant="primary"
+            className="shadow-md hover:shadow-lg"
+          >
+            <FiPlus className="w-5 h-5 mr-1" />
+            Add a tag
+          </AdminButton>
+        </div>
       </div>
 
       {modalOpen && (

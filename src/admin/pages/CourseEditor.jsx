@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
@@ -170,6 +170,8 @@ const editorTabs = Object.keys(tabMeta);
 export default function CourseEditor() {
   const { user: currentUser } = useAuth();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const returnUrl = searchParams.get("return") || "/admin/courses";
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -426,7 +428,6 @@ export default function CourseEditor() {
           const { error: certErr } = await supabase.from("certifications").insert(cleanCert);
           if (certErr) throw new Error(certErr.message);
         }
-        navigate(`/admin/courses/${data.id}`, { replace: true });
       } else {
         const { error } = await supabase
           .from("courses")
@@ -471,6 +472,7 @@ export default function CourseEditor() {
       setMessage("Course saved successfully.");
       setSaved(true);
       reset();
+      setTimeout(() => navigate(returnUrl, { replace: true }), 500);
       setTimeout(() => setSaved(false), 2000);
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {

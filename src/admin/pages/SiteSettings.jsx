@@ -5,7 +5,7 @@ import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiUpload, FiTrash2, FiCheck, FiArrowLeft, FiMail, FiPhone, FiGlobe, FiMapPin, FiClock } from 'react-icons/fi';
+import { FiSave, FiUpload, FiTrash2, FiCheck, FiArrowLeft, FiMail, FiPhone, FiGlobe, FiMapPin } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 
 function ImageUploader({ value, onChange, label }) {
@@ -159,87 +159,87 @@ const queryClient = useQueryClient();
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
 
-      <form onSubmit={handleSave} className="space-y-6">
-        <div>
-          <ImageUploader value={form.logo_url} onChange={(v) => setForm({ ...form, logo_url: v })} label="Site Logo" />
-        </div>
-
-        <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
-            <FiMail className="w-4 h-4 text-cyan-600" /> Contact Information
-          </h3>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Email</label>
-              <input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
-                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-                placeholder="sales@marvelslice.com" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Phone</label>
-              <div className="relative">
-                <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
-                <input type="text" value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
-                  className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-                  placeholder="+91 6380957390" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
-            <FiGlobe className="w-4 h-4 text-violet-500" /> Social Links
-          </h3>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {[
-              { key: 'twitter', label: 'Twitter URL', placeholder: 'https://twitter.com/...' },
-              { key: 'facebook', label: 'Facebook URL', placeholder: 'https://facebook.com/...' },
-              { key: 'instagram', label: 'Instagram URL', placeholder: 'https://instagram.com/...' },
-              { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/...' },
-            ].map((s) => (
-              <div key={s.key}>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{s.label}</label>
-                <input type="url" value={form[s.key]} onChange={(e) => setForm({ ...form, [s.key]: e.target.value })}
-                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-                  placeholder={s.placeholder} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
-            <FiMapPin className="w-4 h-4 text-amber-500" /> Address
-          </h3>
+      <form onSubmit={handleSave}>
+        <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+        <div className="space-y-6">
           <div>
-            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Full Address</label>
-            <input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })}
-              className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-              placeholder="123 Tech Park, Chennai, Tamil Nadu, India" />
+            <ImageUploader value={form.logo_url} onChange={(v) => setForm({ ...form, logo_url: v })} label="Site Logo" />
+          </div>
+
+          <div className="border-t border-admin-100 pt-6">
+            <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
+              <FiMail className="w-4 h-4 text-cyan-600" /> Contact Information
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Email</label>
+                <input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
+                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
+                  placeholder="sales@marvelslice.com" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Phone</label>
+                <div className="relative">
+                  <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
+                  <input type="text" value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
+                    className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
+                    placeholder="+91 6380957390" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-admin-100 pt-6">
+            <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
+              <FiGlobe className="w-4 h-4 text-violet-500" /> Social Links
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { key: 'twitter', label: 'Twitter URL', placeholder: 'https://twitter.com/...' },
+                { key: 'facebook', label: 'Facebook URL', placeholder: 'https://facebook.com/...' },
+                { key: 'instagram', label: 'Instagram URL', placeholder: 'https://instagram.com/...' },
+                { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/...' },
+              ].map((s) => (
+                <div key={s.key}>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{s.label}</label>
+                  <input type="url" value={form[s.key]} onChange={(e) => setForm({ ...form, [s.key]: e.target.value })}
+                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
+                    placeholder={s.placeholder} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-admin-100 pt-6">
+            <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
+              <FiMapPin className="w-4 h-4 text-amber-500" /> Address &amp; Working Hours
+            </h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Full Address</label>
+                <textarea value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })}
+                  className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all resize-none"
+                  placeholder="123 Tech Park, Chennai, Tamil Nadu, India"
+                  rows={4} />
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Weekdays</label>
+                  <input type="text" value={form.hours_weekday} onChange={(e) => setForm({ ...form, hours_weekday: e.target.value })}
+                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
+                    placeholder="10:00 AM - 7:00 PM" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Saturday</label>
+                  <input type="text" value={form.hours_saturday} onChange={(e) => setForm({ ...form, hours_saturday: e.target.value })}
+                    className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
+                    placeholder="10:00 AM - 3:00 PM" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="border-t border-admin-100 pt-6">
-          <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
-            <FiClock className="w-4 h-4 text-cyan-500" /> Working Hours
-          </h3>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Weekdays</label>
-              <input type="text" value={form.hours_weekday} onChange={(e) => setForm({ ...form, hours_weekday: e.target.value })}
-                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-                placeholder="10:00 AM - 7:00 PM" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Saturday</label>
-              <input type="text" value={form.hours_saturday} onChange={(e) => setForm({ ...form, hours_saturday: e.target.value })}
-                className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-                placeholder="10:00 AM - 3:00 PM" />
-            </div>
-          </div>
         </div>
-
       </form>
         <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
     </PageShell>
