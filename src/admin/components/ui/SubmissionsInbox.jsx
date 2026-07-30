@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import Card from './Card';
 import { LoadingState, EmptyState } from './EmptyState';
+import Pagination from '../Pagination';
 import {
   FiSearch, FiEye, FiX, FiChevronLeft, FiChevronRight, FiChevronDown, FiRefreshCw,
   FiDownload, FiLoader, FiFileText, FiSend, FiTrash2, FiCheck, FiMail,
