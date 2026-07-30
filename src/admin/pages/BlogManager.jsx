@@ -136,7 +136,7 @@ const [confirm, confirmDialog] = useConfirm();
       subtitle={search ? `${filteredPosts.length} of ${posts.length} post${posts.length !== 1 ? 's' : ''}` : `${posts.length} post${posts.length !== 1 ? 's' : ''}`}
     >
       {posts.length > 0 && (
-
+        <div className="bg-white border border-admin-200 p-5 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
             <div className="w-full">
               <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ const [confirm, confirmDialog] = useConfirm();
           </div>
           </div>
           </div>
-
+        </div>
       )}
 
       {filteredPosts.length === 0 ? (

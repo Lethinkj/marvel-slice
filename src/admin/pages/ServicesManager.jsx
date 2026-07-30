@@ -172,14 +172,9 @@ const [confirm, confirmDialog] = useConfirm();
     <PageShell backTo="/admin"
       title="Services"
       subtitle={`${services.length} service${services.length !== 1 ? 's' : ''} total`}
-      actions={
-        <Link to="/admin/services/new" className="inline-flex items-center gap-2 px-4 py-2 bg-admin-600 text-white text-sm font-semibold rounded-lg hover:bg-admin-700 transition-colors shadow-sm">
-          <FiPlus className="w-4 h-4" /> Add Service
-        </Link>
-      }
     >
       {services.length > 0 && (
-
+        <div className="bg-white border border-admin-200 p-5 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
             <div className="w-full">
               <div className="flex items-center gap-2">
@@ -232,7 +227,7 @@ const [confirm, confirmDialog] = useConfirm();
           )}
           </div>
           </div>
-
+        </div>
       )}
 
       {services.length === 0 ? (

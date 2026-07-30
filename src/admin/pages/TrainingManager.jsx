@@ -174,14 +174,9 @@ const [confirm, confirmDialog] = useConfirm();
     <PageShell backTo="/admin"
       title="Training Programs"
       subtitle={`${programs.length} program${programs.length !== 1 ? 's' : ''} total`}
-      actions={
-        <Link to="/admin/training/new" className="inline-flex items-center gap-2 px-4 py-2 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors">
-          <FiPlus className="w-4 h-4" /> Add Training
-        </Link>
-      }
     >
       {programs.length > 0 && (
-
+        <div className="bg-white border border-admin-200 p-5 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
             <div className="w-full">
               <div className="flex items-center gap-2">
@@ -234,7 +229,7 @@ const [confirm, confirmDialog] = useConfirm();
           )}
           </div>
           </div>
-
+        </div>
       )}
 
       {programs.length === 0 ? (

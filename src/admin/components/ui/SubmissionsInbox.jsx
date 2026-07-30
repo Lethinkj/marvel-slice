@@ -355,7 +355,8 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
       </div>
 
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
+        <div className="bg-white border border-admin-200 p-5 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
           <div className="w-full">
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -432,8 +433,8 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </button>
           )}
           </div>
+          </div>
         </div>
-
 
       <div className="grid xl:grid-cols-3 gap-4 items-start">
         <div className={`${selected ? 'xl:col-span-2' : 'xl:col-span-3'}`}>

@@ -691,7 +691,7 @@ export default function NavMenuManager() {
             <ParentInfoCard />
 
             {/* Filter Bar — outside the table container */}
-
+            <div className="bg-white border border-admin-200 p-5 mb-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-end">
               <div className="w-full">
                 <div className="flex items-center gap-2">
@@ -727,7 +727,7 @@ export default function NavMenuManager() {
               </div>
               </div>
               </div>
-
+            </div>
 
             <div className="border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
 
