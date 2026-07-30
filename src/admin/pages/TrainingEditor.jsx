@@ -422,27 +422,6 @@ export default function TrainingEditor() {
     <PageShell
       backTo="/admin/training"
       title={isNew ? "New Training Program" : `Edit: ${training.title || "Untitled"}`}
-      actions={
-        <>
-          <AdminButton
-            onClick={() => navigate("/admin/training")}
-            variant="secondary"
-            size="md"
-          >
-            Cancel
-          </AdminButton>
-          <div className="relative">
-            <AdminButton
-              onClick={handleSave}
-              disabled={saving}
-              variant="primary"
-              size="md"
-            >
-              {saving ? "Saving..." : "Save Training"}
-            </AdminButton>
-          </div>
-        </>
-      }
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
 

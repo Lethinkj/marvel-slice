@@ -483,20 +483,7 @@ export default function CourseEditor() {
     <PageShell
       backTo="/admin/courses"
       title={isNew ? "New Course" : `Edit: ${course.title || "Untitled"}`}
-      actions={
-        <div className="relative">
-          <AdminButton
-            onClick={handleSave}
-            disabled={saving}
-            variant="primary"
-            size="md"
-          >
-            {saving ? "Saving..." : "Save Course"}
-          </AdminButton>
-        </div>
-      }
     >
-
       {message && (
         <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
           <div className={`p-4 rounded-xl flex items-center gap-3 text-sm shadow-xl animate-fade-in-up pointer-events-auto min-w-[300px] ${

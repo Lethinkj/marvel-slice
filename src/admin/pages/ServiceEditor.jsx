@@ -421,27 +421,6 @@ export default function ServiceEditor() {
     <PageShell
       backTo="/admin/services"
       title={isNew ? "New Service" : `Edit: ${service.title || "Untitled"}`}
-      actions={
-        <>
-          <AdminButton
-            onClick={() => navigate("/admin/services")}
-            variant="secondary"
-            size="md"
-          >
-            Cancel
-          </AdminButton>
-          <div className="relative">
-            <AdminButton
-              onClick={handleSave}
-              disabled={saving}
-              variant="primary"
-              size="md"
-            >
-              {saving ? "Saving..." : "Save Service"}
-            </AdminButton>
-          </div>
-        </>
-      }
     >
 
       {message && (
