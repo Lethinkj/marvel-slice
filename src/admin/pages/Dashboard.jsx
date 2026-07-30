@@ -23,6 +23,10 @@ const toneClasses = {
   pink: 'bg-pink-600 text-white',
   teal: 'bg-teal-600 text-white',
   purple: 'bg-purple-600 text-white',
+  fuchsia: 'bg-fuchsia-600 text-white',
+  sky: 'bg-sky-600 text-white',
+  lime: 'bg-lime-600 text-white',
+  red: 'bg-red-600 text-white',
 };
 
 function StatCard({ icon: Icon, label, value, link, iconTone = 'slate' }) {
@@ -52,11 +56,11 @@ function ActionTile({ to, icon: Icon, label, tone = 'slate' }) {
 
 const quickLinks = [
   { to: '/admin/courses/wizard', label: 'New Course', icon: FiPlusCircle, tone: 'emerald' },
-  { to: '/admin/blog', label: 'Blog Post', icon: FiFileText, tone: 'pink' },
-  { to: '/admin/media', label: 'Upload Media', icon: FiImage, tone: 'indigo' },
-  { to: '/admin/site-settings?section=general', label: 'Settings', icon: FiSettings, tone: 'teal' },
-  { to: '/admin/courses/reports', label: 'Reports', icon: FiBarChart2, tone: 'blue' },
-  { to: '/admin/chats?tab=live', label: 'Chat', icon: FiMessageCircle, tone: 'purple' },
+  { to: '/admin/blog', label: 'Blog Post', icon: FiFileText, tone: 'fuchsia' },
+  { to: '/admin/media', label: 'Upload Media', icon: FiImage, tone: 'sky' },
+  { to: '/admin/site-settings?section=general', label: 'Settings', icon: FiSettings, tone: 'slate' },
+  { to: '/admin/courses/reports', label: 'Reports', icon: FiBarChart2, tone: 'red' },
+  { to: '/admin/chats?tab=live', label: 'Chat', icon: FiMessageCircle, tone: 'lime' },
 ];
 
 export default function Dashboard() {

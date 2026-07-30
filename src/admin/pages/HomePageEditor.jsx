@@ -225,7 +225,7 @@ function ListEditor({ def, data, onChange }) {
   }
   return (
     <div>
-      <RepeatableItemList 
+      <RepeatableItemList
         title={def.listLabel || 'List Items'}
         items={items}
         onAdd={addItem}
@@ -435,9 +435,9 @@ function ServicesEditor({ data, onChange }) {
         </div>
       </div>
       <div className="pt-4">
-        <RepeatableItemList 
-          title="Services" 
-          items={services} 
+        <RepeatableItemList
+          title="Services"
+          items={services}
           onAdd={addService}
           addLabel="Add Service"
           renderItem={(s, i) => (
@@ -476,9 +476,9 @@ function ServicesEditor({ data, onChange }) {
         />
       </div>
       <div className="pt-4">
-        <RepeatableItemList 
-          title="Service Cards" 
-          items={cards} 
+        <RepeatableItemList
+          title="Service Cards"
+          items={cards}
           onAdd={addCard}
           addLabel="Add Card"
           renderItem={(c, i) => (
@@ -651,7 +651,7 @@ function HeroEditor({ data, onChange }) {
 
           {/* Slides */}
           <div>
-            <RepeatableItemList 
+            <RepeatableItemList
               title={`Slides (${slides.length})`}
               items={slides}
               onAdd={addSlide}
@@ -916,7 +916,7 @@ function SimpleListEditor({ def, data, onChange }) {
           </div>
       </div>
       <div className="pt-4">
-        <RepeatableItemList 
+        <RepeatableItemList
           title={def.listLabel || 'Items'}
           items={items}
           onAdd={addItem}
@@ -1017,8 +1017,6 @@ function AlumniEditor({ data, onChange }) {
   );
 }
 
-
-
 export default function HomePageEditor() {
   const { section } = useParams();
   const navigate = useNavigate();
@@ -1027,7 +1025,6 @@ export default function HomePageEditor() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
-  const sidebarOpen = true;
   const [loading, setLoading] = useState(true);
   const savingRef = useRef(false);
   const { dirty, reset } = useDirty([sections, alumniData], loading);
@@ -1126,34 +1123,50 @@ export default function HomePageEditor() {
   const sec = sections.find(s => s.section_key === section);
 
   return (
-    <PageShell backTo="/admin" title="Home Page" maxWidth="max-w-none"
-    >
+    <PageShell backTo="/admin" title="Home Page" maxWidth="max-w-none">
       <div className="flex gap-6 items-start">
-        <div className={`transition-all duration-200 ${sidebarOpen ? 'w-[220px]' : 'w-14'}`}>
-          {/* Hide menu button removed as per request to keep it static */}
-          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-2 space-y-0.5">
-              {allNavItems.map((item) => (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => navigate(`/admin/home/${item.key}`)}
-                  className={`cursor-pointer w-full flex items-center text-sm font-medium text-left transition-all rounded-lg min-h-[40px] pl-2 pr-2.5 py-2 ${
-                    sidebarOpen
-                       ? `gap-2 ${selectedNav.key === item.key ? 'bg-brand-blue text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-blue-50 hover:text-brand-blue'}`
-                       : `justify-center gap-0 ${selectedNav.key === item.key ? 'bg-brand-blue text-white shadow-sm' : 'text-gray-400 hover:bg-blue-50 hover:text-brand-blue'}`
-                   }`}
-                   title={item.label}
-                 >
-                   <item.icon className={`w-4 h-4 shrink-0 ${
-                     selectedNav.key === item.key ? 'text-white' : 'text-gray-400'
-                  }`} />
-                  {sidebarOpen && <span className="flex-1 truncate">{item.label}</span>}
-                </button>
-              ))}
+
+        {/* Redesigned Sidebar Matching the Image */}
+        <div className="transition-all duration-200 w-[240px] shrink-0">
+          <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
+            <div className="bg-white rounded-md border border-gray-200 shadow-sm flex flex-col overflow-visible">
+              {allNavItems.map((item, index) => {
+                const isActive = selectedNav.key === item.key;
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => navigate(`/admin/home/${item.key}`)}
+                    className={`relative w-full flex flex-col text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none transition-colors ${
+                      index === 0 ? 'rounded-t-md' : ''
+                    } ${
+                      index === allNavItems.length - 1 ? 'rounded-b-md' : ''
+                    } ${
+                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="font-semibold text-sm">
+                      {item.label}
+                    </div>
+                    {/* Subtitle mimicking the "Not restricted" format from the image */}
+                    <div className={`text-xs mt-0.5 ${isActive ? 'text-admin-100' : 'text-gray-400'}`}>
+                      {isActive ? 'Editing Section' : 'Click to Edit'}
+                    </div>
+
+                    {/* Arrow Pointer using CSS borders */}
+                    {isActive && (
+                      <div
+                        className="absolute top-1/2 -translate-y-1/2 -right-[10px] w-0 h-0 border-y-[12px] border-y-transparent border-l-[10px] border-l-admin-600"
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </nav>
         </div>
+
+        {/* Main Content Editor Area */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between mb-6">
             <div>
