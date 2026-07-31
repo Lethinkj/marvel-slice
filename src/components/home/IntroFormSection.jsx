@@ -30,20 +30,24 @@ export default function IntroFormSection({ section }) {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formMsg, setFormMsg] = useState(null);
+  const [errors, setErrors] = useState({});
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!formName.trim() || !formEmail.trim() || !formPhone.trim()) {
-      setFormMsg({ type: 'error', text: 'Please fill all fields' });
-      return;
-    }
+    const errs = {};
+    if (!formName.trim()) errs.name = 'Please enter your name';
+    if (!formEmail.trim()) errs.email = 'Please enter your email';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formEmail.trim())) errs.email = 'Please enter a valid email';
+    if (!formPhone.trim()) errs.phone = 'Please enter your phone number';
+    setErrors(errs);
     if (!agreeTerms) {
       setFormMsg({ type: 'error', text: 'Please agree to the terms and conditions.' });
       return;
     }
-    setSubmitting(true);
     setFormMsg(null);
+    if (Object.keys(errs).length > 0) return;
+    setSubmitting(true);
     const { error } = await supabase.from('form_submissions').insert({
       full_name: formName.trim(),
       email: formEmail.trim(),
@@ -158,14 +162,23 @@ export default function IntroFormSection({ section }) {
                   }}
                 />
                 <form onSubmit={handleSubmit} className="relative z-10 space-y-3">
-                  <input type="text" placeholder="Your Name" value={formName} onChange={(e) => setFormName(e.target.value)}
-                    className="w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
-                  <input type="email" placeholder="your@email.com" value={formEmail} onChange={(e) => setFormEmail(e.target.value)}
-                    className="w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
-                  <input type="tel" placeholder="Your Phone Number" value={formPhone} onChange={(e) => setFormPhone(e.target.value)}
-                    className="w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all" />
-                  {formMsg?.type === 'error' && formMsg?.text === 'Please agree to the terms and conditions.' && (
-                    <p className="text-red-300 text-xs">{formMsg.text}</p>
+                  <div>
+                    <input type="text" placeholder="Your Name" value={formName} onChange={(e) => { setFormName(e.target.value); if (errors.name) setErrors((p) => ({ ...p, name: undefined })); }} required
+                      className={`w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all ${errors.name ? 'ring-2 ring-red-400' : ''}`} />
+                    {errors.name && <p className="!text-red-600 text-xs mt-1">{errors.name}</p>}
+                  </div>
+                  <div>
+                    <input type="email" placeholder="your@email.com" value={formEmail} onChange={(e) => { setFormEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }} required
+                      className={`w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all ${errors.email ? 'ring-2 ring-red-400' : ''}`} />
+                    {errors.email && <p className="!text-red-600 text-xs mt-1">{errors.email}</p>}
+                  </div>
+                  <div>
+                    <input type="tel" placeholder="Your Phone Number" value={formPhone} onChange={(e) => { setFormPhone(e.target.value); if (errors.phone) setErrors((p) => ({ ...p, phone: undefined })); }} required
+                      className={`w-full px-4 py-2.5 border-0 text-xs bg-white rounded-[8px] outline-none placeholder-gray-400 focus:ring-2 focus:ring-white/50 transition-all ${errors.phone ? 'ring-2 ring-red-400' : ''}`} />
+                    {errors.phone && <p className="!text-red-600 text-xs mt-1">{errors.phone}</p>}
+                  </div>
+                  {formMsg?.type === 'error' && (
+                    <p className="!text-red-600 text-xs">{formMsg.text}</p>
                   )}
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)} className="mt-0.5 w-3.5 h-3.5 border-white/50 accent-white" />

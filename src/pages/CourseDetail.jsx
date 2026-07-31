@@ -318,14 +318,14 @@ export default function CourseDetail() {
 
   async function handleBrochureSubmit(e) {
     e.preventDefault();
-    if (!brochureForm.name.trim() || !brochureForm.email.trim()) return;
+    if (!brochureForm.name.trim() || !brochureForm.email.trim() || !brochureForm.phone.trim()) return;
     setBrochureSubmitting(true);
     setBrochureError('');
 
     const payload = {
       name: brochureForm.name.trim(),
       email: brochureForm.email.trim(),
-      phone: brochureForm.phone.trim() || null,
+      phone: brochureForm.phone.trim(),
       course_id: course.id,
       course_title: course.title,
     };
@@ -515,8 +515,8 @@ export default function CourseDetail() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Phone</label>
-                  <input type="tel" value={brochureForm.phone} onChange={e => setBrochureForm(p => ({ ...p, phone: e.target.value }))} placeholder="Your phone number"
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Phone *</label>
+                  <input type="tel" value={brochureForm.phone} onChange={e => setBrochureForm(p => ({ ...p, phone: e.target.value }))} placeholder="Your phone number" required
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange" />
                 </div>
                 {brochureError && (

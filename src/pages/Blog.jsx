@@ -145,7 +145,7 @@ function RecentPostsWidget({ posts }) {
         <FiCalendar className="w-4 h-4 text-brand-orange" />
         Recent Posts
       </h3>
-      <Stagger className="divide-y divide-gray-100">
+      <Stagger key={posts.length} className="divide-y divide-gray-100">
         {posts.map((post, i) => (
           <StaggerItem key={post.id}>
             <Link to={`/blog/${post.slug}`} className="block group py-3 hover:bg-gray-50 transition-all duration-200">
