@@ -77,7 +77,7 @@ export default function NavPage() {
   return (
     <div>
       {data.hero_image && (
-        <div className="h-48 sm:h-72 lg:h-96 w-full overflow-hidden"><img src={data.hero_image} alt="" className="w-full h-full object-cover" /></div>
+        <div className="w-full max-w-[1900px] mx-auto h-[600px] overflow-hidden"><img src={data.hero_image} alt="" className="w-full h-full object-cover" /></div>
       )}
 
       {(data.heading || data.subheading) && (
