@@ -18,19 +18,31 @@ function FloatingCircles() {
   );
 }
 
-function ContactDetailItem({ icon: Icon, label, value, href }) {
+function hexToRgba(hex, alpha) {
+  let h = String(hex || '').replace('#', '');
+  if (!h) return `rgba(255, 255, 255, ${alpha})`;
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const num = parseInt(h, 16);
+  if (Number.isNaN(num)) return `rgba(255, 255, 255, ${alpha})`;
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function ContactDetailItem({ icon: Icon, label, value, href, textColor }) {
   const content = href ? (
-    <a href={href} className="text-white/90 hover:text-white transition-colors text-sm leading-relaxed">{value}</a>
+    <a href={href} className="hover:opacity-80 transition-opacity text-sm leading-relaxed" style={{ color: hexToRgba(textColor, 0.9) }}>{value}</a>
   ) : (
-    <span className="text-white/90 text-sm leading-relaxed">{value}</span>
+    <span className="text-sm leading-relaxed" style={{ color: hexToRgba(textColor, 0.9) }}>{value}</span>
   );
   return (
     <div className="flex items-start gap-4">
       <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 mt-0.5">
-        <Icon className="w-5 h-5 text-white" />
+        <Icon className="w-5 h-5" style={{ color: textColor }} />
       </div>
       <div>
-        <p className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1">{label}</p>
+        <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: hexToRgba(textColor, 0.65) }}>{label}</p>
         {content}
       </div>
     </div>
@@ -39,6 +51,10 @@ function ContactDetailItem({ icon: Icon, label, value, href }) {
 
 export default function ContactSection({ section }) {
   const c = section?.content || {};
+
+  const headingColor = c.heading_color || '#ffffff';
+  const subheadingColor = c.subheading_color || '#ffffff';
+  const textColor = c.text_color || '#ffffff';
 
   const leftHeading = c.left_heading || section?.heading || 'Get in Touch';
   const leftSubtitle = c.left_subtitle || 'We\'d love to hear from you. Reach out to us and we\'ll get back to you as soon as possible.';
@@ -105,8 +121,8 @@ export default function ContactSection({ section }) {
   }
 
   return (
-    <div className="rounded-2xl shadow-lg">
-      <div className="grid lg:grid-cols-2 min-h-[520px] rounded-2xl overflow-hidden">
+    <div className="bg-white border border-gray-300 rounded-xl" style={{ boxShadow: 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px' }}>
+      <div className="grid lg:grid-cols-2 min-h-[520px] rounded-xl overflow-hidden">
       {/* Left: Details */}
       <div
         className="relative p-8 sm:p-10 flex flex-col justify-center"
@@ -115,14 +131,14 @@ export default function ContactSection({ section }) {
         <FloatingCircles />
         <div className="relative z-10 space-y-7">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">{leftHeading}</h2>
-            <p className="text-white/70 text-sm leading-relaxed">{leftSubtitle}</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: headingColor }}>{leftHeading}</h2>
+            <p className="text-sm leading-relaxed" style={{ color: subheadingColor }}>{leftSubtitle}</p>
           </div>
           <div className="space-y-5">
-            {address && <ContactDetailItem icon={FiMapPin} label="Address" value={address} />}
-            {displayPhone && <ContactDetailItem icon={FiPhone} label="Phone" value={displayPhone} href={`tel:${telLink}`} />}
-            {companyEmail && <ContactDetailItem icon={FiMail} label="Email" value={companyEmail} href={`mailto:${companyEmail}`} />}
-            {businessHours && <ContactDetailItem icon={FiClock} label="Business Hours" value={businessHours} />}
+            {address && <ContactDetailItem icon={FiMapPin} label="Address" value={address} textColor={textColor} />}
+            {displayPhone && <ContactDetailItem icon={FiPhone} label="Phone" value={displayPhone} href={`tel:${telLink}`} textColor={textColor} />}
+            {companyEmail && <ContactDetailItem icon={FiMail} label="Email" value={companyEmail} href={`mailto:${companyEmail}`} textColor={textColor} />}
+            {businessHours && <ContactDetailItem icon={FiClock} label="Business Hours" value={businessHours} textColor={textColor} />}
           </div>
         </div>
       </div>

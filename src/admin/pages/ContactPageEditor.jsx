@@ -38,7 +38,18 @@ function ImageUploader({ value, onChange, label }) {
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
         </label>
       </div>
-      {value && <img src={value} alt="" className="mt-2 h-28 w-full object-cover rounded-lg border border-admin-200" />}
+      {value && (
+        <div className="mt-2 relative group rounded-lg overflow-hidden border border-admin-200">
+          <img src={value} alt="" className="h-28 w-full object-cover" />
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="absolute top-2 right-2 p-1.5 bg-destructive-500 text-white rounded-full opacity-100 shadow-lg"
+          >
+            <FiTrash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -55,6 +66,9 @@ const DEFAULT_CONTACT_CONTENT = {
   business_hours: '',
   gradient_start: '#0B2D6B',
   gradient_end: '#1E56C7',
+  heading_color: '#ffffff',
+  subheading_color: '#ffffff',
+  text_color: '#ffffff',
   show_shadow: true,
   success_message: 'Thank you! Your message has been received. Our team will contact you soon.',
   map_embed_url: '',
@@ -353,6 +367,27 @@ const queryClient = useQueryClient();
                     <div className="flex items-center gap-2">
                       <input type="color" value={contactContent.gradient_end} onChange={(e) => updateContent('gradient_end', e.target.value)} className="w-10 h-10 rounded-lg border border-admin-200 cursor-pointer" />
                       <input type="text" value={contactContent.gradient_end} onChange={(e) => updateContent('gradient_end', e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Heading Color</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={contactContent.heading_color || '#ffffff'} onChange={(e) => updateContent('heading_color', e.target.value)} className="w-10 h-10 rounded-lg border border-admin-200 cursor-pointer" />
+                      <input type="text" value={contactContent.heading_color || '#ffffff'} onChange={(e) => updateContent('heading_color', e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Subheading Color</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={contactContent.subheading_color || '#ffffff'} onChange={(e) => updateContent('subheading_color', e.target.value)} className="w-10 h-10 rounded-lg border border-admin-200 cursor-pointer" />
+                      <input type="text" value={contactContent.subheading_color || '#ffffff'} onChange={(e) => updateContent('subheading_color', e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Text Color</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={contactContent.text_color || '#ffffff'} onChange={(e) => updateContent('text_color', e.target.value)} className="w-10 h-10 rounded-lg border border-admin-200 cursor-pointer" />
+                      <input type="text" value={contactContent.text_color || '#ffffff'} onChange={(e) => updateContent('text_color', e.target.value)} className={inputCls} />
                     </div>
                   </div>
                 </div>
