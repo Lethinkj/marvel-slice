@@ -115,7 +115,7 @@ function BookDemoForm() {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleDemoSubmit} className="space-y-2.5">
+          <form onSubmit={handleDemoSubmit} className="space-y-4">
             <div>
               <input
                 type="text"
@@ -123,7 +123,7 @@ function BookDemoForm() {
                 onChange={(e) => setDemoForm(p => ({ ...p, name: e.target.value }))}
                 placeholder="Your Name *"
                 required
-                className="w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
               />
             </div>
             <div>
@@ -133,7 +133,7 @@ function BookDemoForm() {
                 onChange={(e) => setDemoForm(p => ({ ...p, email: e.target.value }))}
                 placeholder="Email Address *"
                 required
-                className="w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
               />
             </div>
             <div>
@@ -143,7 +143,7 @@ function BookDemoForm() {
                 onChange={(e) => setDemoForm(p => ({ ...p, phone: e.target.value }))}
                 placeholder="Phone Number *"
                 required
-                className="w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
               />
             </div>
             {demoMsg && (
@@ -152,7 +152,7 @@ function BookDemoForm() {
             <button
               type="submit"
               disabled={demoSubmitting}
-              className="w-1/2 mx-auto block py-1 rounded-lg bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange/90 transition-colors disabled:opacity-60 cursor-pointer"
+              className="w-1/2 mx-auto block py-2.5 rounded-lg bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange/90 transition-colors disabled:opacity-60 cursor-pointer"
             >
               {demoSubmitting ? 'Submitting...' : 'Contact Us'}
             </button>
