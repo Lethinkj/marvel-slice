@@ -154,7 +154,7 @@ function BookDemoForm() {
               disabled={demoSubmitting}
               className="w-1/2 mx-auto block py-2.5 rounded-lg bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange/90 transition-colors disabled:opacity-60 cursor-pointer"
             >
-              {demoSubmitting ? 'Submitting...' : 'Contact Us'}
+              {demoSubmitting ? 'Submitting...' : 'Send'}
             </button>
           </form>
         )}
