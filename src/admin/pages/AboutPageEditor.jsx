@@ -6,7 +6,7 @@ import AddButton from '../components/AddButton';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove, FiX, FiCheck } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiChevronUp, FiChevronDown, FiChevronRight, FiAlignLeft, FiAlignCenter, FiAlignRight, FiEye, FiEyeOff, FiMove, FiX, FiCheck, FiImage, FiLayers } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import FolderTabs from '../components/ui/FolderTabs';
@@ -634,8 +634,8 @@ const queryClient = useQueryClient();
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   const tabs = [
-    { id: 'hero-image', title: 'Hero Image' },
-    { id: 'sections', title: 'Sections' },
+    { id: 'hero-image', title: 'Hero Image', icon: FiImage },
+    { id: 'sections', title: 'Sections', icon: FiLayers },
   ];
 
   return (

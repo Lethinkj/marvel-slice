@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabaseClient';
 import useDirty from '../hooks/useDirty';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
-import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiX, FiCheck } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiX, FiCheck, FiHome, FiServer, FiTarget, FiHelpCircle } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import FolderTabs from '../components/ui/FolderTabs';
@@ -143,10 +143,10 @@ const queryClient = useQueryClient();
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   const tabs = [
-    { id: 'hero-section', title: 'Hero' },
-    { id: 'services', title: 'Services' },
-    { id: 'call-to-action', title: 'CTA' },
-    { id: 'faqs', title: 'FAQs' },
+    { id: 'hero-section', title: 'Hero', icon: FiHome },
+    { id: 'services', title: 'Services', icon: FiServer },
+    { id: 'call-to-action', title: 'CTA', icon: FiTarget },
+    { id: 'faqs', title: 'FAQs', icon: FiHelpCircle },
   ];
 
   return (

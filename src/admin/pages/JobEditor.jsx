@@ -11,7 +11,7 @@ export default function JobEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isNew = id === 'new';
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -97,7 +97,7 @@ export default function JobEditor() {
   return (
     <PageShell
       backTo="/admin/jobs"
-      title={isNew ? 'Add New Job' : 'Edit Job Opening'}
+      title={isNew ? 'Add New Job' : 'Add New Job'}
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
       <form onSubmit={handleSave}>

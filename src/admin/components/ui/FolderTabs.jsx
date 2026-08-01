@@ -33,11 +33,12 @@ export default function FolderTabs({ tabs, activeTab, onChange }) {
               }}
             >
               <span
-                className={`block text-sm font-semibold whitespace-nowrap ${
+                className={`flex items-center gap-1.5 text-sm font-semibold whitespace-nowrap ${
                   isActive ? 'text-white' : 'text-gray-500'
                 }`}
                 style={{ transform: 'skewX(14deg)' }}
               >
+                {tab.icon && <tab.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-neutral-400'}`} />}
                 {tab.title}
               </span>
             </div>

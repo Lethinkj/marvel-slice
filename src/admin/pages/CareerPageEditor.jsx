@@ -10,6 +10,7 @@ import {
   FiSave, FiAlertCircle, FiTrash2, FiEdit2,
   FiUpload, FiCheck, FiX, FiBriefcase, FiArrowLeft,
   FiAlignLeft, FiAlignCenter, FiAlignRight, FiChevronLeft, FiChevronRight,
+  FiHome, FiGrid, FiTarget, FiUsers,
 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
@@ -435,11 +436,11 @@ export default function CareerPageEditor() {
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-admin-600 border-t-transparent rounded-full animate-spin" /></div>;
 
   const tabs = [
-    { id: 'hero-section', title: 'Hero' },
-    { id: 'hiring-header', title: 'Hiring' },
-    { id: 'categories-section', title: 'Categories' },
-    { id: 'cta-section', title: 'CTA' },
-    { id: 'role-categories', title: 'View Role' },
+    { id: 'hero-section', title: 'Hero', icon: FiHome },
+    { id: 'hiring-header', title: 'Hiring', icon: FiBriefcase },
+    { id: 'categories-section', title: 'Categories', icon: FiGrid },
+    { id: 'cta-section', title: 'CTA', icon: FiTarget },
+    { id: 'role-categories', title: 'View Role', icon: FiUsers },
   ];
 
   return (
