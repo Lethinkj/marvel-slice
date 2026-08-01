@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import AddButton from "../components/AddButton";
-import AdminButton from "../components/AdminButton";
 import ImageUploader from "../components/ImageUploader";
 import {
   FiTrash2,
@@ -40,7 +39,7 @@ import SaveCancelBar from '../components/SaveCancelBar';
 const STEPS = [
   { label: "Basics", icon: FiBookOpen },
   { label: "Media & Content", icon: FiMonitor },
-  { label: "Curriculum & Pricing", icon: FiLayers },
+  { label: "Curriculum", icon: FiLayers },
   { label: "FAQs & Tags", icon: FiAward },
 ];
 
@@ -142,8 +141,6 @@ export default function CourseWizard() {
   const [catL2, setCatL2] = useState("");
   const [catL3, setCatL3] = useState("");
   const [filterSection, setFilterSection] = useState(searchParams.get("category") || "Software Learning");
-  const [newTagName, setNewTagName] = useState("");
-  const [creatingTag, setCreatingTag] = useState(false);
   const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
 
   const [c, setC] = useState({
@@ -169,12 +166,10 @@ export default function CourseWizard() {
     tabs: [],
     highlights: [],
     overview_faqs: [],
-    course_fees: [],
-    show_pricing: false,
     projects: [],
-    certifications: [{ description: "", image_url: "", certificate_image_url: "", recognized_companies: [] }],
+    certifications: [{ description: "", certificate_image_url: "", recognized_companies: [] }],
     faqs: [],
-    curriculum: [],
+    curriculum: [{ title: "", topics: [] }],
   });
 
   function resetCategoryPath() {
@@ -332,19 +327,6 @@ export default function CourseWizard() {
     }
   }
 
-  async function handleCreateTag() {
-    const name = newTagName.trim();
-    if (!name) return;
-    setCreatingTag(true);
-    const { data, error } = await supabase.from("tags").insert({ name }).select().single();
-    if (!error && data) {
-      setAllTags((prev) => [...prev, data]);
-      setCourseTags((prev) => [...prev, data.id]);
-      setNewTagName("");
-    }
-    setCreatingTag(false);
-  }
-
   async function handleSave() {
     setSaving(true);
     setMessage("");
@@ -370,7 +352,6 @@ export default function CourseWizard() {
         mode: c.mode,
         checklist_items: (c.checklist_items || []).filter(Boolean),
         curriculum: c.curriculum,
-        show_pricing: c.show_pricing,
         nav_item_id: navItemId || null,
       };
 
@@ -427,41 +408,39 @@ export default function CourseWizard() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-              <div>
-                {filterSection && (() => {
-                  const topLevel = availablePaths.filter((p) => p.parent_label === filterSection && !p.parent_id);
-                  const kids1 = catL1 ? getChildren(catL1) : [];
-                  const kids2 = catL2 ? getChildren(catL2) : [];
-                  function dd(label, items, val, setter) {
-                    return (
-                      <div>
-                        <label className="block text-sm font-semibold text-black mb-1">{label} *</label>
-                        <select
-                          value={val}
-                          onChange={(e) => setter(e.target.value)}
-                          className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
-                        >
-                          <option value="">— Select —</option>
-                          {items.map((item) => (
-                            <option key={item.id} value={item.id}>{item.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                    );
-                  }
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+              {filterSection && (() => {
+                const topLevel = availablePaths.filter((p) => p.parent_label === filterSection && !p.parent_id);
+                const kids1 = catL1 ? getChildren(catL1) : [];
+                const kids2 = catL2 ? getChildren(catL2) : [];
+                function dd(label, items, val, setter) {
                   return (
-                    <div className="space-y-3">
-                      {dd(`Topic under ${filterSection}`, topLevel, catL1, setCatL1)}
-                      {catL1 && kids1.length > 0 && dd(`Sub-topic under ${findItem(catL1)?.label || ''}`, kids1, catL2, setCatL2)}
-                      {catL2 && kids2.length > 0 && dd(`Sub-topic under ${findItem(catL2)?.label || ''}`, kids2, catL3, setCatL3)}
+                    <div>
+                      <label className="block text-sm font-semibold text-black mb-1">{label} <span className="text-destructive-500">*</span></label>
+                      <select
+                        value={val}
+                        onChange={(e) => setter(e.target.value)}
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white"
+                      >
+                        <option value="">— Select —</option>
+                        {items.map((item) => (
+                          <option key={item.id} value={item.id}>{item.label}</option>
+                        ))}
+                      </select>
                     </div>
                   );
-                })()}
-              </div>
+                }
+                return (
+                  <>
+                    {dd(`Topic under ${filterSection}`, topLevel, catL1, setCatL1)}
+                    {catL1 && kids1.length > 0 && dd(`Sub-topic under ${findItem(catL1)?.label || ''}`, kids1, catL2, setCatL2)}
+                    {catL2 && kids2.length > 0 && dd(`Sub-topic under ${findItem(catL2)?.label || ''}`, kids2, catL3, setCatL3)}
+                  </>
+                );
+              })()}
 
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">Course Title *</label>
+                <label className="block text-sm font-semibold text-black mb-1">Course Title <span className="text-destructive-500">*</span></label>
                 <input
                   value={c.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
@@ -471,7 +450,7 @@ export default function CourseWizard() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">Slug *</label>
+                <label className="block text-sm font-semibold text-black mb-1">Slug <span className="text-destructive-500">*</span></label>
                 <input
                   value={c.slug}
                   onChange={(e) => u("slug", slugify(e.target.value))}
@@ -482,7 +461,7 @@ export default function CourseWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-black mb-1">Description *</label>
+              <label className="block text-sm font-semibold text-black mb-1">Description <span className="text-destructive-500">*</span></label>
               <textarea
                 value={c.description || ""}
                 onChange={(e) => u("description", e.target.value)}
@@ -543,16 +522,16 @@ export default function CourseWizard() {
             <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiMonitor className="w-5 h-5 text-cyan-600" /> Media</h2>
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">Hero / Banner Image *</label>
+                <label className="block text-sm font-semibold text-black mb-1">Hero / Banner Image <span className="text-destructive-500">*</span></label>
                 <ImageUploader value={c.hero_image_url} onChange={(url) => u("hero_image_url", url)} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">Video Thumbnail *</label>
+                <label className="block text-sm font-semibold text-black mb-1">Video Thumbnail <span className="text-destructive-500">*</span></label>
                 <ImageUploader value={c.video_thumbnail_url} onChange={(url) => u("video_thumbnail_url", url)} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-black mb-1">Course Video (YouTube URL) *</label>
+              <label className="block text-sm font-semibold text-black mb-1">Course Video (YouTube URL) <span className="text-destructive-500">*</span></label>
               <input
                 value={c.video_url || ""}
                 onChange={(e) => u("video_url", e.target.value)}
@@ -566,11 +545,11 @@ export default function CourseWizard() {
             <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiBookOpen className="w-5 h-5 text-violet-600" /> Content</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">CTA Left *</label>
+                <label className="block text-sm font-semibold text-black mb-1">CTA Left <span className="text-destructive-500">*</span></label>
                 <input value={c.cta_left || ""} onChange={(e) => u("cta_left", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">CTA Right *</label>
+                <label className="block text-sm font-semibold text-black mb-1">CTA Right <span className="text-destructive-500">*</span></label>
                 <input value={c.cta_right || ""} onChange={(e) => u("cta_right", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Download Brochure" />
               </div>
             </div>
@@ -579,25 +558,25 @@ export default function CourseWizard() {
               <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">Call to Action Banner</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">CTA Heading *</label>
+                  <label className="block text-sm font-semibold text-black mb-1">CTA Heading <span className="text-destructive-500">*</span></label>
                   <input value={c.cta_heading || ''} onChange={(e) => u("cta_heading", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Ready to start your learning journey?" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">CTA Description *</label>
+                  <label className="block text-sm font-semibold text-black mb-1">CTA Description <span className="text-destructive-500">*</span></label>
                   <textarea value={c.cta_description || ''} onChange={(e) => u("cta_description", e.target.value)} rows={2} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll now and gain industry-ready skills with expert mentors." />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-1">Button Text *</label>
+                    <label className="block text-sm font-semibold text-black mb-1">Button Text <span className="text-destructive-500">*</span></label>
                     <input value={c.cta_text || ''} onChange={(e) => u("cta_text", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-1">Button Link (URL) *</label>
+                    <label className="block text-sm font-semibold text-black mb-1">Button Link (URL) <span className="text-destructive-500">*</span></label>
                     <input value={c.cta_link || ''} onChange={(e) => u("cta_link", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="/courses or https://..." />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:) *</label>
+                  <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:) <span className="text-destructive-500">*</span></label>
                   <input value={c.cta_phone || ''} onChange={(e) => u("cta_phone", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="+916380957390" />
                 </div>
                 <div>
@@ -607,7 +586,7 @@ export default function CourseWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-black mb-1">What You'll Learn (one per line) *</label>
+              <label className="block text-sm font-semibold text-black mb-1">What You'll Learn (one per line) <span className="text-destructive-500">*</span></label>
               <textarea
                 value={(c.checklist_items || []).join("\n")}
                 onChange={(e) => u("checklist_items", e.target.value.split("\n"))}
@@ -619,7 +598,7 @@ export default function CourseWizard() {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-black">Course Tabs</h3>
+                <h3 className="text-sm font-semibold text-black">Course Tabs <span className="text-destructive-500">*</span></h3>
                 <AddButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} label="Add Tab" />
               </div>
               <div className="space-y-3">
@@ -630,15 +609,14 @@ export default function CourseWizard() {
                     </button>
                     <div className="grid sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Label</label>
-                        <input value={t.label || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" />
+                        <label className="block text-xs font-medium text-neutral-500 mb-1">Label <span className="text-destructive-500">*</span></label>
+                        <input value={t.label || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" />
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-neutral-500 mb-1">Type</label>
                         <select value={t.content_type || "overview"} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 bg-white">
                           <option value="overview">Overview</option>
                           <option value="syllabus">Syllabus</option>
-                          <option value="pricing">Pricing</option>
                           <option value="apply_now">Apply Now</option>
                         </select>
                       </div>
@@ -647,12 +625,12 @@ export default function CourseWizard() {
                       t.content_type === "syllabus") && (
                       <div className="mt-3 space-y-4">
                         <div>
-                          <label className="block text-xs font-medium text-neutral-500 mb-1">Heading (centered)</label>
-                          <input value={t.content?.heading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Main heading" />
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">Heading (centered) <span className="text-destructive-500">*</span></label>
+                          <input value={t.content?.heading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Main heading" />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-neutral-500 mb-1">Paragraph</label>
-                          <textarea value={t.content?.paragraph || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }} rows={2} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Paragraph text" />
+                          <label className="block text-xs font-medium text-neutral-500 mb-1">Paragraph <span className="text-destructive-500">*</span></label>
+                          <textarea value={t.content?.paragraph || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }} rows={2} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Paragraph text" />
                         </div>
                         <div>
                           <label className="block text-xs font-medium text-neutral-500 mb-1">Sub Heading</label>
@@ -670,7 +648,7 @@ export default function CourseWizard() {
                                   <span className="text-xs font-semibold text-neutral-400">Question {qi + 1}</span>
                                   <button onClick={() => { const n = [...c.tabs]; const qa = n[i].content.qa.filter((_, j) => j !== qi); n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-destructive-500 hover:underline">Remove</button>
                                 </div>
-                                <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Question" />
+                                <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Question" />
                                 <div>
                                   <div className="flex items-center justify-between mb-1">
                                     <span className="text-xs text-neutral-400">Answers (one per line)</span>
@@ -701,7 +679,7 @@ export default function CourseWizard() {
           <div className="space-y-8">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiLayers className="w-5 h-5 text-cyan-600" /> Curriculum / Modules</h2>
+                <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiLayers className="w-5 h-5 text-cyan-600" /> Curriculum / Modules <span className="text-destructive-500">*</span></h2>
                 <AddButton onClick={addModule} label="Add Module" />
               </div>
               <div className="space-y-3">
@@ -752,7 +730,7 @@ export default function CourseWizard() {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-black">Key Highlights *</h3>
+                <h3 className="text-sm font-semibold text-black">Key Highlights <span className="text-destructive-500">*</span></h3>
                 <AddButton onClick={() => u("highlights", [...c.highlights, { icon: "", label: "" }])} label="Add Highlight" />
               </div>
               <div className="space-y-3">
@@ -771,14 +749,9 @@ export default function CourseWizard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-admin-200">
-              <input type="checkbox" id="show_pricing" checked={c.show_pricing} onChange={(e) => u("show_pricing", e.target.checked)} className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-neutral-500/20" />
-              <label htmlFor="show_pricing" className="text-sm font-medium text-black cursor-pointer">Show pricing on page</label>
-            </div>
-
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-black">Projects *</h3>
+                <h3 className="text-sm font-semibold text-black">Projects <span className="text-destructive-500">*</span></h3>
                 <AddButton onClick={() => u("projects", [...c.projects, { title: "", description: "" }])} label="Add Project" />
               </div>
               <div className="space-y-3">
@@ -791,6 +764,40 @@ export default function CourseWizard() {
                 ))}
               </div>
             </div>
+
+            <hr className="border-admin-200" />
+
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-black">Certification <span className="text-destructive-500">*</span></h3>
+                <AddButton onClick={() => u("certifications", [...c.certifications, { description: "", certificate_image_url: "", recognized_companies: [] }])} label="Add Certification" />
+              </div>
+              <div className="space-y-4">
+                {c.certifications.map((cert, i) => (
+                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
+                    <button onClick={() => u("certifications", c.certifications.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-500 hover:text-red-600"><FiTrash2 className="w-4 h-4" /></button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Description <span className="text-destructive-500">*</span></label>
+                        <textarea value={cert.description || ""} onChange={(e) => { const n = [...c.certifications]; n[i] = { ...n[i], description: e.target.value }; u("certifications", n); }} rows={3} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-black mb-1">Recognized Companies (one per line) <span className="text-destructive-500">*</span></label>
+                        <textarea value={(cert.recognized_companies || []).join("\n")} onChange={(e) => { const n = [...c.certifications]; n[i] = { ...n[i], recognized_companies: e.target.value.split("\n") }; u("certifications", n); }} rows={3} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-semibold text-black mb-1">Certificate Image <span className="text-destructive-500">*</span></label>
+                      <ImageUploader
+                        bucket="certificates"
+                        value={cert.certificate_image_url || ""}
+                        onChange={(url) => { const n = [...c.certifications]; n[i] = { ...n[i], certificate_image_url: url }; u("certifications", n); }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
@@ -798,7 +805,7 @@ export default function CourseWizard() {
           <div className="space-y-8">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-black">General FAQs *</h3>
+                <h3 className="text-sm font-semibold text-black">General FAQs <span className="text-destructive-500">*</span></h3>
                 <AddButton onClick={() => u("faqs", [...c.faqs, { question: "", answer: "" }])} label="Add FAQ" />
               </div>
               <div className="space-y-3">
@@ -813,7 +820,7 @@ export default function CourseWizard() {
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-black mb-3">Tags *</h3>
+              <h3 className="text-sm font-semibold text-black mb-3">Tags <span className="text-destructive-500">*</span></h3>
               {courseTags.length === 0 && (
                 <p className="text-xs text-destructive-500 mb-2">Select at least one tag to enable saving</p>
               )}
@@ -867,18 +874,6 @@ export default function CourseWizard() {
                   )}
                 </div>
               )}
-              <div className="flex items-center gap-2 mt-4">
-                <input
-                  value={newTagName}
-                  onChange={(e) => setNewTagName(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleCreateTag()}
-                  className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20"
-                  placeholder="New tag name..."
-                />
-                <AdminButton onClick={handleCreateTag} disabled={creatingTag || !newTagName.trim()} variant="primary" size="sm">
-                  {creatingTag ? "..." : "Create"}
-                </AdminButton>
-              </div>
             </div>
           </div>
         )}

@@ -688,7 +688,15 @@ export default function Career() {
                           <FiMapPin className="w-3.5 h-3.5 shrink-0" />{job.location}
                         </span>
                       ) : <span />}
-                      <button onClick={() => { setSelectedJob(job); setShowForm(true); }}
+                      <button
+                        onClick={() => {
+                          if (job.apply_url?.trim()) {
+                            window.open(job.apply_url.trim(), '_blank', 'noopener,noreferrer');
+                          } else {
+                            setSelectedJob(job);
+                            setShowForm(true);
+                          }
+                        }}
                         className="inline-flex items-center gap-1.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
                         Apply Now <FiArrowRight className="w-3.5 h-3.5" />
                       </button>

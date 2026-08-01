@@ -171,6 +171,43 @@ async function handleContact(body) {
   return { success: true };
 }
 
+async function handleAbout(body) {
+  const { full_name, email, phone, subject, message } = body;
+  if (!full_name || !email) return { success: true };
+  if (!process.env.ADMIN_EMAIL || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) return { success: true };
+
+  const ts = new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' });
+  const html = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+    <div style="background:linear-gradient(135deg,#0B2D6B,#1E56C7);padding:24px 32px;">
+      <h1 style="color:#fff;margin:0;font-size:22px;">New Enquiry Request</h1>
+      <p style="color:rgba(255,255,255,0.8);margin:6px 0 0;font-size:14px;">Submitted on ${ts}</p>
+    </div>
+    <div style="padding:24px 32px;">
+      <table style="width:100%;border-collapse:collapse;">
+        ${row('Full Name', full_name)}${row('Email', email)}${row('Phone', phone || '\u2014')}${row('Subject', subject || '\u2014')}${row('Message', (message || '\u2014').replace(/\n/g, '<br>'))}
+      </table>
+    </div>
+    <div style="padding:16px 32px;background:#F5F6F8;font-size:12px;color:#5F6B7A;text-align:center;border-top:1px solid #e5e7eb;">Marvel Slice — About Page</div>
+  </div>`;
+  const autoReplyHtml = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+    <div style="background:linear-gradient(135deg,#0B2D6B,#1E56C7);padding:24px 32px;"><h1 style="color:#fff;margin:0;font-size:22px;">Thank You for Contacting Us</h1></div>
+    <div style="padding:24px 32px;">
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Hi ${full_name},</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Thank you for reaching out to <strong>Marvel Slice</strong>. We have received your enquiry.</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Our team will review your enquiry and get back to you within 24 hours.</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Best regards,<br/>The Marvel Slice Team</p>
+    </div>
+    <div style="padding:16px 32px;background:#F5F6F8;font-size:12px;color:#5F6B7A;text-align:center;border-top:1px solid #e5e7eb;">Marvel Slice</div>
+  </div>`;
+
+  try {
+    await transporter.sendMail({ from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`, to: process.env.ADMIN_EMAIL, subject: `New Enquiry Request from ${full_name}`, html });
+    await transporter.sendMail({ from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`, to: email, subject: 'Thank You for Contacting Us — Marvel Slice', html: autoReplyHtml });
+    console.log('[dev-server] About enquiry emails sent');
+  } catch (err) { console.error('[dev-server] About enquiry email failed:', err); }
+  return { success: true };
+}
+
 async function handleAdminReply(body) {
   const { to_email, to_name, subject, message, type, attachment } = body;
   if (!to_email || !subject || !message) return { success: false, error: 'Missing required fields' };
@@ -241,6 +278,7 @@ const server = http.createServer(async (req, res) => {
       else if (req.url === '/api/submit-form') result = await handleForm(parsed);
       else if (req.url === '/api/submit-brochure') result = await handleBrochure(parsed);
       else if (req.url === '/api/submit-contact') result = await handleContact(parsed);
+      else if (req.url === '/api/submit-about') result = await handleAbout(parsed);
       else if (req.url === '/api/admin-reply') result = await handleAdminReply(parsed);
       else { res.writeHead(404); res.end(JSON.stringify({ error: 'Not found' })); return; }
       res.writeHead(200, { 'Content-Type': 'application/json' });

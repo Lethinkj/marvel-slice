@@ -209,7 +209,6 @@ export default function ServiceEditor() {
     eligibility: "",
     requirements: [],
     learning_outcomes: [],
-    highlights: [],
     curriculum: [],
     seo_title: "",
     seo_description: "",
@@ -364,7 +363,6 @@ export default function ServiceEditor() {
         eligibility: service.eligibility,
         requirements: service.requirements || [],
         learning_outcomes: service.learning_outcomes || [],
-        highlights: service.highlights || [],
         curriculum: service.curriculum || [],
         seo_title: service.seo_title,
         seo_description: service.seo_description,
@@ -800,15 +798,6 @@ export default function ServiceEditor() {
                   onChange={(val) => update("learning_outcomes", val)}
                   fields={[{ key: "item", label: "Outcome" }]}
                   labelKey="Outcome"
-                />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-neutral-700 mb-2">Highlights</h4>
-                <ListEditor
-                  items={service.highlights || []}
-                  onChange={(val) => update("highlights", val)}
-                  fields={[{ key: "item", label: "Highlight" }]}
-                  labelKey="Highlight"
                 />
               </div>
               <div>

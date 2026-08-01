@@ -41,6 +41,7 @@ import BrochureDownloads from './pages/BrochureDownloads';
 import FormSubmissions from "./pages/FormSubmissions";
 import NewsletterSubscribers from "./pages/NewsletterSubscribers";
 import ContactSubmissions from './pages/ContactSubmissions';
+import AboutSubmissions from './pages/AboutSubmissions';
 import ChatSubmissions from './pages/ChatSubmissions';
 import ChatPanel from './pages/ChatPanel';
 import BlogManager from './pages/BlogManager';
@@ -156,6 +157,7 @@ export default function Admin() {
           <Route path="form-submissions" element={<FormSubmissions />} />
           <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
           <Route path="contact-submissions" element={<ContactSubmissions />} />
+          <Route path="about-submissions" element={<AboutSubmissions />} />
           <Route path="chat-submissions" element={<ChatSubmissions />} />
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
           <Route path="chats" element={<ChatPanel />} />

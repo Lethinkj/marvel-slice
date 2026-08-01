@@ -298,6 +298,38 @@ create table if not exists career_submissions (
   created_at timestamptz default now()
 );
 
+-- 23b. About page enquiries (floating contact button)
+create table if not exists about_submissions (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text,
+  subject text,
+  message text,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+create index if not exists idx_about_submissions_created on about_submissions(created_at desc);
+
+alter table about_submissions enable row level security;
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public insert about_submissions') then
+    create policy "Allow public insert about_submissions"
+    on about_submissions for insert to anon, authenticated
+    with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public select about_submissions') then
+    create policy "Allow public select about_submissions"
+    on about_submissions for select to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public delete about_submissions') then
+    create policy "Allow public delete about_submissions"
+    on about_submissions for delete to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
 -- 24. Create career-uploads storage bucket with public upload access
 insert into storage.buckets (id, name, public)
 values ('career-uploads', 'career-uploads', true)

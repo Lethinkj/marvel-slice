@@ -206,8 +206,6 @@ export default function CourseEditor() {
     checklist_items: [],
     highlights: [],
     overview_faqs: [],
-    course_fees: [],
-    show_pricing: false,
     cta_heading: '',
     cta_description: '',
     cta_text: '',
@@ -235,7 +233,7 @@ export default function CourseEditor() {
 
       if (!isNew) {
         const [courseRes, tabsRes, faqsRes, tagsRes] = await Promise.all([
-          supabase.from("courses").select(`*, highlights(*), overview_faqs(*), course_fees(*), projects(*), certifications(*)`).eq("id", id).single(),
+          supabase.from("courses").select(`*, highlights(*), overview_faqs(*), projects(*), certifications(*)`).eq("id", id).single(),
           supabase.from("course_tabs").select("*").eq("course_id", id).order("sort_order"),
           supabase.from("faqs").select("*").eq("course_id", id).order("sort_order"),
           supabase.from("course_tags").select("tag_id").eq("course_id", id),
@@ -397,7 +395,6 @@ export default function CourseEditor() {
         video_thumbnail_url: course.video_thumbnail_url,
         video_url: course.video_url,
         nav_item_id: course.nav_item_id || null,
-        show_pricing: course.show_pricing,
         cta_heading: course.cta_heading,
         cta_description: course.cta_description,
         cta_text: course.cta_text,
@@ -615,7 +612,7 @@ export default function CourseEditor() {
               </div>
               {categories.length > 0 && (
                 <div>
-                  <label className="block text-xs font-medium text-neutral-500 mb-2">Category *</label>
+                  <label className="block text-xs font-medium text-neutral-500 mb-2">Category <span className="text-destructive-500">*</span></label>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {categories.map((cat) => (
                       <button
@@ -700,15 +697,6 @@ export default function CourseEditor() {
                   className="rounded"
                 />
                 Published
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={course.show_pricing}
-                  onChange={(e) => update("show_pricing", e.target.checked)}
-                  className="rounded"
-                />
-                Show pricing on page
               </label>
 
               <div className="border-t border-admin-200 pt-6 mt-6">
@@ -841,7 +829,7 @@ export default function CourseEditor() {
 
           {tab === "tabs" && !isNew && (
             <div className="space-y-6">
-              <h3 className="font-semibold text-black mb-3">Course Tabs</h3>
+              <h3 className="font-semibold text-black mb-3">Course Tabs <span className="text-destructive-500">*</span></h3>
               {course.tabs.map((t, i) => (
                 <div
                   key={t.id || i}
@@ -850,7 +838,7 @@ export default function CourseEditor() {
                   <div className="flex gap-3">
                     <div className="flex-1">
                       <label className="block text-sm font-semibold text-black mb-1">
-                        Label
+                        Label <span className="text-destructive-500">*</span>
                       </label>
                       <input
                         value={t.label}
@@ -859,6 +847,7 @@ export default function CourseEditor() {
                           n[i] = { ...n[i], label: e.target.value };
                           update("tabs", n);
                         }}
+                        required
                         className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       />
                     </div>
@@ -877,7 +866,6 @@ export default function CourseEditor() {
                       >
                         <option value="overview">Overview</option>
                         <option value="syllabus">Syllabus</option>
-                        <option value="pricing">Pricing</option>
                         <option value="apply_now">Apply Now</option>
                       </select>
                     </div>
@@ -906,7 +894,7 @@ export default function CourseEditor() {
                       return (
                         <div key={field}>
                           <div className="flex items-center justify-between mb-1">
-                            <label className="text-xs font-medium text-neutral-500 capitalize">{field}</label>
+                            <label className="text-xs font-medium text-neutral-500 capitalize">{field}{field === "heading" || field === "paragraph" ? <span className="text-destructive-500"> *</span> : null}</label>
                             <div className="flex items-center gap-1">
                               {["left","center","right"].map(a => (
                                 <button
@@ -938,6 +926,7 @@ export default function CourseEditor() {
                                 update("tabs", n);
                               }}
                               rows={field === "text" ? 6 : 2}
+                              required={field === "paragraph"}
                               className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                               placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)} content`}
                             />
@@ -949,6 +938,7 @@ export default function CourseEditor() {
                                 n[i] = { ...n[i], content: { ...n[i].content, [field]: e.target.value } };
                                 update("tabs", n);
                               }}
+                              required={field === "heading"}
                               className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                               placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)} content`}
                             />
@@ -1199,59 +1189,67 @@ export default function CourseEditor() {
 
           {tab === "certification" && (
             <div className="max-w-2xl space-y-4">
-              <h3 className="font-semibold text-black mb-4">Certification</h3>
+              <h3 className="font-semibold text-black mb-4">Certification <span className="text-destructive-500">*</span></h3>
               {(course.certifications.length === 0
                 ? [
                     {
                       description: "",
-                      image_url: "",
                       certificate_image_url: "",
                       recognized_companies: [],
                     },
                   ]
                 : course.certifications
               ).map((cert, i) => (
-                <div key={i} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      value={cert.description || ""}
-                      onChange={(e) => {
-                        const n = [
-                          ...(course.certifications.length
-                            ? course.certifications
-                            : [{ ...cert }]),
-                        ];
-                        n[i] = { ...n[i], description: e.target.value };
-                        update("certifications", n);
-                      }}
-                      rows={4}
-                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                    />
+                <div key={i} className="border border-admin-200 rounded-lg p-4 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                    <div>
+                      <label className="block text-sm font-semibold text-black mb-1">
+                        Description <span className="text-destructive-500">*</span>
+                      </label>
+                      <textarea
+                        value={cert.description || ""}
+                        onChange={(e) => {
+                          const n = [
+                            ...(course.certifications.length
+                              ? course.certifications
+                              : [{ ...cert }]),
+                          ];
+                          n[i] = { ...n[i], description: e.target.value };
+                          update("certifications", n);
+                        }}
+                        rows={4}
+                        required
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-black mb-1">
+                        Recognized Companies (one per line) <span className="text-destructive-500">*</span>
+                      </label>
+                      <textarea
+                        value={(cert.recognized_companies || []).join("\n")}
+                        onChange={(e) => {
+                          const n = [
+                            ...(course.certifications.length
+                              ? course.certifications
+                              : [{ ...cert }]),
+                          ];
+                          n[i] = {
+                            ...n[i],
+                            recognized_companies: e.target.value
+                              .split("\n"),
+                          };
+                          update("certifications", n);
+                        }}
+                        rows={4}
+                        required
+                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-black mb-1">
-                      Classroom Image
-                    </label>
-                    <ImageUploader
-                      bucket="certificates"
-                      value={cert.image_url || ""}
-                      onChange={(url) => {
-                        const n = [
-                          ...(course.certifications.length
-                            ? course.certifications
-                            : [{ ...cert }]),
-                        ];
-                        n[i] = { ...n[i], image_url: url };
-                        update("certifications", n);
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-1">
-                      Certificate Image
+                      Certificate Image <span className="text-destructive-500">*</span>
                     </label>
                     <ImageUploader
                       bucket="certificates"
@@ -1265,29 +1263,6 @@ export default function CourseEditor() {
                         n[i] = { ...n[i], certificate_image_url: url };
                         update("certifications", n);
                       }}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-1">
-                      Recognized Companies (one per line)
-                    </label>
-                    <textarea
-                      value={(cert.recognized_companies || []).join("\n")}
-                      onChange={(e) => {
-                        const n = [
-                          ...(course.certifications.length
-                            ? course.certifications
-                            : [{ ...cert }]),
-                        ];
-                        n[i] = {
-                          ...n[i],
-                          recognized_companies: e.target.value
-                            .split("\n"),
-                        };
-                        update("certifications", n);
-                      }}
-                      rows={4}
-                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                     />
                   </div>
                 </div>

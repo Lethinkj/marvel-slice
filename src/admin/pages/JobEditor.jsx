@@ -56,6 +56,12 @@ export default function JobEditor() {
   async function handleSave(e) {
     if (e) e.preventDefault();
     if (!jobForm.title.trim()) return;
+    if (!jobForm.role_category_id) return;
+    if (!jobForm.type) return;
+    if (!jobForm.location?.trim()) return;
+    if (!jobForm.experience?.trim()) return;
+    if (!jobForm.salary?.trim()) return;
+    if (!jobForm.description?.trim()) return;
     setSaving(true);
     setSaved(false);
     setSaveError('');
@@ -106,21 +112,21 @@ export default function JobEditor() {
         {/* Row 1: Title | Category | Type */}
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1fr] gap-4">
           <div>
-            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Job Title *</label>
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Job Title <span className="text-destructive-500">*</span></label>
             <input name="title" value={jobForm.title} onChange={handleChange} placeholder="e.g. Software Engineer"
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" required />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Category</label>
-            <select name="role_category_id" value={jobForm.role_category_id} onChange={handleChange}
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Category <span className="text-destructive-500">*</span></label>
+            <select name="role_category_id" value={jobForm.role_category_id} onChange={handleChange} required
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white">
               <option value="">No Category</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Type</label>
-            <select name="type" value={jobForm.type} onChange={handleChange}
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Type <span className="text-destructive-500">*</span></label>
+            <select name="type" value={jobForm.type} onChange={handleChange} required
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 bg-white">
               <option value="Full-time">Full-time</option>
               <option value="Part-time">Part-time</option>
@@ -133,26 +139,26 @@ export default function JobEditor() {
         {/* Row 2: Location | Experience | Salary Range */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Location</label>
-            <input name="location" value={jobForm.location} onChange={handleChange} placeholder="e.g. New York, NY"
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Location <span className="text-destructive-500">*</span></label>
+            <input name="location" value={jobForm.location} onChange={handleChange} placeholder="e.g. New York, NY" required
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Experience</label>
-            <input name="experience" value={jobForm.experience} onChange={handleChange} placeholder="e.g. 2-4 years"
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Experience <span className="text-destructive-500">*</span></label>
+            <input name="experience" value={jobForm.experience} onChange={handleChange} placeholder="e.g. 2-4 years" required
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Salary Range</label>
-            <input name="salary" value={jobForm.salary} onChange={handleChange} placeholder="e.g. $80k-$120k"
+            <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Salary Range <span className="text-destructive-500">*</span></label>
+            <input name="salary" value={jobForm.salary} onChange={handleChange} placeholder="e.g. $80k-$120k" required
               className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all" />
           </div>
         </div>
 
         {/* Row 3: Description */}
         <div>
-          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
-          <textarea name="description" value={jobForm.description} onChange={handleChange} rows={6}
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description <span className="text-destructive-500">*</span></label>
+          <textarea name="description" value={jobForm.description} onChange={handleChange} rows={6} required
             placeholder="Brief description or requirements..."
             className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all resize-y" />
         </div>
