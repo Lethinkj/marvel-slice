@@ -142,7 +142,7 @@ function CourseListItem({ course }) {
           )}
         </div>
       </div>
-      <FiChevronRight className="w-5 h-5 text-gray-300 shrink-0 group-hover:text-brand-orange group-hover:translate-x-0.5 transition-all" />
+      <span className="text-sm font-semibold text-brand-orange shrink-0">View Course &rarr;</span>
     </Link>
   );
 }
@@ -711,7 +711,7 @@ export default function Courses() {
             {/* Sidebar-mode header */}
             {!listOnly && (
               <div className="mb-6">
-                <h1 className="text-2xl sm:text-3xl font-bold text-brand-orange mb-1">
+                <h1 className="text-2xl sm:text-3xl font-bold text-brand-blue mb-1">
                   Find Your Courses related to{" "}
                   {parents.find((p) => p.slug === parentParam)?.label || "Software Learning"}
                 </h1>
@@ -741,7 +741,7 @@ export default function Courses() {
                       setPage(1);
                     }}
                     placeholder="Search courses..."
-                    className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 text-sm text-dark-navy bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue/40 focus:border-brand-blue transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-full border-2 border-gray-300 text-sm text-dark-navy bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/30 transition-all"
                     aria-label="Search courses"
                   />
                 </div>
