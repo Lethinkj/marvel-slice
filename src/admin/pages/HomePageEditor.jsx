@@ -1154,7 +1154,7 @@ export default function HomePageEditor() {
 
                     {isActive && (
                       <div
-                        className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[30px] border-l-admin-600"
+                        className="absolute top-1/2 -translate-y-1/2 -right-[25px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[27px] border-l-admin-600"
                       />
                     )}
                   </button>
