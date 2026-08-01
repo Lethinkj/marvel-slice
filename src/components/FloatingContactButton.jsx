@@ -158,7 +158,7 @@ export default function FloatingContactButton() {
                 <FiX className="w-4 h-4" />
               </button>
               <h3 className="text-xl font-bold">Contact us</h3>
-              <p className="text-white/80 text-xs mt-0.5">Fill the form and our team will contact you shortly.</p>
+              <div className="text-white text-xs mt-0.5">Fill the form and our team will contact you shortly.</div>
             </div>
 
             {sent ? (

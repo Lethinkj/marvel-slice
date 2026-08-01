@@ -12,6 +12,7 @@ import CourseDetail from './pages/CourseDetail';
 import Blog from './pages/Blog';
 import NavPage from './pages/NavPage';
 import Career from './pages/Career';
+import AllJobs from './pages/AllJobs';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import ServicesPage from './pages/ServicesPage';
@@ -69,6 +70,7 @@ function AnimatedRoutes() {
       <Route path="/courses/ce/:subSlug" element={<CourseNavRedirect />} />
       <Route path="/courses/:slug" element={<CourseDetail />} />
       <Route path="/career" element={<Career />} />
+      <Route path="/career/jobs" element={<AllJobs />} />
       <Route path="/services" element={<ServicesPage />} />
       <Route path="/services/:slug" element={<ServiceDetail />} />
       <Route path="/training" element={<TrainingPage />} />

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { trackFormSubmit, trackDownload } from '../lib/analytics';
@@ -98,9 +99,9 @@ function BookDemoForm() {
 
   return (
     <div className="bg-white rounded-2xl border border-blue-100 shadow-lg overflow-hidden">
-      <div className="bg-gradient-to-r from-brand-orange to-orange-500 px-6 py-4">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
         <h3 className="text-xl font-bold text-white">Book Demo</h3>
-        <p className="text-white/80 text-xs mt-0.5">Fill the form and our team will contact you shortly.</p>
+        <div className="text-white text-xs mt-0.5">Fill the form and our team will contact you shortly.</div>
       </div>
       <div className="p-6">
         {demoDone ? (
@@ -135,7 +136,7 @@ function BookDemoForm() {
               <p className="!text-red-500 text-xs">{demoMsg.text}</p>
             )}
             <button type="submit" disabled={demoSubmitting}
-              className="w-full inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors disabled:opacity-60">
+              className="w-full inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors disabled:opacity-60">
               {demoSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
               {demoSubmitting ? 'Submitting...' : 'Book Demo'}
             </button>
@@ -149,6 +150,8 @@ function BookDemoForm() {
 export default function Career() {
   const formRef = useRef(null);
   const jobsRef = useRef(null);
+  const [searchParams] = useSearchParams();
+  const applyTitle = searchParams.get('apply');
   const [showForm, setShowForm] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [form, setForm] = useState({
@@ -164,7 +167,7 @@ export default function Career() {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null);
   const [errors, setErrors] = useState({});
-  const [visibleJobs, setVisibleJobs] = useState(4);
+  const visibleJobs = 4;
 
   const { data: pageContent, isLoading: pageLoading } = useQuery({
     queryKey: ['career-page-content'],
@@ -210,7 +213,6 @@ export default function Career() {
 
   const fc = pageContent?.form_config || {};
   const formCfg = fc.form || {};
-  const section2Eyebrow = fc.section2_eyebrow || 'CAREER OPPORTUNITIES';
   const section2HeadingAlign = fc.section2_heading_align || 'center';
   const section2SubheadingAlign = fc.section2_subheading_align || 'center';
   const formEnabled = formCfg.enabled !== false;
@@ -258,6 +260,17 @@ export default function Career() {
       setForm(prev => ({ ...prev, position: selectedJob.title || '' }));
     }
   }, [selectedJob]);
+
+  useEffect(() => {
+    if (applyTitle && jobs?.length > 0 && formEnabled) {
+      const job = jobs.find(j => j.title === applyTitle) || null;
+      setSelectedJob(job);
+      setForm(prev => ({ ...prev, position: applyTitle }));
+      setShowForm(true);
+      setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applyTitle, jobs, formEnabled]);
 
   const isLoading = pageLoading || catsLoading || jobsLoading;
 
@@ -494,7 +507,7 @@ export default function Career() {
 
             <div className="sm:col-span-2 pt-1">
               <button type="submit" disabled={submitting || uploading}
-                className="w-fit mx-auto bg-brand-orange hover:bg-brand-orange/90 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                className="w-fit mx-auto bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                 {uploading ? (
                   <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Uploading...</>
                 ) : submitting ? (
@@ -586,11 +599,6 @@ export default function Career() {
         )}
 
         <div className="mt-10">
-        {fc.categoriesHeading && (
-          <p className="text-xs font-bold tracking-widest text-blue-600 mt-10">
-            ::: {fc.categoriesHeading} :::
-          </p>
-        )}
         {fc.categoriesSubtitle && (
           <h3 className="text-2xl font-bold text-blue-600 mt-1">
             {fc.categoriesSubtitle}
@@ -628,7 +636,6 @@ export default function Career() {
       <div ref={jobsRef} className="bg-gradient-to-b from-blue-50/40 via-slate-50 to-slate-50">
         <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className={`mb-10 text-${section2HeadingAlign}`}>
-            <span className="text-xs font-bold tracking-wider text-blue-600">{section2Eyebrow}</span>
             {pageContent?.section2_heading && (
               <h2 className="text-3xl font-extrabold text-slate-900 mt-2">
                 {pageContent.section2_heading}
@@ -705,13 +712,13 @@ export default function Career() {
                 ))}
               </div>
               {jobs.length > visibleJobs && (
-                <div className="flex items-center justify-center mt-10">
-                  <button
-                    onClick={() => setVisibleJobs(v => v + 4)}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer"
+                <div className="flex justify-end mt-4">
+                  <Link
+                    to="/career/jobs"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
                   >
                     View More <FiArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  </Link>
                 </div>
               )}
             </>

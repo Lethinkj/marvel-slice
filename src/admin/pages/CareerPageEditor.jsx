@@ -122,10 +122,10 @@ export default function CareerPageEditor() {
     headline: 'We\'re Hiring!',
     subtitle: 'Find Your Role. Find Your Fit.',
     description: 'Join a team that\'s passionate about innovation, collaboration, and making a real impact. Your dream role is waiting.',
-    categoriesHeading: 'Explore Opportunities',
+    categoriesHeading: '',
     categoriesSubtitle: 'Find the role that fits you best',
   });
-  const [section2, setSection2] = useState({ heading: 'Job Openings', subheading: '', heading_align: 'center', subheading_align: 'center', eyebrow: 'CAREER OPPORTUNITIES' });
+  const [section2, setSection2] = useState({ heading: 'Job Openings', subheading: '', heading_align: 'center', subheading_align: 'center', eyebrow: '' });
   const [cta, setCta] = useState({
     heading: 'Ready to start your dream career?',
     subheading: '',
@@ -172,10 +172,10 @@ export default function CareerPageEditor() {
           headline: fc.headline || content.section1_heading || 'We\'re Hiring!',
           subtitle: fc.subtitle || content.section1_subheading || 'Find Your Role. Find Your Fit.',
           description: fc.description || content.section1_description || '',
-          categoriesHeading: fc.categoriesHeading || 'Explore Opportunities',
+          categoriesHeading: fc.categoriesHeading || '',
           categoriesSubtitle: fc.categoriesSubtitle || 'Find the role that fits you best',
         });
-        setSection2({ heading: content.section2_heading || 'Job Openings', subheading: content.section2_subheading || '', heading_align: fc.section2_heading_align || 'center', subheading_align: fc.section2_subheading_align || 'center', eyebrow: fc.section2_eyebrow || 'CAREER OPPORTUNITIES' });
+        setSection2({ heading: content.section2_heading || 'Job Openings', subheading: content.section2_subheading || '', heading_align: fc.section2_heading_align || 'center', subheading_align: fc.section2_subheading_align || 'center', eyebrow: fc.section2_eyebrow || '' });
         const cb = fc.cta_banner || {};
         setCta({
           heading: cb.heading || '',
@@ -527,7 +527,7 @@ export default function CareerPageEditor() {
               <div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
                 <input type="text" value={section1.categoriesHeading} onChange={(e) => setSection1({ ...section1, categoriesHeading: e.target.value })}
-                  placeholder="Explore Opportunities" className={inputClass} />
+                  placeholder="Heading" className={inputClass} />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subtitle</label>
