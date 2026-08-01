@@ -45,6 +45,7 @@ const navGroups = [
   },
   { label: "Submissions", icon: FiInbox, items: [
     { to: "/admin/career-submissions", label: "Career Submissions", icon: FiBriefcase },
+    { to: "/admin/career-contact-submissions", label: "Career Contact", icon: FiMail },
     { to: "/admin/brochure-downloads", label: "Brochure Downloads", icon: FiDownload },
     { to: "/admin/form-submissions", label: "Form Submissions", icon: FiClipboard },
     { to: "/admin/newsletter-subscribers", label: "Newsletter Subscribers", icon: FiMail },

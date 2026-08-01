@@ -82,6 +82,7 @@ export default function Dashboard() {
         supabase.from('courses').select('id, title, created_at').order('created_at', { ascending: false }).limit(10),
         supabase.from('blog_posts').select('id, title, created_at').order('created_at', { ascending: false }).limit(10),
         supabase.from('career_submissions').select('*', { count: 'exact', head: true }),
+        supabase.from('career_contact_submissions').select('*', { count: 'exact', head: true }),
         supabase.from('contact_submissions').select('*', { count: 'exact', head: true }),
         supabase.from('brochure_downloads').select('*', { count: 'exact', head: true }),
         supabase.from('form_submissions').select('*', { count: 'exact', head: true }),
@@ -93,7 +94,7 @@ export default function Dashboard() {
         companies: getCount(results[2]), tags: getCount(results[3]), blogPosts: getCount(results[4]),
       });
       setPending({
-        career: getCount(results[7]), contact: getCount(results[8]), brochure: getCount(results[9]), form: getCount(results[10]), chat: getCount(results[11]),
+        career: getCount(results[7]), careerContact: getCount(results[8]), contact: getCount(results[9]), brochure: getCount(results[10]), form: getCount(results[11]), chat: getCount(results[12]),
       });
 
       const courses = results[5].status === 'fulfilled' ? (results[5].value.data ?? []) : [];
@@ -119,6 +120,7 @@ export default function Dashboard() {
 
   const submissionCards = [
     { label: 'Career Submissions', value: pending.career, icon: FiInbox, link: '/admin/career-submissions', subtitle: 'Submissions', iconTone: 'blue' },
+    { label: 'Career Contact', value: pending.careerContact, icon: FiInbox, link: '/admin/career-contact-submissions', subtitle: 'Submissions', iconTone: 'cyan' },
     { label: 'Brochure Downloads', value: pending.brochure, icon: FiInbox, link: '/admin/brochure-downloads', subtitle: 'Downloads', iconTone: 'teal' },
     { label: 'Form Submissions', value: pending.form, icon: FiInbox, link: '/admin/form-submissions', subtitle: 'Submissions', iconTone: 'purple' },
     { label: 'Contact Submissions', value: pending.contact, icon: FiInbox, link: '/admin/contact-submissions', subtitle: 'Submissions', iconTone: 'pink' },

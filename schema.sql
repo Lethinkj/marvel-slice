@@ -298,6 +298,40 @@ create table if not exists career_submissions (
   created_at timestamptz default now()
 );
 
+-- 23a. Career "Contact Us" form submissions (like contact_submissions)
+create table if not exists career_contact_submissions (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+
+alter table career_contact_submissions enable row level security;
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public insert career_contact_submissions') then
+    create policy "Allow public insert career_contact_submissions"
+    on career_contact_submissions for insert to anon, authenticated
+    with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public select career_contact_submissions') then
+    create policy "Allow public select career_contact_submissions"
+    on career_contact_submissions for select to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public update career_contact_submissions') then
+    create policy "Allow public update career_contact_submissions"
+    on career_contact_submissions for update to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public delete career_contact_submissions') then
+    create policy "Allow public delete career_contact_submissions"
+    on career_contact_submissions for delete to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
 -- 23b. About page enquiries (floating contact button)
 create table if not exists about_submissions (
   id uuid primary key default gen_random_uuid(),

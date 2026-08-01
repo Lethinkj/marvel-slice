@@ -37,6 +37,7 @@ import TrainingWizard from './pages/TrainingWizard';
 import ServicesPageEditor from './pages/ServicesPageEditor';
 import TrainingPageEditor from './pages/TrainingPageEditor';
 import CareerSubmissions from './pages/CareerSubmissions';
+import CareerContactSubmissions from './pages/CareerContactSubmissions';
 import BrochureDownloads from './pages/BrochureDownloads';
 import FormSubmissions from "./pages/FormSubmissions";
 import NewsletterSubscribers from "./pages/NewsletterSubscribers";
@@ -153,6 +154,7 @@ export default function Admin() {
           <Route path="services-page" element={<ServicesPageEditor />} />
           <Route path="training-page" element={<TrainingPageEditor />} />
           <Route path="career-submissions" element={<CareerSubmissions />} />
+          <Route path="career-contact-submissions" element={<CareerContactSubmissions />} />
           <Route path="brochure-downloads" element={<BrochureDownloads />} />
           <Route path="form-submissions" element={<FormSubmissions />} />
           <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />

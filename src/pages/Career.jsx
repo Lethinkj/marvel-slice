@@ -76,23 +76,22 @@ function BookDemoForm() {
     e.preventDefault();
     setDemoSubmitting(true);
     setDemoMsg(null);
-    const { error } = await supabase.from('form_submissions').insert({
+    const { error } = await supabase.from('career_contact_submissions').insert({
       full_name: demoForm.name.trim(),
       email: demoForm.email.trim(),
       phone: demoForm.phone.trim(),
-      source: 'career_book_demo',
     });
     if (error) {
       setDemoMsg({ type: 'error', text: 'Submission failed. Please try again.' });
       setDemoSubmitting(false);
       return;
     }
-    fetch('/api/submit-form', {
+    fetch('/api/submit-career-contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ full_name: demoForm.name.trim(), email: demoForm.email.trim(), phone: demoForm.phone.trim() }),
     }).catch(() => {});
-    trackFormSubmit('book_demo');
+    trackFormSubmit('career_contact');
     setDemoDone(true);
     setDemoSubmitting(false);
   }
@@ -100,7 +99,7 @@ function BookDemoForm() {
   return (
     <div className="bg-white rounded-2xl border border-blue-100 shadow-lg overflow-hidden">
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
-        <h3 className="text-xl font-bold text-white">Book Demo</h3>
+        <h3 className="text-xl font-bold text-white">Contact Us</h3>
         <div className="text-white text-xs mt-0.5">Fill the form and our team will contact you shortly.</div>
       </div>
       <div className="p-6">
@@ -112,33 +111,50 @@ function BookDemoForm() {
             <h4 className="text-lg font-bold text-slate-900 mb-1">Thank You!</h4>
             <p className="text-sm text-slate-500">We have received your request. Our team will get in touch with you shortly.</p>
             <button onClick={() => { setDemoDone(false); setDemoForm({ name: '', email: '', phone: '' }); }} className="mt-6 text-sm font-semibold text-brand-orange hover:underline">
-              Book Another Demo
+              Send Another Message
             </button>
           </div>
         ) : (
-          <form onSubmit={handleDemoSubmit} className="space-y-4">
+          <form onSubmit={handleDemoSubmit} className="space-y-2.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Full Name <span className="text-red-400">*</span></label>
-              <input type="text" value={demoForm.name} onChange={(e) => setDemoForm(p => ({ ...p, name: e.target.value }))} placeholder="John Doe" required
-                className="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors border-slate-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange" />
+              <input
+                type="text"
+                value={demoForm.name}
+                onChange={(e) => setDemoForm(p => ({ ...p, name: e.target.value }))}
+                placeholder="Your Name *"
+                required
+                className="w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Email <span className="text-red-400">*</span></label>
-              <input type="email" value={demoForm.email} onChange={(e) => setDemoForm(p => ({ ...p, email: e.target.value }))} placeholder="john@example.com" required
-                className="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors border-slate-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange" />
+              <input
+                type="email"
+                value={demoForm.email}
+                onChange={(e) => setDemoForm(p => ({ ...p, email: e.target.value }))}
+                placeholder="Email Address *"
+                required
+                className="w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+              />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Phone <span className="text-red-400">*</span></label>
-              <input type="tel" value={demoForm.phone} onChange={(e) => setDemoForm(p => ({ ...p, phone: e.target.value }))} placeholder="+1 (555) 019-2834" required
-                className="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors border-slate-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange" />
+              <input
+                type="tel"
+                value={demoForm.phone}
+                onChange={(e) => setDemoForm(p => ({ ...p, phone: e.target.value }))}
+                placeholder="Phone Number *"
+                required
+                className="w-full px-3 py-1.5 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+              />
             </div>
             {demoMsg && (
               <p className="!text-red-500 text-xs">{demoMsg.text}</p>
             )}
-            <button type="submit" disabled={demoSubmitting}
-              className="w-full inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition-colors disabled:opacity-60">
-              {demoSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
-              {demoSubmitting ? 'Submitting...' : 'Book Demo'}
+            <button
+              type="submit"
+              disabled={demoSubmitting}
+              className="w-1/2 mx-auto block py-1 rounded-lg bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange/90 transition-colors disabled:opacity-60 cursor-pointer"
+            >
+              {demoSubmitting ? 'Submitting...' : 'Contact Us'}
             </button>
           </form>
         )}
