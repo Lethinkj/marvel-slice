@@ -419,12 +419,12 @@ function SessionsTable({ conversations }) {
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (setActiveSearch(search), setPage(1))}
               placeholder="Search by name, email, phone..."
-              className="w-56 pl-9 pr-3 h-9 border border-admin-200 rounded-lg text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
+              className="w-56 pl-9 pr-3 h-9 border border-admin-200 rounded-none text-sm text-neutral-700 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all bg-white"
             />
           </div>
           <button
             onClick={() => { setActiveSearch(search); setPage(1); }}
-            className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-lg hover:bg-admin-700 transition-colors shrink-0"
+            className="h-9 px-4 bg-admin-600 text-white text-sm font-medium rounded-full hover:bg-admin-700 transition-colors shrink-0"
           >
             Search
           </button>
@@ -432,7 +432,7 @@ function SessionsTable({ conversations }) {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="h-9 px-3 pr-8 rounded-lg border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all cursor-pointer"
+              className="h-9 px-3 pr-8 rounded-none border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all cursor-pointer"
             >
               <option value="all">All</option>
               <option value="new">New</option>
@@ -619,7 +619,7 @@ const [searchParams, setSearchParams] = useSearchParams();
   }
 
   return (
-    <PageShell backTo="/admin" title="Chats" maxWidth="max-w-none"
+    <PageShell backTo="/admin" title="" maxWidth="max-w-none"
     >
       {tab === 'live' ? (
         <LiveChat conversations={conversations} onConversationsChange={setConversations} />

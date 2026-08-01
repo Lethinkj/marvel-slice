@@ -11,7 +11,7 @@ export function CancelButton({ onClick, label = 'Cancel', disabled = false, clas
   );
 }
 
-export function SubmitButton({ saving, saved, label = 'Save', savingLabel = 'Saving...', savedLabel = 'Saved!', type = 'button', onClick, disabled = false, className = '' }) {
+export function SubmitButton({ saving, saved, label = 'Save', savingLabel = 'Saving...', savedLabel = 'Saved!', type = 'button', onClick, disabled = false, className = '', icon: Icon = FiSave }) {
   return (
     <button
       type={type}
@@ -24,7 +24,7 @@ export function SubmitButton({ saving, saved, label = 'Save', savingLabel = 'Sav
       ) : saved ? (
         <FiCheck className="w-4 h-4" />
       ) : (
-        <FiSave className="w-4 h-4" />
+        <Icon className="w-4 h-4" />
       )}
       {saving ? savingLabel : saved ? savedLabel : label}
     </button>

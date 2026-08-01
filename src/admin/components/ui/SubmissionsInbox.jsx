@@ -79,7 +79,7 @@ function ReplyModal({ row, onClose, pageTitle }) {
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-admin-100 bg-white/50">
           <CancelButton onClick={onClose} />
-          <SubmitButton onClick={handleSend} saving={sending} savingLabel="Sending..." label="Send Reply" disabled={!subject.trim() || !message.trim()} />
+          <SubmitButton onClick={handleSend} saving={sending} savingLabel="Sending..." label="Send" icon={FiSend} disabled={!subject.trim() || !message.trim()} />
         </div>
       </div>
     </div>
@@ -372,7 +372,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           {!disableReply && <div className="flex-1">
             <div className="relative">
               <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pl-0 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
+                className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
               >
                 <option value="all">All</option>
                 <option value="unread">Unread</option>
@@ -385,7 +385,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             <div key={i} className="flex-1">
               <div className="relative">
                 <select value={f.value} onChange={e => { f.onChange(e.target.value); setPage(1); }}
-                  className="h-9 px-3 pl-0 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+                  className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 >
                   {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -396,7 +396,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           <div className="flex-1">
             <div className="relative">
               <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); }}
-                className="h-9 px-3 pl-0 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
+                className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
               >
                 <option value="all">All time</option>
                 <option value="today">Today</option>
@@ -437,7 +437,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             {paged.length === 0 ? (
               <EmptyState title={search ? 'No results match your search' : 'No submissions yet'} description={search ? 'Try adjusting your search or filters.' : 'Submissions will appear here once received.'} />
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto p-3">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200 bg-blue-600">
