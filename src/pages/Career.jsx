@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { trackFormSubmit, trackDownload } from '../lib/analytics';
 import Reveal from '../components/ui/Reveal';
+import CTABannerSection from '../components/home/CTABannerSection';
 import {
   FiMapPin, FiClock, FiDollarSign,
   FiSearch, FiExternalLink, FiChevronRight,
@@ -64,6 +65,87 @@ function Field({ label, required, error, children }) {
   );
 }
 
+function BookDemoForm() {
+  const [demoForm, setDemoForm] = useState({ name: '', email: '', phone: '' });
+  const [demoSubmitting, setDemoSubmitting] = useState(false);
+  const [demoDone, setDemoDone] = useState(false);
+  const [demoMsg, setDemoMsg] = useState(null);
+
+  async function handleDemoSubmit(e) {
+    e.preventDefault();
+    setDemoSubmitting(true);
+    setDemoMsg(null);
+    const { error } = await supabase.from('form_submissions').insert({
+      full_name: demoForm.name.trim(),
+      email: demoForm.email.trim(),
+      phone: demoForm.phone.trim(),
+      source: 'career_book_demo',
+    });
+    if (error) {
+      setDemoMsg({ type: 'error', text: 'Submission failed. Please try again.' });
+      setDemoSubmitting(false);
+      return;
+    }
+    fetch('/api/submit-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: demoForm.name.trim(), email: demoForm.email.trim(), phone: demoForm.phone.trim() }),
+    }).catch(() => {});
+    trackFormSubmit('book_demo');
+    setDemoDone(true);
+    setDemoSubmitting(false);
+  }
+
+  return (
+    <div className="bg-white rounded-2xl border border-blue-100 shadow-lg overflow-hidden">
+      <div className="bg-gradient-to-r from-brand-orange to-orange-500 px-6 py-4">
+        <h3 className="text-xl font-bold text-white">Book Demo</h3>
+        <p className="text-white/80 text-xs mt-0.5">Fill the form and our team will contact you shortly.</p>
+      </div>
+      <div className="p-6">
+        {demoDone ? (
+          <div className="text-center py-8">
+            <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+              <FiCheck className="w-7 h-7 text-emerald-600" />
+            </div>
+            <h4 className="text-lg font-bold text-slate-900 mb-1">Thank You!</h4>
+            <p className="text-sm text-slate-500">We have received your request. Our team will get in touch with you shortly.</p>
+            <button onClick={() => { setDemoDone(false); setDemoForm({ name: '', email: '', phone: '' }); }} className="mt-6 text-sm font-semibold text-brand-orange hover:underline">
+              Book Another Demo
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleDemoSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Full Name <span className="text-red-400">*</span></label>
+              <input type="text" value={demoForm.name} onChange={(e) => setDemoForm(p => ({ ...p, name: e.target.value }))} placeholder="John Doe" required
+                className="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors border-slate-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Email <span className="text-red-400">*</span></label>
+              <input type="email" value={demoForm.email} onChange={(e) => setDemoForm(p => ({ ...p, email: e.target.value }))} placeholder="john@example.com" required
+                className="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors border-slate-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Phone <span className="text-red-400">*</span></label>
+              <input type="tel" value={demoForm.phone} onChange={(e) => setDemoForm(p => ({ ...p, phone: e.target.value }))} placeholder="+1 (555) 019-2834" required
+                className="w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors border-slate-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange" />
+            </div>
+            {demoMsg && (
+              <p className="!text-red-500 text-xs">{demoMsg.text}</p>
+            )}
+            <button type="submit" disabled={demoSubmitting}
+              className="w-full inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors disabled:opacity-60">
+              {demoSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
+              {demoSubmitting ? 'Submitting...' : 'Book Demo'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Career() {
   const formRef = useRef(null);
   const jobsRef = useRef(null);
@@ -82,8 +164,7 @@ export default function Career() {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null);
   const [errors, setErrors] = useState({});
-  const [jobPage, setJobPage] = useState(1);
-  const JOBS_PER_PAGE = 10;
+  const [visibleJobs, setVisibleJobs] = useState(4);
 
   const { data: pageContent, isLoading: pageLoading } = useQuery({
     queryKey: ['career-page-content'],
@@ -133,6 +214,18 @@ export default function Career() {
   const section2HeadingAlign = fc.section2_heading_align || 'center';
   const section2SubheadingAlign = fc.section2_subheading_align || 'center';
   const formEnabled = formCfg.enabled !== false;
+
+  const ctaConfig = fc.cta_banner || {};
+  const ctaSection = {
+    heading: ctaConfig.heading || '',
+    subheading: ctaConfig.subheading || '',
+    content: {
+      description: ctaConfig.description || '',
+      cta_text: ctaConfig.cta_text || '',
+      cta_link: ctaConfig.cta_link || '',
+      background_image: ctaConfig.background_image || '',
+    },
+  };
 
   const { data: roleCategories, isLoading: catsLoading } = useQuery({
     queryKey: ['role-categories'],
@@ -487,11 +580,12 @@ export default function Career() {
         )}
 
         {fc.description && (
-          <p className="text-slate-500 text-sm max-w-xl mx-auto mt-3">
+          <p className="text-slate-500 text-base w-full max-w-none mx-auto mt-3">
             {fc.description}
           </p>
         )}
 
+        <div className="mt-10">
         {fc.categoriesHeading && (
           <p className="text-xs font-bold tracking-widest text-blue-600 mt-10">
             ::: {fc.categoriesHeading} :::
@@ -526,7 +620,10 @@ export default function Career() {
             <p className="text-gray-400">No role categories available right now.</p>
           </div>
         )}
+        </div>
       </Reveal>
+
+      <CTABannerSection section={ctaSection} />
 
       <div ref={jobsRef} className="bg-gradient-to-b from-blue-50/40 via-slate-50 to-slate-50">
         <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -545,10 +642,12 @@ export default function Career() {
             <div className="w-12 h-1 bg-blue-500 mx-auto rounded-full mt-3" />
           </div>
 
+          <div className="lg:grid lg:grid-cols-[1fr_380px] lg:gap-8 items-center">
+            <div className="min-w-0">
           {jobs?.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {jobs.slice((jobPage - 1) * JOBS_PER_PAGE, jobPage * JOBS_PER_PAGE).map((job, i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {jobs.slice(0, visibleJobs).map((job, i) => (
                   <motion.div
                     key={job.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -597,34 +696,13 @@ export default function Career() {
                   </motion.div>
                 ))}
               </div>
-              {jobs.length > JOBS_PER_PAGE && (
-                <div className="flex items-center justify-center gap-2 mt-10">
+              {jobs.length > visibleJobs && (
+                <div className="flex items-center justify-center mt-10">
                   <button
-                    onClick={() => setJobPage(p => Math.max(1, p - 1))}
-                    disabled={jobPage === 1}
-                    className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    onClick={() => setVisibleJobs(v => v + 4)}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer"
                   >
-                    Previous
-                  </button>
-                  {Array.from({ length: Math.ceil(jobs.length / JOBS_PER_PAGE) }, (_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setJobPage(i + 1)}
-                      className={`w-8 h-8 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                        jobPage === i + 1
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                      }`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => setJobPage(p => Math.min(Math.ceil(jobs.length / JOBS_PER_PAGE), p + 1))}
-                    disabled={jobPage === Math.ceil(jobs.length / JOBS_PER_PAGE)}
-                    className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                  >
-                    Next
+                    View More <FiArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
@@ -635,8 +713,11 @@ export default function Career() {
               <p className="text-slate-500 font-medium">No openings right now — check back soon!</p>
             </div>
           )}
-
-
+            </div>
+            <aside className="mt-10 lg:mt-0 lg:-translate-y-8">
+              <BookDemoForm />
+            </aside>
+          </div>
         </Reveal>
       </div>
 

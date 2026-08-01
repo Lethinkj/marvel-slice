@@ -125,6 +125,14 @@ export default function CareerPageEditor() {
     categoriesSubtitle: 'Find the role that fits you best',
   });
   const [section2, setSection2] = useState({ heading: 'Job Openings', subheading: '', heading_align: 'center', subheading_align: 'center', eyebrow: 'CAREER OPPORTUNITIES' });
+  const [cta, setCta] = useState({
+    heading: 'Ready to start your dream career?',
+    subheading: '',
+    description: 'Talk to our team today and find the perfect role for you.',
+    cta_text: 'Request a Call Back',
+    cta_link: '',
+    background_image: '',
+  });
   const [formConfig, setFormConfig] = useState(buildDefaultFormConfig());
 
   const [openings, setOpenings] = useState([]);
@@ -143,7 +151,7 @@ export default function CareerPageEditor() {
   const catTotalPages = Math.ceil(roleCategories.length / catPageSize) || 1;
   useEffect(() => { if (catPage > catTotalPages) setCatPage(catTotalPages); }, [roleCategories.length, catPageSize]);
 
-  const { dirty, reset } = useDirty([hero, section1, section2, formConfig, openings], loading);
+  const { dirty, reset } = useDirty([hero, section1, section2, cta, formConfig, openings], loading);
 
   useEffect(() => {
     async function load() {
@@ -167,6 +175,15 @@ export default function CareerPageEditor() {
           categoriesSubtitle: fc.categoriesSubtitle || 'Find the role that fits you best',
         });
         setSection2({ heading: content.section2_heading || 'Job Openings', subheading: content.section2_subheading || '', heading_align: fc.section2_heading_align || 'center', subheading_align: fc.section2_subheading_align || 'center', eyebrow: fc.section2_eyebrow || 'CAREER OPPORTUNITIES' });
+        const cb = fc.cta_banner || {};
+        setCta({
+          heading: cb.heading || '',
+          subheading: cb.subheading || '',
+          description: cb.description || '',
+          cta_text: cb.cta_text || '',
+          cta_link: cb.cta_link || '',
+          background_image: cb.background_image || '',
+        });
         const rawForm = fc.form || {};
         if (rawForm.enabled !== undefined || Object.keys(rawForm).length > 0) {
           setFormConfig({ ...buildDefaultFormConfig(), ...rawForm });
@@ -240,6 +257,14 @@ export default function CareerPageEditor() {
         section2_eyebrow: section2.eyebrow,
         section2_heading_align: section2.heading_align || 'center',
         section2_subheading_align: section2.subheading_align || 'center',
+        cta_banner: {
+          heading: cta.heading,
+          subheading: cta.subheading,
+          description: cta.description,
+          cta_text: cta.cta_text,
+          cta_link: cta.cta_link,
+          background_image: cta.background_image || null,
+        },
         form: formConfig,
       },
       is_published: true,
@@ -413,6 +438,7 @@ export default function CareerPageEditor() {
     { id: 'hero-section', title: 'Hero' },
     { id: 'hiring-header', title: 'Hiring' },
     { id: 'categories-section', title: 'Categories' },
+    { id: 'cta-section', title: 'CTA' },
     { id: 'role-categories', title: 'View Role' },
   ];
 
@@ -509,6 +535,43 @@ export default function CareerPageEditor() {
                 <input type="text" value={section1.categoriesSubtitle} onChange={(e) => setSection1({ ...section1, categoriesSubtitle: e.target.value })}
                   placeholder="Find the role that fits you best" className={inputClass} />
               </div>
+            </div>
+          </div>
+        )}
+
+          {activeTab === 'cta-section' && (
+          <div className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Heading</label>
+                <input type="text" value={cta.heading} onChange={(e) => setCta({ ...cta, heading: e.target.value })}
+                  placeholder="Ready to start your dream career?" className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Subheading</label>
+                <input type="text" value={cta.subheading} onChange={(e) => setCta({ ...cta, subheading: e.target.value })}
+                  placeholder="Optional subheading" className={inputClass} />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Description</label>
+              <textarea value={cta.description} onChange={(e) => setCta({ ...cta, description: e.target.value })}
+                rows={2} placeholder="Talk to our team today and find the perfect role for you." className={inputClass} />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">CTA Button Text</label>
+                <input type="text" value={cta.cta_text} onChange={(e) => setCta({ ...cta, cta_text: e.target.value })}
+                  placeholder="Request a Call Back" className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Phone Number</label>
+                <input type="text" value={cta.cta_link} onChange={(e) => setCta({ ...cta, cta_link: e.target.value })}
+                  placeholder="+1 (555) 019-2834" className={inputClass} />
+              </div>
+            </div>
+            <div>
+              <ImageUploader value={cta.background_image} onChange={(v) => setCta({ ...cta, background_image: v })} label="Background Image" />
             </div>
           </div>
         )}
