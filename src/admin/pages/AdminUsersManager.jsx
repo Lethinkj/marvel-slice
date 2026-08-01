@@ -4,9 +4,9 @@ import PageShell from "../components/ui/PageShell";
 import AdminButton from "../components/AdminButton";
 import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
+import { SubmitButton, CancelButton } from "../components/FormButtons";
 import { useAuth } from "../context/AuthContext";
 import {
-  FiPlus,
   FiUsers,
   FiCheck,
   FiEye,
@@ -230,14 +230,9 @@ const [confirm, confirmDialog] = useConfirm();
             </div>
           </div>
           <div className="flex gap-3 pt-2">
-            <AdminButton type="submit" variant="primary" size="md" disabled={saving}>
-              <FiPlus className="w-4 h-4" />
-              {saving ? "Saving..." : editingId ? "Update Admin" : "Add Admin"}
-            </AdminButton>
+            <SubmitButton type="submit" saving={saving} savingLabel="Saving..." label={editingId ? 'Save' : 'Submit'} />
             {editingId && (
-              <AdminButton type="button" variant="secondary" size="md" onClick={resetForm}>
-                <FiX className="w-4 h-4" /> Cancel
-              </AdminButton>
+              <CancelButton onClick={resetForm} />
             )}
             <AdminButton type="button" variant="ghost" size="md" onClick={resetForm}>Clear</AdminButton>
           </div>

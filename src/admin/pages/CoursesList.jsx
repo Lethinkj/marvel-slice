@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
-import AdminButton from "../components/AdminButton";
 import Badge from "../components/Badge";
 import EmptyState from "../components/EmptyState";
 import Card from "../components/ui/Card";
 import DataTable from "../components/ui/DataTable";
-import { FiPlus, FiBookOpen, FiSearch, FiEdit3, FiTrash2, FiChevronDown, FiArrowLeft, FiX } from "react-icons/fi";
+import { FiBookOpen, FiSearch, FiEdit3, FiTrash2, FiChevronDown, FiArrowLeft, FiX } from "react-icons/fi";
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -257,7 +256,7 @@ const [confirm, confirmDialog] = useConfirm();
             icon={FiBookOpen}
             title={activeCategory ? `No courses in ${activeCategory}` : "No courses yet"}
             description="Get started by creating your first course."
-            action={{ to: `/admin/courses/wizard${activeCategory ? `?category=${encodeURIComponent(activeCategory)}` : ''}`, icon: <FiPlus className="w-4 h-4" />, label: "Create your first course" }}
+            action={{ to: `/admin/courses/wizard${activeCategory ? `?category=${encodeURIComponent(activeCategory)}` : ''}`, label: "Create your first course" }}
           />
         </div>
       ) : filteredCourses.length === 0 ? (

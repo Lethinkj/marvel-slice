@@ -51,12 +51,29 @@ function FaqListSection({ section }) {
 export default function SectionRenderer({ section }) {
   switch (section.section_type) {
     case 'text': {
+      const parsed = safeParse(section.content);
+      const blocks = Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'object'
+        ? parsed
+        : null;
+      const ha = section.headingAlign || 'center';
+      const ca = section.contentAlign || 'center';
+      if (blocks) {
+        return (
+          <Reveal className="py-16 max-w-4xl mx-auto">
+            {blocks.map((b, i) =>
+              b.type === 'heading' ? (
+                <h2 key={i} className={`text-3xl sm:text-4xl font-bold text-blue-700 mb-6 text-${ha}`}>{b.text}</h2>
+              ) : (
+                <div key={i} className={`text-gray-700 text-base leading-relaxed text-${ca}`}>{b.text}</div>
+              )
+            )}
+          </Reveal>
+        );
+      }
       const paragraphs = safeParse(section.content);
       const content = Array.isArray(paragraphs) && paragraphs.length > 0
         ? paragraphs.join('\n\n')
         : safeString(section.content);
-      const ha = section.headingAlign || 'center';
-      const ca = section.contentAlign || 'center';
       return (
         <Reveal className={`py-16 max-w-4xl mx-auto text-${ca}`}>
           {section.heading && <h2 className={`text-3xl sm:text-4xl font-bold text-blue-700 mb-6 text-${ha}`}>{section.heading}</h2>}

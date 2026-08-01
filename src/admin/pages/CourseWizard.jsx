@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
+import AddButton from "../components/AddButton";
 import AdminButton from "../components/AdminButton";
 import ImageUploader from "../components/ImageUploader";
 import {
-  FiPlus,
   FiTrash2,
   FiArrowLeft,
   FiCheck,
@@ -34,6 +34,8 @@ import {
 FiChevronDown} from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
+import FolderTabs from '../components/ui/FolderTabs';
+import SaveCancelBar from '../components/SaveCancelBar';
 
 const STEPS = [
   { label: "Basics", icon: FiBookOpen },
@@ -130,6 +132,8 @@ export default function CourseWizard() {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [missingFields, setMissingFields] = useState([]);
+  const [showMissing, setShowMissing] = useState(false);
   const [allTags, setAllTags] = useState([]);
   const [courseTags, setCourseTags] = useState([]);
   const [navItemId, setNavItemId] = useState("");
@@ -145,7 +149,6 @@ export default function CourseWizard() {
   const [c, setC] = useState({
     title: "",
     slug: "",
-    subtitle: "",
     description: "",
     hero_image_url: "",
     video_thumbnail_url: "",
@@ -244,9 +247,40 @@ export default function CourseWizard() {
     setC((prev) => ({ ...prev, [field]: val }));
   }
 
-  function canNext() {
-    if (step === 0) return c.title.trim() !== "" && c.slug.trim() !== "" && navItemId !== "";
-    return true;
+  function getMissingFields() {
+    const missing = [];
+    const add = (stepLabel, field) => missing.push(`${stepLabel}: ${field}`);
+    if (!c.title.trim()) add(STEPS[0].label, "Course Title");
+    if (!c.slug.trim()) add(STEPS[0].label, "Slug");
+    if (!navItemId) add(STEPS[0].label, "Category (topic)");
+    if (!c.description.trim()) add(STEPS[0].label, "Description");
+    if (!c.hero_image_url.trim()) add(STEPS[1].label, "Hero / Banner Image");
+    if (!c.video_thumbnail_url.trim()) add(STEPS[1].label, "Video Thumbnail");
+    if (!c.video_url.trim()) add(STEPS[1].label, "Course Video (YouTube URL)");
+    if (!c.cta_left.trim()) add(STEPS[1].label, "CTA Left");
+    if (!c.cta_right.trim()) add(STEPS[1].label, "CTA Right");
+    if (!c.cta_heading.trim()) add(STEPS[1].label, "CTA Heading");
+    if (!c.cta_description.trim()) add(STEPS[1].label, "CTA Description");
+    if (!c.cta_text.trim()) add(STEPS[1].label, "Button Text");
+    if (!c.cta_link.trim()) add(STEPS[1].label, "Button Link (URL)");
+    if (!c.cta_phone.trim()) add(STEPS[1].label, "Phone Number");
+    if (!(c.checklist_items || []).join("").trim()) add(STEPS[1].label, "What You'll Learn");
+    if (c.curriculum.length === 0 || c.curriculum.some((m) => !m.title.trim())) add(STEPS[2].label, "Curriculum / Modules");
+    if (c.highlights.length === 0 || c.highlights.some((h) => !h.label.trim())) add(STEPS[2].label, "Key Highlights");
+    if (c.projects.length === 0 || c.projects.some((p) => !p.title.trim())) add(STEPS[2].label, "Projects");
+    if (c.faqs.length === 0 || c.faqs.some((f) => !f.question.trim())) add(STEPS[3].label, "General FAQs");
+    if (courseTags.length === 0) add(STEPS[3].label, "Tags");
+    return missing;
+  }
+
+  function handleSubmitClick() {
+    const missing = getMissingFields();
+    if (missing.length > 0) {
+      setMissingFields(missing);
+      setShowMissing(true);
+      return;
+    }
+    handleSave();
   }
 
   function getChildren(pid) {
@@ -318,7 +352,6 @@ export default function CourseWizard() {
       const payload = {
         title: c.title,
         slug: c.slug,
-        subtitle: c.subtitle,
         description: c.description,
         hero_image_url: c.hero_image_url,
         video_thumbnail_url: c.video_thumbnail_url,
@@ -374,7 +407,6 @@ export default function CourseWizard() {
   }
 
   function handleStepClick(targetStep) {
-    if (targetStep > step && !canNext()) return;
     setStep(targetStep);
   }
 
@@ -384,25 +416,9 @@ export default function CourseWizard() {
       maxWidth="max-w-[1600px]"
     >
 
-      {message && (
-        <div className={`p-4 rounded-lg flex items-center gap-2 text-sm ${
-          message.includes("successfully")
-            ? "bg-success-50 border border-success-500 text-success-700"
-            : "bg-destructive-50 border border-destructive-500 text-destructive-700"
-        }`}>
-          {message.includes("successfully") ? (
-            <FiCheck className="w-4 h-4 shrink-0" />
-          ) : (
-            <FiAlertCircle className="w-4 h-4 shrink-0" />
-          )}
-          <span>{message}</span>
-        </div>
-      )}
-
-      <div className="flex gap-6 items-start">
-
-
-        <div className="flex-1 min-w-0">
+      <div className="-mt-4">
+        <FolderTabs tabs={STEPS.map((s, i) => ({ id: i, title: s.label }))} activeTab={step} onChange={(id) => handleStepClick(id)} />
+        <div className="bg-white border border-gray-300 rounded-b-[20px] rounded-tr-[20px] shadow-sm p-6 relative z-30 -mt-[2px]">
           {step === 0 && (
           <div className="space-y-6">
             <div className="mb-4">
@@ -420,7 +436,7 @@ export default function CourseWizard() {
                   function dd(label, items, val, setter) {
                     return (
                       <div>
-                        <label className="block text-sm font-semibold text-black mb-1">{label}</label>
+                        <label className="block text-sm font-semibold text-black mb-1">{label} *</label>
                         <select
                           value={val}
                           onChange={(e) => setter(e.target.value)}
@@ -466,17 +482,7 @@ export default function CourseWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-black mb-1">Subtitle</label>
-              <input
-                value={c.subtitle || ""}
-                onChange={(e) => u("subtitle", e.target.value)}
-                className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500/20 transition-all"
-                placeholder="A short tagline for the course"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-black mb-1">Description</label>
+              <label className="block text-sm font-semibold text-black mb-1">Description *</label>
               <textarea
                 value={c.description || ""}
                 onChange={(e) => u("description", e.target.value)}
@@ -537,16 +543,16 @@ export default function CourseWizard() {
             <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiMonitor className="w-5 h-5 text-cyan-600" /> Media</h2>
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">Hero / Banner Image</label>
+                <label className="block text-sm font-semibold text-black mb-1">Hero / Banner Image *</label>
                 <ImageUploader value={c.hero_image_url} onChange={(url) => u("hero_image_url", url)} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">Video Thumbnail</label>
+                <label className="block text-sm font-semibold text-black mb-1">Video Thumbnail *</label>
                 <ImageUploader value={c.video_thumbnail_url} onChange={(url) => u("video_thumbnail_url", url)} />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-black mb-1">Course Video (YouTube URL)</label>
+              <label className="block text-sm font-semibold text-black mb-1">Course Video (YouTube URL) *</label>
               <input
                 value={c.video_url || ""}
                 onChange={(e) => u("video_url", e.target.value)}
@@ -560,11 +566,11 @@ export default function CourseWizard() {
             <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiBookOpen className="w-5 h-5 text-violet-600" /> Content</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">CTA Left</label>
+                <label className="block text-sm font-semibold text-black mb-1">CTA Left *</label>
                 <input value={c.cta_left || ""} onChange={(e) => u("cta_left", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">CTA Right</label>
+                <label className="block text-sm font-semibold text-black mb-1">CTA Right *</label>
                 <input value={c.cta_right || ""} onChange={(e) => u("cta_right", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Download Brochure" />
               </div>
             </div>
@@ -573,25 +579,25 @@ export default function CourseWizard() {
               <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">Call to Action Banner</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">CTA Heading</label>
+                  <label className="block text-sm font-semibold text-black mb-1">CTA Heading *</label>
                   <input value={c.cta_heading || ''} onChange={(e) => u("cta_heading", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Ready to start your learning journey?" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">CTA Description</label>
+                  <label className="block text-sm font-semibold text-black mb-1">CTA Description *</label>
                   <textarea value={c.cta_description || ''} onChange={(e) => u("cta_description", e.target.value)} rows={2} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll now and gain industry-ready skills with expert mentors." />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-1">Button Text</label>
+                    <label className="block text-sm font-semibold text-black mb-1">Button Text *</label>
                     <input value={c.cta_text || ''} onChange={(e) => u("cta_text", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-1">Button Link (URL)</label>
+                    <label className="block text-sm font-semibold text-black mb-1">Button Link (URL) *</label>
                     <input value={c.cta_link || ''} onChange={(e) => u("cta_link", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="/courses or https://..." />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:)</label>
+                  <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:) *</label>
                   <input value={c.cta_phone || ''} onChange={(e) => u("cta_phone", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="+916380957390" />
                 </div>
                 <div>
@@ -601,7 +607,7 @@ export default function CourseWizard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-black mb-1">What You'll Learn (one per line)</label>
+              <label className="block text-sm font-semibold text-black mb-1">What You'll Learn (one per line) *</label>
               <textarea
                 value={(c.checklist_items || []).join("\n")}
                 onChange={(e) => u("checklist_items", e.target.value.split("\n"))}
@@ -614,9 +620,7 @@ export default function CourseWizard() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-black">Course Tabs</h3>
-                <AdminButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} variant="ghost" size="sm" className="text-admin-600 font-semibold">
-                  <FiPlus className="w-4 h-4" /> Add Tab
-                </AdminButton>
+                <AddButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} label="Add Tab" />
               </div>
               <div className="space-y-3">
                 {c.tabs.map((t, i) => (
@@ -657,7 +661,7 @@ export default function CourseWizard() {
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-xs font-medium text-neutral-500">Q&A Items</label>
-                            <button onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-admin-600 font-semibold hover:underline">+ Add Question</button>
+                            <AddButton onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} size="xs" label="Add Question" />
                           </div>
                           <div className="space-y-3">
                             {(t.content?.qa || []).map((qa, qi) => (
@@ -670,7 +674,7 @@ export default function CourseWizard() {
                                 <div>
                                   <div className="flex items-center justify-between mb-1">
                                     <span className="text-xs text-neutral-400">Answers (one per line)</span>
-                                    <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-admin-600 hover:underline">+ Add bullet</button>
+                                    <AddButton onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} size="xs" label="Add Bullet" />
                                   </div>
                                   {qa.answers.map((ans, ai) => (
                                     <div key={ai} className="flex items-center gap-2 mb-1">
@@ -698,7 +702,7 @@ export default function CourseWizard() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiLayers className="w-5 h-5 text-cyan-600" /> Curriculum / Modules</h2>
-                <AdminButton onClick={addModule} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add Module</AdminButton>
+                <AddButton onClick={addModule} label="Add Module" />
               </div>
               <div className="space-y-3">
                 {c.curriculum.map((mod, i) => (
@@ -714,6 +718,7 @@ export default function CourseWizard() {
                       onChange={(e) => updateModule(i, "title", e.target.value)}
                       className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-neutral-500/20 mb-3"
                       placeholder="Module title (e.g. Introduction to HTML)"
+                      required
                     />
                     <div className="space-y-2">
                       {mod.topics?.map((topic, j) => (
@@ -730,7 +735,7 @@ export default function CourseWizard() {
                           </button>
                         </div>
                       ))}
-                      <AdminButton onClick={() => addTopic(i)} variant="ghost" size="xs" className="text-admin-600 font-semibold"><FiPlus className="w-3 h-3" /> Add Topic</AdminButton>
+                      <AddButton onClick={() => addTopic(i)} size="xs" label="Add Topic" />
                     </div>
                   </div>
                 ))}
@@ -747,8 +752,8 @@ export default function CourseWizard() {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-black">Key Highlights</h3>
-                <AdminButton onClick={() => u("highlights", [...c.highlights, { icon: "", label: "" }])} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
+                <h3 className="text-sm font-semibold text-black">Key Highlights *</h3>
+                <AddButton onClick={() => u("highlights", [...c.highlights, { icon: "", label: "" }])} label="Add Highlight" />
               </div>
               <div className="space-y-3">
                 {c.highlights.map((h, i) => (
@@ -773,8 +778,8 @@ export default function CourseWizard() {
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-black">Projects</h3>
-                <AdminButton onClick={() => u("projects", [...c.projects, { title: "", description: "" }])} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add</AdminButton>
+                <h3 className="text-sm font-semibold text-black">Projects *</h3>
+                <AddButton onClick={() => u("projects", [...c.projects, { title: "", description: "" }])} label="Add Project" />
               </div>
               <div className="space-y-3">
                 {c.projects.map((p, i) => (
@@ -793,8 +798,8 @@ export default function CourseWizard() {
           <div className="space-y-8">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-black">General FAQs</h3>
-                <AdminButton onClick={() => u("faqs", [...c.faqs, { question: "", answer: "" }])} variant="ghost" size="sm" className="text-admin-600 font-semibold"><FiPlus className="w-4 h-4" /> Add FAQ</AdminButton>
+                <h3 className="text-sm font-semibold text-black">General FAQs *</h3>
+                <AddButton onClick={() => u("faqs", [...c.faqs, { question: "", answer: "" }])} label="Add FAQ" />
               </div>
               <div className="space-y-3">
                 {c.faqs.map((f, i) => (
@@ -880,43 +885,41 @@ export default function CourseWizard() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-8 pt-6 border-t border-admin-200">
-        <div>
-          {step > 0 && (
-            <button
-              onClick={() => setStep(step - 1)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-neutral-600 bg-white border border-admin-200 hover:bg-admin-50 rounded-lg transition-colors"
-            >
-              Back
-            </button>
-          )}
+      <SaveCancelBar saving={saving} saved={false} saveError={message} onSave={handleSubmitClick} onDiscard={() => navigate(-1)} submitLabel="Submit" />
+
+      {showMissing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-admin-200">
+              <h2 className="text-lg font-bold text-black flex items-center gap-2">
+                <FiAlertCircle className="w-5 h-5 text-destructive-500" /> Missing Fields
+              </h2>
+              <button onClick={() => setShowMissing(false)} className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="px-6 py-4 max-h-[50vh] overflow-y-auto admin-scrollbar">
+              <p className="text-sm text-neutral-500 mb-3">Please fill in the following required fields before saving:</p>
+              <ul className="space-y-1.5">
+                {missingFields.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <FiAlertCircle className="w-4 h-4 text-destructive-400 shrink-0 mt-0.5" />
+                    <span className="text-neutral-700">{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex items-center justify-between px-6 py-4 border-t border-admin-200">
+              <button
+                onClick={() => setShowMissing(false)}
+                className="px-5 py-2 bg-admin-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-all"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-200 hover:bg-red-50 rounded-lg transition-colors shadow-sm"
-          >
-            Cancel
-          </button>
-          {step < STEPS.length - 1 ? (
-            <button
-              onClick={() => handleStepClick(step + 1)}
-              disabled={!canNext()}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-            >
-              Next Step
-            </button>
-          ) : (
-            <button
-              onClick={handleSave}
-              disabled={saving || !c.title.trim() || !c.slug.trim() || !navItemId || courseTags.length === 0}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-            >
-              {saving ? "Saving..." : "Save Course"}
-            </button>
-          )}
-        </div>
-      </div>
+      )}
 
     </PageShell>
   );

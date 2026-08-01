@@ -3,12 +3,14 @@ import { useSearchParams, Link } from "react-router-dom";
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import Card from "../components/ui/Card";
+import AddButton from "../components/AddButton";
 import {
-  FiPlus, FiCheck, FiFolder, FiFile, FiEdit3, FiTrash2,
+  FiCheck, FiFolder, FiFile, FiEdit3, FiTrash2,
   FiChevronDown, FiChevronRight, FiArrowLeft, FiBookOpen, FiSearch
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from "../components/ui/PageShell";
+import { SubmitButton, CancelButton } from '../components/FormButtons';
 import useConfirm from '../hooks/useConfirm';
 import { toast } from '../components/Toast';
 
@@ -421,10 +423,7 @@ export default function NavMenuManager() {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {currentLevel < MAX_DEPTH && (
-              <button onClick={() => openAdd(currentParent)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm" title="Add child">
-                <FiPlus className="w-3.5 h-3.5" /> Add Child
-              </button>
+              <AddButton onClick={() => openAdd(currentParent)} label="Add Child" title="Add child" />
             )}
             <button onClick={(e) => openEdit(currentParent, e)}
               className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors" title="Edit">
@@ -672,13 +671,8 @@ export default function NavMenuManager() {
               </div>
 
               <div className="flex items-center gap-4 justify-center pt-2 border-t border-gray-100">
-                <button type="submit" className="inline-flex items-center gap-2 px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all hover:-translate-y-0.5">
-                  <FiCheck className="w-4 h-4" /> Submit
-                </button>
-                <button type="button" onClick={() => { cancelForm(); goToTab("view"); }}
-                  className="px-6 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-all hover:-translate-y-0.5">
-                  Cancel
-                </button>
+                <SubmitButton type="submit" label="Submit" />
+                <CancelButton onClick={() => { cancelForm(); goToTab("view"); }} />
               </div>
             </div>
           </form>

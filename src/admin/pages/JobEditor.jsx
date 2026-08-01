@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import PageShell from '../components/ui/PageShell';
@@ -98,7 +97,7 @@ export default function JobEditor() {
   return (
     <PageShell
       backTo="/admin/jobs"
-      title={isNew ? 'Add Job Opening' : 'Edit Job Opening'}
+      title={isNew ? 'Add New Job' : 'Edit Job Opening'}
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
       <form onSubmit={handleSave}>

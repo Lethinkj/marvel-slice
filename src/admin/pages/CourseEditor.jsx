@@ -3,8 +3,8 @@ import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom"
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "../../lib/supabaseClient";
 import ImageUploader from "../components/ImageUploader";
-import AdminButton from "../components/AdminButton";
-import { FiPlus, FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronDown, FiChevronUp, FiSettings, FiFileText, FiTag, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
+import AddButton from "../components/AddButton";
+import { FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronDown, FiChevronUp, FiSettings, FiFileText, FiTag, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
@@ -73,9 +73,7 @@ function ListEditor({ items, onChange, fields, labelKey = "label" }) {
           ))}
         </div>
       ))}
-      <AdminButton onClick={addItem} variant="ghost" size="sm">
-        <FiPlus className="w-4 h-4" /> Add {labelKey}
-      </AdminButton>
+      <AddButton onClick={addItem} label={`Add ${labelKey}`} />
     </div>
   );
 }
@@ -760,9 +758,7 @@ export default function CourseEditor() {
             <div className="space-y-6 max-w-3xl">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-black">Curriculum / Modules</h2>
-                <AdminButton onClick={() => update("curriculum", [...course.curriculum, { title: "", topics: [] }])} variant="ghost" size="sm">
-                  <FiPlus className="w-4 h-4" /> Add Module
-                </AdminButton>
+                <AddButton onClick={() => update("curriculum", [...course.curriculum, { title: "", topics: [] }])} label="Add Module" />
               </div>
               {course.curriculum.length === 0 && (
                 <div className="text-center py-12 text-neutral-400 bg-white rounded-xl border-2 border-dashed border-admin-200">
@@ -798,8 +794,8 @@ export default function CourseEditor() {
                           </button>
                         </div>
                       ))}
-                      <AdminButton onClick={() => { const n = [...course.curriculum]; n[i] = { ...n[i], topics: [...(n[i].topics || []), ""] }; update("curriculum", n); }}
-                        variant="ghost" size="xs"><FiPlus className="w-3 h-3" /> Add Topic</AdminButton>
+                      <AddButton onClick={() => { const n = [...course.curriculum]; n[i] = { ...n[i], topics: [...(n[i].topics || []), ""] }; update("curriculum", n); }}
+                        size="xs" label="Add Topic" />
                     </div>
                   </div>
                 ))}
@@ -964,17 +960,16 @@ export default function CourseEditor() {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <label className="text-xs font-medium text-neutral-500">Q&A Items</label>
-                        <button
+                        <AddButton
                           onClick={() => {
                             const n = [...course.tabs];
                             const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }];
                             n[i] = { ...n[i], content: { ...n[i].content, qa } };
                             update("tabs", n);
                           }}
-                          className="text-xs text-admin-600 font-semibold hover:underline"
-                        >
-                          + Add Question
-                        </button>
+                          size="xs"
+                          label="Add Question"
+                        />
                       </div>
                       <div className="space-y-3">
                         {(t.content?.qa || []).map((qa, qi) => (
@@ -1008,7 +1003,7 @@ export default function CourseEditor() {
                             <div>
                               <div className="flex items-center justify-between mb-1">
                                 <span className="text-xs text-neutral-500">Answers (one per line)</span>
-                                <button
+                                <AddButton
                                   onClick={() => {
                                     const n = [...course.tabs];
                                     const qa = [...n[i].content.qa];
@@ -1016,10 +1011,9 @@ export default function CourseEditor() {
                                     n[i] = { ...n[i], content: { ...n[i].content, qa } };
                                     update("tabs", n);
                                   }}
-                                  className="text-xs text-admin-600 hover:underline"
-                                >
-                                  + Add bullet
-                                </button>
+                                  size="xs"
+                                  label="Add Bullet"
+                                />
                               </div>
                               {qa.answers.map((ans, ai) => (
                                 <div key={ai} className="flex items-center gap-2 mb-1">
@@ -1060,7 +1054,7 @@ export default function CourseEditor() {
                   </div>
                 </div>
               ))}
-              <button
+              <AddButton
                 onClick={async () => {
                   const { data } = await supabase
                     .from("course_tabs")
@@ -1075,10 +1069,8 @@ export default function CourseEditor() {
                     .single();
                   if (data) update("tabs", [...course.tabs, data]);
                 }}
-                className="bg-admin-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-admin-700 transition-colors"
-              >
-                Add Tab
-              </button>
+                label="Add Tab"
+              />
             </div>
           )}
 
@@ -1128,18 +1120,15 @@ export default function CourseEditor() {
                     </div>
                   </div>
                 ))}
-                <AdminButton
+                <AddButton
                   onClick={() =>
                     update("highlights", [
                       ...course.highlights,
                       { icon: "", label: "" },
                     ])
                   }
-                  variant="ghost"
-                  size="sm"
-                >
-                  <FiPlus className="w-4 h-4" /> Add Highlight
-                </AdminButton>
+                  label="Add Highlight"
+                />
               </div>
             </div>
           )}
@@ -1195,18 +1184,15 @@ export default function CourseEditor() {
                     </div>
                   </div>
                 ))}
-                <AdminButton
+                <AddButton
                   onClick={() =>
                     update("projects", [
                       ...course.projects,
                       { title: "", description: "" },
                     ])
                   }
-                  variant="ghost"
-                  size="sm"
-                >
-                  <FiPlus className="w-4 h-4" /> Add Project
-                </AdminButton>
+                  label="Add Project"
+                />
               </div>
             </div>
           )}
@@ -1360,15 +1346,12 @@ export default function CourseEditor() {
                     </div>
                   </div>
                 ))}
-                <AdminButton
+                <AddButton
                   onClick={() =>
                     update("faqs", [...course.faqs, { question: "", answer: "" }])
                   }
-                  variant="ghost"
-                  size="sm"
-                >
-                  <FiPlus className="w-4 h-4" /> Add FAQ
-                </AdminButton>
+                  label="Add FAQ"
+                />
               </div>
             </div>
           )}

@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
-import AdminButton from "../components/AdminButton";
 import ImageUploader from "../components/ImageUploader";
+import { CancelButton, SubmitButton } from "../components/FormButtons";
 import {
-  FiPlus,
   FiTrash2,
   FiArrowLeft,
   FiCheck,
@@ -541,12 +540,7 @@ export default function ServiceWizard() {
           )}
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-200 hover:bg-red-50 rounded-lg transition-colors shadow-sm"
-          >
-            Cancel
-          </button>
+          <CancelButton onClick={() => navigate(-1)} />
           {step < STEPS.length - 1 ? (
             <button
               onClick={() => handleStepClick(step + 1)}
@@ -556,13 +550,7 @@ export default function ServiceWizard() {
               Next Step
             </button>
           ) : (
-            <button
-              onClick={handleSave}
-              disabled={saving || !service.title.trim() || !service.slug.trim()}
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-            >
-              {saving ? "Saving..." : "Save Service"}
-            </button>
+            <SubmitButton onClick={handleSave} saving={saving} savingLabel="Saving..." label="Submit" />
           )}
         </div>
       </div>

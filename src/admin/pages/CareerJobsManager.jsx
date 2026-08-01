@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
+import AddButton from '../components/AddButton';
 import DataTable from '../components/ui/DataTable';
 import EmptyState from '../components/EmptyState';
-import { FiPlus, FiEdit2, FiTrash2, FiBriefcase, FiX, FiArrowLeft } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiBriefcase, FiX, FiArrowLeft } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import { SubmitButton, CancelButton } from '../components/FormButtons';
 import useConfirm from '../hooks/useConfirm';
 
 export default function CareerJobsManager() {
@@ -121,9 +122,7 @@ const [jobs, setJobs] = useState([]);
       description="Manage your company's career opportunities"
       actions={
         <div className="flex items-center gap-3 self-start sm:self-auto">
-<AdminButton onClick={() => openJobForm()} variant="primary" size="md">
-            <FiPlus className="w-4 h-4" /> Add Job
-          </AdminButton>
+<AddButton onClick={() => openJobForm()} label="Add Job" size="md" />
         </div>
       }
     >
@@ -132,7 +131,7 @@ const [jobs, setJobs] = useState([]);
           <DataTable data={jobs} columns={columns} actions={actions} />
         ) : (
           <EmptyState icon={FiBriefcase} title="No jobs added" description="Get started by creating your first job opening."
-            action={{ onClick: () => openJobForm(), icon: <FiPlus className="w-4 h-4" />, label: 'Add Job Opening' }}
+            action={{ onClick: () => openJobForm(), label: 'Add Job Opening' }}
           />
         )}
       </div>
@@ -205,10 +204,8 @@ const [jobs, setJobs] = useState([]);
               </form>
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-admin-200 bg-gray-50/50 shrink-0">
-              <AdminButton type="button" onClick={closeJobForm} variant="ghost" size="md">Cancel</AdminButton>
-              <AdminButton type="submit" form="jobForm" variant="primary" size="md" isLoading={jobSaving}>
-                {editingJob ? 'Save Changes' : 'Add Job'}
-              </AdminButton>
+              <CancelButton onClick={closeJobForm} />
+              <SubmitButton type="submit" form="jobForm" saving={jobSaving} savingLabel="Saving..." label={editingJob ? 'Save' : 'Submit'} />
             </div>
           </div>
         </div>

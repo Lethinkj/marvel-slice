@@ -8,6 +8,7 @@ import {
   FiDownload, FiLoader, FiFileText, FiSend, FiTrash2, FiCheck, FiMail,
 } from 'react-icons/fi';
 import useConfirm from '../../hooks/useConfirm';
+import { CancelButton, SubmitButton } from '../FormButtons';
 
 function ReplyModal({ row, onClose, pageTitle }) {
   const [subject, setSubject] = useState(`Re: ${pageTitle || 'Your Submission'}`);
@@ -77,13 +78,8 @@ function ReplyModal({ row, onClose, pageTitle }) {
           {error && <p className="text-xs text-destructive-500 bg-destructive-50 px-3 py-2 rounded-lg">{error}</p>}
         </div>
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-admin-100 bg-white/50">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-100 transition-all">Cancel</button>
-          <button onClick={handleSend} disabled={sending || !subject.trim() || !message.trim()}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-admin-600 text-white text-sm font-medium hover:bg-admin-700 transition-all disabled:opacity-50 shadow-sm"
-          >
-            {sending ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
-            {sending ? 'Sending...' : 'Send Reply'}
-          </button>
+          <CancelButton onClick={onClose} />
+          <SubmitButton onClick={handleSend} saving={sending} savingLabel="Sending..." label="Send Reply" disabled={!subject.trim() || !message.trim()} />
         </div>
       </div>
     </div>

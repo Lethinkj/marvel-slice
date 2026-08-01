@@ -5,14 +5,14 @@ import { RepeatableItemCard } from '../components/ui/RepeatableItemCard';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
+import AddButton from '../components/AddButton';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import {
-  FiPlus, FiTrash2, FiSave, FiUpload, FiArrowLeft,
+  FiTrash2, FiSave, FiUpload, FiArrowLeft,
   FiHome, FiStar, FiAward, FiHelpCircle,
   FiLayout, FiMail, FiMessageSquare, FiBell, FiUsers,
   FiClock, FiVideo, FiCode, FiCalendar, FiRefreshCw,
@@ -305,7 +305,7 @@ function FeatureCardsEditor({ data, onChange }) {
       <div className="pt-4">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-semibold text-black">Cards</h4>
-          <AdminButton type="button" onClick={addCard} variant="primary" size="sm"><FiPlus className="w-4 h-4" /> Add Card</AdminButton>
+          <AddButton onClick={addCard} label="Add Card" />
         </div>
         {cards.length === 0 && <p className="text-sm text-neutral-400 italic">No cards yet.</p>}
         <div className="space-y-3">
@@ -338,10 +338,7 @@ function FeatureCardsEditor({ data, onChange }) {
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Bullet Points</label>
-                    <button type="button" onClick={() => addBullet(i)}
-                      className="text-xs text-admin-600 hover:text-admin-700 font-medium flex items-center gap-0.5">
-                      <FiPlus className="w-3 h-3" /> Add
-                    </button>
+                    <AddButton onClick={() => addBullet(i)} label="Add Bullet" size="xs" />
                   </div>
                   <div className="space-y-1.5">
                     {(card.bullets || []).map((b, j) => (
@@ -739,14 +736,12 @@ function HeroEditor({ data, onChange }) {
       {/* Stats Section */}
       <SectionAccordion title="Stats" expanded={openSection === 'stats'} onToggle={() => setOpenSection(openSection === 'stats' ? null : 'stats')}>
         <div className="flex justify-end mb-4">
-          <button type="button" onClick={() => {
+          <AddButton onClick={() => {
             const s = Array.isArray(content.stats) ? content.stats : [];
             if (s.length >= 3) return;
             updateContent('stats', [...s, { value: '', label: '' }]);
           }}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${(content.stats || []).length >= 3 ? 'text-gray-300 bg-gray-50 cursor-not-allowed' : 'text-admin-600 bg-white border border-admin-200 hover:bg-admin-50 hover:border-admin-300'}`}>
-            <FiPlus className="w-3.5 h-3.5" /> Add Stat
-          </button>
+            disabled={(content.stats || []).length >= 3} label="Add Stat" />
         </div>
         {(!Array.isArray(content.stats) || content.stats.length === 0) ? (
           <div className="text-center">
@@ -788,12 +783,10 @@ function HeroEditor({ data, onChange }) {
       {/* Buttons Section */}
       <SectionAccordion title="Call-to-Action Buttons" expanded={openSection === 'buttons'} onToggle={() => setOpenSection(openSection === 'buttons' ? null : 'buttons')}>
         <div className="flex justify-end mb-4">
-          <AdminButton type="button" onClick={() => {
+          <AddButton onClick={() => {
             const b = Array.isArray(content.buttons) ? content.buttons : [];
             updateContent('buttons', [...b, { label: '', link: '', color: '' }]);
-          }} variant="primary" size="sm">
-            <FiPlus className="w-4 h-4" /> Add Button
-          </AdminButton>
+          }} label="Add Button" />
         </div>
         <div>
           {(!Array.isArray(content.buttons) || content.buttons.length === 0) ? (
@@ -1004,7 +997,7 @@ function AlumniEditor({ data, onChange }) {
         <input type="text" value={name} onChange={(e) => setName(e.target.value)}
           placeholder="Company name" className="flex-1 px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500"
           onKeyDown={(e) => e.key === 'Enter' && addCompany()} />
-        <AdminButton onClick={addCompany} variant="primary" size="md"><FiPlus className="w-4 h-4" /> Add</AdminButton>
+        <AddButton onClick={addCompany} label="Add Company" />
       </div>
       {companies.length === 0 && <p className="text-sm text-neutral-400 italic">No companies added yet.</p>}
       <div className="flex flex-wrap gap-2">

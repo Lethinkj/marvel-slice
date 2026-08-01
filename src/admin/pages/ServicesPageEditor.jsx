@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabaseClient';
 import useDirty from '../hooks/useDirty';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiX, FiCheck } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiX, FiCheck } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import FolderTabs from '../components/ui/FolderTabs';

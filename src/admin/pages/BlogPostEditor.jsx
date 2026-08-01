@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
@@ -67,8 +66,9 @@ function ImageUploader({ value, onChange, label }) {
 
 export default function BlogPostEditor() {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
-  const isNew = id === 'new';
+  const isNew = !id || location.pathname.endsWith('/new');
   const savingRef = useRef(false);
   const queryClient = useQueryClient();
   const formRef = useRef(null);
@@ -241,7 +241,7 @@ export default function BlogPostEditor() {
   }
 
   return (
-    <PageShell title={isNew ? 'New Post' : 'Edit Post'} backTo="/admin/blog">
+    <PageShell title={isNew ? 'Add New Post' : 'Edit Post'} backTo="/admin/blog">
 
       <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Post" top />
 

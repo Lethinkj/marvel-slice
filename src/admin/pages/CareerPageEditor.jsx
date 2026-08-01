@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabaseClient';
-import AdminButton from '../components/AdminButton';
+import AddButton from '../components/AddButton';
 import useDirty from '../hooks/useDirty';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import EmptyState from '../components/EmptyState';
 import {
-  FiSave, FiAlertCircle, FiPlus, FiTrash2, FiEdit2,
+  FiSave, FiAlertCircle, FiTrash2, FiEdit2,
   FiUpload, FiCheck, FiX, FiBriefcase, FiArrowLeft,
   FiAlignLeft, FiAlignCenter, FiAlignRight, FiChevronLeft, FiChevronRight,
 } from 'react-icons/fi';
@@ -449,9 +449,7 @@ export default function CareerPageEditor() {
         <div className="flex items-end justify-between">
           <FolderTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
           <div className="pb-2 pr-1 relative z-40">
-            <button type="button" onClick={openCategoryForm} className="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium rounded-[20px] text-white bg-admin-600 hover:bg-admin-700 transition-colors shadow-sm shrink-0">
-              <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center"><FiPlus className="w-3 h-3 text-admin-600" /></span> Add Role
-            </button>
+            <AddButton onClick={openCategoryForm} label="Add Role" />
           </div>
         </div>
 
@@ -584,7 +582,7 @@ export default function CareerPageEditor() {
                 icon={FiBriefcase}
                 title="No role categories yet"
                 description="Categories appear as interactive cards in the Explore Opportunities grid."
-                action={{ onClick: openCategoryForm, icon: <FiPlus className="w-4 h-4" />, label: 'Add Role Category' }}
+                action={{ onClick: openCategoryForm, label: 'Add Role Category' }}
               />
             ) : (
               <>
