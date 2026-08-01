@@ -416,7 +416,7 @@ export default function Courses() {
     const hasChildren = parentNode.children.length > 0;
 
     return (
-      <div key={parentNode.id} className="mb-0.5">
+      <div key={parentNode.id} className="mb-0.5 border-b border-gray-100 last:border-b-0">
         <button
           onClick={() => {
             if (hasChildren) {
@@ -552,7 +552,9 @@ export default function Courses() {
             </div>
             {/* Category tree */}
             <nav className="px-3 pt-3 pb-4 overflow-y-auto flex-1">
-              {currentTree.map(sidebarNode)}
+              <div className="border border-gray-200 rounded-xl overflow-hidden">
+                {currentTree.map(sidebarNode)}
+              </div>
             </nav>
           </aside>
         )}

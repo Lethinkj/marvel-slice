@@ -6,7 +6,7 @@ import AdminButton from '../components/AdminButton';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiPlus, FiTrash2, FiUpload, FiArrowLeft, FiHome, FiMail, FiBriefcase, FiMessageSquare, FiSettings, FiMapPin, FiHelpCircle } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import { RepeatableItemList } from '../components/ui/RepeatableItemList';
@@ -205,13 +205,13 @@ const queryClient = useQueryClient();
   const labelCls = "block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider";
 
   const tabs = [
-    { id: 'hero-section', title: 'Hero' },
-    { id: 'contact-section', title: 'Contact' },
-    { id: 'left-side-company-details', title: 'Company Details' },
-    { id: 'right-side-form-settings', title: 'Form' },
-    { id: 'style-settings', title: 'Style' },
-    { id: 'map-embed', title: 'Map' },
-    { id: 'faqs', title: 'FAQs' },
+    { id: 'hero-section', title: 'Hero', icon: FiHome },
+    { id: 'contact-section', title: 'Contact', icon: FiMail },
+    { id: 'left-side-company-details', title: 'Company Details', icon: FiBriefcase },
+    { id: 'right-side-form-settings', title: 'Form', icon: FiMessageSquare },
+    { id: 'style-settings', title: 'Style', icon: FiSettings },
+    { id: 'map-embed', title: 'Map', icon: FiMapPin },
+    { id: 'faqs', title: 'FAQs', icon: FiHelpCircle },
   ];
   const currentTab = tabs.find(t => t.id === activeTab) || tabs[0];
 
@@ -220,11 +220,11 @@ const queryClient = useQueryClient();
       title=""
       maxWidth="max-w-none"
     >
-      <div className="flex gap-6 items-start">
+      <div className="flex gap-[15px] items-start">
 
         <div className="transition-all duration-200 w-[240px] shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
-            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+            <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {tabs.map((tab, index) => {
                 const isActive = activeTab === tab.id;
                 return (
@@ -232,19 +232,20 @@ const queryClient = useQueryClient();
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`relative w-full flex flex-col text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none ${
-                      index === 0 ? 'rounded-t-md' : ''
+                    className={`relative w-full flex items-center gap-2.5 text-left px-4 py-3 border-b border-gray-200 last:border-b-0 focus:outline-none transition-colors ${
+                      index === 0 ? 'rounded-t-xl' : ''
                     } ${
-                      index === tabs.length - 1 ? 'rounded-b-md' : ''
+                      index === tabs.length - 1 ? 'rounded-b-xl' : ''
                     } ${
-                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-50'
+                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-100'
                     }`}
                   >
+                    <tab.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-neutral-400'}`} />
                     <div className="font-semibold text-sm">
                       {tab.title}
                     </div>
                     {isActive && (
-                      <div className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[30px] border-l-admin-600" />
+                      <div className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[27px] border-l-admin-600" />
                     )}
                   </button>
                 );

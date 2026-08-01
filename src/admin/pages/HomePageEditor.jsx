@@ -1126,7 +1126,7 @@ export default function HomePageEditor() {
 
   return (
     <PageShell backTo="/admin" title="" maxWidth="max-w-none">
-      <div className="flex gap-6 items-start">
+      <div className="flex gap-[15px] items-start">
 
         {/* Redesigned Sidebar Matching the Image */}
         <div className="transition-all duration-200 w-[240px] shrink-0">
@@ -1154,7 +1154,7 @@ export default function HomePageEditor() {
 
                     {isActive && (
                       <div
-                        className="absolute top-1/2 -translate-y-1/2 -right-[25px] w-0 h-0 border-y-[10px] border-y-transparent border-l-[27px] border-l-admin-600"
+                        className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[27px] border-l-admin-600"
                       />
                     )}
                   </button>

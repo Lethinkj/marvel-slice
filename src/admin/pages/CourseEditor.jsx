@@ -504,10 +504,10 @@ export default function CourseEditor() {
         </div>
       )}
 
-      <div className="flex gap-6 items-start">
+      <div className="flex gap-[15px] items-start">
         <div className="transition-all duration-200 w-[220px] shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
-            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+            <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {editorTabs.map((t, index) => {
                 const meta = tabMeta[t];
                 const isActive = tab === t;
@@ -515,12 +515,12 @@ export default function CourseEditor() {
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`relative w-full flex items-center gap-2 text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none ${
-                      index === 0 ? 'rounded-t-md' : ''
+                    className={`relative w-full flex items-center gap-2.5 text-left px-4 py-3 border-b border-gray-200 last:border-b-0 focus:outline-none transition-colors ${
+                      index === 0 ? 'rounded-t-xl' : ''
                     } ${
-                      index === editorTabs.length - 1 ? 'rounded-b-md' : ''
+                      index === editorTabs.length - 1 ? 'rounded-b-xl' : ''
                     } ${
-                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-50'
+                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-100'
                     }`}
                     title={meta.label}
                   >
@@ -529,7 +529,7 @@ export default function CourseEditor() {
                     }`} />
                     <span className="font-semibold text-sm flex-1 truncate">{meta.label}</span>
                     {isActive && (
-                      <div className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[30px] border-l-admin-600" />
+                      <div className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[27px] border-l-admin-600" />
                     )}
                   </button>
                 );
