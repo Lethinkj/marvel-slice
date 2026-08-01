@@ -175,7 +175,7 @@ const [confirm, confirmDialog] = useConfirm();
 
   return (
     <PageShell backTo="/admin"
-      title={activeCategory ? `${activeCategory} Courses` : "All Courses"}
+      title={activeCategory ? `${activeCategory} Courses` : "Courses"}
       subtitle={`${courses.length} course${courses.length !== 1 ? 's' : ''} total`}
     >
       {courses.length > 0 && (

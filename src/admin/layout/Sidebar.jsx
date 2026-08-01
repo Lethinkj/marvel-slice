@@ -54,7 +54,7 @@ const navGroups = [
     ]},
   {
     label: "Courses", icon: FiBookOpen, parentTo: "/admin/courses", items: [
-      { to: "/admin/courses", label: "All Courses", catchSubRoutes: true, siblingRoutes: ["/admin/courses/wizard", "/admin/courses/reports", "/admin/courses/brochure", "/admin/courses/new"] },
+      { to: "/admin/courses", label: "Courses", catchSubRoutes: true, siblingRoutes: ["/admin/courses/wizard", "/admin/courses/reports", "/admin/courses/brochure", "/admin/courses/new"] },
       { label: "Software Learning", children: [
         { to: "/admin/courses/wizard?category=Software%20Learning", label: "Add Course" },
         { to: "/admin/courses?category=Software%20Learning", label: "View Courses" }
@@ -77,7 +77,7 @@ const navGroups = [
       { to: "/admin/blog/categories", label: "Categories" }
     ],
   },
-  { label: "Navigation", icon: FiMenu, items: [
+  { label: "Menu", icon: FiMenu, items: [
     { label: "Software Learning", children: [
       { to: "/admin/nav-menu?section=Software%20Learning&tab=add", label: "Add Menu" },
       { to: "/admin/nav-menu?section=Software%20Learning&tab=view", label: "View Menu" }

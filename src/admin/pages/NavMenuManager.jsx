@@ -594,7 +594,7 @@ export default function NavMenuManager() {
   }
 
   return (
-    <PageShell title="Navigation Menu" subtitle={currentParent ? `${sectionLabel} ▸ ${drillBreadcrumbs.map(b => b.label).join(' ▸ ')}` : `Manage navigation items — ${sectionLabel}`}>
+    <PageShell title="Menu" subtitle={currentParent ? `${sectionLabel} ▸ ${drillBreadcrumbs.map(b => b.label).join(' ▸ ')}` : `Manage menu items — ${sectionLabel}`}>
       <div className="space-y-5">
 
         {/* ---- ADD / EDIT FORM ---- */}
@@ -740,7 +740,7 @@ export default function NavMenuManager() {
                   <p className="text-sm text-gray-500">
                     {activeSearch || statusFilter !== 'all' 
                       ? "Try adjusting your search or filters." 
-                      : (currentParent ? `No children added under "${currentParent.label}" yet.` : 'Get started by adding a new navigation item.')}
+                      : (currentParent ? `No children added under "${currentParent.label}" yet.` : 'Get started by adding a new menu item.')}
                   </p>
                 </div>
               ) : (
