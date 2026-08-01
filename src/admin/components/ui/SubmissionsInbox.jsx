@@ -327,8 +327,9 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-black">{title}</h1>
-          <p className="text-sm text-neutral-400 mt-0.5">{data.length} total{unreadCount > 0 ? ` · ${unreadCount} unread` : ''}</p>
+          <h1 className="text-xl font-bold text-black">
+            {title} <span className="text-neutral-400 font-medium text-sm">({data.length} total{unreadCount > 0 ? ` · ${unreadCount} unread` : ''})</span>
+          </h1>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setExportModal('csv')} disabled={filtered.length === 0}
@@ -437,10 +438,10 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             {paged.length === 0 ? (
               <EmptyState title={search ? 'No results match your search' : 'No submissions yet'} description={search ? 'Try adjusting your search or filters.' : 'Submissions will appear here once received.'} />
             ) : (
-              <div className="overflow-x-auto p-3">
+              <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-blue-600">
+                    <tr className="border-b border-admin-100 bg-blue-600">
                       <th className="w-10 text-left text-xs font-semibold text-white uppercase tracking-wider px-4 py-3">#</th>
                       {columns.map((col, i) => (
                         <th key={i} className={`text-left text-xs font-semibold text-white uppercase tracking-wider px-4 py-3 ${col.className || ''}`}>

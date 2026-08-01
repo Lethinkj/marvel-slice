@@ -98,7 +98,7 @@ export default function SectionRenderer({ section }) {
           {items.length > 0 && (
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {items.map((stat, i) => (
-                <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default">
+                <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px' }}>
                   <div className="text-3xl sm:text-4xl font-bold text-orange-500">{stat.number}</div>
                   <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
                 </div>
@@ -155,7 +155,7 @@ export default function SectionRenderer({ section }) {
           {section.heading && <h2 className={`text-3xl sm:text-4xl font-bold text-dark-navy mb-8 text-${ha}`}>{section.heading}</h2>}
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {items.map((stat, i) => (
-              <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default">
+              <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px' }}>
                 <div className="text-3xl sm:text-4xl font-bold text-orange-500">{stat.number}</div>
                 <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
               </div>
