@@ -265,7 +265,7 @@ function NestedNavGroup({ item, pathname, onNavigate, isAccordionOpen, onToggleA
           className={`w-3.5 h-3.5 transition-transform duration-300 ease-in-out ${open ? "" : "-rotate-90"}`}
           style={{ color: iconColor }}
         />
-        <span style={hasActiveChild ? activeLabelStyle : undefined}>{item.label}</span>
+        <span className="truncate" style={hasActiveChild ? activeLabelStyle : undefined}>{item.label}</span>
       </button>
       <Collapsible open={open}>
         <div className="ml-3 pl-2 mt-0.5 mb-1 space-y-0.5" style={{ borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
@@ -284,7 +284,7 @@ function NestedNavGroup({ item, pathname, onNavigate, isAccordionOpen, onToggleA
                       style={act ? { color: '#ffffff' } : undefined}
               >
                 {ItemIcon && <ItemIcon className="w-3.5 h-3.5 shrink-0" style={{ color: '#707897' }} />}
-                      <span style={act ? activeLabelStyle : undefined}>{child.label}</span>
+                      <span className="truncate" style={act ? activeLabelStyle : undefined}>{child.label}</span>
               </NavLink>
             );
           })}
@@ -327,7 +327,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
           className="w-4 h-4 shrink-0 transition-colors duration-200"
           style={{ color: groupIconColor }}
         />
-          <span style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
+          <span className="truncate" style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
       </NavLink>
     );
   }
@@ -349,7 +349,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
               className="w-4 h-4 shrink-0 transition-colors duration-200"
               style={{ color: groupIconColor }}
             />
-            <span style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
+            <span className="truncate" style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
           </NavLink>
           <button
             onClick={() => onToggle(idx)}
@@ -387,7 +387,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
                       style={act ? { color: '#ffffff' } : undefined}
                 >
                   {ItemIcon && <ItemIcon className="w-3.5 h-3.5 shrink-0" style={{ color: '#707897' }} />}
-                      <span style={act ? activeLabelStyle : undefined}>{item.label}</span>
+                      <span className="truncate" style={act ? activeLabelStyle : undefined}>{item.label}</span>
                 </Link>
               );
             })}
@@ -410,7 +410,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
           className="w-4 h-4 shrink-0 transition-colors duration-200"
           style={{ color: groupIconColor }}
         />
-        <span className="flex-1 text-left" style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
+        <span className="flex-1 text-left truncate" style={groupActive ? activeLabelStyle : undefined}>{group.label}</span>
         <FiChevronDown
           className={`w-3.5 h-3.5 transition-transform duration-300 ease-in-out ${opened ? '' : '-rotate-90'}`}
           style={{ color: iconColor }}
@@ -442,7 +442,7 @@ function SidebarNav({ group, idx, pathname, isOpen, onToggle, onNavigate }) {
                       style={act ? { color: '#ffffff' } : undefined}
               >
                 {ItemIcon && <ItemIcon className="w-3.5 h-3.5 shrink-0" style={{ color: '#707897' }} />}
-                      <span style={act ? activeLabelStyle : undefined}>{item.label}</span>
+                      <span className="truncate" style={act ? activeLabelStyle : undefined}>{item.label}</span>
               </Link>
             );
           })}

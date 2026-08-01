@@ -19,7 +19,7 @@ const detailFields = [
 
 export default function ContactSubmissions() {
 return (
-    <PageShell backTo="/admin" title="Contact Submissions"
+    <PageShell backTo="/admin"
     >
       <SubmissionsInbox
         table="contact_submissions"

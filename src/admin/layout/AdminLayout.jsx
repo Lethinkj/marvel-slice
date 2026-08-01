@@ -5,13 +5,14 @@ import { useAuth } from "../context/AuthContext";
 import Sidebar from "./Sidebar";
 import CommandPalette from "../components/ui/CommandPalette";
 import { ToastContainer, toast } from "../components/Toast";
-import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock, FiFile, FiClipboard, FiMail, FiBriefcase, FiX, FiSettings } from "react-icons/fi";
+import { FiMenu, FiExternalLink, FiLogOut, FiGrid, FiSearch, FiBell, FiMessageCircle, FiClock, FiFile, FiClipboard, FiMail, FiBriefcase, FiX, FiSettings, FiInfo } from "react-icons/fi";
 import { trackLogout } from "../../lib/analytics";
 
 const submissionTypes = [
   { key: 'brochure', table: 'brochure_downloads', label: 'Brochure', link: '/admin/brochure-downloads', icon: FiFile, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { key: 'form', table: 'form_submissions', label: 'Form', link: '/admin/form-submissions', icon: FiClipboard, color: 'text-violet-600', bg: 'bg-violet-50' },
   { key: 'contact', table: 'contact_submissions', label: 'Contact', link: '/admin/contact-submissions', icon: FiMail, color: 'text-amber-600', bg: 'bg-amber-50' },
+  { key: 'about', table: 'about_submissions', label: 'About', link: '/admin/about-submissions', icon: FiInfo, color: 'text-amber-600', bg: 'bg-amber-50' },
   { key: 'career', table: 'career_submissions', label: 'Career', link: '/admin/career-submissions', icon: FiBriefcase, color: 'text-rose-600', bg: 'bg-rose-50' },
   { key: 'newsletter', table: 'newsletter_subscribers', label: 'Newsletter', link: '/admin/newsletter-subscribers', icon: FiMail, color: 'text-blue-600', bg: 'bg-blue-50' },
   { key: 'chat', table: 'conversations', label: 'Chat', link: '/admin/chats?tab=live', icon: FiMessageCircle, color: 'text-cyan-600', bg: 'bg-cyan-50' },
