@@ -1131,7 +1131,7 @@ export default function HomePageEditor() {
         {/* Redesigned Sidebar Matching the Image */}
         <div className="transition-all duration-200 w-[240px] shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
-            <div className="bg-white rounded-md flex flex-col overflow-visible ring-1 ring-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+            <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {allNavItems.map((item, index) => {
                 const isActive = selectedNav.key === item.key;
                 return (
@@ -1139,14 +1139,15 @@ export default function HomePageEditor() {
                     key={item.key}
                     type="button"
                     onClick={() => navigate(`/admin/home/${item.key}`)}
-                    className={`relative w-full flex flex-col text-left px-4 py-3 border-b border-gray-100 last:border-b-0 focus:outline-none ${
-                      index === 0 ? 'rounded-t-md' : ''
+                    className={`relative w-full flex items-center gap-2.5 text-left px-4 py-3 border-b border-gray-200 last:border-b-0 focus:outline-none transition-colors ${
+                      index === 0 ? 'rounded-t-xl' : ''
                     } ${
-                      index === allNavItems.length - 1 ? 'rounded-b-md' : ''
+                      index === allNavItems.length - 1 ? 'rounded-b-xl' : ''
                     } ${
-                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-50'
+                      isActive ? 'bg-admin-600 text-white shadow-md z-10' : 'bg-white text-gray-600 hover:bg-gray-100'
                     }`}
                   >
+                    {item.icon && <item.icon className="w-4 h-4 shrink-0" />}
                     <div className="font-semibold text-sm">
                       {item.label}
                     </div>
