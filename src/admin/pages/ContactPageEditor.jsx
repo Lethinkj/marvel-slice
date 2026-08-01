@@ -5,7 +5,7 @@ import { supabase } from '../../lib/supabaseClient';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
-import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiArrowLeft, FiHome, FiMail, FiBriefcase, FiMessageSquare, FiSettings, FiMapPin, FiHelpCircle } from 'react-icons/fi';
+import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiArrowLeft, FiHome, FiBriefcase, FiMessageSquare, FiSettings, FiMapPin, FiHelpCircle } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import { RepeatableItemList } from '../components/ui/RepeatableItemList';
@@ -57,6 +57,7 @@ const PAGE_PATH = '/contact';
 
 const DEFAULT_CONTACT_CONTENT = {
   left_heading: 'Get in Touch',
+  left_heading_line_2: '',
   left_subtitle: "We'd love to hear from you. Reach out to us and we'll get back to you as soon as possible.",
   address: '',
   display_phone: '',
@@ -66,6 +67,7 @@ const DEFAULT_CONTACT_CONTENT = {
   gradient_start: '#0B2D6B',
   gradient_end: '#1E56C7',
   heading_color: '#ffffff',
+  heading_line_2_color: '#ffffff',
   subheading_color: '#ffffff',
   text_color: '#ffffff',
   show_shadow: true,
@@ -87,11 +89,11 @@ const queryClient = useQueryClient();
   const navItemIdRef = useRef(null);
   const savingRef = useRef(false);
 
-  const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '' });
+  const [hero, setHero] = useState({ heading: '', subheading: '', hero_image: '', heading_line_2: '' });
   const [contactContent, setContactContent] = useState(DEFAULT_CONTACT_CONTENT);
-  const [showContactSection, setShowContactSection] = useState(true);
+  const [formConfig, setFormConfig] = useState({});
   const [faqs, setFaqs] = useState([]);
-  const { dirty, reset } = useDirty([hero, contactContent, faqs], loading);
+  const { dirty, reset } = useDirty([hero, contactContent, formConfig, faqs], loading);
 
   function updateContent(field, value) {
     setContactContent((prev) => ({ ...prev, [field]: value }));
@@ -122,17 +124,21 @@ const queryClient = useQueryClient();
         const page = pages?.[0] || null;
         if (page) {
           setPageId(page.id);
-          setHero({ heading: page.heading || '', subheading: page.subheading || '', hero_image: page.hero_image || '' });
+          setHero({
+            heading: page.heading || '',
+            subheading: page.subheading || '',
+            hero_image: page.hero_image || '',
+            heading_line_2: page.form_config?.hero?.heading_line_2 || '',
+          });
+          setFormConfig(page.form_config || {});
           const secs = page.sections || [];
 
           const contactFormSec = secs.find(s => s.section_type === 'contact_form');
           if (contactFormSec) {
-            setShowContactSection(true);
             setContactContent({ ...DEFAULT_CONTACT_CONTENT, ...contactFormSec.content });
           } else {
             const contactInfoSec = secs.find(s => s.section_type === 'contact_info');
             if (contactInfoSec) {
-              setShowContactSection(true);
               setContactContent((prev) => ({
                 ...prev,
                 left_heading: contactInfoSec.heading || prev.left_heading,
@@ -168,14 +174,14 @@ const queryClient = useQueryClient();
     setSaveError('');
 
     const sections = [
-      showContactSection ? { section_type: 'contact_form', content: contactContent } : null,
+      { section_type: 'contact_form', content: contactContent },
       faqs.length > 0 ? { section_type: 'faq_list', heading: 'Frequently Asked Questions', items: faqs } : null,
       contactContent.map_embed_url ? { section_type: 'map_embed', content: contactContent.map_embed_url } : null,
     ].filter(Boolean);
 
     if (!navItemId && !navItemIdRef.current) { setSaveError('No nav item linked — please refresh and try again'); setSaving(false); savingRef.current = false; return; }
 
-    const payload = { nav_item_id: navItemId || navItemIdRef.current, heading: hero.heading, subheading: hero.subheading, hero_image: hero.hero_image || null, sections, is_published: true };
+    const payload = { nav_item_id: navItemId || navItemIdRef.current, heading: hero.heading, subheading: hero.subheading, hero_image: hero.hero_image || null, form_config: { ...formConfig, hero: { heading_line_2: hero.heading_line_2 || '' } }, sections, is_published: true };
     let res;
     if (pageId) {
       res = await supabase.from('nav_pages').update(payload).eq('id', pageId);
@@ -205,7 +211,6 @@ const queryClient = useQueryClient();
 
   const tabs = [
     { id: 'hero-section', title: 'Hero', icon: FiHome },
-    { id: 'contact-section', title: 'Contact', icon: FiMail },
     { id: 'left-side-company-details', title: 'Company Details', icon: FiBriefcase },
     { id: 'right-side-form-settings', title: 'Form', icon: FiMessageSquare },
     { id: 'style-settings', title: 'Style', icon: FiSettings },
@@ -268,9 +273,13 @@ const queryClient = useQueryClient();
                 <input type="text" value={hero.heading} onChange={(e) => setHero({ ...hero, heading: e.target.value })} placeholder="Heading" className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>Subheading</label>
-                <input type="text" value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Subheading" className={inputCls} />
+                <label className={labelCls}>Heading Line 2 (Optional)</label>
+                <input type="text" value={hero.heading_line_2 || ''} onChange={(e) => setHero({ ...hero, heading_line_2: e.target.value })} placeholder="Second line of heading" className={inputCls} />
               </div>
+            </div>
+            <div>
+              <label className={labelCls}>Description</label>
+              <textarea rows={4} value={hero.subheading} onChange={(e) => setHero({ ...hero, subheading: e.target.value })} placeholder="Description" className={`${inputCls} resize-y`} />
             </div>
             <div>
               <ImageUploader value={hero.hero_image} onChange={(v) => setHero({ ...hero, hero_image: v })} label="Hero Image" />
@@ -279,31 +288,20 @@ const queryClient = useQueryClient();
         </div>
       )}
 
-        {/* Contact Section Toggle */}
-        {activeTab === 'contact-section' && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-neutral-500 mt-0.5">Split-screen layout: company details on the left, contact form on the right.</p>
-            </div>
-            <button type="button" onClick={() => setShowContactSection(!showContactSection)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${showContactSection ? 'bg-admin-600' : 'bg-admin-300'}`}>
-              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showContactSection ? 'translate-x-6' : 'translate-x-1'}`} />
-            </button>
-          </div>
-        </div>
-      )}
+        {/* Contact Section is always enabled */}
 
         {/* Left Side: Company Details */}
-        {showContactSection && (
-          <>
-            {activeTab === 'left-side-company-details' && (
+        {activeTab === 'left-side-company-details' && (
         <div className="space-y-6">
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelCls}>Heading</label>
                     <input type="text" value={contactContent.left_heading} onChange={(e) => updateContent('left_heading', e.target.value)} className={inputCls} placeholder="Get in Touch" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Heading Line 2 (Optional)</label>
+                    <input type="text" value={contactContent.left_heading_line_2 || ''} onChange={(e) => updateContent('left_heading_line_2', e.target.value)} className={inputCls} placeholder="Second line of heading" />
                   </div>
                   <div>
                     <label className={labelCls}>Subtitle</label>
@@ -370,10 +368,21 @@ const queryClient = useQueryClient();
                     </div>
                   </div>
                   <div>
+                    <label className={labelCls}>Heading</label>
+                    <input type="text" value={contactContent.left_heading || ''} onChange={(e) => updateContent('left_heading', e.target.value)} className={inputCls} placeholder="Get in Touch" />
+                  </div>
+                  <div>
                     <label className={labelCls}>Heading Color</label>
                     <div className="flex items-center gap-2">
                       <input type="color" value={contactContent.heading_color || '#ffffff'} onChange={(e) => updateContent('heading_color', e.target.value)} className="w-10 h-10 rounded-lg border border-admin-200 cursor-pointer" />
                       <input type="text" value={contactContent.heading_color || '#ffffff'} onChange={(e) => updateContent('heading_color', e.target.value)} className={inputCls} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Heading Line 2 Color</label>
+                    <div className="flex items-center gap-2">
+                      <input type="color" value={contactContent.heading_line_2_color || '#ffffff'} onChange={(e) => updateContent('heading_line_2_color', e.target.value)} className="w-10 h-10 rounded-lg border border-admin-200 cursor-pointer" />
+                      <input type="text" value={contactContent.heading_line_2_color || '#ffffff'} onChange={(e) => updateContent('heading_line_2_color', e.target.value)} className={inputCls} />
                     </div>
                   </div>
                   <div>
@@ -390,19 +399,19 @@ const queryClient = useQueryClient();
                       <input type="text" value={contactContent.text_color || '#ffffff'} onChange={(e) => updateContent('text_color', e.target.value)} className={inputCls} />
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button type="button" onClick={() => updateContent('show_shadow', !contactContent.show_shadow)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${contactContent.show_shadow ? 'bg-admin-600' : 'bg-admin-300'}`}>
-                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${contactContent.show_shadow ? 'translate-x-6' : 'translate-x-1'}`} />
-                  </button>
-                  <label className="text-sm text-neutral-700">Card Shadow</label>
+                  <div className="sm:col-start-3">
+                    <label className={labelCls}>Card Shadow</label>
+                    <div className="flex items-center gap-3 justify-end">
+                      <button type="button" onClick={() => updateContent('show_shadow', !contactContent.show_shadow)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${contactContent.show_shadow ? 'bg-admin-600' : 'bg-admin-300'}`}>
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${contactContent.show_shadow ? 'translate-x-6' : 'translate-x-1'}`} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
       )}
-          </>
-        )}
 
         {/* Map Embed */}
         {activeTab === 'map-embed' && (

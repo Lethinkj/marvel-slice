@@ -66,7 +66,7 @@ export default function ContactSection({ section }) {
 
   const successMessage = c.success_message || 'Thank you! Your message has been received. Our team will contact you soon.';
 
-  const [form, setForm] = useState({ full_name: '', email: '', phone: '', subject: '', message: '' });
+  const [form, setForm] = useState({ full_name: '', email: '', phone: '', message: '' });
   const [status, setStatus] = useState('idle');
   const [errors, setErrors] = useState({});
 
@@ -77,7 +77,6 @@ export default function ContactSection({ section }) {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email';
     if (!form.phone.trim()) errs.phone = 'Phone is required';
     else if (!/^[\d\s+\-()]{7,15}$/.test(form.phone.trim())) errs.phone = 'Invalid phone number';
-    if (!form.subject.trim()) errs.subject = 'Subject is required';
     if (!form.message.trim()) errs.message = 'Message is required';
     return errs;
   }
@@ -101,12 +100,11 @@ export default function ContactSection({ section }) {
           full_name: form.full_name,
           email: form.email,
           phone: form.phone,
-          subject: form.subject,
           message: form.message,
         });
         trackFormSubmit('contact');
         setStatus('success');
-        setForm({ full_name: '', email: '', phone: '', subject: '', message: '' });
+        setForm({ full_name: '', email: '', phone: '', message: '' });
       } else {
         setStatus('error');
       }
@@ -131,7 +129,10 @@ export default function ContactSection({ section }) {
         <FloatingCircles />
         <div className="relative z-10 space-y-7">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: headingColor }}>{leftHeading}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: headingColor }}>
+              {leftHeading}
+              {c.left_heading_line_2 && <><br /><span style={{ color: c.heading_line_2_color || headingColor }}>{c.left_heading_line_2}</span></>}
+            </h2>
             <p className="text-sm leading-relaxed" style={{ color: subheadingColor }}>{leftSubtitle}</p>
           </div>
           <div className="space-y-5">
@@ -205,35 +206,19 @@ export default function ContactSection({ section }) {
                       {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
                     </div>
                   </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Phone Number <span className="text-red-400">*</span></label>
-                      <input
-                        type="tel"
-                        required
-                        value={form.phone}
-                        onChange={(e) => handleChange('phone', e.target.value)}
-                        placeholder="+1 (555) 019-2834"
-                        className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors ${
-                          errors.phone ? 'border-red-400 focus:ring-2 focus:ring-red-200' : 'border-neutral-300 focus:ring-2 focus:ring-[#1E56C7]/20 focus:border-[#1E56C7]'
-                        }`}
-                      />
-                      {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Subject <span className="text-red-400">*</span></label>
-                      <input
-                        type="text"
-                        required
-                        value={form.subject}
-                        onChange={(e) => handleChange('subject', e.target.value)}
-                        placeholder="How can we help you?"
-                        className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors ${
-                          errors.subject ? 'border-red-400 focus:ring-2 focus:ring-red-200' : 'border-neutral-300 focus:ring-2 focus:ring-[#1E56C7]/20 focus:border-[#1E56C7]'
-                        }`}
-                      />
-                      {errors.subject && <p className="text-xs text-red-500 mt-1">{errors.subject}</p>}
-                    </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Phone Number <span className="text-red-400">*</span></label>
+                    <input
+                      type="tel"
+                      required
+                      value={form.phone}
+                      onChange={(e) => handleChange('phone', e.target.value)}
+                      placeholder="+1 (555) 019-2834"
+                      className={`w-full px-4 py-2.5 border rounded-lg text-sm outline-none transition-colors ${
+                        errors.phone ? 'border-red-400 focus:ring-2 focus:ring-red-200' : 'border-neutral-300 focus:ring-2 focus:ring-[#1E56C7]/20 focus:border-[#1E56C7]'
+                      }`}
+                    />
+                    {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1.5">Message <span className="text-red-400">*</span></label>

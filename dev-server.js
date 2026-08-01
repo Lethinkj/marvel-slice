@@ -134,7 +134,7 @@ async function handleBrochure(body) {
 }
 
 async function handleContact(body) {
-  const { full_name, email, phone, subject, message } = body;
+  const { full_name, email, phone, message } = body;
   if (!full_name || !email) return { success: true };
   if (!process.env.ADMIN_EMAIL || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) return { success: true };
 
@@ -146,7 +146,7 @@ async function handleContact(body) {
     </div>
     <div style="padding:24px 32px;">
       <table style="width:100%;border-collapse:collapse;">
-        ${row('Full Name', full_name)}${row('Email', email)}${row('Phone', phone || '\u2014')}${row('Subject', subject || '\u2014')}${row('Message', (message || '\u2014').replace(/\n/g, '<br>'))}
+        ${row('Full Name', full_name)}${row('Email', email)}${row('Phone', phone || '\u2014')}${row('Message', (message || '\u2014').replace(/\n/g, '<br>'))}
       </table>
     </div>
     <div style="padding:16px 32px;background:#F5F6F8;font-size:12px;color:#5F6B7A;text-align:center;border-top:1px solid #e5e7eb;">Marvel Slice — Contact Page</div>

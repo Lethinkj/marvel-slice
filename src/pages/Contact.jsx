@@ -7,6 +7,30 @@ import { supabase } from '../lib/supabaseClient';
 
 const PAGE_PATH = '/contact';
 
+function HeroHeading({ data }) {
+  const cfg = data.form_config?.hero || {};
+  const line2 = cfg.heading_line_2;
+
+  return (
+    <div className="flex flex-col items-center mb-4 text-center">
+      {line2 ? (
+        <>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-dark-navy inline-block">
+            {data.heading}
+          </h1>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-dark-navy inline-block">
+            {line2}
+          </h1>
+        </>
+      ) : (
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-dark-navy">
+          {data.heading}
+        </h1>
+      )}
+    </div>
+  );
+}
+
 export default function Contact() {
   const { data, isLoading } = useQuery({
     queryKey: ['navPageData', PAGE_PATH],
@@ -56,8 +80,8 @@ export default function Contact() {
 
       {(data.heading || data.subheading) && (
         <Reveal className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
-          {data.heading && <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-dark-navy mb-4">{data.heading}</h1>}
-          {data.subheading && <p className="text-base sm:text-lg text-text-gray max-w-2xl mx-auto">{data.subheading}</p>}
+          {data.heading && <HeroHeading data={data} />}
+          {data.subheading && <p className="text-lg sm:text-xl text-text-gray max-w-3xl mx-auto mt-4 leading-relaxed">{data.subheading}</p>}
         </Reveal>
       )}
 

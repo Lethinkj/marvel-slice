@@ -459,7 +459,6 @@ if contact_id:
                 "full_name": {"enabled": True, "required": True, "label": "Full Name", "placeholder": "Enter your full name"},
                 "email": {"enabled": True, "required": True, "label": "Email Address", "placeholder": "Enter your email"},
                 "phone": {"enabled": True, "required": False, "label": "Phone Number", "placeholder": "Optional"},
-                "category": {"enabled": True, "required": True, "label": "Subject", "placeholder": "Select subject", "options": ["General Inquiry", "Course Information", "Corporate Training", "Partnership", "Support", "Other"]},
                 "description": {"enabled": True, "required": True, "label": "Message", "placeholder": "Tell us how we can help you..."}
             }
         },
