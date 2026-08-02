@@ -7,6 +7,7 @@ import AddButton from "../components/AddButton";
 import { FiTrash2, FiMove, FiArrowLeft, FiLayers, FiCheck, FiClock, FiVideo, FiCode, FiAward, FiCalendar, FiRefreshCw, FiMessageCircle, FiUsers, FiStar, FiBarChart2, FiBookOpen, FiBriefcase, FiTarget, FiGlobe, FiCpu, FiDatabase, FiZap, FiShield, FiTrendingUp, FiChevronDown, FiChevronUp, FiSettings, FiFileText, FiTag, FiImage, FiHeart, FiAlertCircle, FiSave, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
+import SectionSelect from '../components/ui/SectionSelect';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
@@ -437,7 +438,7 @@ export default function ServiceEditor() {
       )}
 
       <div className="flex flex-col lg:flex-row gap-[15px] items-start">
-        <div className="transition-all duration-200 w-full lg:w-[240px] lg:shrink-0">
+        <div className="hidden lg:block transition-all duration-200 lg:w-[240px] lg:shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
             <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {editorTabs.map((t, index) => {
@@ -461,7 +462,7 @@ export default function ServiceEditor() {
                       {meta.label}
                     </div>
                     {isActive && (
-                      <div className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[27px] border-l-admin-600" />
+                      <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[27px] border-l-admin-600" />
                     )}
                   </button>
                 );
@@ -471,6 +472,7 @@ export default function ServiceEditor() {
         </div>
 
         <div className="flex-1 min-w-0">
+          <SectionSelect items={editorTabs.map(t => ({ key: t, label: tabMeta[t].label }))} value={tab} onChange={setTab} label="Section" />
           <SaveBar saving={saving} saved={saved} saveError={saveError} label="Page" top />
           <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
           {tab === "basic" && (

@@ -32,15 +32,15 @@ export default function Pagination({
 
   return (
     <div className="flex items-center justify-between w-full gap-x-4 gap-y-2 flex-wrap">
-      <div className="text-sm text-neutral-600 font-sans">
+      <div className="text-xs sm:text-sm text-neutral-600 font-sans">
         {startItem.toLocaleString()}-{endItem.toLocaleString()} of {totalItems.toLocaleString()}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className="text-sm font-medium text-neutral-700 disabled:text-neutral-300 disabled:cursor-not-allowed hover:text-black transition-colors"
+          className="text-xs sm:text-sm font-medium text-neutral-700 disabled:text-neutral-300 disabled:cursor-not-allowed hover:text-black transition-colors"
         >
           &lt; Back
         </button>
@@ -68,14 +68,14 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className="text-sm font-medium text-neutral-700 disabled:text-neutral-300 disabled:cursor-not-allowed hover:text-black transition-colors"
+          className="text-xs sm:text-sm font-medium text-neutral-700 disabled:text-neutral-300 disabled:cursor-not-allowed hover:text-black transition-colors"
         >
           Next &gt;
         </button>
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
-        <span className="text-sm text-neutral-600 whitespace-nowrap">Result per page</span>
+        <span className="hidden sm:inline text-sm text-neutral-600 whitespace-nowrap">Result per page</span>
         <div className="relative min-w-[80px]">
           <select
             value={itemsPerPage}

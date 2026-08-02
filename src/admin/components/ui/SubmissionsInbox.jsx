@@ -369,7 +369,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </div>
           </div>
 
-          <div className="flex items-end gap-3 w-full">
+          <div className="flex flex-wrap items-end gap-3 w-full">
           {!disableReply && <div className="flex-1">
             <div className="relative">
               <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
@@ -383,10 +383,10 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           </div>}
 
           {extraFilters && extraFilters.map((f, i) => (
-            <div key={i} className="flex-1">
+            <div key={i} className="flex-1 min-w-[140px]">
               <div className="relative">
                 <select value={f.value} onChange={e => { f.onChange(e.target.value); setPage(1); }}
-                  className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
+                  className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
                 >
                   {f.options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
@@ -394,7 +394,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             </div>
           ))}
 
-          <div className="flex-1">
+          <div className="flex-1 min-w-[140px]">
             <div className="relative">
               <select value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); }}
                 className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all w-full"
@@ -410,12 +410,12 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
           {dateFilter === 'custom' && (
             <>
-              <div className="flex-1">
+              <div className="flex-1 min-w-[120px]">
                 <input type="date" value={customStart} onChange={e => setCustomStart(e.target.value)}
                   className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-[120px]">
                 <input type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)}
                   className="h-9 px-3 border border-admin-200 bg-white text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-neutral-500 transition-all"
                 />
@@ -521,7 +521,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               <DetailRow label="Submitted" value={formatDate(selected.created_at)} />
             </div>
             <div className="flex items-center justify-between px-5 py-4 border-t border-admin-100 bg-white/50">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {!disableReply && <button onClick={() => selected.is_read ? markUnread(selected) : markRead(selected)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${selected.is_read ? 'bg-success-50 text-success-700' : 'bg-neutral-100 text-neutral-500'}`}
                 >

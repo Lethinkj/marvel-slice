@@ -7,6 +7,7 @@ import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import { FiSave, FiAlertCircle, FiTrash2, FiUpload, FiArrowLeft, FiHome, FiBriefcase, FiMessageSquare, FiSettings, FiMapPin, FiHelpCircle } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
+import SectionSelect from '../components/ui/SectionSelect';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import { RepeatableItemList } from '../components/ui/RepeatableItemList';
 import { RepeatableItemCard } from '../components/ui/RepeatableItemCard';
@@ -226,7 +227,7 @@ const queryClient = useQueryClient();
     >
       <div className="flex flex-col lg:flex-row gap-[15px] items-start">
 
-        <div className="transition-all duration-200 w-full lg:w-[240px] lg:shrink-0">
+        <div className="hidden lg:block transition-all duration-200 lg:w-[240px] lg:shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
             <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {tabs.map((tab, index) => {
@@ -259,6 +260,7 @@ const queryClient = useQueryClient();
         </div>
 
         <div className="flex-1 min-w-0">
+          <SectionSelect items={tabs.map(t => ({ key: t.id, label: t.title }))} value={activeTab} onChange={setActiveTab} label="Section" />
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
           <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
             <form onSubmit={handleSave} className="space-y-6">

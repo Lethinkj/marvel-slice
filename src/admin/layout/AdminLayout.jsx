@@ -165,7 +165,7 @@ export default function AdminLayout() {
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-admin-200 z-50 max-h-96 flex flex-col">
+                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] max-w-80 sm:w-80 bg-white rounded-xl shadow-2xl border border-admin-200 z-50 max-h-96 flex flex-col">
                   <div className="px-4 py-3 border-b border-admin-100">
                     <h3 className="text-sm font-semibold text-neutral-900">Notifications</h3>
                     <p className="text-xs text-neutral-500">{totalUnread} unread submission{totalUnread !== 1 ? 's' : ''}</p>

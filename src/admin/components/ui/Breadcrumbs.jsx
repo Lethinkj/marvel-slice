@@ -141,7 +141,7 @@ export default function Breadcrumbs({ className = "" }) {
   }
 
   return (
-    <nav className={`flex items-center gap-1.5 text-xs text-neutral-500 ${className}`}>
+    <nav className={`flex flex-wrap items-center gap-1.5 text-xs text-neutral-500 min-w-0 ${className}`}>
       <Link to="/admin" className="hover:text-neutral-700 transition-colors font-medium">Dashboard</Link>
       {crumbs.map((c, i) => {
         const isLast = i === crumbs.length - 1;

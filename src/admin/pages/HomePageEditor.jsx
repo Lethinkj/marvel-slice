@@ -10,6 +10,7 @@ import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
+import SectionSelect from '../components/ui/SectionSelect';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import {
   FiTrash2, FiSave, FiUpload, FiArrowLeft,
@@ -1122,7 +1123,7 @@ export default function HomePageEditor() {
       <div className="flex flex-col lg:flex-row gap-[15px] items-start">
 
         {/* Redesigned Sidebar Matching the Image */}
-        <div className="transition-all duration-200 w-full lg:w-[240px] lg:shrink-0">
+        <div className="hidden lg:block transition-all duration-200 lg:w-[240px] lg:shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
             <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {allNavItems.map((item, index) => {
@@ -1146,9 +1147,7 @@ export default function HomePageEditor() {
                     </div>
 
                     {isActive && (
-                      <div
-                        className="absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[27px] border-l-admin-600"
-                      />
+                      <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 -right-[15px] w-0 h-0 border-y-[15px] border-y-transparent border-l-[27px] border-l-admin-600" />
                     )}
                   </button>
                 );
@@ -1159,6 +1158,7 @@ export default function HomePageEditor() {
 
         {/* Main Content Editor Area */}
         <div className="flex-1 min-w-0">
+          <SectionSelect items={allNavItems.map(n => ({ key: n.key, label: n.label }))} value={section} onChange={(key) => navigate(`/admin/home/${key}`)} label="Section" />
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
           <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
             {def && sec ? (

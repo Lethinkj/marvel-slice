@@ -271,3 +271,33 @@ select {
   cursor: pointer;
 }
 
+/* ─── Mobile/Tablet-only responsive fixes (≤1023px) ─── */
+/* STRICT: These rules ONLY apply below the desktop breakpoint. */
+/* Desktop (≥1024px) is completely unaffected. */
+@media (max-width: 1023px) {
+  /* Table scroll affordance: subtle shadow on right edge when table overflows */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  /* Ensure admin images don't cause horizontal overflow */
+  .admin-scrollbar img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* FolderTabs: ensure scrollable on small screens */
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 0;
+  }
+}
+
+/* Extra-small screen overrides (≤480px) — mobile phones only */
+@media (max-width: 480px) {
+  /* Stack form button pairs full-width on tiny screens */
+  .admin-scrollbar .flex.items-center.justify-end.gap-2 > button,
+  .admin-scrollbar .flex.items-center.justify-end.gap-3 > button {
+    min-width: 0;
+  }
+}

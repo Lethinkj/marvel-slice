@@ -730,7 +730,7 @@ export default function TrainingDetail() {
                   </div>
                 </div>
                 {training.placement_highlights?.length > 0 && (
-                  <ul className="grid sm:grid-cols-2 gap-3 mt-6 pl-16">
+                  <ul className="grid sm:grid-cols-2 gap-3 mt-6 pl-4 sm:pl-16">
                     {training.placement_highlights.map((item, i) => {
                       const label = typeof item === 'string' ? item : item.title || item.label;
                       return (

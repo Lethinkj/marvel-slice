@@ -58,7 +58,7 @@ export default function CTABannerSection({ section }) {
           </div>
         )}
 
-        <div className="relative max-w-7xl mx-auto px-10 sm:px-16 lg:px-20 py-16 sm:py-20">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-16 lg:px-20 py-16 sm:py-20">
           <Reveal>
             <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
               {/* Left Column */}

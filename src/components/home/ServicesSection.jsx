@@ -26,7 +26,21 @@ export default function ServicesSection({ section }) {
 
   const [cardIdx, setCardIdx] = useState(0);
   const [paused, setPaused] = useState(false);
-  const maxCardIdx = Math.max(0, serviceCards.length - 3);
+
+  // Responsive: number of visible cards per viewport
+  const [visibleCards, setVisibleCards] = useState(3);
+  useEffect(() => {
+    function update() {
+      if (window.innerWidth < 640) setVisibleCards(1);
+      else if (window.innerWidth < 1024) setVisibleCards(2);
+      else setVisibleCards(3);
+    }
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  const maxCardIdx = Math.max(0, serviceCards.length - visibleCards);
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -140,10 +154,10 @@ export default function ServicesSection({ section }) {
             <div className="overflow-hidden">
               <div
                 className="flex transition-transform duration-300 ease-in-out"
-                style={{ transform: `translateX(-${cardIdx * (100 / 3)}%)` }}
+                style={{ transform: `translateX(-${cardIdx * (100 / visibleCards)}%)` }}
               >
                 {serviceCards.map((card, i) => (
-                  <div key={i} className="w-1/3 shrink-0 px-2">
+                  <div key={i} className="shrink-0 px-2" style={{ width: `${100 / visibleCards}%` }}>
                     {card.is_clickable && card.link_url ? (
                       <Link
                         to={card.link_url}
@@ -160,7 +174,7 @@ export default function ServicesSection({ section }) {
                 ))}
               </div>
             </div>
-            {serviceCards.length > 3 && (
+            {serviceCards.length > visibleCards && (
               <>
                 <button
                   onClick={() => setCardIdx((p) => Math.max(0, p - 1))}

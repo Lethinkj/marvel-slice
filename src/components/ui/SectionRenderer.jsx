@@ -206,7 +206,7 @@ export default function SectionRenderer({ section }) {
       return (
         <Reveal>
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
-          <div className="relative left-1/2 -translate-x-1/2 w-screen">
+          <div className="relative left-1/2 -translate-x-1/2 w-full">
             <iframe
               src={mapSrc}
               className="w-full aspect-[16/9] max-h-[450px]"
