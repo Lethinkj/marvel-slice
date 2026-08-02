@@ -96,10 +96,10 @@ export default function SectionRenderer({ section }) {
             {content && <div className="text-gray-700 text-base leading-relaxed mb-10">{content}</div>}
           </div>
           {items.length > 0 && (
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {items.map((stat, i) => (
                 <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px' }}>
-                  <div className="text-3xl sm:text-4xl font-bold text-orange-500">{stat.number}</div>
+                  <div className="text-3xl sm:text-4xl font-bold text-brand-orange">{stat.number}</div>
                   <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
                 </div>
               ))}
@@ -153,10 +153,10 @@ export default function SectionRenderer({ section }) {
       return (
         <Reveal className="py-16">
           {section.heading && <h2 className={`text-3xl sm:text-4xl font-bold text-dark-navy mb-8 text-${ha}`}>{section.heading}</h2>}
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {items.map((stat, i) => (
               <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px' }}>
-                <div className="text-3xl sm:text-4xl font-bold text-orange-500">{stat.number}</div>
+                <div className="text-3xl sm:text-4xl font-bold text-brand-orange">{stat.number}</div>
                 <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
               </div>
             ))}
@@ -278,8 +278,8 @@ export default function SectionRenderer({ section }) {
     case 'feature_grid': {
       const items = safeParse(section.items);
       if (items.length === 0) return null;
-      const circleBgColors = ['bg-orange-100', 'bg-blue-100', 'bg-green-100', 'bg-purple-100'];
-      const iconColors = ['text-orange-500', 'text-blue-500', 'text-green-500', 'text-purple-500'];
+      const circleBgColors = ['bg-brand-orange/15', 'bg-blue-100', 'bg-green-100', 'bg-purple-100'];
+      const iconColors = ['text-brand-orange', 'text-blue-500', 'text-green-500', 'text-purple-500'];
       const ha = section.headingAlign || 'center';
       const sa = section.subheadingAlign || 'center';
       const barMargin = ha === 'center' ? 'mx-auto' : ha === 'right' ? 'ml-auto' : 'mr-auto';
@@ -289,7 +289,7 @@ export default function SectionRenderer({ section }) {
             {section.heading && (
               <Reveal as="div" className={`mb-4 text-${ha}`}>
                 <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">{section.heading}</h2>
-                <div className={`w-16 h-1 bg-orange-500 mt-2 ${barMargin}`} />
+                <div className={`w-16 h-1 bg-brand-orange mt-2 ${barMargin}`} />
               </Reveal>
             )}
             {section.subheading && (

@@ -52,7 +52,7 @@ export default function About() {
   return (
     <div>
       {data.hero_image && (
-        <div className="w-full max-w-[1900px] mx-auto h-[220px] sm:h-[320px] lg:h-[400px] overflow-hidden"><img src={data.hero_image} alt="" className="w-full h-full object-cover" /></div>
+        <div className="w-full max-w-[1900px] mx-auto h-auto sm:h-[320px] lg:h-[400px] overflow-hidden"><img src={data.hero_image} alt="" className="w-full h-full object-cover" /></div>
       )}
 
       {(data.heading || data.subheading) && (
