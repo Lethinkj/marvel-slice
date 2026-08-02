@@ -16,6 +16,46 @@ function getStatIcon(label) {
   return FiAward;
 }
 
+function CourseButtons() {
+  return (
+    <div className="flex flex-wrap gap-2 pt-1">
+      <Link
+        to="/courses?parent=software-learning"
+        className="inline-flex items-center justify-center gap-2 flex-1 min-w-0 sm:flex-none px-4 sm:px-[30px] py-3 sm:py-[15px] rounded-full bg-brand-orange text-white font-semibold text-xs sm:text-sm hover:bg-brand-orange/90 transition-colors"
+      >
+        Software Learning
+      </Link>
+      <Link
+        to="/courses?parent=competitive-exam"
+        className="inline-flex items-center justify-center gap-2 flex-1 min-w-0 sm:flex-none px-4 sm:px-[30px] py-3 sm:py-[15px] rounded-full bg-brand-green text-white font-semibold text-xs sm:text-sm hover:bg-brand-green/90 transition-colors"
+      >
+        Competitive Exam
+      </Link>
+    </div>
+  );
+}
+
+function StatsGrid({ stats }) {
+  return (
+    <Stagger className="grid grid-cols-3 gap-3 sm:gap-4">
+      {stats.map((stat, i) => {
+        const Icon = getStatIcon(stat.label);
+        return (
+          <StaggerItem key={i}>
+            <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-4 text-center hover:-translate-y-1 transition-all duration-300 max-w-[238px] mx-auto" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-lg bg-brand-orange/10 flex items-center justify-center mb-2">
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-orange" />
+              </div>
+              <p className="text-base sm:text-2xl font-extrabold" style={{ color: '#175cdd' }}>{stat.value}</p>
+              <p className="text-[10px] sm:text-xs mt-0.5" style={{ color: '#000000' }}>{stat.label}</p>
+            </div>
+          </StaggerItem>
+        );
+      })}
+    </Stagger>
+  );
+}
+
 export default function IntroFormSection({ section }) {
   const content = section?.content || {};
   const heading = section?.heading || '';
@@ -94,44 +134,15 @@ export default function IntroFormSection({ section }) {
               </p>
             )}
 
-            {stats.length > 0 && (
-              <Stagger className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {stats.map((stat, i) => {
-                  const Icon = getStatIcon(stat.label);
-                  return (
-                    <StaggerItem key={i}>
-                      <div className="bg-white rounded-xl border border-gray-100 p-4 text-center hover:-translate-y-1 transition-all duration-300 max-w-[238px] mx-auto" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
-                        <div className="w-10 h-10 mx-auto rounded-lg bg-brand-orange/10 flex items-center justify-center mb-2">
-                          <Icon className="w-4 h-4 text-brand-orange" />
-                        </div>
-                        <p className="text-xl sm:text-2xl font-extrabold" style={{ color: '#175cdd' }}>{stat.value}</p>
-                        <p className="text-xs mt-0.5" style={{ color: '#000000' }}>{stat.label}</p>
-                      </div>
-                    </StaggerItem>
-                  );
-                })}
-              </Stagger>
-            )}
-
-            <div className="flex flex-wrap gap-2 pt-1">
-              <Link
-                to="/courses?parent=software-learning"
-                className="inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-brand-orange text-white font-semibold text-sm hover:bg-brand-orange/90 transition-colors"
-              >
-                Software Learning
-              </Link>
-              <Link
-                to="/courses?parent=competitive-exam"
-                className="inline-flex items-center justify-center gap-2 px-[30px] py-[15px] rounded-full bg-brand-green text-white font-semibold text-sm hover:bg-brand-green/90 transition-colors"
-              >
-                Competitive Exam
-              </Link>
+            <div className="hidden lg:block space-y-6">
+              {stats.length > 0 && <StatsGrid stats={stats} />}
+              <CourseButtons />
             </div>
           </Reveal>
 
           <Reveal variant="right" className="lg:col-span-2 self-start">
             <p className="text-base font-[600] text-center mb-2" style={{ color: '#ef4444' }}>Book Your Demo Now!</p>
-            <div className="rounded-2xl overflow-hidden max-w-sm w-full lg:ml-auto" style={{ backgroundColor: '#74a916', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+            <div className="rounded-2xl overflow-hidden max-w-sm w-full mx-auto lg:ml-auto" style={{ backgroundColor: '#74a916', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {/* diagonal header: white left / orange right */}
               <div className="relative h-16" style={{ backgroundColor: '#ff8415' }}>
                 <div
@@ -214,6 +225,11 @@ export default function IntroFormSection({ section }) {
               </Stagger>
             )}
           </Reveal>
+
+          <div className="lg:hidden mt-8 space-y-6">
+            {stats.length > 0 && <StatsGrid stats={stats} />}
+            <CourseButtons />
+          </div>
         </div>
       </div>
 

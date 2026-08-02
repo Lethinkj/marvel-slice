@@ -55,11 +55,11 @@ export default function Footer() {
   return (
     <footer className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-8">
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-x-6 sm:gap-x-8 gap-y-8">
+          <div className="col-span-2 lg:col-span-1">
             <div className="flex justify-center mb-3">
               {settings?.logo_url && (
-                <img src={settings.logo_url} alt="Marvel Slice" className="h-[100px] w-auto object-contain" />
+                <img src={settings.logo_url} alt="Marvel Slice" className="h-16 sm:h-[100px] w-auto object-contain" />
               )}
             </div>
             <div className="space-y-2 text-sm text-gray-400">
@@ -130,9 +130,9 @@ export default function Footer() {
       </div>
 
       <div className="bg-brand-orange py-[15px]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs sm:text-sm text-white">
-          <span>&copy; Marvel Slice. All rights reserved.</span>
-          <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] sm:text-sm text-white">
+          <span className="text-center">&copy; Marvel Slice. All rights reserved.</span>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <a href="#" className="hover:underline">Privacy Policy</a>
             <span className="text-white/60">|</span>
             <a href="#" className="hover:underline">Terms of Service</a>

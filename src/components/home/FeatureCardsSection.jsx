@@ -51,7 +51,7 @@ export default function FeatureCardsSection({ section }) {
                   )}
                   <a
                     href={card.button_link || '/courses'}
-                    className="inline-flex items-center justify-center gap-2 mt-6 bg-brand-orange text-white px-[30px] py-[15px] text-base font-semibold rounded-full hover:bg-brand-orange/90 active:scale-[0.97] transition-all duration-200 self-start"
+                    className="inline-flex items-center justify-center gap-2 mt-6 bg-brand-orange text-white px-[30px] py-[15px] text-base font-semibold rounded-full hover:bg-brand-orange/90 active:scale-[0.97] transition-all duration-200 self-center sm:self-start"
                   >
                     {card.button_text || 'View More'}
                   </a>
