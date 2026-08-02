@@ -423,7 +423,7 @@ export default function TrainingEditor() {
 
       {message && (
         <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
-          <div className={`p-4 rounded-xl flex items-center gap-3 text-sm shadow-xl animate-fade-in-up pointer-events-auto min-w-[300px] ${
+          <div className={`p-4 rounded-xl flex items-center gap-3 text-sm shadow-xl animate-fade-in-up pointer-events-auto min-w-[300px] max-w-[calc(100vw-2rem)] ${
             message.includes("successfully") || message.includes("success")
               ? "bg-success-50 border border-success-500 text-success-700"
               : "bg-destructive-50 border border-destructive-500 text-destructive-700"

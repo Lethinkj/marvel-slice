@@ -509,7 +509,7 @@ export default function TrainingWizard() {
                             <FiTrash2 className="w-4 h-4" />
                           </button>
                         </div>
-                        <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                           <input
                             value={mod.title || ""}
                             onChange={(e) => { const n = [...t.trainingModules]; n[i] = { ...n[i], title: e.target.value }; u("trainingModules", n); }}

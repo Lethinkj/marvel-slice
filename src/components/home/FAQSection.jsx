@@ -13,7 +13,7 @@ export default function FAQSection({ section }) {
 
   return (
     <section className="py-10">
-      <div className="w-full max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[92%] sm:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">
           {heading}
         </Reveal>

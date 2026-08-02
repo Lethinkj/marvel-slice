@@ -1,6 +1,6 @@
 export default function FolderTabs({ tabs, activeTab, onChange }) {
   return (
-    <div className="relative flex items-end flex-1 overflow-x-auto pt-2 z-20">
+    <div className="relative flex items-end flex-1 min-w-0 overflow-x-auto pt-2 z-20">
       {tabs.map((tab, i) => {
         const isActive = activeTab === tab.id;
         return (

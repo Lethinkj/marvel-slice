@@ -103,7 +103,7 @@ export default function AllJobs() {
                       <FiBookmark className="w-5 h-5 text-brand-orange/60 hover:text-brand-orange cursor-pointer shrink-0 transition-colors" />
                     </div>
                     {(job.experience || job.salary) && (
-                      <div className="flex items-center gap-4 border-y border-slate-100 py-2.5 px-3 my-3 rounded-lg bg-slate-50/60 text-sm text-slate-600">
+                      <div className="flex items-center gap-4 flex-wrap border-y border-slate-100 py-2.5 px-3 my-3 rounded-lg bg-slate-50/60 text-sm text-slate-600">
                         {job.experience && (
                           <span className="flex items-center gap-1.5">
                             <FiClock className="w-3.5 h-3.5 text-blue-500" />{job.experience}

@@ -3,9 +3,9 @@ import { FiPlus } from 'react-icons/fi';
 
 export default function AddButton({ onClick, to, label = 'Add', size = 'sm', className = '', disabled = false, type = 'button', title }) {
   const sizes = {
-    xs: 'px-1.5 py-0.5 gap-1',
-    sm: 'px-2 py-1 gap-1.5',
-    md: 'px-3 py-1.5 gap-2',
+    xs: 'px-1.5 py-1 lg:py-0.5 gap-1',
+    sm: 'px-2 py-1.5 lg:py-1 gap-1.5',
+    md: 'px-3 py-2 lg:py-1.5 gap-2',
     lg: 'px-4 py-2 gap-2',
   };
   const textSizes = {

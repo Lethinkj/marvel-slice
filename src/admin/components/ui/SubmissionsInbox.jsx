@@ -325,7 +325,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h1 className="text-xl font-bold text-black">
             {title} <span className="text-neutral-400 font-medium text-sm">({data.length} total{unreadCount > 0 ? ` · ${unreadCount} unread` : ''})</span>

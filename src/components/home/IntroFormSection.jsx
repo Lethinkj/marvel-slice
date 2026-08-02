@@ -95,7 +95,7 @@ export default function IntroFormSection({ section }) {
             )}
 
             {stats.length > 0 && (
-              <Stagger className="grid grid-cols-3 gap-4">
+              <Stagger className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {stats.map((stat, i) => {
                   const Icon = getStatIcon(stat.label);
                   return (

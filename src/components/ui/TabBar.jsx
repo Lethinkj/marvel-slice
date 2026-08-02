@@ -4,6 +4,12 @@ const styles = {
   container: {
     display: 'flex',
     position: 'relative',
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    flexWrap: 'nowrap',
+    minWidth: 0,
+    paddingBottom: 8,
+    marginBottom: -8,
   },
   tab: {
     position: 'relative',
@@ -13,6 +19,7 @@ const styles = {
     fontSize: '14px',
     fontWeight: 600,
     cursor: 'pointer',
+    whiteSpace: 'nowrap',
     transition: 'background 0.15s, color 0.15s',
   },
   active: {
@@ -44,7 +51,7 @@ export default function TabBar({ tabs, activeIndex = 0, onChange }) {
   }
 
   return (
-    <div style={styles.container}>
+    <div className="scrollbar-hide" style={styles.container}>
       {tabs.map((label, i) => (
         <button
           key={label}

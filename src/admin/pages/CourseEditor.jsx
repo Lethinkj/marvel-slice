@@ -484,7 +484,7 @@ export default function CourseEditor() {
     >
       {message && (
         <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
-          <div className={`p-4 rounded-xl flex items-center gap-3 text-sm shadow-xl animate-fade-in-up pointer-events-auto min-w-[300px] ${
+          <div className={`p-4 rounded-xl flex items-center gap-3 text-sm shadow-xl animate-fade-in-up pointer-events-auto min-w-[300px] max-w-[calc(100vw-2rem)] ${
             message.includes("successfully") || message.includes("success")
               ? "bg-success-50 border border-success-500 text-success-700"
               : "bg-destructive-50 border border-destructive-500 text-destructive-700"
@@ -499,8 +499,8 @@ export default function CourseEditor() {
         </div>
       )}
 
-      <div className="flex gap-[15px] items-start">
-        <div className="transition-all duration-200 w-[220px] shrink-0">
+      <div className="flex flex-col lg:flex-row gap-[15px] items-start">
+        <div className="transition-all duration-200 w-full lg:w-[220px] lg:shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
             <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {editorTabs.map((t, index) => {
@@ -594,7 +594,7 @@ export default function CourseEditor() {
                       placeholder="Expert Led Live Training Sessions&#10;Angular Fundamentals to Advanced Concepts&#10;Real Time Project Development Experience"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-black mb-1">Left Button Label</label>
                       <input value={course.cta_left || ''} onChange={(e) => update('cta_left', e.target.value)}
@@ -660,7 +660,7 @@ export default function CourseEditor() {
                   </div>
                 );
               })()}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-black mb-1">Duration</label>
                   <select value={course.duration} onChange={(e) => update("duration", e.target.value)}
@@ -714,7 +714,7 @@ export default function CourseEditor() {
                       className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       placeholder="Enroll now and gain industry-ready skills with expert mentors." />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-black mb-1">Button Text</label>
                       <input value={course.cta_text || ''} onChange={(e) => update('cta_text', e.target.value)}

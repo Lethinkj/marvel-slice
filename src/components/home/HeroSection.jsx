@@ -173,7 +173,7 @@ export default function HeroSection({ section }) {
           {stats.length > 0 && (
             <div className="bg-dark-navy">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <Stagger className="grid grid-cols-3 gap-4">
+                <Stagger className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {stats.map((stat, i) => (
                     <StaggerItem key={i} className="text-center">
                       <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">{stat.value}</p>

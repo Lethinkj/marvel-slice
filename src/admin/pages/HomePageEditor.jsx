@@ -1119,10 +1119,10 @@ export default function HomePageEditor() {
 
   return (
     <PageShell backTo="/admin" title="" maxWidth="max-w-none">
-      <div className="flex gap-[15px] items-start">
+      <div className="flex flex-col lg:flex-row gap-[15px] items-start">
 
         {/* Redesigned Sidebar Matching the Image */}
-        <div className="transition-all duration-200 w-[240px] shrink-0">
+        <div className="transition-all duration-200 w-full lg:w-[240px] lg:shrink-0">
           <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-visible">
             <div className="bg-white rounded-xl flex flex-col overflow-visible border border-gray-300" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {allNavItems.map((item, index) => {

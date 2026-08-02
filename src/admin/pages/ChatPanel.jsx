@@ -30,9 +30,9 @@ function formatDate(d) {
 
 const FILTERS = ['All', 'Open', 'Closed'];
 
-function ConversationList({ conversations, activeId, onSelect, filter, onFilterChange, search, onSearchChange }) {
+function ConversationList({ conversations, activeId, onSelect, filter, onFilterChange, search, onSearchChange, className = '' }) {
   return (
-    <div className="w-80 shrink-0 bg-white border-r border-admin-200 flex flex-col">
+    <div className={`${className} bg-white border-r border-admin-200 flex flex-col min-h-0`}>
       <div className="shrink-0 px-4 pt-4 pb-3 border-b border-admin-100">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-bold text-black text-base flex items-center gap-2">
@@ -238,7 +238,7 @@ function LiveChat({ conversations, onConversationsChange }) {
   }
 
   return (
-    <div className="flex h-[calc(100vh-11rem)] bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-11rem)] bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
       <ConversationList
         conversations={filtered}
         activeId={activeConv?.id}
@@ -247,6 +247,7 @@ function LiveChat({ conversations, onConversationsChange }) {
         onFilterChange={setFilter}
         search={search}
         onSearchChange={setSearch}
+        className={`shrink-0 w-full lg:w-80 ${activeConv ? 'hidden lg:flex' : 'flex'}`}
       />
 
       {activeConv ? (

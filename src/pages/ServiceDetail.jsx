@@ -15,7 +15,7 @@ import { supabase } from '../lib/supabaseClient';
 const MODE_ICONS = {
   online: FiGlobe,
   classroom: FiUsers,
-  hybrid: FiLayers,
+  hybrid: FiLayers
   'one-on-one': FiTarget,
 };
 

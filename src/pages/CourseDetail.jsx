@@ -114,7 +114,7 @@ function CourseTabs({ tabs }) {
           </Link>
         </div>
         <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-sm">
-          <div className="p-6 sm:p-8 h-[420px] overflow-y-auto">
+          <div className="p-6 sm:p-8 max-h-[420px] lg:max-h-none overflow-y-auto lg:overflow-visible">
             {renderContent(activeTab)}
           </div>
         </div>
@@ -241,7 +241,7 @@ function FAQSection({ faqs }) {
   const [openIdx, setOpenIdx] = useState(null);
   return (
     <section id="faqs" data-section="faqs" className="py-10">
-      <div className="w-full max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[92%] sm:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">
           Frequently Asked Questions
         </Reveal>
@@ -481,7 +481,7 @@ export default function CourseDetail() {
       {/* Brochure Download Modal */}
       {showBrochure && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowBrochure(false)}>
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
               <h2 className="text-lg font-bold text-gray-900">Download Brochure</h2>
               <button onClick={() => setShowBrochure(false)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">

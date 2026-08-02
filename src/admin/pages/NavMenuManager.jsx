@@ -515,7 +515,7 @@ export default function NavMenuManager() {
             onClick={() => {
               if (hasSubs) setExpanded(open ? {} : { [item.id]: true });
             }}
-            className={`group grid grid-cols-12 gap-3 px-6 py-3.5 items-center transition-all hover:bg-gray-50 ${
+            className={`group grid grid-cols-12 gap-3 px-6 py-3.5 items-center transition-all hover:bg-gray-50 min-w-[900px] ${
               level > 0 ? 'bg-gray-50/30 border-t border-gray-100' : 'bg-white'
             } ${hasSubs ? 'cursor-pointer' : ''}`}
             style={{ paddingLeft: `${24 + level * 28}px` }}
@@ -723,7 +723,7 @@ export default function NavMenuManager() {
               </div>
             </div>
 
-            <div className="border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col">
+            <div className="border border-gray-200 bg-white shadow-sm overflow-x-auto flex flex-col">
 
               {filteredItems.length === 0 ? (
                 <div className="px-6 py-16 text-center">
@@ -739,7 +739,7 @@ export default function NavMenuManager() {
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-12 gap-3 px-6 py-3 bg-blue-600 border-b border-gray-200 text-xs font-bold text-white uppercase tracking-wider">
+                  <div className="grid grid-cols-12 gap-3 px-6 py-3 bg-blue-600 border-b border-gray-200 text-xs font-bold text-white uppercase tracking-wider min-w-[900px]">
                     <div className="col-span-1">SL NO</div>
                     <div className="col-span-3">LABEL</div>
                     <div className="col-span-4">PATH</div>

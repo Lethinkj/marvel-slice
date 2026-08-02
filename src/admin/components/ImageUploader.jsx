@@ -64,7 +64,7 @@ export default function ImageUploader({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <label className="cursor-pointer flex items-center gap-2 bg-admin-100 hover:bg-admin-200 text-sm px-4 py-2 rounded-md transition-colors">
           <FiUpload className="w-4 h-4" />
           {uploading ? 'Uploading...' : 'Upload'}

@@ -47,14 +47,14 @@ export default function Pagination({
 
         {pages.map((p, i) =>
           p === '...' ? (
-            <span key={`ellipsis-${i}`} className="w-7 h-7 flex items-center justify-center text-xs text-neutral-400">
+            <span key={`ellipsis-${i}`} className="w-9 h-9 lg:w-7 lg:h-7 flex items-center justify-center text-xs text-neutral-400">
               ...
             </span>
           ) : (
             <button
               key={p}
               onClick={() => onPageChange(p)}
-              className={`w-7 h-7 rounded flex items-center justify-center text-xs font-medium transition-colors ${
+              className={`w-9 h-9 lg:w-7 lg:h-7 rounded flex items-center justify-center text-xs font-medium transition-colors ${
                 p === currentPage
                   ? 'bg-blue-600 text-white'
                   : 'bg-white border border-gray-200 text-neutral-600 hover:bg-gray-100'

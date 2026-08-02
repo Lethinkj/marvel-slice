@@ -2,7 +2,7 @@ import React from 'react';
 
 export function SectionSidebar({ navItems, activeItemKey, onNavClick }) {
   return (
-    <div className="w-[220px] transition-all duration-200">
+    <div className="w-full lg:w-[220px] lg:shrink-0 transition-all duration-200">
       <nav className="sticky top-6 self-start max-h-[calc(100vh-80px)] overflow-y-auto admin-scrollbar">
         <div className="bg-white rounded-xl border border-admin-200 shadow-sm p-2 space-y-0.5">
           {navItems.map((item) => {

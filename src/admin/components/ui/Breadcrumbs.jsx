@@ -133,7 +133,7 @@ export default function Breadcrumbs({ className = "" }) {
 
   if (crumbs.length === 0) {
     return (
-      <nav className={`flex items-center gap-1.5 text-xs text-neutral-500 ${className}`}>
+    <nav className={`flex flex-wrap items-center gap-1.5 text-xs text-neutral-500 min-w-0 ${className}`}>
         <span className="text-blue-600 font-medium">Dashboard</span>
         <FiChevronRight className="w-3 h-3 text-neutral-300" />
       </nav>

@@ -16,7 +16,7 @@ export default function EmpoweringSection({ section }) {
             {heading && (
               <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy mb-3">{heading}</h2>
             )}
-            <div className="w-80 h-[3px] bg-brand-orange mx-auto mb-5" />
+            <div className="w-4/5 max-w-xs h-[3px] bg-brand-orange mx-auto mb-5" />
             {description && (
               <p className="text-text-gray text-base sm:text-lg leading-relaxed">{description}</p>
             )}

@@ -78,7 +78,7 @@ export default function CommandPalette({ open, onClose }) {
   const grouped = groupResults(results);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] cursor-pointer" onClick={onClose}>
+    <div className="fixed inset-0 z-[100] flex items-start justify-center px-4 pt-[15vh] cursor-pointer" onClick={onClose}>
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-admin-200 overflow-hidden cursor-pointer" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 px-4 border-b border-admin-100">
