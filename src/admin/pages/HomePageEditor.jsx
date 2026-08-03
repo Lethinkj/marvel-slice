@@ -10,10 +10,9 @@ import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import PageShell from '../components/ui/PageShell';
-import SectionSelect from '../components/ui/SectionSelect';
 import SectionAccordion from '../components/ui/SectionAccordion';
 import {
-  FiTrash2, FiSave, FiUpload, FiArrowLeft,
+  FiTrash2, FiSave, FiUpload, FiArrowLeft, FiMenu,
   FiHome, FiStar, FiAward, FiHelpCircle,
   FiLayout, FiMail, FiMessageSquare, FiBell, FiUsers,
   FiClock, FiVideo, FiCode, FiCalendar, FiRefreshCw,
@@ -1021,10 +1020,30 @@ export default function HomePageEditor() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const mobileNavRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const savingRef = useRef(false);
   const { dirty, reset } = useDirty([sections, alumniData], loading);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    function handlePointer(e) {
+      if (mobileNavRef.current && !mobileNavRef.current.contains(e.target)) setMobileNavOpen(false);
+    }
+    function handleKey(e) {
+      if (e.key === "Escape") setMobileNavOpen(false);
+    }
+    document.addEventListener("mousedown", handlePointer);
+    document.addEventListener("touchstart", handlePointer);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handlePointer);
+      document.removeEventListener("touchstart", handlePointer);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [mobileNavOpen]);
 
   useEffect(() => {
     if (!loading) {
@@ -1158,7 +1177,38 @@ export default function HomePageEditor() {
 
         {/* Main Content Editor Area */}
         <div className="flex-1 min-w-0">
-          <SectionSelect items={allNavItems.map(n => ({ key: n.key, label: n.label }))} value={section} onChange={(key) => navigate(`/admin/home/${key}`)} label="Section" />
+          <div ref={mobileNavRef} className="relative lg:hidden mb-4">
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen((o) => !o)}
+              className="w-full flex items-center gap-2.5 px-4 py-3 rounded-xl border border-gray-300 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              aria-expanded={mobileNavOpen}
+            >
+              <FiMenu className="w-4 h-4 text-admin-600 shrink-0" />
+              <span className="truncate">{selectedNav.label}</span>
+              <FiChevronDown className={`w-4 h-4 ml-auto text-gray-400 shrink-0 transition-transform duration-300 ${mobileNavOpen ? "rotate-180" : ""}`} />
+            </button>
+            {mobileNavOpen && (
+              <div className="absolute left-0 right-0 top-full mt-2 z-40 bg-white rounded-xl border border-gray-300 shadow-xl overflow-hidden">
+                {allNavItems.map((item) => {
+                  const isActive = selectedNav.key === item.key;
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => { navigate(`/admin/home/${item.key}`); setMobileNavOpen(false); }}
+                      className={`w-full flex items-center gap-2.5 text-left px-4 py-3 border-b border-gray-200 last:border-b-0 text-sm font-semibold ${
+                        isActive ? "bg-admin-600 text-white" : "bg-white text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      {item.icon && <item.icon className="w-4 h-4 shrink-0" />}
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <SaveBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} label="Page" top />
           <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
             {def && sec ? (
