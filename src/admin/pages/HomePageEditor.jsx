@@ -1139,7 +1139,7 @@ export default function HomePageEditor() {
 
   return (
     <PageShell backTo="/admin" title="" maxWidth="max-w-none">
-      <div className="flex flex-col lg:flex-row gap-[15px] items-start">
+      <div className="flex flex-col lg:flex-row gap-[15px] lg:items-start">
 
         {/* Redesigned Sidebar Matching the Image */}
         <div className="hidden lg:block transition-all duration-200 lg:w-[240px] lg:shrink-0">
