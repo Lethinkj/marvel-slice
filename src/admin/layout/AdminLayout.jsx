@@ -65,7 +65,7 @@ export default function AdminLayout() {
       }
       const { data } = await supabase
         .from(table)
-        .select('id, full_name, created_at')
+        .select('*')
         .eq('is_read', false)
         .order('created_at', { ascending: false })
         .limit(10);

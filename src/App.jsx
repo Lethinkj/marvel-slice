@@ -115,7 +115,7 @@ function PublicLayout() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         <Route path="/*" element={<PublicLayout />} />
         <Route path="/admin/*" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center text-neutral-500 text-sm">Loading admin…</div>}><Admin /></Suspense>} />

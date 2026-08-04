@@ -25,6 +25,12 @@ const entityConfig = {
     edit: "Edit Job Opening",
     parent: "/admin/jobs",
   },
+  internships: {
+    list: "Internships",
+    new: "Add Internship",
+    edit: "Edit Internship",
+    parent: "/admin/internships",
+  },
   services: {
     list: "Services",
     new: "New Service",

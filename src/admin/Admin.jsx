@@ -38,6 +38,8 @@ import ServicesPageEditor from './pages/ServicesPageEditor';
 import TrainingPageEditor from './pages/TrainingPageEditor';
 import CareerSubmissions from './pages/CareerSubmissions';
 import CareerContactSubmissions from './pages/CareerContactSubmissions';
+import InternshipsManager from './pages/InternshipsManager';
+import InternEditor from './pages/InternEditor';
 import BrochureDownloads from './pages/BrochureDownloads';
 import FormSubmissions from "./pages/FormSubmissions";
 import NewsletterSubscribers from "./pages/NewsletterSubscribers";
@@ -142,6 +144,8 @@ export default function Admin() {
           <Route path="jobs" element={<JobsList />} />
           <Route path="jobs/new" element={<JobEditor />} />
           <Route path="jobs/:id" element={<JobEditor />} />
+          <Route path="internships" element={<InternshipsManager />} />
+          <Route path="internships/:id" element={<InternEditor />} />
           
           <Route path="services" element={<ServicesManager />} />
           <Route path="services/new" element={<ServiceWizard />} />

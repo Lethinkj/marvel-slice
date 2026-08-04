@@ -40,7 +40,9 @@ const navGroups = [
   {
     label: "Jobs", icon: FiBriefcase, items: [
       { to: "/admin/jobs/new", label: "Add Job", icon: FiPlusCircle },
-      { to: "/admin/jobs", label: "View Jobs", icon: FiBriefcase, catchSubRoutes: true, siblingRoutes: ["/admin/jobs/new"] }
+      { to: "/admin/jobs", label: "View Jobs", icon: FiBriefcase, catchSubRoutes: true, siblingRoutes: ["/admin/jobs/new"] },
+      { to: "/admin/internships/new", label: "Add Intern", icon: FiPlusCircle },
+      { to: "/admin/internships", label: "View Internships", icon: FiClock, catchSubRoutes: true, siblingRoutes: ["/admin/internships/new"] }
     ],
   },
   { label: "Submissions", icon: FiInbox, items: [

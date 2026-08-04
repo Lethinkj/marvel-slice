@@ -20,6 +20,8 @@ const routes = [
   { label: 'New Blog Post', to: '/admin/blog/new', icon: FiFileText, category: 'Content' },
   { label: 'Career Submissions', to: '/admin/career-submissions', icon: FiInbox, category: 'Submissions' },
   { label: 'Career Enquiry Submissions', to: '/admin/career-contact-submissions', icon: FiInbox, category: 'Submissions' },
+  { label: 'Internships', to: '/admin/internships', icon: FiInbox, category: 'Content' },
+  { label: 'Add Intern', to: '/admin/internships/new', icon: FiInbox, category: 'Content' },
   { label: 'Contact Submissions', to: '/admin/contact-submissions', icon: FiInbox, category: 'Submissions' },
   { label: 'Brochure Downloads', to: '/admin/brochure-downloads', icon: FiInbox, category: 'Submissions' },
   { label: 'Form Submissions', to: '/admin/form-submissions', icon: FiInbox, category: 'Submissions' },
