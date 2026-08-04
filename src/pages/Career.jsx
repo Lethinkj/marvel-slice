@@ -97,9 +97,9 @@ function BookDemoForm() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-blue-100 shadow-lg overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
-        <h3 className="text-xl font-bold text-white">Contact Us</h3>
+    <div className="bg-white rounded-2xl border border-brand-orange/20 shadow-lg overflow-hidden">
+      <div className="bg-brand-orange px-6 py-4">
+        <h3 className="text-xl font-bold text-white">Enquiry</h3>
         <div className="text-white text-xs mt-0.5">Fill the form and our team will contact you shortly.</div>
       </div>
       <div className="p-6">
@@ -665,8 +665,8 @@ export default function Career() {
             <div className="w-12 h-1 bg-blue-500 mx-auto rounded-full mt-3" />
           </div>
 
-          <div className="lg:grid lg:grid-cols-[1fr_380px] lg:gap-8 items-center">
-            <div className="min-w-0">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 items-start">
+            <div className="order-2 lg:order-1">
           {jobs?.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -745,7 +745,7 @@ export default function Career() {
             </div>
           )}
             </div>
-            <aside className="mt-10 lg:mt-0 lg:-translate-y-8">
+            <aside className="order-1 lg:order-2">
               <BookDemoForm />
             </aside>
           </div>
