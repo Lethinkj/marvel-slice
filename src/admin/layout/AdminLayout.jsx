@@ -14,7 +14,7 @@ const submissionTypes = [
   { key: 'contact', table: 'contact_submissions', label: 'Contact', link: '/admin/contact-submissions', icon: FiMail, color: 'text-amber-600', bg: 'bg-amber-50' },
   { key: 'about', table: 'about_submissions', label: 'About', link: '/admin/about-submissions', icon: FiInfo, color: 'text-amber-600', bg: 'bg-amber-50' },
   { key: 'career', table: 'career_submissions', label: 'Career', link: '/admin/career-submissions', icon: FiBriefcase, color: 'text-rose-600', bg: 'bg-rose-50' },
-  { key: 'careerContact', table: 'career_contact_submissions', label: 'Career Contact', link: '/admin/career-contact-submissions', icon: FiMail, color: 'text-cyan-600', bg: 'bg-cyan-50' },
+  { key: 'careerContact', table: 'career_contact_submissions', label: 'Career Enquiry', link: '/admin/career-contact-submissions', icon: FiMail, color: 'text-cyan-600', bg: 'bg-cyan-50' },
   { key: 'newsletter', table: 'newsletter_subscribers', label: 'Newsletter', link: '/admin/newsletter-subscribers', icon: FiMail, color: 'text-blue-600', bg: 'bg-blue-50' },
   { key: 'chat', table: 'conversations', label: 'Chat', link: '/admin/chats?tab=live', icon: FiMessageCircle, color: 'text-cyan-600', bg: 'bg-cyan-50' },
 ];

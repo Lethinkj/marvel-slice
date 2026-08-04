@@ -74,7 +74,7 @@ const singles = {
   "training-page": "Edit Training Page",
   "blog-page": "Edit Blog Page",
   "career-submissions": "Career Submissions",
-  "career-contact-submissions": "Career Contact Submissions",
+  "career-contact-submissions": "Career Enquiry Submissions",
   "brochure-downloads": "Brochure Downloads",
   "form-submissions": "Form Submissions",
   "newsletter-subscribers": "Newsletter Subscribers",

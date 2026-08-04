@@ -18,7 +18,7 @@ export default function CareerContactSubmissions() {
     <PageShell backTo="/admin">
       <SubmissionsInbox
         table="career_contact_submissions"
-        title="Career Contact Submissions"
+        title="Career Enquiry Submissions"
         columns={columns}
         detailFields={detailFields}
         exportFilename="career-contact-submissions"
