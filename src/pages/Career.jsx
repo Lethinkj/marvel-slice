@@ -71,9 +71,14 @@ function BookDemoForm() {
   const [demoSubmitting, setDemoSubmitting] = useState(false);
   const [demoDone, setDemoDone] = useState(false);
   const [demoMsg, setDemoMsg] = useState(null);
+  const [demoAgree, setDemoAgree] = useState(false);
 
   async function handleDemoSubmit(e) {
     e.preventDefault();
+    if (!demoAgree) {
+      setDemoMsg({ type: 'error', text: 'Please agree to the terms and conditions.' });
+      return;
+    }
     setDemoSubmitting(true);
     setDemoMsg(null);
     const { error } = await supabase.from('career_contact_submissions').insert({
@@ -97,7 +102,7 @@ function BookDemoForm() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-brand-orange/20 shadow-lg overflow-hidden">
+    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
       <div className="bg-brand-orange px-6 py-4">
         <h3 className="text-xl font-bold text-white">Enquiry</h3>
         <div className="text-white text-xs mt-0.5">Fill the form and our team will contact you shortly.</div>
@@ -110,7 +115,7 @@ function BookDemoForm() {
             </div>
             <h4 className="text-lg font-bold text-slate-900 mb-1">Thank You!</h4>
             <p className="text-sm text-slate-500">We have received your request. Our team will get in touch with you shortly.</p>
-            <button onClick={() => { setDemoDone(false); setDemoForm({ name: '', email: '', phone: '' }); }} className="mt-6 text-sm font-semibold text-brand-orange hover:underline">
+            <button onClick={() => { setDemoDone(false); setDemoForm({ name: '', email: '', phone: '' }); setDemoAgree(false); }} className="mt-6 text-sm font-semibold text-brand-orange hover:underline">
               Send Another Message
             </button>
           </div>
@@ -149,6 +154,18 @@ function BookDemoForm() {
             {demoMsg && (
               <p className="!text-red-500 text-xs">{demoMsg.text}</p>
             )}
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input type="checkbox" checked={demoAgree} onChange={(e) => {
+                setDemoAgree(e.target.checked);
+                if (demoMsg?.type === 'error') setDemoMsg(null);
+              }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600/20" />
+              <span className="text-xs text-slate-600 leading-relaxed">
+                I agree to the{' '}
+                <a href="/terms" className="text-blue-600 underline hover:text-blue-700">Terms of Use</a>
+                {' '}and{' '}
+                <a href="/privacy" className="text-blue-600 underline hover:text-blue-700">Privacy Policy</a>.
+              </span>
+            </label>
             <button
               type="submit"
               disabled={demoSubmitting}
@@ -183,6 +200,7 @@ export default function Career() {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null);
   const [errors, setErrors] = useState({});
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const visibleJobs = 4;
 
   const { data: pageContent, isLoading: pageLoading } = useQuery({
@@ -286,22 +304,33 @@ export default function Career() {
 
   useEffect(() => {
     if (selectedJob) {
-      setForm(prev => ({ ...prev, position: selectedJob.title || '' }));
+      setForm(prev => ({
+        ...prev,
+        position: selectedJob.title || '',
+        category: selectedJob._type === 'intern' ? 'Internship' : (selectedJob.type || prev.category),
+      }));
     }
   }, [selectedJob]);
 
   useEffect(() => {
-    if (applyTitle && jobs?.length > 0 && formEnabled) {
-      const job = jobs.find(j => j.title === applyTitle) || null;
-      setSelectedJob(job);
-      setForm(prev => ({ ...prev, position: applyTitle }));
+    if (applyTitle && (jobs?.length > 0 || internships?.length > 0) && formEnabled) {
+      const job = jobs?.find(j => j.title === applyTitle) || null;
+      const intern = internships?.find(i => i.title === applyTitle) || null;
+      const selected = job || intern;
+      setSelectedJob(selected);
+      setForm(prev => ({
+        ...prev,
+        position: applyTitle,
+        category: intern ? 'Internship' : prev.category,
+      }));
       setShowForm(true);
       setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [applyTitle, jobs, formEnabled]);
+  }, [applyTitle, jobs, internships, formEnabled]);
 
   const isLoading = pageLoading || catsLoading || jobsLoading || internshipsLoading;
+  const isInternship = form.category === 'Internship';
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -319,6 +348,7 @@ export default function Career() {
     if (!form.position.trim()) errs.position = 'Position is required';
     if (!form.category) errs.category = 'Please select a category';
     if (!form.description.trim()) errs.description = 'Description is required';
+    if (!agreeTerms) errs.agree = 'Please agree to the terms and conditions';
     if (!file) errs.file = 'Resume is required';
     else {
       const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
@@ -380,6 +410,7 @@ export default function Career() {
     trackFormSubmit('career');
     if (file_url) trackDownload('career_resume');
     setStatus({ type: 'success', message: 'Application submitted successfully! We will get back to you soon.' });
+    setAgreeTerms(false);
     setSubmitting(false);
   }
 
@@ -476,14 +507,22 @@ export default function Career() {
             {fieldDefs.category.enabled !== false && (
               <Field label={fieldDefs.category.label} required={fieldDefs.category.required !== false} error={errors.category}>
                 <div className="relative">
-                  <select name="category" value={form.category} onChange={handleChange}
-                    className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all outline-none appearance-none ${
-                      errors.category ? 'border-red-300' : 'border-slate-200'
-                    } ${!form.category ? 'text-slate-400' : ''}`}>
-                    <option value="" disabled>{fieldDefs.category.placeholder}</option>
-                    {(fieldDefs.category.options || []).map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                  <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  {isInternship ? (
+                    <input name="category" value={form.category} readOnly
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100/70 text-slate-500 text-sm cursor-not-allowed" />
+                  ) : (
+                    <>
+                      <select name="category" value={form.category} onChange={handleChange}
+                        style={{ WebkitAppearance: 'none', MozAppearance: 'none', appearance: 'none' }}
+                        className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all outline-none ${
+                          errors.category ? 'border-red-300' : 'border-slate-200'
+                        } ${!form.category ? 'text-slate-400' : ''}`}>
+                        <option value="" disabled>{fieldDefs.category.placeholder}</option>
+                        {(fieldDefs.category.options || []).map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                      <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </>
+                  )}
                 </div>
               </Field>
             )}
@@ -503,14 +542,18 @@ export default function Career() {
               <div className="sm:col-span-2">
                 <Field label={fieldDefs.file_upload.label} required={fieldDefs.file_upload.required !== false} error={errors.file}>
                   <label className={`relative flex flex-col items-center justify-center p-5 border-2 border-dashed rounded-2xl cursor-pointer transition-all group ${
-                    errors.file ? 'border-red-300 bg-red-50/50' : 'border-blue-200 hover:border-blue-500 bg-blue-50/30 hover:bg-blue-50/70'
+                    errors.file
+                      ? 'border-red-300 bg-red-50/50'
+                      : isInternship
+                        ? 'border-blue-200 hover:border-blue-500 bg-blue-50/30 hover:bg-blue-50/70'
+                        : 'border-brand-orange/40 hover:border-brand-orange bg-orange-50/40 hover:bg-orange-50/80'
                   }`}>
-                    <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                    <div className={`w-10 h-10 ${isInternship ? 'bg-blue-100 text-blue-600' : 'bg-brand-orange/10 text-brand-orange'} rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
                       <FiUpload className="w-5 h-5" />
                     </div>
                     <div className="text-center">
                       {file ? (
-                        <span className="text-sm font-semibold text-blue-600">{file.name}</span>
+                        <span className={`text-sm font-semibold ${isInternship ? 'text-blue-600' : 'text-brand-orange'}`}>{file.name}</span>
                       ) : (
                         <>
                           <p className="text-sm font-semibold text-slate-700">Click to upload or drag and drop</p>
@@ -534,9 +577,25 @@ export default function Career() {
               </div>
             )}
 
+            <div className="sm:col-span-2">
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" checked={agreeTerms} onChange={(e) => {
+                  setAgreeTerms(e.target.checked);
+                  if (errors.agree) setErrors(prev => ({ ...prev, agree: '' }));
+                }} className={`mt-0.5 w-4 h-4 rounded border-slate-300 ${isInternship ? 'text-blue-600 focus:ring-blue-600/20' : 'text-brand-orange focus:ring-brand-orange/20'}`} />
+                <span className="text-sm text-slate-600 leading-relaxed">
+                  I agree to the{' '}
+                  <a href="/terms" className={`underline hover:opacity-80 ${isInternship ? 'text-blue-600' : 'text-brand-orange'}`}>Terms of Use</a>
+                  {' '}and{' '}
+                  <a href="/privacy" className={`underline hover:opacity-80 ${isInternship ? 'text-blue-600' : 'text-brand-orange'}`}>Privacy Policy</a>.
+                </span>
+              </label>
+              {errors.agree && <p className="text-xs text-red-500 mt-1">{errors.agree}</p>}
+            </div>
+
             <div className="sm:col-span-2 pt-1">
               <button type="submit" disabled={submitting || uploading}
-                className="w-fit mx-auto bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                className={`w-fit mx-auto ${isInternship ? 'bg-blue-600 hover:bg-blue-700' : 'bg-brand-orange hover:bg-brand-orange/90'} active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`}>
                 {uploading ? (
                   <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Uploading...</>
                 ) : submitting ? (
@@ -640,7 +699,7 @@ export default function Career() {
             {roleCategories.map((cat, idx) => (
               <div
                 key={cat.id}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 hover:-translate-y-0.5 transition-all cursor-pointer flex items-center gap-3 group"
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 hover:shadow-md hover:border-gray-300 hover:-translate-y-0.5 transition-all cursor-pointer flex items-center gap-3 group"
               >
                 <div className={`p-3 rounded-xl flex items-center justify-center shrink-0 ${idx % 2 === 0 ? 'bg-brand-green/10 text-brand-green' : 'bg-brand-orange/10 text-brand-orange'}`}>
                   <FiBriefcase className="w-5 h-5" />
@@ -699,7 +758,7 @@ export default function Career() {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: i * 0.05 }}
-                          className="bg-white rounded-2xl border border-blue-200 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
+                          className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
                         >
                           <div className="flex items-center gap-3">
                             <h3 className="flex-1 font-bold text-slate-800 text-lg leading-tight">{item.title}</h3>
@@ -758,7 +817,7 @@ export default function Career() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.05 }}
-                        className="bg-white rounded-2xl border border-orange-100 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
+                        className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
                       >
                         <div className="flex items-center gap-3">
                           <div className="bg-brand-orange/10 text-brand-orange p-2.5 rounded-xl shrink-0">
@@ -844,7 +903,7 @@ export default function Career() {
             className="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-slate-100"
             onClick={e => e.stopPropagation()}
           >
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 text-white relative">
+            <div className={`${isInternship ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-brand-orange'} px-6 py-4 text-white relative`}>
               <button onClick={() => { setShowForm(false); setSelectedJob(null); }} className="absolute top-3 right-3 bg-white shadow-md text-slate-600 hover:text-slate-800 p-1.5 rounded-full transition-all cursor-pointer border border-slate-200 z-10" aria-label="Close">
                 <FiX className="w-4 h-4" />
               </button>

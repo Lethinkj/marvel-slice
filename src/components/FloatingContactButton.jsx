@@ -35,6 +35,7 @@ export default function FloatingContactButton() {
     subject: '',
     message: '',
   });
+  const [agreeTerms, setAgreeTerms] = useState(false);
 
   function handleChange(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -49,6 +50,7 @@ export default function FloatingContactButton() {
     if (!form.phone.trim()) errs.phone = 'Phone number is required';
     if (!form.subject) errs.subject = 'Please select an enquiry type';
     if (!form.message.trim()) errs.message = 'Message is required';
+    if (!agreeTerms) errs.agree = 'Please agree to the terms and conditions';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
@@ -76,6 +78,7 @@ export default function FloatingContactButton() {
       setTimeout(() => {
         setOpen(false);
         setSent(false);
+        setAgreeTerms(false);
         setForm({ full_name: '', email: '', phone: '', subject: '', message: '' });
       }, 1200);
     } catch {
@@ -157,7 +160,7 @@ export default function FloatingContactButton() {
               >
                 <FiX className="w-4 h-4" />
               </button>
-              <h3 className="text-xl font-bold">Contact us</h3>
+              <h3 className="text-xl font-bold">Enquiry</h3>
               <div className="text-white text-xs mt-0.5">Fill the form and our team will contact you shortly.</div>
             </div>
 
@@ -197,9 +200,22 @@ export default function FloatingContactButton() {
                   </div>
                 </div>
                 {errors.form && <p className="!text-red-500 text-xs mt-2">{errors.form}</p>}
-                <div className="mt-5 flex justify-center">
+                <label className="mt-4 flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={agreeTerms} onChange={(e) => {
+                    setAgreeTerms(e.target.checked);
+                    if (errors.agree) setErrors((prev) => ({ ...prev, agree: undefined }));
+                  }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600/20" />
+                  <span className="text-sm text-slate-600 leading-relaxed">
+                    I agree to the{' '}
+                    <a href="/terms" className="text-blue-600 underline hover:text-blue-700">Terms of Use</a>
+                    {' '}and{' '}
+                    <a href="/privacy" className="text-blue-600 underline hover:text-blue-700">Privacy Policy</a>.
+                  </span>
+                </label>
+                {errors.agree && <p className="!text-red-500 text-xs mt-1.5">{errors.agree}</p>}
+                <div className="mt-6 flex justify-center">
                   <button type="submit" disabled={submitting}
-                    className="inline-flex items-center justify-center gap-2 bg-brand-orange hover:bg-brand-orange/90 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                    className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                     {submitting ? (
                       <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Sending...</>
                     ) : (

@@ -905,7 +905,7 @@ export default function Courses() {
                   <div className="flex justify-end mt-8">
                     <Link
                       to={`/courses?parent=${parentParam}`}
-                      className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-orange transition-colors"
+                      className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 transition-colors"
                     >
                       Explore more courses
                       <FiChevronRight className="w-4 h-4" />

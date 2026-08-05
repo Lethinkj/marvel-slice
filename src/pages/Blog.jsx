@@ -19,7 +19,7 @@ function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 text-center relative z-20">
         <Reveal>
           <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-extrabold leading-tight">{heading || 'Latest Articles & News'}</h1>
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/70 max-w-2xl mx-auto">{subheading || 'Insights, tutorials, and stories from the Marvel Slice team'}</p>
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg !text-white max-w-2xl mx-auto">{subheading || 'Insights, tutorials, and stories from the Marvel Slice team'}</p>
         </Reveal>
         <div className="mt-6 sm:mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-2 sm:gap-0">
           <div className="relative flex-1">
@@ -27,7 +27,7 @@ function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading
             <input type="text" value={search} onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search articles..."
               onKeyDown={(e) => e.key === 'Enter' && onSearch?.()}
-              className="w-full pl-11 sm:pl-12 pr-4 py-3.5 rounded-xl sm:rounded-l-xl sm:rounded-r-none bg-white text-dark-navy text-base focus:outline-none focus:ring-2 focus:ring-brand-orange" />
+              className="w-full pl-11 sm:pl-12 pr-4 py-3.5 rounded-xl sm:rounded-l-xl sm:rounded-r-none bg-white text-dark-navy text-base focus:outline-none focus:ring-2 focus:ring-brand-orange border border-gray-300" />
           </div>
           <button onClick={onSearch} className="bg-brand-orange text-white px-8 py-3.5 rounded-xl sm:rounded-l-none sm:rounded-r-xl font-semibold hover:bg-brand-orange/90 transition-colors flex items-center justify-center gap-2">
             Search <FiArrowRight className="w-4 h-4" />
@@ -208,10 +208,10 @@ function PopularTags({ tags, activeTag, onTagClick }) {
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => (
           <button key={tag.id} onClick={() => onTagClick?.(tag.name)}
-            className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors border ${
               activeTag === tag.name
-                ? 'bg-brand-orange text-white'
-                : 'bg-gray-100 text-text-gray hover:bg-brand-orange/10 hover:text-brand-orange'
+                ? 'bg-brand-orange text-white border-gray-300'
+                : 'bg-white text-text-gray border-gray-300 hover:bg-brand-orange/10 hover:text-brand-orange'
             }`}>{tag.name}</button>
         ))}
         {tags.length === 0 && <p className="text-sm text-gray-400">No tags yet.</p>}

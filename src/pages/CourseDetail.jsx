@@ -295,6 +295,7 @@ export default function CourseDetail() {
   const [brochureSubmitting, setBrochureSubmitting] = useState(false);
   const [brochureDone, setBrochureDone] = useState(false);
   const [brochureError, setBrochureError] = useState('');
+  const [brochureAgree, setBrochureAgree] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(true);
 
   if (isLoading) {
@@ -319,6 +320,7 @@ export default function CourseDetail() {
   async function handleBrochureSubmit(e) {
     e.preventDefault();
     if (!brochureForm.name.trim() || !brochureForm.email.trim() || !brochureForm.phone.trim()) return;
+    if (!brochureAgree) { setBrochureError('Please agree to the terms and conditions.'); return; }
     setBrochureSubmitting(true);
     setBrochureError('');
 
@@ -379,7 +381,7 @@ export default function CourseDetail() {
                 <Button variant="accent" size="lg" to={course.cta_link || '#contact'} onClick={() => trackCtaClick(course.cta_left || 'Talk to Advisor', 'course_hero')} className="w-full sm:w-auto">
                   {course.cta_left || 'Talk to Advisor'}
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => { trackCtaClick(course.cta_right || 'Download Brochure', 'course_hero'); setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setShowBrochure(true); }} className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" onClick={() => { trackCtaClick(course.cta_right || 'Download Brochure', 'course_hero'); setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setBrochureAgree(false); setShowBrochure(true); }} className="w-full sm:w-auto">
                   {course.cta_right || 'Download Brochure'}
                 </Button>
               </div>
@@ -524,6 +526,18 @@ export default function CourseDetail() {
                     <FiAlertCircle className="w-4 h-4 shrink-0" /> {brochureError}
                   </div>
                 )}
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={brochureAgree} onChange={(e) => {
+                    setBrochureAgree(e.target.checked);
+                    if (brochureError) setBrochureError('');
+                  }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600/20" />
+                  <span className="text-xs text-slate-600 leading-relaxed">
+                    I agree to the{' '}
+                    <a href="/terms" className="text-blue-600 underline hover:text-blue-700">Terms of Use</a>
+                    {' '}and{' '}
+                    <a href="/privacy" className="text-blue-600 underline hover:text-blue-700">Privacy Policy</a>.
+                  </span>
+                </label>
                 <button type="submit" disabled={brochureSubmitting}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-brand-orange text-white hover:bg-brand-orange/90 transition-colors disabled:opacity-60">
                   {brochureSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}

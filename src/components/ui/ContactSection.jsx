@@ -69,6 +69,7 @@ export default function ContactSection({ section }) {
   const [form, setForm] = useState({ full_name: '', email: '', phone: '', message: '' });
   const [status, setStatus] = useState('idle');
   const [errors, setErrors] = useState({});
+  const [agreeTerms, setAgreeTerms] = useState(false);
 
   function validate() {
     const errs = {};
@@ -78,6 +79,7 @@ export default function ContactSection({ section }) {
     if (!form.phone.trim()) errs.phone = 'Phone is required';
     else if (!/^[\d\s+\-()]{7,15}$/.test(form.phone.trim())) errs.phone = 'Invalid phone number';
     if (!form.message.trim()) errs.message = 'Message is required';
+    if (!agreeTerms) errs.agree = 'Please agree to the terms and conditions';
     return errs;
   }
 
@@ -105,6 +107,7 @@ export default function ContactSection({ section }) {
         trackFormSubmit('contact');
         setStatus('success');
         setForm({ full_name: '', email: '', phone: '', message: '' });
+        setAgreeTerms(false);
       } else {
         setStatus('error');
       }
@@ -234,6 +237,19 @@ export default function ContactSection({ section }) {
                     />
                     {errors.message && <p className="text-xs text-red-500 mt-1">{errors.message}</p>}
                   </div>
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input type="checkbox" checked={agreeTerms} onChange={(e) => {
+                      setAgreeTerms(e.target.checked);
+                      if (errors.agree) setErrors((prev) => ({ ...prev, agree: undefined }));
+                    }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600/20" />
+                    <span className="text-xs text-slate-600 leading-relaxed">
+                      I agree to the{' '}
+                      <a href="/terms" className="text-blue-600 underline hover:text-blue-700">Terms of Use</a>
+                      {' '}and{' '}
+                      <a href="/privacy" className="text-blue-600 underline hover:text-blue-700">Privacy Policy</a>.
+                    </span>
+                  </label>
+                  {errors.agree && <p className="text-xs text-red-500 mt-1">{errors.agree}</p>}
                   <div className="flex justify-center">
                     <button
                     type="submit"
