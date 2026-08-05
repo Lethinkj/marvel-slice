@@ -19,6 +19,7 @@ import ServicesPage from './pages/ServicesPage';
 import ServiceDetail from './pages/ServiceDetail';
 import TrainingPage from './pages/TrainingPage';
 import TrainingDetail from './pages/TrainingDetail';
+import LegalPage from './pages/LegalPage';
 import { pageTransition } from './lib/motion';
 
 const Admin = lazy(() => import('./admin/Admin'));
@@ -77,6 +78,8 @@ function AnimatedRoutes() {
       <Route path="/training/:slug" element={<TrainingDetail />} />
       <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
       <Route path="/competitive-exam" element={<Navigate to="/courses?parent=competitive-exam" replace />} />
+      <Route path="/terms" element={<LegalPage pageKey="terms" />} />
+      <Route path="/privacy" element={<LegalPage pageKey="privacy" />} />
       <Route path="/:slug/*" element={<NavPage />} />
     </Routes>
   );

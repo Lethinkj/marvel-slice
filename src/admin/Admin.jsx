@@ -52,6 +52,7 @@ import BlogPostEditor from './pages/BlogPostEditor';
 import BlogCategoriesManager from './pages/BlogCategoriesManager';
 import BlogPageEditor from './pages/BlogPageEditor';
 import ProfileSettings from './pages/ProfileSettings';
+import LegalPageEditor from './pages/LegalPageEditor';
 
 const pageSlugToEditor = { about: 'about', contact: 'contact', career: 'career', services: 'services', training: 'training' };
 
@@ -168,6 +169,8 @@ export default function Admin() {
           <Route path="pages/:slug" element={<PageEditorRedirect />} />
           <Route path="chats" element={<ChatPanel />} />
           <Route path="blog-page" element={<BlogPageEditor />} />
+          <Route path="terms-policy" element={<LegalPageEditor key="terms" pageKey="terms" />} />
+          <Route path="privacy-policy" element={<LegalPageEditor key="privacy" pageKey="privacy" />} />
           <Route path="blog" element={<BlogManager />} />
           <Route path="blog/new" element={<BlogPostEditor key="new" />} />
           <Route path="blog/:id" element={<BlogPostEditor key="edit" />} />

@@ -16,6 +16,8 @@ const navGroups = [
       { to: "/admin/career-page", label: "Career", icon: FiBriefcase },
       { to: "/admin/blog-page", label: "Blog", icon: FiFileText },
       { to: "/admin/contact-page", label: "Contact", icon: FiMail },
+      { to: "/admin/terms-policy", label: "Terms & Conditions", icon: FiFileText },
+      { to: "/admin/privacy-policy", label: "Privacy Policy", icon: FiFileText },
     ],
   },
   { label: "Chat", icon: FiMessageCircle, items: [

@@ -204,20 +204,18 @@ export default function SectionRenderer({ section }) {
       const mapSrc = (match ? match[1] : raw).trim();
       if (!mapSrc) return null;
       return (
-        <Reveal>
-          {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
-          <div className="relative left-1/2 -translate-x-1/2 w-full">
-            <iframe
-              src={mapSrc}
-              className="w-full aspect-[16/9] max-h-[450px]"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Map"
-            />
-          </div>
-        </Reveal>
+        <section className="relative overflow-hidden" style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
+          {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center max-w-7xl mx-auto px-4">{section.heading}</h2>}
+          <iframe
+            src={mapSrc}
+            className="w-full aspect-[16/9] max-h-[450px]"
+            style={{ border: 0, display: 'block' }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Map"
+          />
+        </section>
       );
     }
     case 'faq_list':

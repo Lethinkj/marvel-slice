@@ -87,9 +87,13 @@ export default function Contact() {
 
       {data.sections?.length > 0 && data.sections.filter(s => !s.hidden).map((section, i) => (
         <div key={i} className={`py-10 sm:py-14 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {section.type === 'map_embed' ? (
             <SectionRenderer section={section} />
-          </div>
+          ) : (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <SectionRenderer section={section} />
+            </div>
+          )}
         </div>
       ))}
     </div>
