@@ -5,9 +5,12 @@ import IntroFormSection from '../components/home/IntroFormSection';
 import EmpoweringSection from '../components/home/EmpoweringSection';
 import FeatureCardsSection from '../components/home/FeatureCardsSection';
 import UpcomingClassesSection from '../components/home/UpcomingClassesSection';
+import UpcomingCoursesSection from '../components/home/UpcomingCoursesSection';
 import ServicesSection from '../components/home/ServicesSection';
 import CTABannerSection from '../components/home/CTABannerSection';
 import FAQSection from '../components/home/FAQSection';
+import TestimonialsSection from '../components/home/TestimonialsSection';
+import LatestBlogSection from '../components/home/LatestBlogSection';
 
 export default function Home() {
   const { data: homeSections } = useQuery({
@@ -38,7 +41,10 @@ export default function Home() {
       <EmpoweringSection section={sec('empowering')} />
       <FeatureCardsSection section={sec('featured_courses')} />
       <ServicesSection section={sec('services')} />
+      <UpcomingCoursesSection section={{ ...(sec('upcoming_classes') || {}), heading: 'Upcoming Courses' }} />
       <CTABannerSection section={sec('cta_banner')} />
+      <TestimonialsSection section={sec('testimonials')} />
+      <LatestBlogSection section={sec('latest_blog')} />
       <FAQSection section={sec('faqs')} />
     </>
   );

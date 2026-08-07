@@ -91,7 +91,7 @@ export default function CTABannerSection({ section }) {
                   </div>
                   <motion.a
                       href={`tel:${(phone || '').replace(/[^0-9+]/g, '')}`}
-                    className="flex items-center justify-center w-14 h-14 rounded-full bg-[#F7941D] text-white shrink-0 shadow-lg"
+                    className="flex items-center justify-center w-14 h-14 rounded-full bg-[#f59e0b] text-white shrink-0 shadow-lg"
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                   >

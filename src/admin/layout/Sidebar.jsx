@@ -1,7 +1,7 @@
 import { FiBriefcase } from "react-icons/fi";
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX, FiBarChart2, FiPlusCircle, FiClock, FiDownload, FiClipboard, FiMail, FiMessageSquare, FiTag, FiImage, FiUsers, FiUser, FiHelpCircle, FiTarget, FiStar, FiInfo } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX, FiBarChart2, FiPlusCircle, FiClock, FiDownload, FiClipboard, FiMail, FiMessageSquare, FiTag, FiImage, FiUsers, FiUser, FiHelpCircle, FiTarget, FiStar, FiInfo, FiCalendar } from "react-icons/fi";
 import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
@@ -55,6 +55,7 @@ const navGroups = [
     { to: "/admin/newsletter-subscribers", label: "Newsletter Subscribers", icon: FiMail },
     { to: "/admin/contact-submissions", label: "Contact Submissions", icon: FiMessageSquare },
     { to: "/admin/about-submissions", label: "About Submissions", icon: FiInfo },
+    { to: "/admin/upcoming-class-submissions", label: "Upcoming Class Registrations", icon: FiCalendar },
     { to: "/admin/chat-submissions", label: "Chat Submissions", icon: FiMessageCircle },
     { to: "/admin/courses/reports", label: "Reports", icon: FiBarChart2 }
     ]},
@@ -72,7 +73,17 @@ const navGroups = [
         { to: "/admin/tags/add", label: "Add Tag", icon: FiPlusCircle },
         { to: "/admin/tags", label: "View Tags", icon: FiTag }
       ]},
+      { label: "Upcoming Classes", children: [
+        { to: "/admin/upcoming-courses/new", label: "Add", icon: FiPlusCircle },
+        { to: "/admin/upcoming-courses", label: "View", icon: FiCalendar, catchSubRoutes: true, siblingRoutes: ["/admin/upcoming-courses/new"] }
+      ]},
       { to: "/admin/courses/brochure", label: "Brochure", icon: FiFileText },
+    ],
+  },
+  {
+    label: "Testimonials", icon: FiStar, items: [
+      { to: "/admin/testimonials/new", label: "Add", icon: FiPlusCircle },
+      { to: "/admin/testimonials", label: "View", icon: FiStar, catchSubRoutes: true, siblingRoutes: ["/admin/testimonials/new"] }
     ],
   },
   {

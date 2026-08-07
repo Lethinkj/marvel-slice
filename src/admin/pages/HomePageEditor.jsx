@@ -115,13 +115,6 @@ const sectionDefs = [
   },
   {
     key: 'upcoming_classes', label: 'Upcoming Classes', icon: FiCalendar, color: 'from-amber-400 to-amber-600',
-    isList: true,
-    listLabel: 'Classes',
-    itemFields: [
-      { name: 'course_name', label: 'Course Name', type: 'text' },
-      { name: 'date_time', label: 'Date & Time', type: 'text' },
-      { name: 'register_link', label: 'Register Link', type: 'text' },
-    ],
   },
   {
     key: 'empowering', label: 'Empowering', icon: FiStar, color: 'from-blue-500 to-blue-600',
@@ -147,6 +140,23 @@ const sectionDefs = [
       { name: 'cta_text', label: 'CTA Button Text', type: 'text' },
       { name: 'cta_link', label: 'Phone Number (tel:)', type: 'text' },
       { name: 'background_image', label: 'Background Image', type: 'image' },
+    ],
+  },
+  {
+    key: 'testimonials', label: 'Testimonials', icon: FiUsers, color: 'from-pink-500 to-pink-600',
+    contentOnly: true,
+    fields: [
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'text' },
+    ],
+  },
+  {
+    key: 'latest_blog', label: 'Latest Blog', icon: FiBookOpen, color: 'from-cyan-500 to-cyan-600',
+    contentOnly: true,
+    fields: [
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'text' },
+      { name: 'link_text', label: 'View All Link Text', type: 'text' },
     ],
   },
   {
@@ -824,7 +834,7 @@ function HeroEditor({ data, onChange }) {
                   updateContent('buttons', arr);
                 }}
                   className="w-28 px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white font-mono"
-                  placeholder="#F7941D" />
+                  placeholder="#f59e0b" />
                 <button type="button" onClick={() => {
                   const arr = [...content.buttons];
                   arr.splice(i, 1);
@@ -873,7 +883,7 @@ function FieldEditor({ def, data, onChange }) {
           </div>
         </div>
       )}
-      {def.fields.map((f) => (
+      {(def.fields || []).map((f) => (
         <RenderField key={f.name} field={f} value={def.contentOnly ? content[f.name] : (content[f.name] ?? '')} onChange={(v) => updateContent(f.name, v)} />
       ))}
       {def.hasList && !Array.isArray(def.hasList) && (
@@ -935,6 +945,11 @@ function SimpleListEditor({ def, data, onChange }) {
                     {f.type === 'textarea' ? (
                       <textarea value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)} rows={3}
                         className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
+                    ) : f.type === 'number' ? (
+                      <input type="number" min="1" max="5" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
+                        className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
+                    ) : f.type === 'image' ? (
+                      <ImageUploader value={item[f.name] || ''} onChange={(v) => updateItem(i, f.name, v)} label="" />
                     ) : (
                       <input type="text" value={item[f.name] || ''} onChange={(e) => updateItem(i, f.name, e.target.value)}
                         className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
@@ -978,6 +993,15 @@ function RenderField({ field, value, onChange }) {
           className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${value ? 'bg-admin-600' : 'bg-admin-300'}`}>
           <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${value ? 'translate-x-4' : 'translate-x-0.5'}`} />
         </button>
+      </div>
+    );
+  }
+  if (field.type === 'number') {
+    return (
+      <div>
+        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{field.label}</label>
+        <input type="number" min="1" max="5" value={value || ''} onChange={(e) => onChange(e.target.value)}
+          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 focus:border-admin-500 transition-all" />
       </div>
     );
   }
@@ -1057,7 +1081,7 @@ export default function HomePageEditor() {
 
   useEffect(() => {
     if (!loading) {
-      const validKeys = ['hero', 'intro_form', 'upcoming_classes', 'empowering', 'featured_courses', 'services', 'cta_banner', 'faqs'];
+      const validKeys = ['hero', 'intro_form', 'upcoming_classes', 'empowering', 'featured_courses', 'services', 'cta_banner', 'faqs', 'testimonials', 'latest_blog'];
       if (!section) navigate('/admin/home/hero', { replace: true });
       else if (!validKeys.includes(section)) navigate('/admin/home/hero', { replace: true });
     }

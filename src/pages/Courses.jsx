@@ -622,7 +622,7 @@ export default function Courses() {
                       onClick={() => selectParent(p.slug)}
                       className={`flex-1 py-3 text-sm font-medium text-center transition-all cursor-pointer ${
                         active
-                          ? "bg-[#F97316] text-white shadow-[0_0_8px_rgba(249,115,22,0.4)]"
+                          ? "bg-[#f59e0b] text-white shadow-[0_0_8px_rgba(245,158,11,0.4)]"
                           : "bg-[#EEEEEE] text-gray-500 hover:text-gray-800"
                       }`}
                     >

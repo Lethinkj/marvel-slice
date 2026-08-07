@@ -199,13 +199,7 @@ if "upcoming_classes" in existing_home:
     patch(f"/rest/v1/home_sections?id=eq.{existing_home['upcoming_classes']}", {
         "heading": "Upcoming Classes",
         "subheading": "Reserve your seat for the next batch",
-        "content": {
-            "items": [
-                {"course_name": "Full-Stack Web Development", "date_time": "Starts Mon, Sep 14, 2026 - 9:00 AM", "register_link": "/contact"},
-                {"course_name": "Data Science & Analytics", "date_time": "Starts Wed, Sep 16, 2026 - 6:30 PM", "register_link": "/contact"},
-                {"course_name": "Cloud Computing & DevOps", "date_time": "Starts Fri, Sep 18, 2026 - 10:00 AM", "register_link": "/contact"}
-            ]
-        },
+        "content": {},
         "is_active": True, "sort_order": 2
     })
 else:
@@ -213,13 +207,7 @@ else:
         "section_key": "upcoming_classes",
         "heading": "Upcoming Classes",
         "subheading": "Reserve your seat for the next batch",
-        "content": {
-            "items": [
-                {"course_name": "Full-Stack Web Development", "date_time": "Starts Mon, Sep 14, 2026 - 9:00 AM", "register_link": "/contact"},
-                {"course_name": "Data Science & Analytics", "date_time": "Starts Wed, Sep 16, 2026 - 6:30 PM", "register_link": "/contact"},
-                {"course_name": "Cloud Computing & DevOps", "date_time": "Starts Fri, Sep 18, 2026 - 10:00 AM", "register_link": "/contact"}
-            ]
-        },
+        "content": {},
         "is_active": True, "sort_order": 2
     })
 print("  upcoming_classes -> updated")
@@ -334,9 +322,77 @@ if "faqs" in existing_home:
                 {"question": "Can I get a free demo before enrolling?", "answer": "Absolutely! We offer free demo classes for all our courses. Simply fill out the form on our website or contact us to schedule your free demo session."}
             ]
         },
-        "is_active": True, "sort_order": 6
+        "is_active": True, "sort_order": 8
     })
 print("  faqs -> updated")
+
+# --- Testimonials ---
+if "testimonials" in existing_home:
+    patch(f"/rest/v1/home_sections?id=eq.{existing_home['testimonials']}", {
+        "heading": "What Our Students Say",
+        "subheading": "Real stories from students who transformed their careers with Marvel Slice",
+        "content": {
+            "heading": "What Our Students Say",
+            "subheading": "Real stories from students who transformed their careers with Marvel Slice"
+        },
+        "is_active": True, "sort_order": 6
+    })
+else:
+    post("/rest/v1/home_sections", {
+        "section_key": "testimonials",
+        "heading": "What Our Students Say",
+        "subheading": "Real stories from students who transformed their careers with Marvel Slice",
+        "content": {
+            "heading": "What Our Students Say",
+            "subheading": "Real stories from students who transformed their careers with Marvel Slice"
+        },
+        "is_active": True, "sort_order": 6
+    })
+print("  testimonials -> updated")
+
+# Testimonial rows (slider on home page)
+print("Deleting existing testimonials...")
+for t in get("/rest/v1/testimonials?select=id"):
+    delete(f"/rest/v1/testimonials?id=eq.{t['id']}")
+TESTIMONIALS = [
+    {"name": "Priya Sharma", "role": "Frontend Developer at TCS", "rating": 5, "quote": "The web development course was incredibly well structured. The trainers guided me through real-world projects and I landed my dream job within months of graduating."},
+    {"name": "Arun Kumar", "role": "Data Analyst at Infosys", "rating": 5, "quote": "I joined the data science program with zero coding background. The step-by-step mentoring and hands-on projects made everything easy to understand. Highly recommended!"},
+    {"name": "Divya Venkatesan", "role": "Cleared TNPSC Group 4", "rating": 5, "quote": "The competitive exam coaching was a game changer for me. Daily tests, expert guidance, and interview practice helped me clear my exam on the first attempt."},
+    {"name": "Rahul Nair", "role": "Cloud Engineer at Cognizant", "rating": 5, "quote": "Best place to learn cloud computing in the city. The lab sessions and placement support were outstanding. Thank you Marvel Slice!"},
+    {"name": "Sneha Patel", "role": "UI/UX Designer (Freelancer)", "rating": 5, "quote": "The design course taught me modern tools and portfolio building. Within weeks of finishing, I started getting freelance clients. Amazing faculty and a supportive community."},
+    {"name": "Karthik Raja", "role": "Backend Developer at Zoho", "rating": 5, "quote": "Practical, industry-focused training. The mock interviews and resume workshops were really helpful during placement season. I owe my career start to Marvel Slice."}
+]
+for i, t in enumerate(TESTIMONIALS):
+    post("/rest/v1/testimonials", {**t, "is_active": True, "sort_order": i})
+print(f"  testimonials -> seeded {len(TESTIMONIALS)} rows")
+
+
+# --- Latest Blog ---
+if "latest_blog" in existing_home:
+    patch(f"/rest/v1/home_sections?id=eq.{existing_home['latest_blog']}", {
+        "heading": "Latest From Our Blog",
+        "subheading": "Insights, tutorials, and stories from the Marvel Slice team",
+        "content": {
+            "heading": "Latest From Our Blog",
+            "subheading": "Insights, tutorials, and stories from the Marvel Slice team",
+            "link_text": "View All Posts"
+        },
+        "is_active": True, "sort_order": 7
+    })
+else:
+    post("/rest/v1/home_sections", {
+        "section_key": "latest_blog",
+        "heading": "Latest From Our Blog",
+        "subheading": "Insights, tutorials, and stories from the Marvel Slice team",
+        "content": {
+            "heading": "Latest From Our Blog",
+            "subheading": "Insights, tutorials, and stories from the Marvel Slice team",
+            "link_text": "View All Posts"
+        },
+        "is_active": True, "sort_order": 7
+    })
+print("  latest_blog -> updated")
+
 
 # ═══════════════════════════════════════════════════════════════
 # 3. NAV PAGES (About, Career, Contact)

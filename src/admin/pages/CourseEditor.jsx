@@ -11,6 +11,7 @@ import SectionSelect from '../components/ui/SectionSelect';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
+import { toDateTimeLocal, fromDateTimeLocal } from '../../lib/datetime';
 
 function ListEditor({ items, onChange, fields, labelKey = "label" }) {
   const addItem = () =>
@@ -180,6 +181,7 @@ export default function CourseEditor() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const [startDateError, setStartDateError] = useState(false);
   const [message, setMessage] = useState("");
   const [allTags, setAllTags] = useState([]);
   const [courseTags, setCourseTags] = useState([]);
@@ -204,6 +206,7 @@ export default function CourseEditor() {
     duration: "3 months",
     mode: "Online",
     status: "Active",
+    start_date: '',
     checklist_items: [],
     highlights: [],
     overview_faqs: [],
@@ -241,7 +244,14 @@ export default function CourseEditor() {
         ]);
 
         if (courseRes.data && !courseRes.error) {
-          setCourse((p) => ({ ...p, ...courseRes.data, tabs: tabsRes.data || [], faqs: faqsRes.data || [] }));
+          setCourse((p) => ({
+            ...p,
+            ...courseRes.data,
+            status: courseRes.data.status === 'Inactive' || courseRes.data.status === 'Unpublished' ? 'Draft' : courseRes.data.status,
+            is_published: courseRes.data.status === 'Inactive' || courseRes.data.status === 'Unpublished' || courseRes.data.status === 'Draft' ? false : !!courseRes.data.is_published,
+            tabs: tabsRes.data || [],
+            faqs: faqsRes.data || [],
+          }));
         }
         setCourseTags(tagsRes.data?.map((t) => t.tag_id) || []);
       }
@@ -386,10 +396,35 @@ export default function CourseEditor() {
   async function handleSave() {
     setSaving(true);
     setMessage("");
+    if (course.status === 'Coming Soon' && !course.start_date) {
+      setStartDateError(true);
+      setTab('basic');
+      setMessage('Please set the start date and time — it is required for "Coming Soon" courses.');
+      setSaveError('Start date and time is required for "Coming Soon" courses.');
+      setSaving(false);
+      return;
+    }
+    setStartDateError(false);
     try {
+      let slug = course.slug;
+      if (!slug) slug = String(course.title || 'course').toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'course';
+      let slugQuery = supabase.from('courses').select('id').eq('slug', slug);
+      if (!isNew) slugQuery = slugQuery.neq('id', id);
+      const { data: slugHits } = await slugQuery;
+      if (slugHits && slugHits.length > 0) {
+        let n = 2;
+        while (true) {
+          const candidate = `${slug}-${n}`;
+          let q = supabase.from('courses').select('id').eq('slug', candidate);
+          if (!isNew) q = q.neq('id', id);
+          const { data: hits } = await q;
+          if (!hits || hits.length === 0) { slug = candidate; break; }
+          n += 1;
+        }
+      }
       const payload = {
         title: course.title,
-        slug: course.slug,
+        slug,
         subtitle: course.subtitle,
         description: course.description,
         hero_image_url: course.hero_image_url,
@@ -406,6 +441,7 @@ export default function CourseEditor() {
         duration: course.duration,
         mode: course.mode,
         status: course.status,
+        start_date: course.start_date ? fromDateTimeLocal(course.start_date) : null,
         checklist_items: (course.checklist_items || []).filter(Boolean),
         curriculum: course.curriculum,
       };
@@ -683,23 +719,40 @@ export default function CourseEditor() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-black mb-1">Status</label>
-                  <select value={course.status} onChange={(e) => update("status", e.target.value)}
+                  <select value={course.status} onChange={(e) => {
+                    const v = e.target.value;
+                    update("status", v);
+                    update("is_published", v === 'Draft' ? false : true);
+                  }}
                     className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white">
                     <option value="Active">Active</option>
+                    <option value="Draft">Draft</option>
                     <option value="Coming Soon">Coming Soon</option>
-                    <option value="Inactive">Inactive</option>
                   </select>
+                  {course.status === 'Coming Soon' ? (
+                    <p className="text-xs text-neutral-500 mt-1.5">Listed in the home page Upcoming Courses section with a launch countdown. It becomes Active automatically once the start date arrives.</p>
+                  ) : (
+                    <p className="text-xs text-neutral-400 mt-1.5">Selecting "Coming Soon" lists this course in the home page Upcoming Courses section with a launch countdown.</p>
+                  )}
                 </div>
               </div>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={course.is_published}
-                  onChange={(e) => update("is_published", e.target.checked)}
-                  className="rounded"
-                />
-                Published
-              </label>
+              {course.status === 'Coming Soon' && (
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-1">
+                    Start Date & Time <span className="text-destructive-500">*</span>
+                  </label>
+                  <input type="datetime-local"
+                    value={toDateTimeLocal(course.start_date)}
+                    onChange={(e) => { update("start_date", e.target.value || null); if (startDateError) setStartDateError(false); }}
+                    className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white ${startDateError ? 'border-destructive-500 ring-2 ring-destructive-100' : 'border-admin-200'}`} />
+                  {startDateError && (
+                    <p className="text-xs text-destructive-500 mt-1.5">Please set the start date and time for this Coming Soon course.</p>
+                  )}
+                  {!startDateError && (
+                    <p className="text-xs text-neutral-500 mt-1.5">The course becomes Active automatically once this date arrives.</p>
+                  )}
+                </div>
+              )}
 
               <div className="border-t border-admin-200 pt-6 mt-6">
                 <h3 className="text-sm font-semibold text-neutral-700 mb-4">Call to Action</h3>

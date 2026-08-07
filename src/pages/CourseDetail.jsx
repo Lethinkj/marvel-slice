@@ -7,6 +7,7 @@ import { trackFormSubmit, trackDownload, trackCtaClick, trackVideoPlay } from '.
 import CourseCard from '../components/ui/CourseCard';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
+import Countdown from '../components/ui/Countdown';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
 import { supabase } from '../lib/supabaseClient';
 
@@ -311,6 +312,44 @@ export default function CourseDetail() {
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <h1 className="text-2xl font-bold text-dark-navy mb-4">Course not found</h1>
         <Link to="/courses" className="text-brand-orange hover:underline">Browse all courses</Link>
+      </div>
+    );
+  }
+
+  if (course.status === 'Coming Soon') {
+    return (
+      <div>
+        <section className="bg-gradient-to-b from-amber-50/60 to-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
+            <span className="inline-flex items-center gap-1.5 bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full mb-5">
+              <FiClock className="w-3.5 h-3.5" /> Coming Soon
+            </span>
+            <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15] max-w-3xl mx-auto">
+              {course.title}
+            </h1>
+            {course.description && (
+              <p className="mt-5 text-base text-gray-600 leading-relaxed max-w-2xl mx-auto">{course.description}</p>
+            )}
+          </div>
+        </section>
+
+        <section className="py-14 bg-white">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="font-bold text-xl sm:text-2xl text-dark-navy mb-2">Course Launching Soon</h2>
+            <p className="text-text-gray text-sm mb-8">Stay tuned — this course opens for enrollment once the timer hits zero.</p>
+            {course.start_date ? (
+              <Countdown target={course.start_date} className="max-w-xl mx-auto" />
+            ) : (
+              <p className="text-sm text-text-gray">Start date will be announced soon.</p>
+            )}
+            <Link
+              to="/courses"
+              className="inline-flex items-center gap-2 mt-8 text-brand-orange font-semibold hover:underline"
+            >
+              <FiArrowLeft className="w-4 h-4" /> Back to Courses
+            </Link>
+          </div>
+        </section>
       </div>
     );
   }

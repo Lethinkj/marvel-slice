@@ -35,6 +35,7 @@ import { useAuth } from "../context/AuthContext";
 import PageShell from '../components/ui/PageShell';
 import FolderTabs from '../components/ui/FolderTabs';
 import SaveCancelBar from '../components/SaveCancelBar';
+import { toDateTimeLocal, fromDateTimeLocal } from '../../lib/datetime';
 
 const STEPS = [
   { label: "Basics", icon: FiBookOpen },
@@ -141,7 +142,9 @@ export default function CourseWizard() {
   const [catL2, setCatL2] = useState("");
   const [catL3, setCatL3] = useState("");
   const [filterSection, setFilterSection] = useState(searchParams.get("category") || "Software Learning");
+  const initialStatus = searchParams.get("status") === 'coming-soon' ? 'Coming Soon' : 'Active';
   const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
+  const [startDateError, setStartDateError] = useState(false);
 
   const [c, setC] = useState({
     title: "",
@@ -150,8 +153,8 @@ export default function CourseWizard() {
     hero_image_url: "",
     video_thumbnail_url: "",
     video_url: "",
-    cta_left: "",
-    cta_right: "",
+    cta_left: "Enroll Now",
+    cta_right: "Download Brochure",
     cta_heading: '',
     cta_description: '',
     cta_text: '',
@@ -159,7 +162,8 @@ export default function CourseWizard() {
     cta_phone: '',
     cta_background_image: '',
     is_published: true,
-    status: "Active",
+    status: initialStatus,
+    start_date: '',
     duration: "3 months",
     mode: "Online",
     checklist_items: [],
@@ -330,10 +334,30 @@ export default function CourseWizard() {
   async function handleSave() {
     setSaving(true);
     setMessage("");
+    if (c.status === 'Coming Soon' && !c.start_date) {
+      setStartDateError(true);
+      setStep(0);
+      setMessage('Please set the start date and time — it is required for "Coming Soon" courses.');
+      setSaving(false);
+      return;
+    }
+    setStartDateError(false);
     try {
+      let slug = c.slug;
+      if (!slug) slug = slugify(c.title);
+      const { data: slugHits } = await supabase.from('courses').select('slug').eq('slug', slug);
+      if (slugHits && slugHits.length > 0) {
+        let n = 2;
+        while (true) {
+          const candidate = `${slug}-${n}`;
+          const { data: hits } = await supabase.from('courses').select('slug').eq('slug', candidate);
+          if (!hits || hits.length === 0) { slug = candidate; break; }
+          n += 1;
+        }
+      }
       const payload = {
         title: c.title,
-        slug: c.slug,
+        slug,
         description: c.description,
         hero_image_url: c.hero_image_url,
         video_thumbnail_url: c.video_thumbnail_url,
@@ -348,6 +372,7 @@ export default function CourseWizard() {
         cta_background_image: c.cta_background_image,
         is_published: c.is_published,
         status: c.status,
+        start_date: c.start_date ? fromDateTimeLocal(c.start_date) : null,
         duration: c.duration,
         mode: c.mode,
         checklist_items: (c.checklist_items || []).filter(Boolean),
@@ -500,20 +525,40 @@ export default function CourseWizard() {
                 <label className="block text-sm font-semibold text-black mb-1">Status</label>
                 <select
                   value={c.status}
-                  onChange={(e) => u("status", e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    u("status", v);
+                    u("is_published", v === 'Draft' ? false : true);
+                  }}
                   className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 bg-white"
                 >
                   <option value="Active">Active</option>
+                  <option value="Draft">Draft</option>
                   <option value="Coming Soon">Coming Soon</option>
-                  <option value="Inactive">Inactive</option>
                 </select>
+                {c.status === 'Coming Soon' && (
+                  <p className="text-xs text-neutral-500 mt-1.5">Listed in the home page Upcoming Courses section with a launch countdown. It becomes Active automatically once the start date arrives.</p>
+                )}
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 bg-white rounded-lg border border-admin-200">
-              <input type="checkbox" id="published" checked={c.is_published} onChange={(e) => u("is_published", e.target.checked)} className="w-4 h-4 rounded border-admin-200 text-admin-600 focus:ring-neutral-500/20" />
-              <label htmlFor="published" className="text-sm font-medium text-black cursor-pointer">Published (visible on site)</label>
-            </div>
+            {c.status === 'Coming Soon' && (
+              <div>
+                <label className="block text-sm font-semibold text-black mb-1">
+                  Start Date & Time <span className="text-destructive-500">*</span>
+                </label>
+                <input type="datetime-local"
+                  value={toDateTimeLocal(c.start_date)}
+                  onChange={(e) => { u("start_date", e.target.value || null); if (startDateError) setStartDateError(false); }}
+                  className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 bg-white ${startDateError ? 'border-destructive-500 ring-2 ring-destructive-100' : 'border-admin-200'}`} />
+                {startDateError && (
+                  <p className="text-xs text-destructive-500 mt-1.5">Please set the start date and time for this Coming Soon course.</p>
+                )}
+                {!startDateError && (
+                  <p className="text-xs text-neutral-500 mt-1.5">The course becomes Active automatically once this date arrives.</p>
+                )}
+              </div>
+            )}
           </div>
         )}
 

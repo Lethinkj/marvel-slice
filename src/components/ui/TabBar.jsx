@@ -23,7 +23,7 @@ const styles = {
     transition: 'background 0.15s, color 0.15s',
   },
   active: {
-    background: '#f97316',
+    background: '#f59e0b',
     color: '#fff',
   },
   inactive: {
@@ -37,7 +37,7 @@ const styles = {
     transform: 'translateX(-50%) rotate(45deg)',
     width: '12px',
     height: '12px',
-    background: '#f97316',
+    background: '#f59e0b',
     pointerEvents: 'none',
   },
 };

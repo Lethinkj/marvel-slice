@@ -75,6 +75,7 @@ alter table courses add column if not exists cta_text text;
 alter table courses add column if not exists cta_link text;
 alter table courses add column if not exists cta_phone text;
 alter table courses add column if not exists cta_background_image text;
+alter table courses add column if not exists start_date timestamptz;
 alter table projects add column if not exists difficulty text;
 alter table projects add column if not exists technologies jsonb default '[]';
 alter table certifications add column if not exists skills_earned jsonb default '[]';
@@ -740,6 +741,131 @@ do $$ begin
     create policy "Allow public insert form_submissions"
     on form_submissions for insert
     with check (true);
+  end if;
+end $$;
+
+-- 25a. Upcoming classes (home page Upcoming Classes section)
+create table if not exists upcoming_classes (
+  id uuid primary key default gen_random_uuid(),
+  course_name text not null,
+  date_time text,
+  is_active boolean default true,
+  sort_order int default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table upcoming_classes enable row level security;
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public select upcoming_classes') then
+    create policy "Allow public select upcoming_classes"
+    on upcoming_classes for select to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public insert upcoming_classes') then
+    create policy "Allow public insert upcoming_classes"
+    on upcoming_classes for insert to anon, authenticated
+    with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public update upcoming_classes') then
+    create policy "Allow public update upcoming_classes"
+    on upcoming_classes for update to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public delete upcoming_classes') then
+    create policy "Allow public delete upcoming_classes"
+    on upcoming_classes for delete to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+-- 25b. Upcoming class registrations (Register Now popup form)
+create table if not exists upcoming_class_registrations (
+  id uuid primary key default gen_random_uuid(),
+  upcoming_class_id uuid references upcoming_classes(id) on delete set null,
+  course_id uuid references courses(id) on delete set null,
+  course_name text,
+  full_name text not null,
+  email text not null,
+  phone text not null,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+
+alter table upcoming_class_registrations add column if not exists course_id uuid references courses(id) on delete set null;
+
+alter table upcoming_class_registrations enable row level security;
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public insert upcoming_class_registrations') then
+    create policy "Allow public insert upcoming_class_registrations"
+    on upcoming_class_registrations for insert to anon, authenticated
+    with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public select upcoming_class_registrations') then
+    create policy "Allow public select upcoming_class_registrations"
+    on upcoming_class_registrations for select to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public update upcoming_class_registrations') then
+    create policy "Allow public update upcoming_class_registrations"
+    on upcoming_class_registrations for update to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public delete upcoming_class_registrations') then
+    create policy "Allow public delete upcoming_class_registrations"
+    on upcoming_class_registrations for delete to anon, authenticated
+    using (true);
+  end if;
+end $$;
+
+-- 25c. Auto-promote: courses set to 'Coming Soon' move to 'Active' once their start date arrives
+create or replace function promote_upcoming_courses()
+returns setof courses
+language sql
+as $$
+  update courses
+  set status = 'Active'
+  where status = 'Coming Soon'
+    and start_date is not null
+    and start_date <= now()
+  returning *;
+$$;
+
+-- 25d. Testimonials (home page Testimonials slider)
+create table if not exists testimonials (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  role text,
+  quote text not null,
+  rating int default 5,
+  avatar_url text,
+  is_active boolean default true,
+  sort_order int default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table testimonials enable row level security;
+do $$ begin
+  if not exists (select 1 from pg_policies where policyname = 'Allow public select testimonials') then
+    create policy "Allow public select testimonials"
+    on testimonials for select to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public insert testimonials') then
+    create policy "Allow public insert testimonials"
+    on testimonials for insert to anon, authenticated
+    with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public update testimonials') then
+    create policy "Allow public update testimonials"
+    on testimonials for update to anon, authenticated
+    using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Allow public delete testimonials') then
+    create policy "Allow public delete testimonials"
+    on testimonials for delete to anon, authenticated
+    using (true);
   end if;
 end $$;
 

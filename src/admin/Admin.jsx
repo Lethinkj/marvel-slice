@@ -42,6 +42,11 @@ import InternshipsManager from './pages/InternshipsManager';
 import InternEditor from './pages/InternEditor';
 import BrochureDownloads from './pages/BrochureDownloads';
 import FormSubmissions from "./pages/FormSubmissions";
+import UpcomingCoursesManager from './pages/UpcomingCoursesManager';
+import UpcomingClassAdd from './pages/UpcomingClassAdd';
+import UpcomingClassSubmissions from './pages/UpcomingClassSubmissions';
+import TestimonialsManager from './pages/TestimonialsManager';
+import TestimonialEditor from './pages/TestimonialEditor';
 import NewsletterSubscribers from "./pages/NewsletterSubscribers";
 import ContactSubmissions from './pages/ContactSubmissions';
 import AboutSubmissions from './pages/AboutSubmissions';
@@ -162,6 +167,12 @@ export default function Admin() {
           <Route path="career-contact-submissions" element={<CareerContactSubmissions />} />
           <Route path="brochure-downloads" element={<BrochureDownloads />} />
           <Route path="form-submissions" element={<FormSubmissions />} />
+          <Route path="upcoming-courses" element={<UpcomingCoursesManager />} />
+          <Route path="upcoming-courses/new" element={<UpcomingClassAdd />} />
+          <Route path="testimonials" element={<TestimonialsManager />} />
+          <Route path="testimonials/new" element={<TestimonialEditor key="new" />} />
+          <Route path="testimonials/:id" element={<TestimonialEditor key="edit" />} />
+          <Route path="upcoming-class-submissions" element={<UpcomingClassSubmissions />} />
           <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
           <Route path="contact-submissions" element={<ContactSubmissions />} />
           <Route path="about-submissions" element={<AboutSubmissions />} />

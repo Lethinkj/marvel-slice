@@ -117,7 +117,7 @@ export default function IntroFormSection({ section }) {
   const features = rawPills.map((label) => ({ label, icon: FiCheckCircle }));
 
   return (
-    <section className="relative overflow-hidden bg-neutral-100">
+    <section className="relative overflow-hidden bg-white">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(#1B3A6B 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
@@ -144,7 +144,7 @@ export default function IntroFormSection({ section }) {
             <p className="text-base font-[600] text-center mb-2" style={{ color: '#ef4444' }}>Book Your Demo Now!</p>
             <div className="rounded-2xl overflow-hidden max-w-sm w-full mx-auto lg:ml-auto" style={{ backgroundColor: '#74a916', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
               {/* diagonal header: white left / orange right */}
-              <div className="relative h-16" style={{ backgroundColor: '#ff8415' }}>
+              <div className="relative h-16" style={{ backgroundColor: '#f59e0b' }}>
                 <div
                   className="absolute inset-0"
                   style={{
@@ -153,11 +153,11 @@ export default function IntroFormSection({ section }) {
                   }}
                 >
                   <div className="h-full flex items-center pl-5">
-                    <span className="text-xl font-serif font-bold" style={{ color: '#ff8415' }}>Career</span>
+                    <span className="text-xl font-serif font-bold" style={{ color: '#f59e0b' }}>Career</span>
                   </div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-end">
-                  <span className="bg-white rounded-[6px] px-3 py-1 text-base font-serif font-bold shadow-sm mr-1.5" style={{ color: '#ff8415' }}>
+                  <span className="bg-white rounded-[6px] px-3 py-1 text-base font-serif font-bold shadow-sm mr-1.5" style={{ color: '#f59e0b' }}>
                     Counselling
                   </span>
                 </div>
@@ -200,7 +200,7 @@ export default function IntroFormSection({ section }) {
                       <a href="/privacy" className="text-blue-300 underline hover:text-blue-200">Privacy Policy</a>.
                     </span>
                   </label>
-                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-[30px] py-[15px] bg-[#ff8415] text-white font-semibold rounded hover:bg-[#ff8415]/90 transition-colors disabled:opacity-70 text-sm">
+                  <button type="submit" disabled={submitting} className="w-full flex items-center justify-center gap-2 px-[30px] py-[15px] bg-[#f59e0b] text-white font-semibold rounded hover:bg-[#f59e0b]/90 transition-colors disabled:opacity-70 text-sm">
                     {submitting ? <FiLoader className="w-4 h-4 animate-spin" /> : null}
                     {submitting ? 'Submitting...' : 'Send Message'}
                   </button>
