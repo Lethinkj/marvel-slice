@@ -146,11 +146,16 @@ export default function ServicesSection({ section }) {
         </div>
 
         {serviceCards.length > 0 && (
-          <div
-            className="relative mt-12"
+          <div className="relative mt-12"
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
           >
+            <div className="mb-8 inline-flex flex-col items-center">
+              <Reveal as="h3" className="text-[clamp(1.3rem,2.5vw,1.9rem)] font-bold text-dark-navy mb-4">
+                Upcoming Courses
+              </Reveal>
+              <div className="w-16 h-[3px] bg-brand-orange"></div>
+            </div>
             <div className="overflow-hidden">
               <div
                 className="flex transition-transform duration-300 ease-in-out"

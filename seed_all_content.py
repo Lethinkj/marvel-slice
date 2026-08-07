@@ -195,6 +195,35 @@ if "intro_form" in existing_home:
     })
 print("  intro_form -> updated")
 
+if "upcoming_classes" in existing_home:
+    patch(f"/rest/v1/home_sections?id=eq.{existing_home['upcoming_classes']}", {
+        "heading": "Upcoming Classes",
+        "subheading": "Reserve your seat for the next batch",
+        "content": {
+            "items": [
+                {"course_name": "Full-Stack Web Development", "date_time": "Starts Mon, Sep 14, 2026 - 9:00 AM", "register_link": "/contact"},
+                {"course_name": "Data Science & Analytics", "date_time": "Starts Wed, Sep 16, 2026 - 6:30 PM", "register_link": "/contact"},
+                {"course_name": "Cloud Computing & DevOps", "date_time": "Starts Fri, Sep 18, 2026 - 10:00 AM", "register_link": "/contact"}
+            ]
+        },
+        "is_active": True, "sort_order": 2
+    })
+else:
+    post("/rest/v1/home_sections", {
+        "section_key": "upcoming_classes",
+        "heading": "Upcoming Classes",
+        "subheading": "Reserve your seat for the next batch",
+        "content": {
+            "items": [
+                {"course_name": "Full-Stack Web Development", "date_time": "Starts Mon, Sep 14, 2026 - 9:00 AM", "register_link": "/contact"},
+                {"course_name": "Data Science & Analytics", "date_time": "Starts Wed, Sep 16, 2026 - 6:30 PM", "register_link": "/contact"},
+                {"course_name": "Cloud Computing & DevOps", "date_time": "Starts Fri, Sep 18, 2026 - 10:00 AM", "register_link": "/contact"}
+            ]
+        },
+        "is_active": True, "sort_order": 2
+    })
+print("  upcoming_classes -> updated")
+
 if "empowering" in existing_home:
     patch(f"/rest/v1/home_sections?id=eq.{existing_home['empowering']}", {
         "heading": "Empowering Careers Through Quality Education",

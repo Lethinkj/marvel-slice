@@ -117,7 +117,7 @@ export default function IntroFormSection({ section }) {
   const features = rawPills.map((label) => ({ label, icon: FiCheckCircle }));
 
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section className="relative overflow-hidden bg-neutral-100">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: 'radial-gradient(#1B3A6B 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">

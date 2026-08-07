@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowUp, FiPhone, FiMail, FiMapPin, FiClock } from 'react-icons/fi';
+import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSiteSettings } from '../../hooks/useSupabase';
 import { topNav } from './Header';
@@ -36,6 +37,7 @@ export default function Footer() {
   const email = settings?.contact_email || '';
   const address = settings?.address || '';
   const hours = settings?.working_hours || {};
+  const social = settings?.social_links || {};
 
   useEffect(() => {
     function handleScroll() {
@@ -124,6 +126,13 @@ export default function Footer() {
                   </li>
                 )}
               </ul>
+              <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 mt-10 text-white/80">Social Links</h4>
+              <div className="flex items-center justify-end gap-4 pr-28 mt-4">
+                <a href={social.twitter || '#'} aria-label="Twitter" className="text-gray-400 hover:text-brand-orange transition-colors"><FaTwitter className="w-4 h-4" /></a>
+                <a href={social.facebook || '#'} aria-label="Facebook" className="text-gray-400 hover:text-brand-orange transition-colors"><FaFacebookF className="w-4 h-4" /></a>
+                <a href={social.instagram || '#'} aria-label="Instagram" className="text-gray-400 hover:text-brand-orange transition-colors"><FaInstagram className="w-4 h-4" /></a>
+                <a href={social.linkedin || '#'} aria-label="LinkedIn" className="text-gray-400 hover:text-brand-orange transition-colors"><FaLinkedinIn className="w-4 h-4" /></a>
+              </div>
             </div>
           )}
         </div>

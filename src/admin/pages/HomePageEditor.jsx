@@ -114,6 +114,16 @@ const sectionDefs = [
     ],
   },
   {
+    key: 'upcoming_classes', label: 'Upcoming Classes', icon: FiCalendar, color: 'from-amber-400 to-amber-600',
+    isList: true,
+    listLabel: 'Classes',
+    itemFields: [
+      { name: 'course_name', label: 'Course Name', type: 'text' },
+      { name: 'date_time', label: 'Date & Time', type: 'text' },
+      { name: 'register_link', label: 'Register Link', type: 'text' },
+    ],
+  },
+  {
     key: 'empowering', label: 'Empowering', icon: FiStar, color: 'from-blue-500 to-blue-600',
     fields: [
       { name: 'heading', label: 'Heading', type: 'text' },
@@ -475,7 +485,7 @@ function ServicesEditor({ data, onChange }) {
       </div>
       <div className="pt-4">
         <RepeatableItemList
-          title="Service Cards"
+          title="Upcoming Cards"
           items={cards}
           onAdd={addCard}
           addLabel="Add Card"
@@ -1047,7 +1057,7 @@ export default function HomePageEditor() {
 
   useEffect(() => {
     if (!loading) {
-      const validKeys = ['hero', 'intro_form', 'empowering', 'featured_courses', 'services', 'cta_banner', 'faqs'];
+      const validKeys = ['hero', 'intro_form', 'upcoming_classes', 'empowering', 'featured_courses', 'services', 'cta_banner', 'faqs'];
       if (!section) navigate('/admin/home/hero', { replace: true });
       else if (!validKeys.includes(section)) navigate('/admin/home/hero', { replace: true });
     }
