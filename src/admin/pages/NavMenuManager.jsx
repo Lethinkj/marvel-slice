@@ -426,8 +426,8 @@ export default function NavMenuManager() {
               <AddButton onClick={() => openAdd(currentParent)} label="Add Child" title="Add child" />
             )}
             <button onClick={(e) => openEdit(currentParent, e)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors" title="Edit">
-              <FiEdit3 className="w-3.5 h-3.5" /> Edit Parent
+              className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit parent">
+              <FiEdit3 className="w-4 h-4" />
             </button>
           </div>
         </div>

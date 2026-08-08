@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiStar, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiBell, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
+import { FiStar, FiArrowRight, FiArrowLeft, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiBell, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import TabBar from '../components/ui/TabBar';
 import { trackFormSubmit, trackDownload, trackCtaClick, trackVideoPlay } from '../lib/analytics';
@@ -349,57 +349,76 @@ export default function CourseDetail() {
   if (course.status === 'Coming Soon') {
     return (
       <div>
-        <section className="bg-gradient-to-b from-brand-orange/5 to-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
-            <span className="inline-flex items-center gap-1.5 bg-brand-orange/10 text-brand-orange text-xs font-semibold px-3 py-1 rounded-full mb-5">
-              <FiClock className="w-3.5 h-3.5" /> Coming Soon
-            </span>
-            <h1 className="text-[clamp(2rem,4vw,2.5rem)] font-bold text-brand-blue leading-[1.15] max-w-3xl mx-auto">
-              {course.title}
-            </h1>
-            {course.description && (
-              <p className="mt-5 text-base text-gray-500 leading-relaxed max-w-[600px] mx-auto">{course.description}</p>
-            )}
-          </div>
-        </section>
-
-        <section className="py-14 bg-white">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="max-w-md mx-auto bg-neutral-50 border border-gray-200 rounded-2xl p-8">
-              <h2 className="text-[22px] font-bold text-brand-blue">Course launching soon</h2>
-              <p className="mt-2 text-sm text-text-gray italic">
-                Stay tuned — this course opens for enrollment once the timer hits zero.
-              </p>
-
-              <div className="my-8">
-                {course.start_date ? (
-                  <Countdown target={course.start_date} className="max-w-xl mx-auto" />
-                ) : (
-                  <p className="text-sm text-text-gray">Start date will be announced soon.</p>
+        <section className="bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+            <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-brand-orange font-semibold hover:text-brand-orange/80 mb-6 transition-colors">
+              <FiArrowLeft className="w-4 h-4" /> Back to Home
+            </Link>
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              <div>
+                <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15]">
+                  {course.title}
+                  <span className="ml-3 inline-block align-middle text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600">
+                    Coming Soon
+                  </span>
+                </h1>
+                {course.description && (
+                  <p className="mt-4 text-base text-gray-600 leading-relaxed">{course.description}</p>
                 )}
+                {course.checklist_items?.length > 0 && (
+                  <ul className="mt-6 space-y-2.5">
+                    {course.checklist_items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
+                        <FiCheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    onClick={() => {
+                      setInterestForm({ name: '', email: '', phone: '' });
+                      setInterestDone(false);
+                      setInterestError('');
+                      setInterestAgree(false);
+                      setShowInterest(true);
+                    }}
+                    className="w-full sm:w-auto"
+                  >
+                    <FiBell className="w-4 h-4" /> Notify Me
+                  </Button>
+                  <Button variant="outline" size="lg" to="/courses" className="w-full sm:w-auto !bg-brand-blue !text-white hover:!bg-blue-700 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                    Explore All Courses <FiArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setInterestForm({ name: '', email: '', phone: '' });
-                  setInterestDone(false);
-                  setInterestError('');
-                  setInterestAgree(false);
-                  setShowInterest(true);
-                }}
-                className="inline-flex items-center gap-2 px-8 py-3 bg-brand-orange text-white font-bold rounded-full hover:bg-brand-orange/90 active:scale-[0.98] transition-all cursor-pointer"
-              >
-                <FiBell className="w-4 h-4" /> Notify Me
-              </button>
+              <div className="relative">
+                <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
+                  <div className="px-6 pt-6">
+                    <span className="inline-flex items-center gap-1.5 bg-brand-orange/10 text-brand-orange text-xs font-semibold px-3 py-1 rounded-full">
+                      <FiClock className="w-3.5 h-3.5" /> Course launches in
+                    </span>
+                  </div>
+                  <div className="p-6 sm:p-8">
+                    {course.start_date ? (
+                      <Countdown target={course.start_date} />
+                    ) : (
+                      <p className="text-sm text-gray-500">Start date will be announced soon.</p>
+                    )}
+                  </div>
+                  <div className="px-6 sm:px-8 pb-6">
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      Be the first to know when <strong className="text-dark-navy">{course.title}</strong> opens for enrollment. Click{' '}
+                      <strong className="text-brand-orange">Notify Me</strong> to get notified.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <Link
-              to="/courses"
-              className="inline-flex items-center gap-2 mt-8 text-brand-orange font-semibold hover:underline"
-            >
-              Explore All Courses <FiArrowRight className="w-4 h-4" />
-            </Link>
           </div>
         </section>
 

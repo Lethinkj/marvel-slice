@@ -12,6 +12,7 @@ import {
   FiEye,
   FiEyeOff,
   FiX,
+  FiEdit3,
   FiArrowLeft,
 } from "react-icons/fi";
 import useConfirm from "../hooks/useConfirm";
@@ -259,8 +260,8 @@ const [confirm, confirmDialog] = useConfirm();
                 {((ROLE_RANK[u.role] || 0) < userRank || currentUser?.role === 'master_admin') && currentUser?.id !== u.id && (
                   <>
                     <button onClick={() => startEdit(u)}
-                      className="px-3 py-1.5 text-xs font-medium text-admin-600 bg-white hover:bg-admin-100 rounded-md transition-colors">
-                      Edit
+                      className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+                      <FiEdit3 className="w-4 h-4" />
                     </button>
                     <button onClick={() => deleteUser(u.id)}
                       className="px-3 py-1.5 text-xs font-medium text-destructive-600 bg-destructive-50 hover:bg-destructive-100 rounded-md transition-colors">

@@ -97,23 +97,25 @@ export default function UpcomingCoursesSection({ section }) {
   if (!heading && courses.length === 0) return null;
 
   return (
-    <section className="py-16 bg-white">
+    <section className="pt-8 pb-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="text-center">
-            {heading && (
-              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy mb-3">{heading}</h2>
-            )}
-            <div className="w-4/5 max-w-xs h-[3px] bg-brand-orange mx-auto mb-5" />
+            <div className="inline-flex flex-col items-center">
+              {heading && (
+                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+              )}
+              <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
+            </div>
             {subheading && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed mb-10">{subheading}</p>
+              <p className="text-text-gray text-base sm:text-lg leading-relaxed mt-4 mb-10">{subheading}</p>
             )}
           </div>
         </Reveal>
 
         {courses.length > 0 && (
           isSlider ? (
-            <div className="relative">
+            <div className="relative mt-16">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300">
                 {pageCourses.map((course) => (
                   <CourseCard key={course.id} course={course} />
@@ -148,7 +150,7 @@ export default function UpcomingCoursesSection({ section }) {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
               {pageCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}

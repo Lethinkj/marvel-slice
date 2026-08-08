@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import DataTable from '../components/ui/DataTable';
 import EmptyState from '../components/EmptyState';
-import Badge from '../components/Badge';
-import { FiStar, FiCheck, FiEdit3, FiTrash2 } from 'react-icons/fi';
+import { FiStar, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import PageShell from '../components/ui/PageShell';
 import useConfirm from '../hooks/useConfirm';
 
@@ -60,17 +59,23 @@ export default function TestimonialsManager() {
     { header: 'Role', accessor: 'role', cell: (row) => row.role || <span className="text-neutral-400 italic">—</span> },
     { header: 'Rating', accessor: 'rating', cell: (row) => <Stars rating={row.rating} /> },
     { header: 'Quote', accessor: 'quote', cell: (row) => <span className="text-neutral-600 line-clamp-1 max-w-[320px]">{row.quote}</span> },
-    { header: 'Status', accessor: 'is_active', cell: (row) => row.is_active ? <Badge variant="active">Active</Badge> : <Badge variant="inactive">Inactive</Badge> },
+    { header: 'Status', accessor: 'is_active', cell: (row) => (
+      <button
+        type="button"
+        onClick={() => toggleActive(row)}
+        title={row.is_active ? 'Click to make inactive' : 'Click to make active'}
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-admin-500/30 ${row.is_active ? 'bg-blue-500' : 'bg-gray-300'}`}
+      >
+        <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${row.is_active ? 'translate-x-6' : 'translate-x-1'}`} />
+      </button>
+    ) },
     {
       header: 'Actions',
       className: 'text-right',
       cell: (row) => (
         <div className="flex items-center justify-end gap-1.5">
-          <button onClick={() => navigate(`/admin/testimonials/${row.id}`)} className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-admin-600 bg-admin-50 hover:bg-admin-100 rounded-md transition-colors" title="Edit">
-            <FiEdit3 className="w-3.5 h-3.5" /> Edit
-          </button>
-          <button onClick={() => toggleActive(row)} className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 rounded-md transition-colors" title={row.is_active ? 'Hide from home page' : 'Show on home page'}>
-            <FiCheck className="w-3.5 h-3.5" /> {row.is_active ? 'Make Inactive' : 'Make Active'}
+          <button onClick={() => navigate(`/admin/testimonials/${row.id}`)} className="p-1.5 text-blue-500 hover:text-white hover:bg-blue-600 rounded transition-colors" title="Edit">
+            <FiEdit3 className="w-4 h-4" />
           </button>
           <button onClick={() => deleteItem(row.id)} className="p-1.5 text-red-500 hover:text-white hover:bg-red-600 rounded transition-colors" title="Delete">
             <FiTrash2 className="w-4 h-4" />

@@ -20,17 +20,22 @@ export default function LatestBlogSection({ section }) {
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className="py-10 sm:py-14 bg-white">
+    <section className="pt-8 pb-16 bg-white">
       <div className="w-full max-w-[92%] sm:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-2 text-center">
-          {heading}
+        <Reveal>
+          <div className="text-center">
+            <div className="inline-flex flex-col items-center">
+              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+              <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
+            </div>
+            {subheading && (
+              <p className="text-text-gray text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mt-4 mb-10">
+                {subheading}
+              </p>
+            )}
+          </div>
         </Reveal>
-        {subheading && (
-          <Reveal as="p" className="text-center text-text-gray max-w-2xl mx-auto mb-8">
-            {subheading}
-          </Reveal>
-        )}
-        <Stagger className="grid md:grid-cols-3 gap-6">
+        <Stagger className="grid md:grid-cols-3 gap-6 mt-16">
           {posts.map((post) => (
             <StaggerItem key={post.id} className="h-full">
               <Link

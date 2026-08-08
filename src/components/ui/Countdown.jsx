@@ -35,9 +35,9 @@ export default function Countdown({ target, className = '' }) {
         { label: 'Minutes', value: pad(timeLeft?.minutes ?? 0) },
         { label: 'Seconds', value: pad(timeLeft?.seconds ?? 0) },
       ].map((box) => (
-        <div key={box.label} className="bg-white rounded-[12px] border border-gray-200 shadow-sm py-4 text-center">
+        <div key={box.label} className="bg-gray-50 rounded-xl border border-gray-100 py-4 text-center">
           <div className="text-[28px] leading-none font-bold text-brand-orange tabular-nums">{box.value}</div>
-          <div className="text-[11px] text-text-gray mt-2 uppercase tracking-[0.08em]">{box.label}</div>
+          <div className="text-[11px] text-gray-400 mt-2 uppercase tracking-wider">{box.label}</div>
         </div>
       ))}
     </div>

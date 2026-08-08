@@ -176,7 +176,7 @@ export default function TestimonialEditor() {
           </div>
         </div>
       </form>
-      <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => window.location.reload()} />
+      <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => navigate('/admin/testimonials')} />
     </PageShell>
   );
 }

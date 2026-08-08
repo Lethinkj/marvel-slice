@@ -149,23 +149,25 @@ export default function UpcomingClassesSection({ section }) {
   }
 
   return (
-    <section className="py-16 bg-neutral-100">
+    <section className="pt-8 pb-16 bg-neutral-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="text-center">
-            {heading && (
-              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy mb-3">{heading}</h2>
-            )}
-            <div className="w-4/5 max-w-xs h-[3px] bg-brand-orange mx-auto mb-5" />
+            <div className="inline-flex flex-col items-center">
+              {heading && (
+                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+              )}
+              <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
+            </div>
             {subheading && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed mb-10">{subheading}</p>
+              <p className="text-text-gray text-base sm:text-lg leading-relaxed mt-4 mb-10">{subheading}</p>
             )}
           </div>
         </Reveal>
 
         {classes.length > 0 && (
           isSlider ? (
-            <div className="relative mx-auto lg:max-w-[85%]" onMouseEnter={stopAutoScroll} onMouseLeave={() => { if (isSlider) startAutoScroll(); }}>
+            <div className="relative mx-auto lg:max-w-[85%] mt-16" onMouseEnter={stopAutoScroll} onMouseLeave={() => { if (isSlider) startAutoScroll(); }}>
               <div className="overflow-hidden">
                 <motion.div
                   animate={{ x: `-${pos * (100 / visible)}%` }}
@@ -230,7 +232,7 @@ export default function UpcomingClassesSection({ section }) {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mx-auto lg:max-w-[80%]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mx-auto lg:max-w-[80%] mt-16">
               {classes.map((cls) => (
                 <div key={cls.id} className="group w-full max-w-[500px] bg-white rounded-xl p-5 flex flex-col shadow-md border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
                   <h4 className="text-dark-navy text-xl font-medium">{cls.course_name}</h4>
