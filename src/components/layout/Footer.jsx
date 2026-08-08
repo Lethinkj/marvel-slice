@@ -128,10 +128,10 @@ export default function Footer() {
               </ul>
               <h4 className="font-semibold text-sm uppercase tracking-wider mb-3 mt-10 text-white/80">Social Links</h4>
               <div className="flex items-center justify-end gap-4 pr-28 mt-4">
-                <a href={social.twitter || '#'} aria-label="Twitter" className="text-gray-400 hover:text-brand-orange transition-colors"><FaTwitter className="w-4 h-4" /></a>
-                <a href={social.facebook || '#'} aria-label="Facebook" className="text-gray-400 hover:text-brand-orange transition-colors"><FaFacebookF className="w-4 h-4" /></a>
-                <a href={social.instagram || '#'} aria-label="Instagram" className="text-gray-400 hover:text-brand-orange transition-colors"><FaInstagram className="w-4 h-4" /></a>
-                <a href={social.linkedin || '#'} aria-label="LinkedIn" className="text-gray-400 hover:text-brand-orange transition-colors"><FaLinkedinIn className="w-4 h-4" /></a>
+                <a href={social.twitter || '#'} aria-label="Twitter" className="text-brand-orange hover:text-brand-orange/80 transition-colors"><FaTwitter className="w-4 h-4" /></a>
+                <a href={social.facebook || '#'} aria-label="Facebook" className="text-brand-orange hover:text-brand-orange/80 transition-colors"><FaFacebookF className="w-4 h-4" /></a>
+                <a href={social.instagram || '#'} aria-label="Instagram" className="text-brand-orange hover:text-brand-orange/80 transition-colors"><FaInstagram className="w-4 h-4" /></a>
+                <a href={social.linkedin || '#'} aria-label="LinkedIn" className="text-brand-orange hover:text-brand-orange/80 transition-colors"><FaLinkedinIn className="w-4 h-4" /></a>
               </div>
             </div>
           )}
