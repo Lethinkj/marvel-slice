@@ -75,7 +75,7 @@ export default function Contact() {
   return (
     <div>
       {data.hero_image && (
-        <div className="w-full max-w-[1900px] mx-auto h-[220px] sm:h-[320px] lg:h-[400px] overflow-hidden"><img src={data.hero_image} alt="" className="w-full h-full object-cover" /></div>
+        <Reveal variant="fadeIn" className="w-full max-w-[1900px] mx-auto h-[220px] sm:h-[320px] lg:h-[400px] overflow-hidden"><img src={data.hero_image} alt="" className="w-full h-full object-cover" /></Reveal>
       )}
 
       {(data.heading || data.subheading) && (
@@ -86,7 +86,7 @@ export default function Contact() {
       )}
 
       {data.sections?.length > 0 && data.sections.filter(s => !s.hidden).map((section, i) => (
-        <div key={i} className={`py-10 sm:py-14 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+        <Reveal key={i} variant="up" className={`py-10 sm:py-14 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
           {section.type === 'map_embed' ? (
             <SectionRenderer section={section} />
           ) : (
@@ -94,7 +94,7 @@ export default function Contact() {
               <SectionRenderer section={section} />
             </div>
           )}
-        </div>
+        </Reveal>
       ))}
     </div>
   );
