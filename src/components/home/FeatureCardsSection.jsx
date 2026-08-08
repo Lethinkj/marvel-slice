@@ -11,10 +11,10 @@ export default function FeatureCardsSection({ section }) {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 justify-items-center">
+        <div className="grid lg:grid-cols-2 gap-8 items-stretch">
           {cards.map((card, i) => (
-            <Reveal key={i} variant={i === 0 ? 'right' : 'left'}>
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col w-full max-w-[90%]">
+            <Reveal key={i} variant={i === 0 ? 'right' : 'left'} className="h-full w-full">
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col w-full h-full">
                 <div className="p-6 pb-0 text-center">
                   <h3 className="font-bold text-xl sm:text-2xl text-brand-blue">
                     {card.heading}

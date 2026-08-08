@@ -4,7 +4,6 @@ import HeroSection from '../components/home/HeroSection';
 import IntroFormSection from '../components/home/IntroFormSection';
 import EmpoweringSection from '../components/home/EmpoweringSection';
 import FeatureCardsSection from '../components/home/FeatureCardsSection';
-import UpcomingClassesSection from '../components/home/UpcomingClassesSection';
 import UpcomingCoursesSection from '../components/home/UpcomingCoursesSection';
 import ServicesSection from '../components/home/ServicesSection';
 import CTABannerSection from '../components/home/CTABannerSection';
@@ -37,7 +36,6 @@ export default function Home() {
     <>
       <HeroSection section={sec('hero')} />
       <IntroFormSection section={sec('intro_form')} />
-      <UpcomingClassesSection section={sec('upcoming_classes')} />
       <EmpoweringSection section={sec('empowering')} />
       <FeatureCardsSection section={sec('featured_courses')} />
       <ServicesSection section={sec('services')} />

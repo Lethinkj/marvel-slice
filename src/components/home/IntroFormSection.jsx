@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiBookOpen, FiUsers, FiBriefcase, FiStar, FiClock, FiAward, FiCheckCircle, FiLoader, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../ui/Reveal';
+import UpcomingClassesMiniCarousel from './UpcomingClassesMiniCarousel';
 import { supabase } from '../../lib/supabaseClient';
 import { trackFormSubmit } from '../../lib/analytics';
 
@@ -52,6 +53,23 @@ function StatsGrid({ stats }) {
           </StaggerItem>
         );
       })}
+    </Stagger>
+  );
+}
+
+function PillGrid({ pills }) {
+  return (
+    <Stagger className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+      {pills.map((label, i) => (
+        <StaggerItem key={i}>
+          <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-brand-orange/10 flex items-center justify-center shrink-0">
+              <FiCheckCircle className="w-3.5 h-3.5 text-brand-orange" />
+            </div>
+            <span className="text-xs font-bold text-brand-blue leading-tight">{label}</span>
+          </div>
+        </StaggerItem>
+      ))}
     </Stagger>
   );
 }
@@ -114,8 +132,6 @@ export default function IntroFormSection({ section }) {
     setSubmitting(false);
   }
 
-  const features = rawPills.map((label) => ({ label, icon: FiCheckCircle }));
-
   return (
     <section className="relative overflow-hidden bg-white">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -134,9 +150,10 @@ export default function IntroFormSection({ section }) {
               </p>
             )}
 
-            <div className="hidden lg:block space-y-6">
-              {stats.length > 0 && <StatsGrid stats={stats} />}
-              <CourseButtons />
+            <div className="mt-10 hidden lg:block space-y-6">
+              {rawPills.length > 0 && <PillGrid pills={rawPills} />}
+              {stats.length > 0 && <div className="pt-4"><StatsGrid stats={stats} /></div>}
+              <div className="pt-4"><CourseButtons /></div>
             </div>
           </Reveal>
 
@@ -207,26 +224,12 @@ export default function IntroFormSection({ section }) {
                 </form>
               </div>
             </div>
-            {features.length > 0 && (
-              <Stagger className="grid grid-cols-2 gap-2 mt-4">
-                {features.map((feat, i) => {
-                  const Icon = feat.icon;
-                  return (
-                    <StaggerItem key={i}>
-                      <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 shadow-sm">
-                        <div className="w-7 h-7 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
-                          <Icon className="w-3.5 h-3.5 text-brand-blue" />
-                        </div>
-                        <span className="text-xs font-bold text-brand-blue">{feat.label}</span>
-                      </div>
-                    </StaggerItem>
-                  );
-                })}
-              </Stagger>
-            )}
+
+            <UpcomingClassesMiniCarousel />
           </Reveal>
 
           <div className="lg:hidden mt-8 space-y-6">
+            {rawPills.length > 0 && <PillGrid pills={rawPills} />}
             {stats.length > 0 && <StatsGrid stats={stats} />}
             <CourseButtons />
           </div>
