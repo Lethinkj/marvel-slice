@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiStar, FiArrowLeft, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
+import { FiStar, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import TabBar from '../components/ui/TabBar';
 import { trackFormSubmit, trackDownload, trackCtaClick, trackVideoPlay } from '../lib/analytics';
@@ -346,7 +346,7 @@ export default function CourseDetail() {
               to="/courses"
               className="inline-flex items-center gap-2 mt-8 text-brand-orange font-semibold hover:underline"
             >
-              <FiArrowLeft className="w-4 h-4" /> Back to Courses
+              Explore All Courses <FiArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </section>
@@ -391,7 +391,7 @@ export default function CourseDetail() {
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
           <Link to="/courses" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-brand-orange mb-6 transition-colors">
-            <FiArrowLeft className="w-4 h-4" /> Back to Courses
+            Explore All Courses <FiArrowRight className="w-4 h-4" />
           </Link>
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>

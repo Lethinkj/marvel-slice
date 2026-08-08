@@ -1,18 +1,37 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 
 export default function UpcomingClassAdd() {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const isNew = !id || id === 'new';
+
+  const [loading, setLoading] = useState(!isNew);
   const [courseName, setCourseName] = useState('');
   const [dateTime, setDateTime] = useState('');
+  const [isActive, setIsActive] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    async function loadData() {
+      if (isNew) return;
+      const { data } = await supabase.from('upcoming_classes').select('*').eq('id', id).single();
+      if (data) {
+        setCourseName(data.course_name || '');
+        setDateTime(data.date_time || '');
+        setIsActive(data.is_active !== false);
+      }
+      setLoading(false);
+    }
+    loadData();
+  }, [id, isNew]);
 
   async function handleSave() {
     const errs = {};
@@ -24,12 +43,18 @@ export default function UpcomingClassAdd() {
     setSaving(true);
     setSaveError('');
     try {
-      const { error } = await supabase.from('upcoming_classes').insert({
+      const payload = {
         course_name: courseName.trim(),
         date_time: dateTime,
-        is_active: true,
-      });
-      if (error) throw error;
+        is_active: isActive,
+      };
+      let result;
+      if (isNew) {
+        result = await supabase.from('upcoming_classes').insert(payload);
+      } else {
+        result = await supabase.from('upcoming_classes').update(payload).eq('id', id);
+      }
+      if (result?.error) throw result.error;
       setSaved(true);
       setTimeout(() => navigate('/admin/upcoming-courses', { replace: true }), 500);
       setTimeout(() => setSaved(false), 2000);
@@ -39,13 +64,15 @@ export default function UpcomingClassAdd() {
     setSaving(false);
   }
 
+  if (loading) return <div className="p-8 text-center text-neutral-500">Loading upcoming class...</div>;
+
   return (
-    <PageShell backTo="/admin" title="Add Upcoming Class"
+    <PageShell backTo="/admin/upcoming-courses" title={isNew ? 'Add Upcoming Class' : 'Edit Upcoming Class'}
       description="Classes listed here appear in the home page Upcoming Classes section. They are separate from courses."
     >
       <SaveBar saving={saving} saved={saved} saveError={saveError} label="Upcoming Class" top />
-      <div className="bg-white border border-gray-300 rounded-xl p-6" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
-        <div className="space-y-6 max-w-2xl">
+      <div className="bg-white border border-gray-300 rounded-xl shadow-sm p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-semibold text-black mb-1">Course Name <span className="text-destructive-500">*</span></label>
             <input value={courseName} onChange={(e) => { setCourseName(e.target.value); if (errors.courseName) setErrors((p) => ({ ...p, courseName: undefined })); }}
@@ -61,8 +88,21 @@ export default function UpcomingClassAdd() {
             {errors.dateTime && <p className="text-xs text-destructive-500 mt-1.5">{errors.dateTime}</p>}
           </div>
         </div>
-        <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => navigate('/admin/upcoming-courses')} submitLabel="Add Upcoming Class" />
+        <div className="pt-4 mt-6 border-t border-admin-200">
+          <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Status</label>
+          <button
+            type="button"
+            onClick={() => setIsActive(!isActive)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-admin-500/30 ${isActive ? 'bg-blue-500' : 'bg-gray-300'}`}
+          >
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${isActive ? 'translate-x-6' : 'translate-x-1'}`} />
+          </button>
+          <span className="ml-3 text-sm font-medium text-black align-middle">
+            {isActive ? 'Active — visible on home page' : 'Inactive — hidden from home page'}
+          </span>
+        </div>
       </div>
+      <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => navigate('/admin/upcoming-courses')} submitLabel="Save" />
     </PageShell>
   );
 }

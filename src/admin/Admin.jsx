@@ -168,7 +168,8 @@ export default function Admin() {
           <Route path="brochure-downloads" element={<BrochureDownloads />} />
           <Route path="form-submissions" element={<FormSubmissions />} />
           <Route path="upcoming-courses" element={<UpcomingCoursesManager />} />
-          <Route path="upcoming-courses/new" element={<UpcomingClassAdd />} />
+          <Route path="upcoming-courses/new" element={<UpcomingClassAdd key="new" />} />
+          <Route path="upcoming-courses/:id" element={<UpcomingClassAdd key="edit" />} />
           <Route path="testimonials" element={<TestimonialsManager />} />
           <Route path="testimonials/new" element={<TestimonialEditor key="new" />} />
           <Route path="testimonials/:id" element={<TestimonialEditor key="edit" />} />

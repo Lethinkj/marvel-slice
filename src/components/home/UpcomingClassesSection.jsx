@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCalendar, FiClock, FiArrowRight, FiLoader, FiX, FiCheckCircle, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiClock, FiLoader, FiX, FiCheckCircle, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Reveal from '../ui/Reveal';
 import { supabase } from '../../lib/supabaseClient';
 import { trackRegister } from '../../lib/analytics';
@@ -34,31 +34,68 @@ export default function UpcomingClassesSection({ section }) {
   const [submitting, setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const [index, setIndex] = useState(0);
+  const [pos, setPos] = useState(0);
+  const [animate, setAnimate] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(3);
   const timerRef = useRef(null);
   const isSlider = classes.length > 3;
-  const visible = isSlider ? 3 : classes.length;
-  const pages = Math.ceil(classes.length / visible);
-  const page = isSlider ? Math.min(index, pages - 1) : 0;
-  const pageClasses = isSlider ? classes.slice(page * visible, page * visible + visible) : classes;
+  const n = classes.length;
+  const visible = isSlider ? visibleCount : classes.length;
+  const doubled = isSlider ? [...classes, ...classes] : classes;
+
+  useEffect(() => {
+    function update() {
+      const w = window.innerWidth;
+      setVisibleCount(w >= 1024 ? 3 : w >= 640 ? 2 : 1);
+    }
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
 
   useEffect(() => {
     if (!isSlider) {
-      setIndex(0);
+      setPos(0);
+      setAnimate(true);
       return undefined;
     }
-    timerRef.current = setInterval(() => {
-      setIndex((prev) => (prev + 1) % pages);
-    }, 5000);
+    startAutoScroll();
     return () => clearInterval(timerRef.current);
-  }, [isSlider, pages]);
+  }, [isSlider]);
 
   useEffect(() => {
-    setIndex(0);
-  }, [classes.length, isSlider]);
+    setPos(0);
+    setAnimate(true);
+  }, [classes.length, isSlider, visible]);
+
+  function startAutoScroll() {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setAnimate(true);
+      setPos((prev) => prev + 1);
+    }, 4000);
+  }
+
+  function stopAutoScroll() {
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+  }
 
   function go(dir) {
-    setIndex((prev) => (prev + dir + pages) % pages);
+    if (dir < 0 && pos === 0) {
+      setAnimate(false);
+      setPos(n - 1);
+      setTimeout(() => setAnimate(true), 100);
+      return;
+    }
+    setAnimate(true);
+    setPos((prev) => prev + dir);
+  }
+
+  function jumpTo(i) {
+    setAnimate(false);
+    setPos(i);
+    setTimeout(() => setAnimate(true), 100);
   }
 
   if (!section) return null;
@@ -128,38 +165,47 @@ export default function UpcomingClassesSection({ section }) {
 
         {classes.length > 0 && (
           isSlider ? (
-            <div className="relative ml-auto lg:max-w-[80%]">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300">
-                {pageClasses.map((cls) => (
-                  <div key={cls.id} className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 flex flex-col hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-brand-orange/10 flex items-center justify-center shrink-0">
-                        <FiCalendar className="w-5 h-5 text-brand-orange" />
+            <div className="relative mx-auto lg:max-w-[85%]" onMouseEnter={stopAutoScroll} onMouseLeave={() => { if (isSlider) startAutoScroll(); }}>
+              <div className="overflow-hidden">
+                <motion.div
+                  animate={{ x: `-${pos * (100 / visible)}%` }}
+                  transition={animate ? { duration: 0.5, ease: 'easeInOut' } : { duration: 0 }}
+                  onAnimationComplete={() => {
+                    if (isSlider && pos >= n) {
+                      setAnimate(false);
+                      setPos(0);
+                    }
+                  }}
+                  className="flex"
+                >
+                  {doubled.map((cls, i) => (
+                    <div key={`${cls.id}-${i}`} className="shrink-0 px-3" style={{ width: `${100 / visible}%` }}>
+                      <div className="group w-full bg-white rounded-xl p-5 flex flex-col shadow-md border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 h-full">
+                        <h4 className="text-dark-navy text-xl font-medium">{cls.course_name}</h4>
+                        {cls.date_time && (
+                          <p className="text-text-gray text-[15px] mt-3">
+                            {formatDateTime(cls.date_time)}
+                          </p>
+                        )}
+                        <div className="mt-auto pt-4 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedClass(cls)}
+                            className="inline-block bg-brand-orange text-white font-bold text-sm py-2 px-6 rounded-full transition-colors group-hover:bg-[#e0951f]"
+                          >
+                            Register now
+                          </button>
+                        </div>
                       </div>
-                      <h4 className="font-bold text-dark-navy text-lg">{cls.course_name}</h4>
                     </div>
-                    {cls.date_time && (
-                      <p className="flex items-center gap-2 text-text-gray text-xs mt-2">
-                        <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
-                        <span>{formatDateTime(cls.date_time)}</span>
-                      </p>
-                    )}
-                    <div className="mt-auto pt-4 flex justify-end">
-                      <button
-                        onClick={() => setSelectedClass(cls)}
-                        className="inline-flex items-center justify-center gap-1.5 bg-brand-green text-white text-xs font-semibold py-1.5 px-3 rounded-full hover:brightness-90 transition-colors"
-                      >
-                        Register Now <FiArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </motion.div>
               </div>
               <button
                 type="button"
                 aria-label="Previous classes"
                 onClick={() => go(-1)}
-                className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
+                className="hidden sm:flex absolute -left-2 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
               >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
@@ -167,44 +213,38 @@ export default function UpcomingClassesSection({ section }) {
                 type="button"
                 aria-label="Next classes"
                 onClick={() => go(1)}
-                className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
+                className="hidden sm:flex absolute -right-2 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
               >
                 <FiChevronRight className="w-5 h-5" />
               </button>
               <div className="flex justify-center gap-2 mt-6">
-                {Array.from({ length: pages }).map((_, i) => (
+                {classes.map((_, i) => (
                   <button
                     key={i}
                     type="button"
-                    aria-label={`Go to class page ${i + 1}`}
-                    onClick={() => setIndex(i)}
-                    className={`h-2 rounded-full transition-all cursor-pointer ${i === page ? 'w-6 bg-brand-orange' : 'w-2 bg-gray-300 hover:bg-gray-400'}`}
+                    aria-label={`Go to class ${i + 1}`}
+                    onClick={() => jumpTo(i)}
+                    className={`h-2 rounded-full transition-all cursor-pointer ${i === pos % n ? 'w-6 bg-brand-orange' : 'w-2 bg-gray-300 hover:bg-gray-400'}`}
                   />
                 ))}
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ml-auto lg:max-w-[80%]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mx-auto lg:max-w-[80%]">
               {classes.map((cls) => (
-                <div key={cls.id} className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 flex flex-col hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-brand-orange/10 flex items-center justify-center shrink-0">
-                      <FiCalendar className="w-5 h-5 text-brand-orange" />
-                    </div>
-                    <h4 className="font-bold text-dark-navy text-lg">{cls.course_name}</h4>
-                  </div>
+                <div key={cls.id} className="group w-full max-w-[500px] bg-white rounded-xl p-5 flex flex-col shadow-md border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
+                  <h4 className="text-dark-navy text-xl font-medium">{cls.course_name}</h4>
                   {cls.date_time && (
-                    <p className="flex items-center gap-2 text-text-gray text-xs mt-2">
-                      <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
-                      <span>{formatDateTime(cls.date_time)}</span>
+                    <p className="text-text-gray text-[15px] mt-3">
+                      {formatDateTime(cls.date_time)}
                     </p>
                   )}
                   <div className="mt-auto pt-4 flex justify-end">
                     <button
                       onClick={() => setSelectedClass(cls)}
-                      className="inline-flex items-center justify-center gap-1.5 bg-brand-green text-white text-xs font-semibold py-1.5 px-3 rounded-full hover:brightness-90 transition-colors"
+                      className="inline-block bg-brand-orange text-white font-bold text-sm py-2 px-6 rounded-full transition-colors group-hover:bg-[#e0951f]"
                     >
-                      Register Now <FiArrowRight className="w-3 h-3" />
+                      Register now
                     </button>
                   </div>
                 </div>
@@ -269,16 +309,19 @@ export default function UpcomingClassesSection({ section }) {
                   </div>
                   <form onSubmit={handleSubmit} className="p-6 space-y-3">
                     <div>
+                      <label className="block text-xs font-semibold text-neutral-600 mb-1">Your Name <span className="text-destructive-500">*</span></label>
                       <input type="text" placeholder="Your Name" value={formName} onChange={(e) => { setFormName(e.target.value); if (errors.name) setErrors((p) => ({ ...p, name: undefined })); }} required
                         className={`w-full px-4 py-2.5 border text-xs bg-white rounded-lg outline-none placeholder-gray-400 focus:ring-2 focus:ring-brand-blue/30 transition-all ${errors.name ? 'border-red-400 ring-2 ring-red-100' : 'border-gray-200 focus:border-brand-blue'}`} />
                       {errors.name && <p className="!text-red-600 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>
+                      <label className="block text-xs font-semibold text-neutral-600 mb-1">Email Address <span className="text-destructive-500">*</span></label>
                       <input type="email" placeholder="your@email.com" value={formEmail} onChange={(e) => { setFormEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: undefined })); }} required
                         className={`w-full px-4 py-2.5 border text-xs bg-white rounded-lg outline-none placeholder-gray-400 focus:ring-2 focus:ring-brand-blue/30 transition-all ${errors.email ? 'border-red-400 ring-2 ring-red-100' : 'border-gray-200 focus:border-brand-blue'}`} />
                       {errors.email && <p className="!text-red-600 text-xs mt-1">{errors.email}</p>}
                     </div>
                     <div>
+                      <label className="block text-xs font-semibold text-neutral-600 mb-1">Phone Number <span className="text-destructive-500">*</span></label>
                       <input type="tel" placeholder="Your Phone Number" value={formPhone} onChange={(e) => { setFormPhone(e.target.value); if (errors.phone) setErrors((p) => ({ ...p, phone: undefined })); }} required
                         className={`w-full px-4 py-2.5 border text-xs bg-white rounded-lg outline-none placeholder-gray-400 focus:ring-2 focus:ring-brand-blue/30 transition-all ${errors.phone ? 'border-red-400 ring-2 ring-red-100' : 'border-gray-200 focus:border-brand-blue'}`} />
                       {errors.phone && <p className="!text-red-600 text-xs mt-1">{errors.phone}</p>}
