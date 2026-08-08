@@ -16,9 +16,6 @@ import AllJobs from './pages/AllJobs';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import ServicesPage from './pages/ServicesPage';
-import ServiceDetail from './pages/ServiceDetail';
-import TrainingPage from './pages/TrainingPage';
-import TrainingDetail from './pages/TrainingDetail';
 import LegalPage from './pages/LegalPage';
 import { pageTransition } from './lib/motion';
 
@@ -73,9 +70,6 @@ function AnimatedRoutes() {
       <Route path="/career" element={<Career />} />
       <Route path="/career/jobs" element={<AllJobs />} />
       <Route path="/services" element={<ServicesPage />} />
-      <Route path="/services/:slug" element={<ServiceDetail />} />
-      <Route path="/training" element={<TrainingPage />} />
-      <Route path="/training/:slug" element={<TrainingDetail />} />
       <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
       <Route path="/competitive-exam" element={<Navigate to="/courses?parent=competitive-exam" replace />} />
       <Route path="/terms" element={<LegalPage pageKey="terms" />} />

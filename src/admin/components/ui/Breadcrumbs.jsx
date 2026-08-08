@@ -31,12 +31,6 @@ const entityConfig = {
     edit: "Edit Internship",
     parent: "/admin/internships",
   },
-  services: {
-    list: "Services",
-    new: "New Service",
-    edit: "Edit Service",
-    parent: "/admin/services",
-  },
   training: {
     list: "Training Programs",
     new: "New Training Program",

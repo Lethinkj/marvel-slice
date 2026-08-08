@@ -12,8 +12,6 @@ const routes = [
   { label: 'Training Page', to: '/admin/training-page', icon: FiZap, category: 'Pages' },
   { label: 'Courses', to: '/admin/courses', icon: FiBookOpen, category: 'Content' },
   { label: 'Add Course', to: '/admin/courses/wizard', icon: FiBookOpen, category: 'Content' },
-  { label: 'All Services', to: '/admin/services', icon: FiServer, category: 'Content' },
-  { label: 'Add Service', to: '/admin/services/new', icon: FiServer, category: 'Content' },
   { label: 'All Programs', to: '/admin/training', icon: FiZap, category: 'Content' },
   { label: 'Add Program', to: '/admin/training/new', icon: FiZap, category: 'Content' },
   { label: 'Blog Posts', to: '/admin/blog', icon: FiFileText, category: 'Content' },

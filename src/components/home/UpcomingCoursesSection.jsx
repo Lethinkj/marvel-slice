@@ -66,8 +66,8 @@ export default function UpcomingCoursesSection({ section }) {
 
   const [index, setIndex] = useState(0);
   const timerRef = useRef(null);
-  const isSlider = courses.length > 3;
-  const visible = isSlider ? 3 : courses.length;
+  const isSlider = courses.length > 4;
+  const visible = isSlider ? 4 : courses.length;
   const pages = Math.ceil(courses.length / visible);
   const page = isSlider ? Math.min(index, pages - 1) : 0;
   const pageCourses = isSlider ? courses.slice(page * visible, page * visible + visible) : courses;
@@ -100,8 +100,8 @@ export default function UpcomingCoursesSection({ section }) {
     <section className="pt-8 pb-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="text-center">
-            <div className="inline-flex flex-col items-center">
+          <div className="text-left">
+            <div className="inline-flex flex-col items-start">
               {heading && (
                 <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
               )}
@@ -116,7 +116,7 @@ export default function UpcomingCoursesSection({ section }) {
         {courses.length > 0 && (
           isSlider ? (
             <div className="relative mt-16">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-300">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-opacity duration-300">
                 {pageCourses.map((course) => (
                   <CourseCard key={course.id} course={course} />
                 ))}
@@ -150,7 +150,7 @@ export default function UpcomingCoursesSection({ section }) {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
               {pageCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}

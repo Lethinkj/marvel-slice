@@ -2,16 +2,21 @@ import { useRef, useEffect } from 'react';
 
 export default function FolderTabs({ tabs, activeTab, onChange }) {
   const containerRef = useRef(null);
+  const tabsRef = useRef(tabs);
+  const prevActiveRef = useRef(activeTab);
+  tabsRef.current = tabs;
 
   useEffect(() => {
+    if (prevActiveRef.current === activeTab) return;
+    prevActiveRef.current = activeTab;
     const container = containerRef.current;
     if (!container) return;
-    const idx = tabs.findIndex(t => t.id === activeTab);
+    const idx = tabsRef.current.findIndex(t => t.id === activeTab);
     const btn = idx >= 0 ? container.querySelector(`[data-tab-index="${idx}"]`) : null;
     if (btn && typeof btn.scrollIntoView === 'function') {
       btn.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
     }
-  }, [activeTab, tabs]);
+  }, [activeTab]);
 
   return (
     <div ref={containerRef} className="relative flex items-end flex-1 min-w-0 overflow-x-auto scrollbar-hide pt-2 z-20">

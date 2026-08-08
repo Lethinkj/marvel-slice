@@ -78,6 +78,7 @@ export default function ImageUploader({
           />
         </label>
         <button
+          type="button"
           onClick={() => setShowUrlInput(!showUrlInput)}
           className={`flex items-center gap-1 text-sm px-3 py-2 rounded-md transition-colors ${
             showUrlInput ? 'bg-admin-500/10 text-admin-500' : 'text-admin-500 hover:text-admin-500'
@@ -90,6 +91,7 @@ export default function ImageUploader({
         {value && (
           <>
             <button
+              type="button"
               onClick={copyUrl}
               className="flex items-center gap-1 text-sm text-admin-500 hover:text-admin-500"
               title="Copy URL"
@@ -98,6 +100,7 @@ export default function ImageUploader({
               Copy
             </button>
             <button
+              type="button"
               onClick={remove}
               className="flex items-center gap-1 text-sm text-destructive-500 hover:text-destructive-700"
               title="Remove"

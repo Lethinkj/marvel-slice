@@ -26,13 +26,6 @@ const navGroups = [
     ]},
 
   {
-    label: "Services", icon: FiServer, parentTo: "/admin/services/new", items: [
-      { to: "/admin/services/new", label: "Add Service", icon: FiPlusCircle },
-      { to: "/admin/services", label: "All Services", icon: FiServer, catchSubRoutes: true, siblingRoutes: ["/admin/services/new"] },
-      { to: "/admin/service-categories", label: "Categories", icon: FiGrid }
-    ],
-  },
-  {
     label: "Training", icon: FiZap, parentTo: "/admin/training/new", items: [
       { to: "/admin/training/new", label: "Add Program", icon: FiPlusCircle },
       { to: "/admin/training", label: "All Programs", icon: FiZap, catchSubRoutes: true, siblingRoutes: ["/admin/training/new"] },

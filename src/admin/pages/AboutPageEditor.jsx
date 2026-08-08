@@ -25,9 +25,9 @@ function createEmptySection(type) {
   const base = { section_type: type, heading: '', headingAlign: 'center', hidden: false };
   switch (type) {
     case 'text':
-      return { ...base, content: '', contentAlign: 'center' };
+      return { ...base, content: '', contentAlign: 'center', image_url: '' };
     case 'text_stats':
-      return { ...base, content: '', contentAlign: 'center', items: [] };
+      return { ...base, content: '', contentAlign: 'center', items: [], image_url: '' };
     case 'stats_row':
       return { ...base, items: [] };
     case 'feature_grid':
@@ -61,17 +61,22 @@ function AlignButtons({ value, onChange }) {
 
 function ImageUploader({ value, onChange, label }) {
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
   async function handleUpload(e) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setUploadError('');
     const ext = file.name.split('.').pop();
     const path = `about/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await supabase.storage.from('pages').upload(path, file);
-    if (!error) {
-      const { data } = supabase.storage.from('pages').getPublicUrl(path);
-      onChange(data.publicUrl);
+    if (error) {
+      setUploadError(error.message);
+      setUploading(false);
+      return;
     }
+    const { data } = supabase.storage.from('pages').getPublicUrl(path);
+    onChange(data.publicUrl);
     setUploading(false);
   }
   return (
@@ -85,6 +90,7 @@ function ImageUploader({ value, onChange, label }) {
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
         </label>
       </div>
+      {uploadError && <p className="text-xs text-destructive-500 mt-1">{uploadError}</p>}
       {value && <img src={value} alt="" className="mt-2 h-28 w-full object-cover rounded-lg border border-admin-200" />}
     </div>
   );
@@ -247,6 +253,7 @@ function SubEditor({ section, onChange }) {
 
       return (
         <div className="space-y-6">
+          <ImageUploader value={section.image_url} onChange={(v) => set({ image_url: v })} label="Side Image (optional — shows on the right)" />
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">Heading + Body Paragraphs</span>
@@ -305,6 +312,7 @@ function SubEditor({ section, onChange }) {
     case 'text_stats':
       return (
         <div className="space-y-6">
+          <ImageUploader value={section.image_url} onChange={(v) => set({ image_url: v })} label="Side Image (optional — shows on the right)" />
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <TextInput value={section.heading} onChange={(v) => set({ heading: v })} placeholder="Section heading (optional)" label="Heading" />

@@ -26,10 +26,6 @@ import CareerPageEditor from './pages/CareerPageEditor';
 import JobsList from './pages/JobsList';
 import JobEditor from './pages/JobEditor';
 
-import ServicesManager from './pages/ServicesManager';
-import ServiceEditor from './pages/ServiceEditor';
-import ServiceWizard from './pages/ServiceWizard';
-import ServiceCategoriesManager from './pages/ServiceCategoriesManager';
 import TrainingManager from './pages/TrainingManager';
 import TrainingEditor from './pages/TrainingEditor';
 import TrainingCategoriesManager from './pages/TrainingCategoriesManager';
@@ -154,10 +150,6 @@ export default function Admin() {
           <Route path="internships" element={<InternshipsManager />} />
           <Route path="internships/:id" element={<InternEditor />} />
           
-          <Route path="services" element={<ServicesManager />} />
-          <Route path="services/new" element={<ServiceWizard />} />
-          <Route path="services/:id" element={<ServiceEditor />} />
-          <Route path="service-categories" element={<ServiceCategoriesManager />} />
           <Route path="training" element={<TrainingManager />} />
           <Route path="training/new" element={<TrainingWizard />} />
           <Route path="training/:id" element={<TrainingEditor />} />
