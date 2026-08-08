@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabaseClient';
 import PageShell from '../components/ui/PageShell';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
+import DateTimePicker from '../components/ui/DateTimePicker';
 
 export default function UpcomingClassAdd() {
   const { id } = useParams();
@@ -82,9 +83,11 @@ export default function UpcomingClassAdd() {
           </div>
           <div>
             <label className="block text-sm font-semibold text-black mb-1">Date & Time <span className="text-destructive-500">*</span></label>
-            <input type="datetime-local" value={dateTime}
-              onChange={(e) => { setDateTime(e.target.value); if (errors.dateTime) setErrors((p) => ({ ...p, dateTime: undefined })); }}
-              className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white ${errors.dateTime ? 'border-destructive-500 ring-2 ring-destructive-100' : 'border-admin-200'}`} />
+            <DateTimePicker
+              value={dateTime}
+              onChange={(v) => { setDateTime(v); if (errors.dateTime) setErrors((p) => ({ ...p, dateTime: undefined })); }}
+              error={!!errors.dateTime}
+            />
             {errors.dateTime && <p className="text-xs text-destructive-500 mt-1.5">{errors.dateTime}</p>}
           </div>
         </div>

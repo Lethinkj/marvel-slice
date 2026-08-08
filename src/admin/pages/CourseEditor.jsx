@@ -12,6 +12,7 @@ import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
 import { toDateTimeLocal, fromDateTimeLocal } from '../../lib/datetime';
+import DateTimePicker from '../components/ui/DateTimePicker';
 
 function ListEditor({ items, onChange, fields, labelKey = "label" }) {
   const addItem = () =>
@@ -741,10 +742,11 @@ export default function CourseEditor() {
                   <label className="block text-sm font-semibold text-black mb-1">
                     Start Date & Time <span className="text-destructive-500">*</span>
                   </label>
-                  <input type="datetime-local"
+                  <DateTimePicker
                     value={toDateTimeLocal(course.start_date)}
-                    onChange={(e) => { update("start_date", e.target.value || null); if (startDateError) setStartDateError(false); }}
-                    className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all bg-white ${startDateError ? 'border-destructive-500 ring-2 ring-destructive-100' : 'border-admin-200'}`} />
+                    onChange={(v) => { update("start_date", v || null); if (startDateError) setStartDateError(false); }}
+                    error={!!startDateError}
+                  />
                   {startDateError && (
                     <p className="text-xs text-destructive-500 mt-1.5">Please set the start date and time for this Coming Soon course.</p>
                   )}

@@ -36,6 +36,7 @@ import PageShell from '../components/ui/PageShell';
 import FolderTabs from '../components/ui/FolderTabs';
 import SaveCancelBar from '../components/SaveCancelBar';
 import { toDateTimeLocal, fromDateTimeLocal } from '../../lib/datetime';
+import DateTimePicker from '../components/ui/DateTimePicker';
 
 const STEPS = [
   { label: "Basics", icon: FiBookOpen },
@@ -547,10 +548,11 @@ export default function CourseWizard() {
                 <label className="block text-sm font-semibold text-black mb-1">
                   Start Date & Time <span className="text-destructive-500">*</span>
                 </label>
-                <input type="datetime-local"
+                <DateTimePicker
                   value={toDateTimeLocal(c.start_date)}
-                  onChange={(e) => { u("start_date", e.target.value || null); if (startDateError) setStartDateError(false); }}
-                  className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 bg-white ${startDateError ? 'border-destructive-500 ring-2 ring-destructive-100' : 'border-admin-200'}`} />
+                  onChange={(v) => { u("start_date", v || null); if (startDateError) setStartDateError(false); }}
+                  error={!!startDateError}
+                />
                 {startDateError && (
                   <p className="text-xs text-destructive-500 mt-1.5">Please set the start date and time for this Coming Soon course.</p>
                 )}
