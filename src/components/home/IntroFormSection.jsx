@@ -134,8 +134,6 @@ export default function IntroFormSection({ section }) {
 
   return (
     <section className="relative overflow-hidden bg-white">
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{ backgroundImage: 'radial-gradient(#1B3A6B 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="grid lg:grid-cols-6 gap-8 lg:gap-12">
           <Reveal variant="up" className="lg:col-span-4 space-y-6 self-start">
