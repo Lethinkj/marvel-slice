@@ -115,8 +115,8 @@ export default function SectionRenderer({ section }) {
       const ca = section.contentAlign || 'center';
       const statCard = (stat, i) => (
         <div key={i} className="text-center p-[30px] bg-white rounded-[18px] shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-xl cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.08) 0px 4px 16px, rgba(17, 17, 26, 0.04) 0px 8px 32px' }}>
-          <div className="text-[48px] font-bold text-brand-orange leading-none"><AnimatedNumber value={stat.number} /></div>
-          <div className="text-[17px] font-medium text-gray-500 mt-3">{stat.label}</div>
+          <div className="text-3xl sm:text-4xl font-bold text-brand-orange leading-none"><AnimatedNumber value={stat.number} /></div>
+          <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
         </div>
       );
       return (
@@ -149,7 +149,7 @@ export default function SectionRenderer({ section }) {
                 </div>
               </div>
               {items.length > 0 && (
-                <div className="mt-[80px] bg-[#F8FAFC] rounded-[24px] p-8 sm:p-[50px]">
+                <div className="mt-[50px]">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {items.map((stat, i) => statCard(stat, i))}
                   </div>
