@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FiStar, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
+import { FiStar, FiArrowRight, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiBell, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import TabBar from '../components/ui/TabBar';
 import { trackFormSubmit, trackDownload, trackCtaClick, trackVideoPlay } from '../lib/analytics';
@@ -298,6 +298,12 @@ export default function CourseDetail() {
   const [brochureError, setBrochureError] = useState('');
   const [brochureAgree, setBrochureAgree] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(true);
+  const [interestForm, setInterestForm] = useState({ name: '', email: '', phone: '' });
+  const [interestSubmitting, setInterestSubmitting] = useState(false);
+  const [interestDone, setInterestDone] = useState(false);
+  const [interestError, setInterestError] = useState('');
+  const [interestAgree, setInterestAgree] = useState(false);
+  const [showInterest, setShowInterest] = useState(false);
 
   if (isLoading) {
     return (
@@ -316,32 +322,78 @@ export default function CourseDetail() {
     );
   }
 
+  async function handleInterestSubmit(e) {
+    e.preventDefault();
+    if (!interestForm.name.trim() || !interestForm.email.trim() || !interestForm.phone.trim()) return;
+    if (!interestAgree) { setInterestError('Please agree to the terms and conditions.'); return; }
+    setInterestSubmitting(true);
+    setInterestError('');
+
+    const payload = {
+      full_name: interestForm.name.trim(),
+      email: interestForm.email.trim(),
+      phone: interestForm.phone.trim(),
+      course_id: course.id,
+      course_title: course.title,
+      launch_date: course.start_date || null,
+    };
+
+    const { error } = await supabase.from('course_interests').insert(payload);
+    if (error) { setInterestError(error.message); setInterestSubmitting(false); return; }
+
+    trackFormSubmit('course_interest');
+    setInterestSubmitting(false);
+    setInterestDone(true);
+  }
+
   if (course.status === 'Coming Soon') {
     return (
       <div>
-        <section className="bg-gradient-to-b from-amber-50/60 to-white">
+        <section className="bg-gradient-to-b from-brand-orange/5 to-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center">
-            <span className="inline-flex items-center gap-1.5 bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full mb-5">
+            <span className="inline-flex items-center gap-1.5 bg-brand-orange/10 text-brand-orange text-xs font-semibold px-3 py-1 rounded-full mb-5">
               <FiClock className="w-3.5 h-3.5" /> Coming Soon
             </span>
-            <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15] max-w-3xl mx-auto">
+            <h1 className="text-[clamp(2rem,4vw,2.5rem)] font-bold text-brand-blue leading-[1.15] max-w-3xl mx-auto">
               {course.title}
             </h1>
             {course.description && (
-              <p className="mt-5 text-base text-gray-600 leading-relaxed max-w-2xl mx-auto">{course.description}</p>
+              <p className="mt-5 text-base text-gray-500 leading-relaxed max-w-[600px] mx-auto">{course.description}</p>
             )}
           </div>
         </section>
 
         <section className="py-14 bg-white">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="font-bold text-xl sm:text-2xl text-dark-navy mb-2">Course Launching Soon</h2>
-            <p className="text-text-gray text-sm mb-8">Stay tuned — this course opens for enrollment once the timer hits zero.</p>
-            {course.start_date ? (
-              <Countdown target={course.start_date} className="max-w-xl mx-auto" />
-            ) : (
-              <p className="text-sm text-text-gray">Start date will be announced soon.</p>
-            )}
+            <div className="max-w-md mx-auto bg-neutral-50 border border-gray-200 rounded-2xl p-8">
+              <h2 className="text-[22px] font-bold text-brand-blue">Course launching soon</h2>
+              <p className="mt-2 text-sm text-text-gray italic">
+                Stay tuned — this course opens for enrollment once the timer hits zero.
+              </p>
+
+              <div className="my-8">
+                {course.start_date ? (
+                  <Countdown target={course.start_date} className="max-w-xl mx-auto" />
+                ) : (
+                  <p className="text-sm text-text-gray">Start date will be announced soon.</p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setInterestForm({ name: '', email: '', phone: '' });
+                  setInterestDone(false);
+                  setInterestError('');
+                  setInterestAgree(false);
+                  setShowInterest(true);
+                }}
+                className="inline-flex items-center gap-2 px-8 py-3 bg-brand-orange text-white font-bold rounded-full hover:bg-brand-orange/90 active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <FiBell className="w-4 h-4" /> Notify Me
+              </button>
+            </div>
+
             <Link
               to="/courses"
               className="inline-flex items-center gap-2 mt-8 text-brand-orange font-semibold hover:underline"
@@ -350,6 +402,80 @@ export default function CourseDetail() {
             </Link>
           </div>
         </section>
+
+        {showInterest && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowInterest(false)}>
+            <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
+                <h2 className="text-lg font-bold text-gray-900">Register Your Interest</h2>
+                <button onClick={() => setShowInterest(false)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
+                  <FiX className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+              {interestDone ? (
+                <div className="p-8 text-center">
+                  <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                    <FiCheck className="w-7 h-7 text-emerald-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">You're on the list!</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    You've successfully registered your interest for{' '}
+                    <strong className="text-gray-900">{course.title}</strong>.
+                    {course.start_date
+                      ? <> We'll email you on {new Date(course.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} when it launches.</>
+                      : ' We\'ll notify you as soon as it launches.'}
+                  </p>
+                  <button onClick={() => setShowInterest(false)} className="mt-6 px-6 py-2.5 text-sm font-semibold rounded-lg bg-brand-orange text-white hover:bg-brand-orange/90 transition-colors cursor-pointer">
+                    Done
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleInterestSubmit} className="p-6 space-y-4">
+                  <p className="text-xs text-gray-500 bg-gray-50 rounded-lg p-3 border border-gray-100">
+                    Get notified the moment enrollment opens for <strong className="text-gray-900">{course.title}</strong>.
+                  </p>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Name *</label>
+                    <input value={interestForm.name} onChange={e => setInterestForm(p => ({ ...p, name: e.target.value }))} placeholder="Your full name" required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Email *</label>
+                    <input type="email" value={interestForm.email} onChange={e => setInterestForm(p => ({ ...p, email: e.target.value }))} placeholder="your@email.com" required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Phone *</label>
+                    <input type="tel" value={interestForm.phone} onChange={e => setInterestForm(p => ({ ...p, phone: e.target.value }))} placeholder="Your phone number" required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange" />
+                  </div>
+                  {interestError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-700">
+                      <FiAlertCircle className="w-4 h-4 shrink-0" /> {interestError}
+                    </div>
+                  )}
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input type="checkbox" checked={interestAgree} onChange={(e) => {
+                      setInterestAgree(e.target.checked);
+                      if (interestError) setInterestError('');
+                    }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600/20" />
+                    <span className="text-xs text-slate-600 leading-relaxed">
+                      I agree to the{' '}
+                      <a href="/terms" className="text-blue-600 underline hover:text-blue-700">Terms of Use</a>
+                      {' '}and{' '}
+                      <a href="/privacy" className="text-blue-600 underline hover:text-blue-700">Privacy Policy</a>.
+                    </span>
+                  </label>
+                  <button type="submit" disabled={interestSubmitting}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-brand-orange text-white hover:bg-brand-orange/90 transition-colors disabled:opacity-60 cursor-pointer">
+                    {interestSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
+                    {interestSubmitting ? 'Registering...' : 'Notify Me'}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
