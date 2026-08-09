@@ -6,6 +6,8 @@ import Reveal from '../ui/Reveal';
 import { supabase } from '../../lib/supabaseClient';
 import { formatDateTime } from '../../lib/datetime';
 
+const GAP = 24;
+
 function CourseCard({ course }) {
   return (
     <Link
@@ -64,31 +66,69 @@ export default function UpcomingCoursesSection({ section }) {
     },
   });
 
+  const containerRef = useRef(null);
   const [index, setIndex] = useState(0);
-  const timerRef = useRef(null);
-  const isSlider = courses.length > 4;
-  const visible = isSlider ? 4 : courses.length;
-  const pages = Math.ceil(courses.length / visible);
-  const page = isSlider ? Math.min(index, pages - 1) : 0;
-  const pageCourses = isSlider ? courses.slice(page * visible, page * visible + visible) : courses;
+  const [noTransition, setNoTransition] = useState(false);
+  const [trackW, setTrackW] = useState(0);
+
+  const N = courses.length;
+  const isSlider = N > 4;
 
   useEffect(() => {
-    if (!isSlider) {
-      setIndex(0);
-      return undefined;
-    }
-    timerRef.current = setInterval(() => {
-      setIndex((prev) => (prev + 1) % pages);
-    }, 5000);
-    return () => clearInterval(timerRef.current);
-  }, [isSlider, pages]);
+    const el = containerRef.current;
+    if (!el || !isSlider) return;
+    const measure = () => setTrackW(el.offsetWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isSlider]);
 
   useEffect(() => {
     setIndex(0);
-  }, [courses.length, isSlider]);
+    setNoTransition(false);
+  }, [N]);
 
-  function go(dir) {
-    setIndex((prev) => (prev + dir + pages) % pages);
+  const visible = trackW >= 1024 ? 4 : trackW >= 768 ? 2 : 1;
+  const slideW = trackW > 0 && isSlider ? (trackW - (visible - 1) * GAP) / visible : 0;
+  const pages = Math.ceil(N / visible);
+  const page = isSlider ? Math.floor(index / visible) % pages : 0;
+  const items = isSlider ? [...courses, ...courses, ...courses] : [];
+
+  useEffect(() => {
+    if (!isSlider || index >= N) return undefined;
+    const t = setInterval(() => {
+      setNoTransition(false);
+      setIndex((i) => i + 1);
+    }, 5000);
+    return () => clearInterval(t);
+  }, [isSlider, index, N]);
+
+  const handleTransitionEnd = () => {
+    if (index >= N && N > 0) {
+      setNoTransition(true);
+      setIndex(index - N);
+    }
+  };
+
+  function goNext() {
+    if (!isSlider) return;
+    setNoTransition(false);
+    setIndex((i) => (i < N ? i + 1 : N));
+  }
+
+  function goPrev() {
+    if (!isSlider) return;
+    if (index === 0) {
+      setNoTransition(true);
+      setIndex(N);
+      requestAnimationFrame(() => {
+        setNoTransition(false);
+        setIndex(N - 1);
+      });
+    } else {
+      setIndex((i) => i - 1);
+    }
   }
 
   const heading = section?.heading || '';
@@ -100,50 +140,69 @@ export default function UpcomingCoursesSection({ section }) {
     <section className="pt-8 pb-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="text-left">
-            <div className="inline-flex flex-col items-start">
-              {heading && (
-                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+          <div className="flex items-start justify-between gap-4">
+            <div className="text-left">
+              <div className="inline-flex flex-col items-start">
+                {heading && (
+                  <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+                )}
+                <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
+              </div>
+              {subheading && (
+                <p className="text-text-gray text-base sm:text-lg leading-relaxed mt-4">{subheading}</p>
               )}
-              <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
             </div>
-            {subheading && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed mt-4 mb-10">{subheading}</p>
+            {isSlider && (
+              <div className="flex items-center gap-2 shrink-0 pt-1">
+                <button
+                  type="button"
+                  aria-label="Previous courses"
+                  onClick={goPrev}
+                  className="w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
+                >
+                  <FiChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next courses"
+                  onClick={goNext}
+                  className="w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
+                >
+                  <FiChevronRight className="w-5 h-5" />
+                </button>
+              </div>
             )}
           </div>
         </Reveal>
 
         {courses.length > 0 && (
           isSlider ? (
-            <div className="relative mt-16">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-opacity duration-300">
-                {pageCourses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
-                ))}
+            <div className="relative mt-8">
+              <div className="overflow-hidden" ref={containerRef}>
+                <div
+                  className="flex"
+                  onTransitionEnd={handleTransitionEnd}
+                  style={{
+                    gap: `${GAP}px`,
+                    transform: `translateX(-${index * (slideW + GAP)}px)`,
+                    transition: noTransition ? 'none' : `transform 600ms cubic-bezier(0.22, 1, 0.36, 1)`,
+                    willChange: 'transform',
+                  }}
+                >
+                  {items.map((course, i) => (
+                    <div key={`${course.id}-${i}`} className="shrink-0" style={{ width: `${slideW}px` }}>
+                      <CourseCard course={course} />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <button
-                type="button"
-                aria-label="Previous courses"
-                onClick={() => go(-1)}
-                className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
-              >
-                <FiChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                aria-label="Next courses"
-                onClick={() => go(1)}
-                className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
-              >
-                <FiChevronRight className="w-5 h-5" />
-              </button>
               <div className="flex justify-center gap-2 mt-6">
                 {Array.from({ length: pages }).map((_, i) => (
                   <button
                     key={i}
                     type="button"
                     aria-label={`Go to course page ${i + 1}`}
-                    onClick={() => setIndex(i)}
+                    onClick={() => setIndex(i * visible)}
                     className={`h-2 rounded-full transition-all cursor-pointer ${i === page ? 'w-6 bg-brand-orange' : 'w-2 bg-gray-300 hover:bg-gray-400'}`}
                   />
                 ))}
@@ -151,7 +210,7 @@ export default function UpcomingCoursesSection({ section }) {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-              {pageCourses.map((course) => (
+              {courses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
             </div>

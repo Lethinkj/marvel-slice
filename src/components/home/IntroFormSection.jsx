@@ -63,8 +63,8 @@ function PillGrid({ pills }) {
       {pills.map((label, i) => (
         <StaggerItem key={i}>
           <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 shadow-sm">
-            <div className="w-7 h-7 rounded-lg bg-brand-orange/10 flex items-center justify-center shrink-0">
-              <FiCheckCircle className="w-3.5 h-3.5 text-brand-orange" />
+            <div className="w-7 h-7 rounded-lg bg-brand-green/10 flex items-center justify-center shrink-0">
+              <FiCheckCircle className="w-3.5 h-3.5 text-brand-green" />
             </div>
             <span className="text-xs font-bold text-brand-blue leading-tight">{label}</span>
           </div>
