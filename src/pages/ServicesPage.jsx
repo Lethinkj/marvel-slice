@@ -7,24 +7,182 @@ import { supabase } from '../lib/supabaseClient';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
 
-const circleBgColors = ['bg-brand-orange/15', 'bg-blue-100', 'bg-green-100', 'bg-purple-100'];
-const iconColors = ['text-brand-orange', 'text-blue-500', 'text-green-500', 'text-purple-500'];
+const serviceStyles = [
+  {
+    accent: 'text-orange-500',
+    underline: 'bg-orange-500',
+    bg: 'bg-orange-50',
+    blob: 'bg-orange-50',
+    border: 'border-orange-100',
+    dots: 'bg-orange-200',
+  },
+  {
+    accent: 'text-blue-500',
+    underline: 'bg-blue-500',
+    bg: 'bg-blue-50',
+    blob: 'bg-blue-50',
+    border: 'border-blue-100',
+    dots: 'bg-blue-200',
+  },
+  {
+    accent: 'text-emerald-500',
+    underline: 'bg-emerald-500',
+    bg: 'bg-emerald-50',
+    blob: 'bg-emerald-50',
+    border: 'border-emerald-100',
+    dots: 'bg-emerald-200',
+  },
+  {
+    accent: 'text-violet-500',
+    underline: 'bg-violet-500',
+    bg: 'bg-violet-50',
+    blob: 'bg-violet-50',
+    border: 'border-violet-100',
+    dots: 'bg-violet-200',
+  },
+  {
+    accent: 'text-pink-500',
+    underline: 'bg-pink-500',
+    bg: 'bg-pink-50',
+    blob: 'bg-pink-50',
+    border: 'border-pink-100',
+    dots: 'bg-pink-200',
+  },
+  {
+    accent: 'text-cyan-500',
+    underline: 'bg-cyan-500',
+    bg: 'bg-cyan-50',
+    blob: 'bg-cyan-50',
+    border: 'border-cyan-100',
+    dots: 'bg-cyan-200',
+  },
+  {
+    accent: 'text-indigo-500',
+    underline: 'bg-indigo-500',
+    bg: 'bg-indigo-50',
+    blob: 'bg-indigo-50',
+    border: 'border-indigo-100',
+    dots: 'bg-indigo-200',
+  },
+  {
+    accent: 'text-teal-500',
+    underline: 'bg-teal-500',
+    bg: 'bg-teal-50',
+    blob: 'bg-teal-50',
+    border: 'border-teal-100',
+    dots: 'bg-teal-200',
+  },
+];
 
 function ServiceCard({ title, description, icon, colorIdx = 0 }) {
   const IconComp = icon ? LuIcons[`Lu${icon}`] : null;
+  const style = serviceStyles[colorIdx % serviceStyles.length];
+
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6 text-center h-full min-h-[240px] flex flex-col transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(17,17,26,0.08),0_8px_32px_rgba(17,17,26,0.05)] hover:shadow-[0_8px_24px_rgba(17,17,26,0.12),0_16px_48px_rgba(17,17,26,0.08)]">
-      <div className={`w-16 h-16 rounded-full ${circleBgColors[colorIdx % 4]} flex items-center justify-center mx-auto mb-4`}>
+    <div
+      className={`
+        group
+        relative
+        h-full
+        min-h-[285px]
+        overflow-hidden
+        rounded-[22px]
+        border
+        ${style.border}
+        bg-white
+        px-7
+        py-6
+        shadow-[0_8px_30px_rgba(15,23,42,0.06)]
+        transition-all
+        duration-300
+        hover:-translate-y-2
+        hover:shadow-[0_12px_24px_rgba(15,23,42,0.10),0_24px_56px_rgba(15,23,42,0.12)]
+      `}
+    >
+      {/* Soft decorative shape */}
+      <div
+        className={`
+          absolute
+          -right-12
+          -top-12
+          h-36
+          w-36
+          rounded-full
+          ${style.blob}
+          opacity-80
+          transition-all
+          duration-300
+          group-hover:scale-125
+        `}
+      />
+
+      {/* Service number */}
+      <div className="relative z-10 transition-transform duration-300 group-hover:-translate-y-1">
+        <span
+          className={`
+            text-2xl
+            font-semibold
+            tracking-tight
+            ${style.accent}
+          `}
+        >
+          {String(colorIdx + 1).padStart(2, '0')}
+        </span>
+
+        <div
+          className={`mt-2 h-[3px] w-9 rounded-full ${style.underline} transition-all duration-300 group-hover:w-14`}
+        />
+      </div>
+
+      {/* Icon */}
+      <div
+        className={`
+          absolute
+          right-6
+          top-6
+          z-10
+          flex
+          h-14
+          w-14
+          items-center
+          justify-center
+          rounded-2xl
+          ${style.bg}
+          transition-transform
+          duration-300
+          group-hover:scale-110
+          group-hover:rotate-6
+        `}
+      >
         {IconComp ? (
-          <IconComp className={`w-7 h-7 ${iconColors[colorIdx % 4]}`} />
+          <IconComp className={`h-7 w-7 ${style.accent} transition-transform duration-300 group-hover:scale-110`} />
         ) : (
-          <FiBriefcase className={`w-7 h-7 ${iconColors[colorIdx % 4]}`} />
+          <FiBriefcase className={`h-7 w-7 ${style.accent} transition-transform duration-300 group-hover:scale-110`} />
         )}
       </div>
-      <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
-      {description && (
-        <p className="text-sm text-gray-500 leading-relaxed flex-1 line-clamp-4">{description}</p>
-      )}
+
+      {/* Content */}
+      <div className="relative z-10 mt-9">
+        <h3 className="max-w-[90%] text-[18px] font-bold leading-snug text-slate-900 transition-colors duration-300 group-hover:text-slate-700">
+          {title}
+        </h3>
+
+        {description && (
+          <p className="mt-4 text-[14px] leading-6 text-slate-500">
+            {description}
+          </p>
+        )}
+      </div>
+
+      {/* Decorative dots */}
+      <div className="absolute bottom-5 right-6 grid grid-cols-3 gap-1.5 opacity-70">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <span
+            key={i}
+            className={`h-1.5 w-1.5 rounded-full ${style.dots}`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -126,18 +284,20 @@ export default function ServicesPage() {
       {services.length > 0 && (
         <section className="py-16 sm:py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Reveal as="div" className="text-center mb-4">
-              <h2 className="text-3xl sm:text-4xl font-bold text-blue-700">
+            <Reveal as="div" className="mb-4 text-center">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-blue-700">
                 {heading}
               </h2>
-              <div className="w-16 h-1 bg-brand-orange mt-2 mx-auto" />
+              <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-brand-orange" />
               {subheading && (
-                <p className="text-base sm:text-lg text-blue-600 max-w-2xl mx-auto mt-4">{subheading}</p>
+                <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg">
+                  {subheading}
+                </p>
               )}
             </Reveal>
-            <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+            <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mt-12">
               {services.map((service, i) => (
-                <StaggerItem key={i} className="h-full">
+                <StaggerItem key={service.id ?? i} className="h-full">
                   <ServiceCard
                     title={service.title}
                     description={service.description}

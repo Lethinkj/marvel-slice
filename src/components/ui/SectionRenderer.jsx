@@ -359,13 +359,13 @@ export default function SectionRenderer({ section }) {
             <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
               {items.map((item, i) => (
                 <StaggerItem key={i} className="h-full">
-                  <Card className="p-6 text-center h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-gray-300 border border-transparent">
-                    <div className={`w-16 h-16 rounded-full ${circleBgColors[i % 4]} flex items-center justify-center mx-auto mb-4`}>
-                      <DynamicIcon name={item.icon} className={`w-7 h-7 ${iconColors[i % 4]}`} />
+                  <div className="group h-full p-6 text-center bg-white rounded-xl border border-gray-100 shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_12px_24px_rgba(15,23,42,0.10),0_24px_56px_rgba(15,23,42,0.12)]">
+                    <div className={`w-16 h-16 rounded-full ${circleBgColors[i % 4]} flex items-center justify-center mx-auto mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                      <DynamicIcon name={item.icon} className={`w-7 h-7 ${iconColors[i % 4]} transition-transform duration-300 group-hover:scale-110`} />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-slate-700">{item.title}</h3>
                     <p className="text-sm text-gray-500 leading-relaxed">{item.description}</p>
-                  </Card>
+                  </div>
                 </StaggerItem>
               ))}
             </Stagger>
