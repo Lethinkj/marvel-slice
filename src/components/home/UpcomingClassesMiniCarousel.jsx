@@ -4,8 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import { FiBookOpen, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { supabase } from '../../lib/supabaseClient';
 
-const GAP = 12;
-const PEEK = 0;
 const SLIDE_MS = 450;
 
 function formatDate(value) {
@@ -25,14 +23,14 @@ function formatTime(value) {
 function ClassCard({ cls }) {
   const seatsLeft = cls.seats_left != null ? Number(cls.seats_left) : null;
   return (
-    <div className="h-[168px] flex flex-col bg-white rounded-2xl p-5 border border-[#EAEAEA] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-gray-300"
+    <div className="h-[168px] w-full flex flex-col bg-white rounded-2xl p-5 border border-[#EAEAEA] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-gray-300"
       style={{ boxShadow: '0 8px 24px rgba(107,114,128,0.18), 0 2px 6px rgba(107,114,128,0.12)' }}>
       <div className="flex items-start gap-3 min-w-0">
         <div className="w-10 h-10 rounded-full bg-brand-blue/5 border border-brand-blue/10 flex items-center justify-center shrink-0">
           <FiBookOpen className="w-4 h-4 text-brand-blue" />
         </div>
         <div className="min-w-0 flex-1">
-          <h4 className="text-[17px] font-bold text-dark-navy leading-snug line-clamp-2">
+          <h4 className="text-[17px] font-bold text-dark-navy leading-snug line-clamp-2 break-words">
             {cls.course_name}
           </h4>
           <p className="text-xs font-medium text-[#6B7280] mt-1.5 truncate">
@@ -76,26 +74,18 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
     },
   });
 
-  const containerRef = useRef(null);
-  const [width, setWidth] = useState(0);
   const [index, setIndex] = useState(0);
   const [noTransition, setNoTransition] = useState(false);
   const [paused, setPaused] = useState(false);
   const touchX = useRef(null);
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const ro = new ResizeObserver((entries) => {
-      setWidth(entries[0].contentRect.width);
-    });
-    ro.observe(containerRef.current);
-    return () => ro.disconnect();
-  }, []);
-
   const count = classes.length;
-  const cardWidth = width > 0 ? width - PEEK : 0;
-  const step = cardWidth + GAP;
   const canSlide = count > 1;
+
+  useEffect(() => {
+    setIndex(0);
+    setNoTransition(false);
+  }, [count]);
 
   useEffect(() => {
     if (!canSlide || paused) return;
@@ -109,17 +99,17 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
   }, [canSlide, paused, count]);
 
   const next = useCallback(() => {
-    if (!canSlide || width === 0) return;
+    if (!canSlide) return;
     if (noTransition) setNoTransition(false);
     if (index >= count - 1) {
       setIndex(count);
     } else {
       setIndex((i) => i + 1);
     }
-  }, [canSlide, count, index, noTransition, width]);
+  }, [canSlide, count, index, noTransition]);
 
   const prev = useCallback(() => {
-    if (!canSlide || width === 0) return;
+    if (!canSlide) return;
     if (noTransition) setNoTransition(false);
     if (index === 0) {
       setNoTransition(true);
@@ -131,7 +121,7 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
     } else {
       setIndex((i) => i - 1);
     }
-  }, [canSlide, count, index, noTransition, width]);
+  }, [canSlide, count, index, noTransition]);
 
   const handleTransitionEnd = () => {
     if (index >= count && count > 0) {
@@ -151,7 +141,7 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
       <div className="flex items-center justify-between gap-3">
         <h3 className="font-bold text-dark-navy text-lg">{title}</h3>
         {canSlide && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={prev}
               aria-label="Previous classes"
@@ -174,7 +164,7 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
         <p className="text-center text-text-gray text-sm mt-6">New batches will be announced soon.</p>
       ) : (
         <>
-          <div className="mt-4" ref={containerRef}>
+          <div className="mt-4">
             <div
               className="overflow-hidden"
               onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
@@ -192,13 +182,13 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
                 className="flex"
                 onTransitionEnd={handleTransitionEnd}
                 style={{
-                  transform: `translateX(${-index * step}px)`,
+                  transform: `translateX(-${index * 100}%)`,
                   transition: noTransition ? 'none' : `transform ${SLIDE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
                   willChange: 'transform',
                 }}
               >
                 {items.map((cls, i) => (
-                  <div key={`${cls.id}-${i}`} className="shrink-0" style={{ width: cardWidth, marginRight: i === items.length - 1 ? 0 : GAP }}>
+                  <div key={`${cls.id}-${i}`} className="shrink-0 w-full">
                     <ClassCard cls={cls} />
                   </div>
                 ))}
