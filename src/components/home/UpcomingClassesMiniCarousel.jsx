@@ -22,25 +22,30 @@ function formatTime(value) {
 
 function ClassCard({ cls }) {
   const seatsLeft = cls.seats_left != null ? Number(cls.seats_left) : null;
+
   return (
-    <div className="h-[168px] w-full flex flex-col bg-white rounded-2xl p-5 border border-[#EAEAEA] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-gray-300"
-      style={{ boxShadow: '0 8px 24px rgba(107,114,128,0.18), 0 2px 6px rgba(107,114,128,0.12)' }}>
-      <div className="flex items-start gap-3 min-w-0">
-        <div className="w-10 h-10 rounded-full bg-brand-blue/5 border border-brand-blue/10 flex items-center justify-center shrink-0">
-          <FiBookOpen className="w-4 h-4 text-brand-blue" />
+    <div
+      className="relative z-10 h-[168px] w-full flex flex-col bg-white rounded-2xl p-5 border border-[#EAEAEA] transition-transform duration-300 hover:-translate-y-1"
+      style={{ boxShadow: '0 2px 8px rgba(17, 24, 39, 0.05)' }}
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 text-brand-blue">
+          <FiBookOpen size={18} />
         </div>
-        <div className="min-w-0 flex-1">
-          <h4 className="text-[17px] font-bold text-dark-navy leading-snug line-clamp-2 break-words">
-            {cls.course_name}
-          </h4>
-          <p className="text-xs font-medium text-[#6B7280] mt-1.5 truncate">
-            📅 {formatDate(cls.date_time)} • 🕒 {formatTime(cls.date_time)}
-          </p>
-        </div>
+
+        <h3 className="min-w-0 truncate text-[17px] font-semibold text-brand-blue">
+          {cls.course_name}
+        </h3>
+      </div>
+
+      <div className="mt-2 flex items-center gap-2 text-xs text-text-gray">
+        <span>📅 {formatDate(cls.date_time)}</span>
+        <span>•</span>
+        <span>🕒 {formatTime(cls.date_time)}</span>
       </div>
 
       {seatsLeft != null && seatsLeft <= 5 && (
-        <span className="mt-3 inline-flex items-center px-2.5 py-0.5 rounded-full bg-brand-orange text-white text-xs font-semibold w-fit">
+        <span className="mt-2 inline-flex w-fit items-center rounded-full bg-brand-orange px-2.5 py-0.5 text-xs font-semibold text-white">
           🔥 Only {seatsLeft} Seats Left
         </span>
       )}
@@ -48,7 +53,7 @@ function ClassCard({ cls }) {
       <div className="mt-auto pt-3">
         <a
           href={cls.registration_link || '/contact'}
-          className="inline-flex items-center justify-center w-full bg-brand-orange text-white text-sm font-bold py-2.5 px-4 rounded-[10px] hover:bg-[#e0951f] hover:-translate-y-0.5 transition-all duration-300"
+          className="flex h-9 w-full items-center justify-center rounded-[10px] bg-brand-orange px-4 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#e0951f]"
         >
           Register Now
         </a>
@@ -134,7 +139,7 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
 
   return (
     <div
-      className="mt-6"
+      className="mt-6 max-w-sm w-full mx-auto lg:ml-auto"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -164,35 +169,32 @@ export default function UpcomingClassesMiniCarousel({ title = 'Upcoming Classes'
         <p className="text-center text-text-gray text-sm mt-6">New batches will be announced soon.</p>
       ) : (
         <>
-          <div className="mt-4">
+          <div className="relative w-full overflow-hidden rounded-2xl mt-4"
+            onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              if (touchX.current == null) return;
+              const delta = e.changedTouches[0].clientX - touchX.current;
+              touchX.current = null;
+              if (Math.abs(delta) > 40) {
+                if (delta < 0) next();
+                else prev();
+              }
+            }}
+          >
             <div
-              className="overflow-hidden"
-              onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
-              onTouchEnd={(e) => {
-                if (touchX.current == null) return;
-                const delta = e.changedTouches[0].clientX - touchX.current;
-                touchX.current = null;
-                if (Math.abs(delta) > 40) {
-                  if (delta < 0) next();
-                  else prev();
-                }
+              className="flex w-full"
+              onTransitionEnd={handleTransitionEnd}
+              style={{
+                transform: `translateX(-${index * 100}%)`,
+                transition: noTransition ? 'none' : `transform ${SLIDE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+                willChange: 'transform',
               }}
             >
-              <div
-                className="flex"
-                onTransitionEnd={handleTransitionEnd}
-                style={{
-                  transform: `translateX(-${index * 100}%)`,
-                  transition: noTransition ? 'none' : `transform ${SLIDE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
-                  willChange: 'transform',
-                }}
-              >
-                {items.map((cls, i) => (
-                  <div key={`${cls.id}-${i}`} className="shrink-0 w-full">
-                    <ClassCard cls={cls} />
-                  </div>
-                ))}
-              </div>
+              {items.map((cls, i) => (
+                <div key={`${cls.id}-${i}`} className="w-full min-w-full shrink-0">
+                  <ClassCard cls={cls} />
+                </div>
+              ))}
             </div>
           </div>
 
