@@ -748,6 +748,7 @@ end $$;
 create table if not exists upcoming_classes (
   id uuid primary key default gen_random_uuid(),
   course_name text not null,
+  batch text,
   date_time text,
   is_active boolean default true,
   sort_order int default 0,
@@ -785,6 +786,7 @@ create table if not exists upcoming_class_registrations (
   upcoming_class_id uuid references upcoming_classes(id) on delete set null,
   course_id uuid references courses(id) on delete set null,
   course_name text,
+  batch text,
   full_name text not null,
   email text not null,
   phone text not null,

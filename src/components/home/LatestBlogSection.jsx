@@ -12,7 +12,7 @@ export default function LatestBlogSection({ section }) {
   const { data: posts, isLoading } = useRecentPosts(3);
 
   const content = section?.content || {};
-  const heading = content.heading || section?.heading || 'Latest From Our Blog';
+  const heading = content.heading || section?.heading || 'Latest Blog';
   const subheading = content.subheading || section?.subheading || '';
   const linkText = content.link_text || 'View All Posts';
 
@@ -20,19 +20,27 @@ export default function LatestBlogSection({ section }) {
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className="pt-8 pb-16 bg-white">
+    <section className="pt-8 pb-16 bg-neutral-100">
       <div className="w-full max-w-[92%] sm:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <div className="text-center">
-            <div className="inline-flex flex-col items-center">
-              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
-              <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
+          <div className="flex items-start justify-between gap-4">
+            <div className="text-left">
+              <div className="inline-flex flex-col items-start">
+                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+                <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
+              </div>
+              {subheading && (
+                <p className="text-text-gray text-base sm:text-lg leading-relaxed max-w-2xl mt-4">
+                  {subheading}
+                </p>
+              )}
             </div>
-            {subheading && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mt-4 mb-10">
-                {subheading}
-              </p>
-            )}
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 bg-brand-blue text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-blue-700 transition-all shrink-0 pt-2.5"
+            >
+              {linkText} <FiArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </Reveal>
         <Stagger className="grid md:grid-cols-3 gap-6 mt-16">
@@ -73,14 +81,6 @@ export default function LatestBlogSection({ section }) {
             </StaggerItem>
           ))}
         </Stagger>
-        <Reveal className="text-center mt-10">
-          <Link
-            to="/blog"
-            className="inline-flex items-center gap-2 text-brand-orange font-semibold text-sm hover:gap-3 transition-all"
-          >
-            {linkText} <FiArrowRight className="w-4 h-4" />
-          </Link>
-        </Reveal>
       </div>
     </section>
   );

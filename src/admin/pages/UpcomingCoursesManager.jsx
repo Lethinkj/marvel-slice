@@ -46,6 +46,9 @@ export default function UpcomingCoursesManager() {
   const columns = [
     { header: 'SL NO', accessor: 'slno', cell: (_, i) => <span className="text-neutral-500 font-medium">{i + 1}</span>, width: '80px' },
     { header: 'Course Name', accessor: 'course_name', cell: (row) => <span className="font-semibold text-black">{row.course_name}</span> },
+    { header: 'Batch', accessor: 'batch', cell: (row) => row.batch ? (
+      <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">{row.batch}</span>
+    ) : <span className="text-neutral-400 italic">Not set</span> },
     { header: 'Date & Time', accessor: 'date_time', cell: (row) => row.date_time ? formatDateTime(row.date_time) : <span className="text-neutral-400 italic">Not set</span> },
     { header: 'Status', accessor: 'is_active', cell: (row) => (
       <button

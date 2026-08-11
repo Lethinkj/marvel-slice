@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiStar, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiStar } from 'react-icons/fi';
 import Reveal from '../ui/Reveal';
 import { supabase } from '../../lib/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
@@ -106,17 +106,6 @@ export default function TestimonialsSection({ section }) {
     timerRef.current = null;
   }
 
-  function go(dir) {
-    if (dir < 0 && pos === 0) {
-      setAnimate(false);
-      setPos(n - 1);
-      setTimeout(() => setAnimate(true), 100);
-      return;
-    }
-    setAnimate(true);
-    setPos((prev) => prev + dir);
-  }
-
   function jumpTo(i) {
     setAnimate(false);
     setPos(i);
@@ -174,24 +163,8 @@ export default function TestimonialsSection({ section }) {
                   ))}
                 </motion.div>
               </div>
-              <button
-                type="button"
-                aria-label="Previous testimonials"
-                onClick={() => go(-1)}
-                className="hidden sm:flex absolute -left-2 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.1)] border border-gray-200 items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 hover:shadow-[0_12px_28px_rgba(0,0,0,0.14)] transition-all duration-300 cursor-pointer"
-              >
-                <FiChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                aria-label="Next testimonials"
-                onClick={() => go(1)}
-                className="hidden sm:flex absolute -right-2 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.1)] border border-gray-200 items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 hover:shadow-[0_12px_28px_rgba(0,0,0,0.14)] transition-all duration-300 cursor-pointer"
-              >
-                <FiChevronRight className="w-5 h-5" />
-              </button>
               <div className="flex justify-center gap-2 mt-6">
-                {items.map((_, i) => (
+                {items.slice(0, 3).map((_, i) => (
                   <button
                     key={i}
                     type="button"

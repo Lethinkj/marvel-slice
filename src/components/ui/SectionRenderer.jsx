@@ -113,8 +113,14 @@ export default function SectionRenderer({ section }) {
       const items = safeParse(section.items);
       const ha = section.headingAlign || 'center';
       const ca = section.contentAlign || 'center';
+      const statIcons = ['LuGraduationCap', 'LuBookOpen', 'LuUsers', 'LuAward', 'LuTarget', 'LuTrendingUp', 'LuGlobe', 'LuHeartHandshake'];
+      const statIconBg = ['bg-brand-orange/10', 'bg-blue-100', 'bg-emerald-100', 'bg-purple-100', 'bg-pink-100', 'bg-cyan-100', 'bg-indigo-100', 'bg-teal-100'];
+      const statIconColor = ['text-brand-orange', 'text-blue-500', 'text-emerald-500', 'text-purple-500', 'text-pink-500', 'text-cyan-500', 'text-indigo-500', 'text-teal-500'];
       const statCard = (stat, i) => (
         <div key={i} className="text-center p-[30px] bg-white rounded-[18px] shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-xl cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.08) 0px 4px 16px, rgba(17, 17, 26, 0.04) 0px 8px 32px' }}>
+          <div className={`w-12 h-12 rounded-full ${statIconBg[i % 8]} flex items-center justify-center mx-auto mb-3`}>
+            <DynamicIcon name={stat.icon || statIcons[i % 8]} className={`w-6 h-6 ${statIconColor[i % 8]}`} />
+          </div>
           <div className="text-3xl sm:text-4xl font-bold text-brand-orange leading-none"><AnimatedNumber value={stat.number} /></div>
           <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
         </div>
@@ -134,7 +140,10 @@ export default function SectionRenderer({ section }) {
                 <div>
                   {section.heading && (
                     <>
-                      <h2 className="text-3xl sm:text-4xl font-bold text-blue-700 leading-tight">{section.heading}</h2>
+                      <h2 className="text-3xl sm:text-4xl font-bold leading-tight">
+                        <span className="block text-blue-700">{section.heading.split(' ')[0]}</span>
+                        <span className="block text-brand-orange">{section.heading.split(' ').slice(1).join(' ')}</span>
+                      </h2>
                       <div className="w-20 h-1.5 bg-brand-orange mt-5 mb-[50px]" />
                     </>
                   )}
@@ -337,37 +346,75 @@ export default function SectionRenderer({ section }) {
     case 'feature_grid': {
       const items = safeParse(section.items);
       if (items.length === 0) return null;
-      const circleBgColors = ['bg-brand-orange/15', 'bg-blue-100', 'bg-green-100', 'bg-purple-100'];
-      const iconColors = ['text-brand-orange', 'text-blue-500', 'text-green-500', 'text-purple-500'];
       const ha = section.headingAlign || 'center';
       const sa = section.subheadingAlign || 'center';
-      const barMargin = ha === 'center' ? 'mx-auto' : ha === 'right' ? 'ml-auto' : 'mr-auto';
+      const accentStyles = [
+        { accent: 'text-blue-600', underline: 'bg-blue-600', iconBg: 'bg-blue-50', blob: 'bg-blue-100/50', dots: 'bg-blue-200/60' },
+        { accent: 'text-orange-500', underline: 'bg-orange-500', iconBg: 'bg-orange-50', blob: 'bg-orange-100/50', dots: 'bg-orange-200/60' },
+        { accent: 'text-emerald-600', underline: 'bg-emerald-600', iconBg: 'bg-emerald-50', blob: 'bg-emerald-100/50', dots: 'bg-emerald-200/60' },
+        { accent: 'text-purple-600', underline: 'bg-purple-600', iconBg: 'bg-purple-50', blob: 'bg-purple-100/50', dots: 'bg-purple-200/60' },
+        { accent: 'text-pink-600', underline: 'bg-pink-600', iconBg: 'bg-pink-50', blob: 'bg-pink-100/50', dots: 'bg-pink-200/60' },
+        { accent: 'text-cyan-600', underline: 'bg-cyan-600', iconBg: 'bg-cyan-50', blob: 'bg-cyan-100/50', dots: 'bg-cyan-200/60' },
+        { accent: 'text-indigo-600', underline: 'bg-indigo-600', iconBg: 'bg-indigo-50', blob: 'bg-indigo-100/50', dots: 'bg-indigo-200/60' },
+        { accent: 'text-teal-600', underline: 'bg-teal-600', iconBg: 'bg-teal-50', blob: 'bg-teal-100/50', dots: 'bg-teal-200/60' },
+      ];
+
+      const splitHeading = (h) => {
+        const idx = h.indexOf('Marvel Slice');
+        if (idx === -1) return { before: h, highlight: null, after: '' };
+        return { before: h.slice(0, idx), highlight: 'Marvel Slice', after: h.slice(idx + 'Marvel Slice'.length) };
+      };
+      const headingParts = section.heading ? splitHeading(section.heading) : null;
+
       return (
-        <div className="py-16">
-          <div className="max-w-6xl mx-auto px-4">
+        <div className="py-16 sm:py-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
             {section.heading && (
               <Reveal as="div" className={`mb-4 text-${ha}`}>
-                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">{section.heading}</h2>
-                <div className={`w-16 h-1 bg-brand-orange mt-2 ${barMargin}`} />
+                <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-blue-700 leading-tight">
+                  {headingParts?.before}
+                  {headingParts?.highlight && (
+                    <span className="relative inline-block mx-1 text-blue-700">
+                      {headingParts.highlight}
+                      <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-[4px] w-14 rounded-full bg-brand-orange" />
+                    </span>
+                  )}
+                  {headingParts?.after}
+                </h2>
               </Reveal>
             )}
             {section.subheading && (
-              <Reveal as="p" className={`text-gray-500 text-base max-w-2xl leading-relaxed text-${sa} ${sa === 'center' ? 'mx-auto' : ''}`}>
+              <Reveal as="p" className={`text-gray-500 text-[15px] sm:text-base max-w-2xl leading-relaxed text-${sa} ${sa === 'center' ? 'mx-auto' : ''}`}>
                 {section.subheading}
               </Reveal>
             )}
-            <Stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-              {items.map((item, i) => (
-                <StaggerItem key={i} className="h-full">
-                  <div className="group h-full p-6 text-center bg-white rounded-xl border border-gray-100 shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_12px_24px_rgba(15,23,42,0.10),0_24px_56px_rgba(15,23,42,0.12)]">
-                    <div className={`w-16 h-16 rounded-full ${circleBgColors[i % 4]} flex items-center justify-center mx-auto mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                      <DynamicIcon name={item.icon} className={`w-7 h-7 ${iconColors[i % 4]} transition-transform duration-300 group-hover:scale-110`} />
+            <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mt-12 sm:mt-14">
+              {items.map((item, i) => {
+                const s = accentStyles[i % accentStyles.length];
+                return (
+                  <StaggerItem key={i} className="h-full">
+                    <div className="group relative h-full overflow-hidden rounded-[20px] border border-gray-100 bg-white px-6 sm:px-7 py-6 sm:py-7 shadow-[0_1px_3px_rgba(15,23,42,0.05),0_10px_30px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_14px_34px_rgba(15,23,42,0.11)]">
+                      <div className="flex items-start justify-between">
+                        <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-bold tracking-widest ${s.iconBg} ${s.accent}`}>
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                      </div>
+                      <div className={`mt-5 flex h-14 w-14 items-center justify-center rounded-2xl ${s.iconBg} transition-transform duration-300 group-hover:scale-105`}>
+                        {item.icon ? <DynamicIcon name={item.icon} className={`h-7 w-7 ${s.accent}`} /> : <FiBriefcase className={`h-7 w-7 ${s.accent}`} />}
+                      </div>
+                      <h3 className="mt-5 text-[18px] font-bold leading-snug text-gray-900">{item.title}</h3>
+                      <div className={`mt-2.5 h-[3px] w-8 rounded-full ${s.underline} transition-all duration-300 group-hover:w-11`} />
+                      <p className="mt-3.5 text-[14px] leading-relaxed text-gray-500">{item.description}</p>
+                      <div className={`absolute -bottom-10 -right-10 h-28 w-28 rounded-full ${s.blob} opacity-60 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none`} />
+                      <div className="absolute bottom-4 right-5 grid grid-cols-3 gap-1 opacity-50 pointer-events-none">
+                        {Array.from({ length: 9 }).map((_, d) => (
+                          <span key={d} className={`h-1 w-1 rounded-full ${s.dots}`} />
+                        ))}
+                      </div>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-slate-700">{item.title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed">{item.description}</p>
-                  </div>
-                </StaggerItem>
-              ))}
+                  </StaggerItem>
+                );
+              })}
             </Stagger>
           </div>
         </div>
