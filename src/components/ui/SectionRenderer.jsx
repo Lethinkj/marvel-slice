@@ -49,7 +49,7 @@ function FaqListSection({ section }) {
   );
 }
 
-export default function SectionRenderer({ section }) {
+export default function SectionRenderer({ section, className }) {
   switch (section.section_type) {
     case 'text': {
       const parsed = safeParse(section.content);
@@ -126,14 +126,7 @@ export default function SectionRenderer({ section }) {
         </div>
       );
       return (
-        <div className="relative overflow-hidden py-[100px]">
-          <div className="absolute inset-0 pointer-events-none" aria-hidden>
-            <div className="absolute -top-16 -left-20 w-72 h-72 rounded-full opacity-10 blur-3xl" style={{ background: 'radial-gradient(circle, #93c5fd 0%, transparent 70%)' }} />
-            <div className="absolute -bottom-20 -right-16 w-80 h-80 rounded-full opacity-10 blur-3xl" style={{ background: 'radial-gradient(circle, #fb923c 0%, transparent 70%)' }} />
-            <div className="absolute top-1/4 right-[8%] w-44 h-44 rounded-full border-4 border-blue-200 opacity-10" />
-            <div className="absolute bottom-1/4 left-[5%] w-32 h-32 rounded-full border-4 border-brand-orange/30 opacity-10" />
-            <div className="absolute top-[15%] left-[45%] w-40 h-40 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, #175cdd 1.5px, transparent 1.5px)', backgroundSize: '16px 16px' }} />
-          </div>
+        <div className={`relative ${className || 'py-[100px]'}`}>
           {section.image_url ? (
             <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
               <div className="grid lg:grid-cols-[55fr_45fr] gap-y-12 lg:gap-x-[70px] items-start">
@@ -367,7 +360,7 @@ export default function SectionRenderer({ section }) {
       const headingParts = section.heading ? splitHeading(section.heading) : null;
 
       return (
-        <div className="py-16 sm:py-20">
+        <div className={className || 'py-16 sm:py-20'}>
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             {section.heading && (
               <Reveal as="div" className={`mb-4 text-${ha}`}>
