@@ -10,13 +10,13 @@ import { useSiteSettings } from '../hooks/useSupabase';
 
 function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading }) {
   return (
-    <section className="relative text-white overflow-hidden">
+    <section className="relative text-white overflow-hidden w-full max-w-[1900px] mx-auto h-[400px]">
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-10" />
       <div className="absolute inset-0" style={{
         backgroundImage: heroImage ? `url(${heroImage})` : 'none',
         backgroundSize: 'cover', backgroundPosition: 'center',
       }} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16 text-center relative z-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col items-center justify-center text-center relative z-20">
         <Reveal>
           <h1 className="text-[clamp(1.75rem,5vw,3.5rem)] font-extrabold leading-tight">{heading || 'Latest Articles & News'}</h1>
           <p className="mt-3 sm:mt-4 text-base sm:text-lg !text-white max-w-2xl mx-auto">{subheading || 'Insights, tutorials, and stories from the Marvel Slice team'}</p>
