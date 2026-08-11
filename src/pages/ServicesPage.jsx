@@ -139,15 +139,15 @@ function ServiceCard({ title, description, icon, colorIdx = 0 }) {
       <div
         className={`
           absolute
-          right-6
-          top-6
+          right-5
+          top-5
           z-10
           flex
-          h-14
-          w-14
+          h-11
+          w-11
           items-center
           justify-center
-          rounded-2xl
+          rounded-xl
           ${style.bg}
           transition-transform
           duration-300
@@ -156,20 +156,20 @@ function ServiceCard({ title, description, icon, colorIdx = 0 }) {
         `}
       >
         {IconComp ? (
-          <IconComp className={`h-7 w-7 ${style.accent} transition-transform duration-300 group-hover:scale-110`} />
+          <IconComp className={`h-5 w-5 ${style.accent} transition-transform duration-300 group-hover:scale-110`} />
         ) : (
-          <FiBriefcase className={`h-7 w-7 ${style.accent} transition-transform duration-300 group-hover:scale-110`} />
+          <FiBriefcase className={`h-5 w-5 ${style.accent} transition-transform duration-300 group-hover:scale-110`} />
         )}
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mt-9">
-        <h3 className="max-w-[90%] text-[18px] font-bold leading-snug text-slate-900 transition-colors duration-300 group-hover:text-slate-700">
+      <div className="relative z-10 mt-8">
+        <h3 className="max-w-[85%] text-[17px] font-bold leading-snug text-slate-900 transition-colors duration-300 group-hover:text-slate-700">
           {title}
         </h3>
 
         {description && (
-          <p className="mt-4 text-[14px] leading-6 text-slate-500">
+          <p className="mt-3 text-[13.5px] leading-6 text-slate-500">
             {description}
           </p>
         )}
@@ -191,7 +191,7 @@ function ServiceCard({ title, description, icon, colorIdx = 0 }) {
 export default function ServicesPage() {
   const [faqOpen, setFaqOpen] = useState(null);
 
-  const { data: pageData } = useQuery({
+  const { data: pageData, isLoading } = useQuery({
     queryKey: ['servicesPage', 'nav_pages'],
     queryFn: async () => {
       try {
@@ -232,6 +232,14 @@ export default function ServicesPage() {
     staleTime: 1000 * 60 * 10,
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] bg-white">
+        <div className="w-9 h-9 border-4 border-brand-orange border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   const { hero_image, heading, subheading, services = [], faqs = [], faqHeading, faqSubheading, timeline = null } = pageData || {};
 
   return (
@@ -258,7 +266,7 @@ export default function ServicesPage() {
             </Reveal>
             <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mt-12">
               {services.map((service, i) => (
-                <StaggerItem key={service.id ?? i} className="h-full">
+                <StaggerItem key={`service-card-${i}`} className="h-full">
                   <ServiceCard
                     title={service.title}
                     description={service.description}
@@ -290,7 +298,7 @@ export default function ServicesPage() {
             </Reveal>
             <Stagger className="space-y-2 mt-16">
               {faqs.map((faq, i) => (
-                <StaggerItem key={i}>
+                <StaggerItem key={`faq-item-${i}`}>
                   <AccordionItem
                     title={faq.question}
                     isOpen={faqOpen === i}

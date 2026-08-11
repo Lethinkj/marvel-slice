@@ -96,15 +96,42 @@ const PRESET_COLORS = [
   { color: '#22C55E', soft: '#f0fdf4', ring: '#dcfce7' },
 ];
 
+const COLOR_NAME_MAP = {
+  purple: '#7C3AED',
+  violet: '#7C3AED',
+  pink: '#EC4899',
+  orange: '#F59E0B',
+  amber: '#F59E0B',
+  cyan: '#06B6D4',
+  blue: '#3B82F6',
+  green: '#22C55E',
+  emerald: '#22C55E',
+  red: '#EF4444',
+  indigo: '#6366F1',
+  teal: '#14B8A6',
+};
+
 function resolveStepColors(step, index) {
   const preset = PRESET_COLORS[index % PRESET_COLORS.length];
-  const color = /^#[0-9a-fA-F]{6}$/.test(step.colorHex)
-    ? step.colorHex
-    : (step.color || preset.color);
+  const raw = String(step?.colorHex || step?.color || step?.accent || '').trim().toLowerCase();
+
+  let color = preset.color;
+
+  if (/^#[0-9a-fA-F]{3,8}$/.test(raw)) {
+    color = raw;
+  } else {
+    for (const [name, hex] of Object.entries(COLOR_NAME_MAP)) {
+      if (raw.includes(name)) {
+        color = hex;
+        break;
+      }
+    }
+  }
+
   return {
     color,
-    soft: step.soft || `${color}15`,
-    ring: step.ring || `${color}30`,
+    soft: (typeof step?.soft === 'string' && step.soft.startsWith('#')) ? step.soft : `${color}18`,
+    ring: (typeof step?.ring === 'string' && step.ring.startsWith('#')) ? step.ring : `${color}35`,
   };
 }
 
@@ -185,7 +212,7 @@ export default function LearningJourney({ data }) {
         return null;
       }
     },
-    enabled: !data,
+    enabled: data === undefined,
     staleTime: 1000 * 60 * 5,
   });
 
@@ -300,7 +327,7 @@ export default function LearningJourney({ data }) {
                 </linearGradient>
               </defs>
 
-              {/* 1. Top Gradient Line */}
+              {/* 1. Top Gradient Line (Left to Right) */}
               <motion.path
                 initial={rm ? undefined : { pathLength: 0, opacity: 0 }}
                 whileInView={rm ? undefined : { pathLength: 1, opacity: 1 }}
@@ -312,13 +339,13 @@ export default function LearningJourney({ data }) {
                 strokeLinecap="round"
               />
 
-              {/* 2. Bottom Solid Gradient Line */}
+              {/* 2. Bottom Solid Gradient Line (Right to Left) */}
               <motion.path
                 initial={rm ? undefined : { pathLength: 0, opacity: 0 }}
                 whileInView={rm ? undefined : { pathLength: 1, opacity: 1 }}
                 viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 1.0, delay: 0.2, ease: 'easeInOut' }}
-                d={`M ${startX} 383 H ${endX}`}
+                transition={{ duration: 1.0, delay: 0.7, ease: 'easeInOut' }}
+                d={`M ${endX} 383 H ${startX}`}
                 stroke="url(#timeline-gradient)"
                 strokeWidth="3.5"
                 strokeLinecap="round"
@@ -329,7 +356,7 @@ export default function LearningJourney({ data }) {
                 initial={rm ? undefined : { opacity: 0 }}
                 whileInView={rm ? undefined : { opacity: 0.20 }}
                 viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.6, delay: 0.9 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
                 d={`M ${endX} 20 H 1240 C 1310 20, 1310 383, 1240 383 H ${endX}`}
                 stroke="#22C55E"
                 strokeWidth="2.5"
@@ -343,12 +370,13 @@ export default function LearningJourney({ data }) {
             <motion.div
               initial="hidden"
               whileInView="show"
-              viewport={{ once: true, amount: 0.1 }}
+              viewport={{ once: true, amount: 0.15 }}
               variants={{
                 hidden: {},
                 show: {
                   transition: {
-                    staggerChildren: 0.1,
+                    staggerChildren: 0.14,
+                    delayChildren: 0.1,
                   },
                 },
               }}
@@ -357,7 +385,7 @@ export default function LearningJourney({ data }) {
             >
               {steps.map((step, i) => (
                 <motion.div
-                  key={step.number || i}
+                  key={`step-card-${i}`}
                   variants={
                     rm
                       ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
@@ -425,40 +453,34 @@ export default function LearningJourney({ data }) {
                     <motion.div
                       whileHover={rm ? undefined : { scale: 1.1, rotate: 4 }}
                       transition={{ type: 'spring', stiffness: 350, damping: 15 }}
-                      className="flex items-center justify-center rounded-full mb-[14px] transition-transform duration-300 shrink-0"
+                      className="flex items-center justify-center rounded-full mb-3 transition-transform duration-300 shrink-0"
                       style={{
-                        width: '68px',
-                        height: '68px',
+                        width: '52px',
+                        height: '52px',
                         backgroundColor: step.soft,
-                        border: `3px solid ${step.ring}`,
+                        border: `2.5px solid ${step.ring}`,
                         boxShadow:
-                          '0 0 0 4px rgba(255,255,255,0.8), 0 6px 16px rgba(15,23,42,0.05)',
+                          '0 0 0 3px rgba(255,255,255,0.8), 0 5px 14px rgba(15,23,42,0.05)',
                       }}
                     >
                       <DynamicIcon
                         name={step.icon}
                         fallback={step.FallbackIcon}
-                        className="w-[26px] h-[26px]"
+                        className="w-[22px] h-[22px]"
                         style={{ color: step.color }}
                       />
                     </motion.div>
 
                     {/* Title */}
                     <h3
-                      className="text-[18px] font-bold leading-tight"
+                      className="text-[17px] font-bold leading-snug text-center mb-2"
                       style={{ color: step.color }}
                     >
                       {step.title}
                     </h3>
 
-                    {/* Underline */}
-                    <div
-                      className="w-7 h-[3px] rounded-full my-[10px] transition-all duration-300 group-hover:w-10"
-                      style={{ backgroundColor: step.color }}
-                    />
-
                     {/* Subtext */}
-                    <p className="text-slate-500 text-[13px] leading-[1.68] max-w-[180px] text-center">
+                    <p className="text-slate-500 text-[13px] leading-[1.65] max-w-[195px] text-center">
                       {step.description}
                     </p>
                   </motion.div>
@@ -466,31 +488,19 @@ export default function LearningJourney({ data }) {
               ))}
             </motion.div>
 
-            {/* Bottom Timeline Track Dots */}
+            {/* Bottom Timeline Track Dots (Right to Left Flow) */}
             <div className="relative mt-8 z-10">
-              {/* Continuous gradient line connecting dot 01 to dot N */}
+              {/* Continuous gradient line connecting dot 06 to dot 01 (Right to Left) */}
               <motion.div
                 initial={rm ? undefined : { scaleX: 0 }}
                 whileInView={rm ? undefined : { scaleX: 1 }}
                 viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 1.0, ease: 'easeInOut' }}
-                className="absolute top-1/2 -translate-y-1/2 h-[3.5px] rounded-full z-0 bg-gradient-to-r from-[#7C3AED] via-[#06B6D4] to-[#22C55E] origin-left"
+                transition={{ duration: 1.0, delay: 0.7, ease: 'easeInOut' }}
+                className="absolute top-1/2 -translate-y-1/2 h-[3.5px] rounded-full z-0 bg-gradient-to-r from-[#7C3AED] via-[#06B6D4] to-[#22C55E] origin-right"
                 style={{ left: `${(100 / numSteps) * 0.5}%`, right: `${(100 / numSteps) * 0.5}%` }}
               />
 
-              <motion.div
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.1 }}
-                variants={{
-                  hidden: {},
-                  show: {
-                    transition: {
-                      staggerChildren: 0.08,
-                      delayChildren: 0.4,
-                    },
-                  },
-                }}
+              <div
                 className="relative grid gap-6 z-10"
                 style={{ gridTemplateColumns: `repeat(${numSteps}, minmax(0, 1fr))` }}
               >
@@ -500,20 +510,17 @@ export default function LearningJourney({ data }) {
                     className="relative flex justify-center items-center"
                   >
                     <motion.div
-                      variants={
+                      initial={rm ? undefined : { opacity: 0, scale: 0 }}
+                      whileInView={rm ? undefined : { opacity: 1, scale: 1 }}
+                      viewport={{ once: true, amount: 0.1 }}
+                      transition={
                         rm
-                          ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
+                          ? { duration: 0.3 }
                           : {
-                              hidden: { opacity: 0, scale: 0 },
-                              show: {
-                                opacity: 1,
-                                scale: 1,
-                                transition: {
-                                  type: 'spring',
-                                  stiffness: 300,
-                                  damping: 16,
-                                },
-                              },
+                              type: 'spring',
+                              stiffness: 300,
+                              damping: 16,
+                              delay: (numSteps - 1 - i) * 0.12 + 0.8,
                             }
                       }
                       whileHover={rm ? undefined : { scale: 1.4 }}
@@ -522,7 +529,7 @@ export default function LearningJourney({ data }) {
                     />
                   </div>
                 ))}
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
@@ -546,7 +553,7 @@ export default function LearningJourney({ data }) {
         >
           {steps.map((step, i) => (
             <motion.div
-              key={step.number || i}
+              key={`step-mobile-${i}`}
               variants={
                 rm
                   ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
@@ -617,7 +624,7 @@ export default function LearningJourney({ data }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-y-0 lg:divide-x divide-slate-200 gap-4 sm:gap-6 lg:gap-0">
               {features.map((feat, i) => (
                 <motion.div
-                  key={feat.title || i}
+                  key={`feat-banner-${i}`}
                   variants={
                     rm
                       ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
