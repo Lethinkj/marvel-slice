@@ -37,17 +37,17 @@ function CourseButtons() {
 
 function StatsGrid({ stats }) {
   return (
-    <Stagger className="grid grid-cols-3 gap-3 sm:gap-4">
+    <Stagger className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
       {stats.map((stat, i) => {
         const Icon = getStatIcon(stat.label);
         return (
           <StaggerItem key={i}>
-            <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-4 text-center hover:-translate-y-1 transition-all duration-300 max-w-[238px] mx-auto" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
-              <div className="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-lg bg-brand-orange/10 flex items-center justify-center mb-2">
-                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-orange" />
+            <div className="bg-white rounded-xl border border-gray-100 p-4 text-center hover:-translate-y-1 transition-all duration-300 w-full max-w-[280px] sm:max-w-[238px] mx-auto shadow-md">
+              <div className="w-10 h-10 mx-auto rounded-lg bg-brand-orange/10 flex items-center justify-center mb-2">
+                <Icon className="w-4 h-4 text-brand-orange" />
               </div>
-              <p className="text-base sm:text-2xl font-extrabold" style={{ color: '#175cdd' }}>{stat.value}</p>
-              <p className="text-[10px] sm:text-xs mt-0.5" style={{ color: '#000000' }}>{stat.label}</p>
+              <p className="text-xl sm:text-2xl font-extrabold text-brand-blue">{stat.value}</p>
+              <p className="text-xs mt-0.5 text-slate-800 font-medium">{stat.label}</p>
             </div>
           </StaggerItem>
         );
@@ -58,14 +58,14 @@ function StatsGrid({ stats }) {
 
 function PillGrid({ pills }) {
   return (
-    <Stagger className="grid grid-cols-2 gap-2 sm:gap-3">
+    <Stagger className="grid grid-cols-2 gap-2.5 sm:gap-3">
       {pills.map((label, i) => (
         <StaggerItem key={i} className="min-w-0">
           <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2.5 shadow-sm min-w-0">
             <div className="w-7 h-7 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
               <FiCheckCircle className="w-3.5 h-3.5 text-brand-blue" />
             </div>
-            <span className="text-xs font-bold text-brand-blue leading-tight whitespace-nowrap">{label}</span>
+            <span className="text-xs font-bold text-brand-blue leading-tight truncate">{label}</span>
           </div>
         </StaggerItem>
       ))}
@@ -137,12 +137,12 @@ export default function IntroFormSection({ section }) {
         <div className="grid lg:grid-cols-6 gap-8 lg:gap-12">
           <Reveal variant="up" className="lg:col-span-4 space-y-6 self-start">
             {heading && (
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-dark-navy -mt-2">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-dark-navy -mt-2 text-center lg:text-left">
                 {heading}
               </h2>
             )}
             {introText && (
-              <p className="text-sm sm:text-base leading-relaxed text-justify text-text-gray">
+              <p className="text-sm sm:text-base leading-relaxed text-center lg:text-justify text-text-gray">
                 {introText}
               </p>
             )}
@@ -221,7 +221,7 @@ export default function IntroFormSection({ section }) {
               </div>
             </div>
 
-            <div className="mt-6 max-w-md w-full mx-auto lg:ml-auto">
+            <div className="mt-6 hidden lg:block max-w-md w-full mx-auto lg:ml-auto">
               {rawPills.length > 0 && <PillGrid pills={rawPills} />}
             </div>
 
@@ -229,6 +229,7 @@ export default function IntroFormSection({ section }) {
 
           <div className="lg:hidden mt-8 space-y-6">
             {stats.length > 0 && <StatsGrid stats={stats} />}
+            {rawPills.length > 0 && <PillGrid pills={rawPills} />}
             <CourseButtons />
           </div>
         </div>

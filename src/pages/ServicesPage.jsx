@@ -284,7 +284,7 @@ export default function ServicesPage() {
 
       {faqs.length > 0 && (
         <section className="pt-12 pb-16 bg-neutral-50">
-          <div className="w-full max-w-[92%] sm:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <Reveal as="div" className="mb-4 text-center">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-blue-700">
                 {faqHeading || 'Frequently Asked Questions'}

@@ -137,23 +137,23 @@ export default function SectionRenderer({ section }) {
           {section.image_url ? (
             <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
               <div className="grid lg:grid-cols-[55fr_45fr] gap-y-12 lg:gap-x-[70px] items-start">
-                <div>
+                <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
                   {section.heading && (
                     <>
                       <h2 className="text-3xl sm:text-4xl font-bold leading-tight">
                         <span className="block text-blue-700">{section.heading.split(' ')[0]}</span>
                         <span className="block text-brand-orange">{section.heading.split(' ').slice(1).join(' ')}</span>
                       </h2>
-                      <div className="w-20 h-1.5 bg-brand-orange mt-5 mb-[50px]" />
+                      <div className="w-20 h-1.5 bg-brand-orange mt-5 mb-[30px] lg:mb-[50px] mx-auto lg:mx-0" />
                     </>
                   )}
-                  <div className="max-w-[600px] space-y-6">
+                  <div className="max-w-[600px] space-y-6 mx-auto lg:mx-0">
                     {content.split('\n\n').filter(Boolean).map((p, i) => (
-                      <p key={i} className="text-gray-700 text-base leading-relaxed">{p}</p>
+                      <p key={i} className="text-gray-700 text-base leading-relaxed text-center lg:text-left">{p}</p>
                     ))}
                   </div>
                 </div>
-                <div className="lg:mt-[40px]">
+                <div className="lg:mt-[40px] flex justify-center">
                   <img src={section.image_url} alt={section.heading || ''} className="w-full max-w-[500px] aspect-square object-cover rounded-2xl shadow-lg" />
                 </div>
               </div>
@@ -420,11 +420,11 @@ export default function SectionRenderer({ section }) {
       return (
         <Reveal>
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <div>
-              {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-4">{section.heading}</h2>}
-              {section.content && <p className="text-text-gray text-base leading-relaxed mb-4">{section.content}</p>}
+            <div className="text-center md:text-left">
+              {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-4 text-center md:text-left">{section.heading}</h2>}
+              {section.content && <p className="text-text-gray text-base leading-relaxed mb-4 text-center md:text-left">{section.content}</p>}
               {listItems.length > 0 && (
-                <ul className="space-y-2">
+                <ul className="space-y-2 text-left">
                   {listItems.map((item, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <FiCheckCircle className="w-5 h-5 text-brand-orange shrink-0 mt-0.5" />

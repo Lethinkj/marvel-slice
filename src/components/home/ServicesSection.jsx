@@ -58,15 +58,15 @@ export default function ServicesSection({ section }) {
             ) : (
               <div className="w-full h-72 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-orange" />
             )}
-            <h3 className="font-bold text-xl mt-6 text-dark-navy">{leftHeading}</h3>
+            <h3 className="font-bold text-xl mt-6 text-dark-navy text-center sm:text-left">{leftHeading}</h3>
             {leftDescription && (
-              <p className="text-text-gray mt-3">{leftDescription}</p>
+              <p className="text-text-gray mt-3 text-center sm:text-left">{leftDescription}</p>
             )}
             <Button
               variant="accent"
               shape="pill"
               href={ctaLink}
-              className="mt-4 self-start"
+              className="mt-4 self-center sm:self-start"
             >
               {ctaText} <FiChevronRight />
             </Button>
@@ -77,7 +77,7 @@ export default function ServicesSection({ section }) {
               const Icon = ICON_MAP[service.icon_name] || FiBriefcase;
               return (
                 <div key={i}>
-                  <div className="flex gap-4 py-5">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 py-5">
                     <div className="w-12 h-12 rounded-full bg-brand-orange/10 flex items-center justify-center shrink-0 mt-1">
                       <Icon className="w-6 h-6 text-brand-orange" />
                     </div>

@@ -781,13 +781,13 @@ export default function Courses() {
 
             {/* Sidebar-mode header */}
             {!listOnly && (
-              <div className="hidden lg:block mb-6">
-                <h1 className="text-2xl sm:text-3xl font-bold text-brand-blue mb-1">
+              <div className="mb-6 text-center lg:text-left">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-brand-blue mb-1">
                   Find Your Courses related to{" "}
                   {parents.find((p) => p.slug === parentParam)?.label || "Software Learning"}
                 </h1>
                 {activeNavId && (
-                  <p className="text-lg sm:text-xl font-semibold text-[#175CDD]">
+                  <p className="text-base sm:text-lg font-semibold text-[#175CDD]">
                     {navItems?.find((n) => n.id === activeNavId)?.label || ""}
                   </p>
                 )}

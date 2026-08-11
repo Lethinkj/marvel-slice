@@ -112,9 +112,9 @@ export default function HeroSection({ section }) {
           <div style={{ background: 'linear-gradient(135deg, #f59e0b 50%, #1B3A6B 50%)' }}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
               <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16">
-                <motion.div variants={container} {...mount} className="flex flex-col justify-center">
+                <motion.div variants={container} {...mount} className="flex flex-col justify-center text-center items-center lg:text-left lg:items-start">
                   {badgeText && (
-                    <Reveal as="div" className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-semibold text-white w-fit mb-6">
+                    <Reveal as="div" className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-semibold text-white w-fit mb-6 mx-auto lg:mx-0">
                       <span className="w-2 h-2 rounded-full bg-brand-blue" />
                       {badgeText}
                     </Reveal>
@@ -127,13 +127,13 @@ export default function HeroSection({ section }) {
                   )}
 
                   {description && (
-                    <motion.p variants={item} className="mt-4 sm:mt-5 text-base sm:text-lg text-white/85 leading-relaxed max-w-xl">
+                    <motion.p variants={item} className="mt-4 sm:mt-5 text-base sm:text-lg text-white/85 leading-relaxed max-w-xl mx-auto lg:mx-0">
                       {description}
                     </motion.p>
                   )}
 
                   {featureBullets.length > 0 && (
-                    <motion.ul variants={item} className="mt-8 space-y-3">
+                    <motion.ul variants={item} className="mt-8 space-y-3 text-left">
                       {featureBullets.map((bullet, i) => (
                         <li key={i} className="flex items-start gap-3 text-base text-white">
                           <FiCheckCircle className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
@@ -144,7 +144,7 @@ export default function HeroSection({ section }) {
                   )}
 
                   {buttons.length > 0 && (
-                    <motion.div variants={item} className="mt-8 sm:mt-10 flex flex-wrap gap-4">
+                    <motion.div variants={item} className="mt-8 sm:mt-10 flex flex-wrap justify-center lg:justify-start gap-4">
                       {buttons.map((btn, i) => (
                         btn.link ? (
                           <Link key={i} to={btn.link}

@@ -37,7 +37,7 @@ function ContactDetailItem({ icon: Icon, label, value, href, textColor }) {
     <span className="text-sm leading-relaxed" style={{ color: hexToRgba(textColor, 0.9) }}>{value}</span>
   );
   return (
-    <div className="flex items-start gap-4">
+    <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 sm:gap-4">
       <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 mt-0.5">
         <Icon className="w-5 h-5" style={{ color: textColor }} />
       </div>
@@ -126,12 +126,12 @@ export default function ContactSection({ section }) {
       <div className="grid lg:grid-cols-2 min-h-[520px] rounded-xl overflow-hidden">
       {/* Left: Details */}
       <div
-        className="relative p-8 sm:p-10 flex flex-col justify-center"
+        className="relative p-8 sm:p-10 flex flex-col justify-center text-center lg:text-left"
         style={{ background: `linear-gradient(135deg, ${c.gradient_start || '#0B2D6B'}, ${c.gradient_end || '#1E56C7'})` }}
       >
         <FloatingCircles />
         <div className="relative z-10 space-y-7">
-          <div>
+          <div className="text-center lg:text-left">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: headingColor }}>
               {leftHeading}
               {c.left_heading_line_2 && <><br /><span style={{ color: c.heading_line_2_color || headingColor }}>{c.left_heading_line_2}</span></>}
@@ -149,8 +149,8 @@ export default function ContactSection({ section }) {
 
       {/* Right: Form */}
       <div className="bg-white p-8 sm:p-10 flex flex-col justify-center">
-            <h3 className="text-xl sm:text-2xl font-bold text-[#0B2D6B] mb-1">Send us a Message</h3>
-            <p className="text-sm text-neutral-500 mb-6">Fill out the form below and we'll get back to you shortly.</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-[#0B2D6B] mb-1 text-center lg:text-left">Send us a Message</h3>
+            <p className="text-sm text-neutral-500 mb-6 text-center lg:text-left">Fill out the form below and we'll get back to you shortly.</p>
 
             <AnimatePresence mode="wait">
               {status === 'success' ? (

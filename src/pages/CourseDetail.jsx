@@ -539,7 +539,7 @@ export default function CourseDetail() {
             Explore All Courses <FiArrowRight className="w-4 h-4" />
           </Link>
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div>
+            <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
               <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15]">
                 {course.title}
                 {course.status && course.status !== 'Active' && (
@@ -550,9 +550,9 @@ export default function CourseDetail() {
                   </span>
                 )}
               </h1>
-              <p className="mt-4 text-base text-gray-600 leading-relaxed">{course.description}</p>
+              <p className="mt-4 text-base text-gray-600 leading-relaxed max-w-xl">{course.description}</p>
               {course.checklist_items?.length > 0 && (
-                <ul className="mt-6 space-y-2.5">
+                <ul className="mt-6 space-y-2.5 text-left">
                   {course.checklist_items.map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
                       <FiCheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
@@ -561,7 +561,7 @@ export default function CourseDetail() {
                   ))}
                 </ul>
               )}
-              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 mt-8 w-full sm:w-auto">
                 <Button variant="accent" size="lg" to={course.cta_link || '#contact'} onClick={() => trackCtaClick(course.cta_left || 'Talk to Advisor', 'course_hero')} className="w-full sm:w-auto">
                   {course.cta_left || 'Talk to Advisor'}
                 </Button>

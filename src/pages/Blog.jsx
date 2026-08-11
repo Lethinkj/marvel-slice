@@ -41,10 +41,10 @@ function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading
 function CategoryPills({ categories, active, onChange }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        <Button onClick={() => onChange(null)} variant={!active ? 'pill-orange' : 'pill'} size="sm" shape="pill">All</Button>
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide flex-nowrap">
+        <Button onClick={() => onChange(null)} variant={!active ? 'pill-orange' : 'pill'} size="sm" shape="pill" className="whitespace-nowrap shrink-0">All</Button>
         {categories.map((cat) => (
-          <Button key={cat.id} onClick={() => onChange(cat.slug)} variant={active === cat.slug ? 'pill-orange' : 'pill'} size="sm" shape="pill">{cat.name}</Button>
+          <Button key={cat.id} onClick={() => onChange(cat.slug)} variant={active === cat.slug ? 'pill-orange' : 'pill'} size="sm" shape="pill" className="whitespace-nowrap shrink-0">{cat.name}</Button>
         ))}
       </div>
     </div>
