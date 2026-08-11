@@ -394,7 +394,7 @@ export default function SectionRenderer({ section }) {
                 return (
                   <StaggerItem key={i} className="h-full">
                     <div className="group relative h-full overflow-hidden rounded-[20px] border border-gray-100 bg-white px-6 sm:px-7 py-6 sm:py-7 shadow-[0_1px_3px_rgba(15,23,42,0.05),0_10px_30px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_14px_34px_rgba(15,23,42,0.11)]">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl mx-auto bg-white transition-transform duration-300 group-hover:scale-105" style={{ boxShadow: '0 8px 24px rgba(15,23,42,0.06)' }}>
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full mx-auto bg-white transition-transform duration-300 group-hover:scale-105" style={{ boxShadow: '0 8px 24px rgba(15,23,42,0.08)' }}>
                         {item.icon ? <DynamicIcon name={item.icon} className={`h-7 w-7 ${s.accent}`} /> : <FiBriefcase className={`h-7 w-7 ${s.accent}`} />}
                       </div>
                       <h3 className="mt-5 text-[18px] font-bold leading-snug text-gray-900 text-center">{item.title}</h3>

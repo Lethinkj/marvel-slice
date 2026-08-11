@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import Reveal from '../components/ui/Reveal';
 import SectionRenderer from '../components/ui/SectionRenderer';
-import FloatingContactButton from '../components/FloatingContactButton';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabaseClient';
@@ -69,8 +68,6 @@ export default function About() {
           </div>
         </Reveal>
       ))}
-
-      <FloatingContactButton />
     </div>
   );
 }

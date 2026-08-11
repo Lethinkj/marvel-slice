@@ -101,8 +101,8 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
         </Reveal>
 
         {classes.length > 0 && (
-          <div className="grid lg:grid-cols-6 gap-8 lg:gap-12 items-stretch mt-12">
-            <Reveal className="lg:col-span-4">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-stretch mt-12">
+            <Reveal className="lg:col-span-7">
               <div className="space-y-4">
                 {classes.slice(0, 4).map((cls, i) => (
                   <div key={cls.id} className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-brand-blue/40 transition-all p-5">
@@ -139,14 +139,14 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
               </div>
             </Reveal>
             {imageUrl && (
-              <Reveal className="lg:col-span-2 min-w-0 h-full">
+              <Reveal className="lg:col-span-5 min-w-0 flex items-center justify-center">
                 {imageLink ? (
-                  <a href={imageLink} target={imageLink.startsWith('http') ? '_blank' : undefined} rel={imageLink.startsWith('http') ? 'noopener noreferrer' : undefined} className="block rounded-2xl overflow-hidden border border-gray-200 shadow-md h-full group">
-                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full min-h-[300px] object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <a href={imageLink} target={imageLink.startsWith('http') ? '_blank' : undefined} rel={imageLink.startsWith('http') ? 'noopener noreferrer' : undefined} className="block w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-md group lg:-translate-y-[1%]">
+                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                   </a>
                 ) : (
-                  <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md h-full">
-                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full min-h-[300px] object-cover" />
+                  <div className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-md lg:-translate-y-[1%]">
+                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full object-contain" />
                   </div>
                 )}
               </Reveal>
