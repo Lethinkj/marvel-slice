@@ -98,7 +98,7 @@ export default function HeroSection({ section }) {
       )}
 
       {(bannerImage || showGradient) && headline && (
-        <div className="bg-neutral-100">
+        <div className="bg-neutral-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark-navy leading-[1.15] text-pretty">
               {headline}

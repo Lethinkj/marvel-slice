@@ -38,6 +38,7 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
   const heading = section.heading || 'Upcoming Classes';
   const subheading = section.subheading || '';
   const imageUrl = imageSection?.content?.image_url || '';
+  const imageLink = imageSection?.content?.image_link || '';
 
   if (!heading && classes.length === 0) return null;
 
@@ -85,7 +86,7 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
   }
 
   return (
-    <section className="pt-10 pb-16 bg-neutral-100">
+    <section className="pt-10 pb-16 bg-neutral-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div>
@@ -110,18 +111,18 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
                         <FiCalendar className="w-5 h-5" />
                       </span>
                       <div className="min-w-0">
-                        <p className="font-semibold text-dark-navy text-base leading-snug">{cls.course_name}</p>
-                        <p className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-dark-navy text-base leading-snug truncate">{cls.course_name}</p>
                           {cls.batch && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-brand-blue text-[11px] font-bold">{cls.batch}</span>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-brand-blue text-[11px] font-bold shrink-0">{cls.batch}</span>
                           )}
-                          {cls.date_time && (
-                            <span className="flex items-center gap-1.5 text-text-gray text-sm">
-                              <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
-                              {formatDateTime(cls.date_time)}
-                            </span>
-                          )}
-                        </p>
+                        </div>
+                        {cls.date_time && (
+                          <p className="flex items-center gap-1.5 text-text-gray text-sm mt-1">
+                            <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
+                            {formatDateTime(cls.date_time)}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="shrink-0">
@@ -139,9 +140,15 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
             </Reveal>
             {imageUrl && (
               <Reveal className="lg:col-span-2 min-w-0 h-full">
-                <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md h-full">
-                  <img src={imageUrl} alt="Upcoming classes" className="w-full h-full min-h-[300px] object-cover" />
-                </div>
+                {imageLink ? (
+                  <a href={imageLink} target={imageLink.startsWith('http') ? '_blank' : undefined} rel={imageLink.startsWith('http') ? 'noopener noreferrer' : undefined} className="block rounded-2xl overflow-hidden border border-gray-200 shadow-md h-full group">
+                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full min-h-[300px] object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </a>
+                ) : (
+                  <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md h-full">
+                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full min-h-[300px] object-cover" />
+                  </div>
+                )}
               </Reveal>
             )}
           </div>

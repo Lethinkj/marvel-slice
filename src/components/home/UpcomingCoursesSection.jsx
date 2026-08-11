@@ -137,7 +137,7 @@ export default function UpcomingCoursesSection({ section }) {
   if (!heading && courses.length === 0) return null;
 
   return (
-    <section className="pt-8 pb-16 bg-neutral-100">
+    <section className="pt-8 pb-16 bg-neutral-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="flex items-start justify-between gap-4">

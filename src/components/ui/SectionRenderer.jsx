@@ -394,17 +394,12 @@ export default function SectionRenderer({ section }) {
                 return (
                   <StaggerItem key={i} className="h-full">
                     <div className="group relative h-full overflow-hidden rounded-[20px] border border-gray-100 bg-white px-6 sm:px-7 py-6 sm:py-7 shadow-[0_1px_3px_rgba(15,23,42,0.05),0_10px_30px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_14px_34px_rgba(15,23,42,0.11)]">
-                      <div className="flex items-start justify-between">
-                        <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-bold tracking-widest ${s.iconBg} ${s.accent}`}>
-                          {String(i + 1).padStart(2, '0')}
-                        </span>
-                      </div>
-                      <div className={`mt-5 flex h-14 w-14 items-center justify-center rounded-2xl ${s.iconBg} transition-transform duration-300 group-hover:scale-105`}>
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl mx-auto bg-white transition-transform duration-300 group-hover:scale-105" style={{ boxShadow: '0 8px 24px rgba(15,23,42,0.06)' }}>
                         {item.icon ? <DynamicIcon name={item.icon} className={`h-7 w-7 ${s.accent}`} /> : <FiBriefcase className={`h-7 w-7 ${s.accent}`} />}
                       </div>
-                      <h3 className="mt-5 text-[18px] font-bold leading-snug text-gray-900">{item.title}</h3>
-                      <div className={`mt-2.5 h-[3px] w-8 rounded-full ${s.underline} transition-all duration-300 group-hover:w-11`} />
-                      <p className="mt-3.5 text-[14px] leading-relaxed text-gray-500">{item.description}</p>
+                      <h3 className="mt-5 text-[18px] font-bold leading-snug text-gray-900 text-center">{item.title}</h3>
+                      <div className={`mt-2.5 h-[3px] w-8 rounded-full mx-auto ${s.underline} transition-all duration-300 group-hover:w-11`} />
+                      <p className="mt-3.5 text-[14px] leading-relaxed text-gray-500 text-center">{item.description}</p>
                       <div className={`absolute -bottom-10 -right-10 h-28 w-28 rounded-full ${s.blob} opacity-60 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none`} />
                       <div className="absolute bottom-4 right-5 grid grid-cols-3 gap-1 opacity-50 pointer-events-none">
                         {Array.from({ length: 9 }).map((_, d) => (

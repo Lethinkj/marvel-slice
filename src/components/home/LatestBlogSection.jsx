@@ -20,7 +20,7 @@ export default function LatestBlogSection({ section }) {
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className="pt-8 pb-16 bg-neutral-100">
+    <section className="pt-8 pb-16 bg-neutral-50">
       <div className="w-full max-w-[92%] sm:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="flex items-start justify-between gap-4">

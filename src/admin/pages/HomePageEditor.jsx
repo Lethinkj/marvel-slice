@@ -121,6 +121,7 @@ const sectionDefs = [
     contentOnly: true,
     fields: [
       { name: 'image_url', label: 'Image', type: 'image' },
+      { name: 'image_link', label: 'Link / Route (optional)', type: 'text' },
     ],
   },
   {
