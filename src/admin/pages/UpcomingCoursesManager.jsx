@@ -173,6 +173,7 @@ export default function UpcomingCoursesManager() {
                 </button>
               </>
             )}
+          </div>
         ) : null
       }
     >
