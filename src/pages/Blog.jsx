@@ -234,7 +234,7 @@ function SinglePost({ slug }) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-text-gray hover:text-brand-orange mb-8 transition-colors">
         <FiArrowLeft className="w-4 h-4" /> Back to Blog</Link>
       <Reveal>

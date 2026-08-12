@@ -242,11 +242,11 @@ function FAQSection({ faqs }) {
   const [openIdx, setOpenIdx] = useState(null);
   return (
     <section id="faqs" data-section="faqs" className="py-10">
-      <div className="w-full max-w-[92%] sm:max-w-[70%] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">
           Frequently Asked Questions
         </Reveal>
-        <Stagger className="space-y-2">
+        <Stagger className="space-y-2 w-full">
           {faqs.map((f, i) => (
             <StaggerItem key={f.id || i}>
               <AccordionItem

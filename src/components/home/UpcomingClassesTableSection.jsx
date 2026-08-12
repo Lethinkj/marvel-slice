@@ -105,7 +105,7 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
             <Reveal className="lg:col-span-7">
               <div className="space-y-4">
                 {classes.slice(0, 4).map((cls, i) => (
-                  <div key={cls.id} className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-4 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-brand-blue/40 transition-all p-5">
+                  <div key={cls.id} className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-4 rounded-2xl border border-gray-200 bg-white shadow-md hover:shadow-lg hover:border-brand-blue/40 transition-all p-5">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <span className="w-12 h-12 shrink-0 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center">
                         <FiCalendar className="w-5 h-5" />

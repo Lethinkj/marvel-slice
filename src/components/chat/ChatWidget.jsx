@@ -429,7 +429,7 @@ export default function ChatWidget() {
       {!open && (
         <button
           onClick={handleOpen}
-          className="fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-10 h-10 rounded-full bg-brand-green text-white shadow-lg hover:bg-brand-green/90 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+          className="chat-widget-mild fixed top-1/2 -translate-y-1/2 right-4 sm:right-6 z-50 w-10 h-10 rounded-full bg-brand-green text-white shadow-lg hover:bg-brand-green/90 transition-all hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
         >
           <span className="relative w-5 h-5 shrink-0">
             <FiMessageCircle className="w-5 h-5" />

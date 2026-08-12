@@ -33,7 +33,7 @@ function DynamicIcon({ name, className }) {
 function FaqListSection({ section }) {
   const [openIdx, setOpenIdx] = useState(null);
   return (
-    <Reveal className="w-full max-w-[92%] sm:max-w-[70%] mx-auto">
+    <Reveal className="w-full mx-auto">
       {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
       <div className="space-y-2">
         {(section.items || []).map((faq, i) => (

@@ -143,7 +143,7 @@ export default function TestimonialsSection({ section }) {
 
         {items.length > 0 && (
           isSlider ? (
-            <div className="relative mx-auto lg:max-w-[85%] mt-16" onMouseEnter={stopAutoScroll} onMouseLeave={() => { if (isSlider) startAutoScroll(); }}>
+            <div className="relative mx-auto w-full mt-16" onMouseEnter={stopAutoScroll} onMouseLeave={() => { if (isSlider) startAutoScroll(); }}>
               <div className="overflow-hidden py-4">
                 <motion.div
                   animate={{ x: `-${pos * (100 / visible)}%` }}
@@ -176,9 +176,9 @@ export default function TestimonialsSection({ section }) {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mx-auto lg:max-w-[80%] mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center mx-auto w-full mt-16">
               {items.map((item) => (
-                <div key={item.id} className="w-full max-w-[500px] h-full">
+                <div key={item.id} className="w-full h-full">
                   <TestimonialCard item={item} />
                 </div>
               ))}

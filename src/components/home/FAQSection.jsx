@@ -13,7 +13,7 @@ export default function FAQSection({ section }) {
 
   return (
     <section className="pt-8 pb-16 bg-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal>
           <div className="text-center">
             <div className="inline-flex flex-col items-center">
@@ -22,7 +22,7 @@ export default function FAQSection({ section }) {
             </div>
           </div>
         </Reveal>
-        <Stagger className="space-y-2 mt-16">
+        <Stagger className="space-y-2 mt-16 w-full">
           {items.map((item, i) => (
             <StaggerItem key={i}>
               <AccordionItem
