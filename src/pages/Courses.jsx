@@ -498,7 +498,7 @@ export default function Courses() {
     const hasChildren = parentNode.children.length > 0;
 
     return (
-      <div key={parentNode.id} className="mb-0.5 border-b border-gray-100 last:border-b-0">
+      <div key={parentNode.id} className="mb-1">
         <button
           onClick={() => {
             if (hasChildren) {
@@ -514,29 +514,29 @@ export default function Courses() {
               selectCategory(parentSlug);
             }
           }}
-          className={`w-full text-left pl-[9px] pr-3 py-2.5 rounded-r-xl text-sm transition-all duration-200 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden border-l-[3px] ${
+          className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ease-out cursor-pointer flex items-center justify-between gap-2 border ${
             isParentActive
-              ? "border-brand-blue text-brand-blue font-semibold"
-              : "border-transparent text-gray-600 hover:border-brand-blue/50 hover:text-gray-900"
+              ? "bg-blue-50/80 border-blue-200 text-blue-700 font-semibold shadow-2xs"
+              : "border-transparent text-gray-700 hover:bg-slate-50 hover:text-gray-900"
           }`}
           aria-expanded={hasChildren ? expanded : undefined}
           aria-label={`${parentNode.label} (${parentNode.totalCount} courses)`}
         >
           <span className="flex items-center gap-3 min-w-0 flex-1">
-            <span className="w-[18px] h-[18px] flex items-center justify-center shrink-0">
+            <span className="w-5 h-5 flex items-center justify-center shrink-0">
               <Icon
-                className={`w-[18px] h-[18px] ${isParentActive ? "text-brand-blue" : "text-gray-400"}`}
+                className={`w-4 h-4 ${isParentActive ? "text-blue-600" : "text-gray-400"}`}
               />
             </span>
-            <span className="truncate min-w-0 max-w-full">
+            <span className="truncate min-w-0 max-w-full font-medium text-xs sm:text-sm">
               {parentNode.label}
             </span>
           </span>
           <span className="flex items-center gap-1.5 shrink-0">
             <span
-              className={`text-xs font-medium tabular-nums leading-none px-1.5 py-0.5 rounded-full ${
+              className={`text-xs font-semibold tabular-nums px-2 py-0.5 rounded-full ${
                 isParentActive
-                  ? "bg-brand-blue/15 text-brand-blue"
+                  ? "bg-blue-100 text-blue-700"
                   : "text-gray-400"
               }`}
             >
@@ -545,22 +545,22 @@ export default function Courses() {
             {hasChildren && (
               <FiChevronRight
                 className={`w-3.5 h-3.5 transition-transform duration-200 ease-out ${expanded ? "rotate-90" : ""} ${
-                  isParentActive ? "text-brand-blue" : "text-gray-400"
+                  isParentActive ? "text-blue-600" : "text-gray-400"
                 }`}
               />
             )}
           </span>
         </button>
-        <div
-          className={`grid transition-all duration-200 ease-out ${
-            expanded
-              ? "grid-rows-[1fr] opacity-100 mt-0.5"
-              : "grid-rows-[0fr] opacity-0"
-          }`}
-        >
-          <div className="overflow-hidden">
-            {hasChildren && (
-              <div className="ml-[22px] pl-[13px]">
+        {hasChildren && (
+          <div
+            className={`grid transition-all duration-200 ease-out ${
+              expanded
+                ? "grid-rows-[1fr] opacity-100 mt-1"
+                : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="ml-4 pl-2 border-l-2 border-slate-100 space-y-1 my-1">
                 {parentNode.children.map((child) => {
                   const ChildIcon = CATEGORY_ICONS[child.label] || DEFAULT_ICON;
                   const childSlug = child.path
@@ -571,33 +571,33 @@ export default function Courses() {
                     <button
                       key={child.id}
                       onClick={() => selectCategory(childSlug)}
-                      className={`w-full text-left pl-[9px] pr-3 py-2 text-sm transition-all duration-200 ease-out cursor-pointer flex items-center justify-between gap-2 overflow-hidden border-l-[3px] ${
+                      className={`w-full text-left px-2.5 py-2 rounded-lg text-xs sm:text-sm transition-all duration-200 ease-out cursor-pointer flex items-center justify-between gap-2 ${
                         isChildActive
-                          ? "border-brand-blue text-brand-blue font-semibold"
-                          : "border-transparent text-gray-500 hover:border-brand-blue/50 hover:text-gray-900"
+                          ? "bg-blue-50 text-blue-700 font-semibold"
+                          : "text-gray-600 hover:bg-slate-50 hover:text-gray-900"
                       }`}
                       aria-label={`${child.label} (${countFor(child.id)} courses)`}
                     >
-                      <span className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <span className="w-[14px] h-[14px] flex items-center justify-center shrink-0">
+                      <span className="flex items-center gap-2 min-w-0 flex-1">
+                        <span className="w-4 h-4 flex items-center justify-center shrink-0">
                           <ChildIcon
-                            className={`w-[14px] h-[14px] ${isChildActive ? "text-brand-blue" : "text-gray-400"}`}
+                            className={`w-3.5 h-3.5 ${isChildActive ? "text-blue-600" : "text-gray-400"}`}
                           />
                         </span>
                         <span className="truncate min-w-0 max-w-full">
                           {child.label}
                         </span>
                       </span>
-                      <span className="text-xs font-medium text-gray-400 tabular-nums leading-none shrink-0">
+                      <span className="text-xs font-semibold text-gray-400 tabular-nums shrink-0">
                         {countFor(child.id)}
                       </span>
                     </button>
                   );
                 })}
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   };
@@ -608,22 +608,24 @@ export default function Courses() {
         {/* Left Sidebar — hidden in list-only mode */}
         {!listOnly && (
           <aside
-            className="w-[270px] shrink-0 hidden lg:flex lg:flex-col bg-[#f1f3f6] border-r border-gray-200 overflow-y-auto sticky top-0"
+            className="w-[280px] shrink-0 hidden lg:flex lg:flex-col bg-[#f8fafc] border-r border-slate-200 overflow-y-auto sticky top-0"
             aria-label="Course categories"
           >
-            {/* Toggle at top — flush with header */}
+            {/* Top Category Tabs (Software vs Competitive) */}
             <div className="px-0 pt-0">
-              <div className="flex border-b border-gray-200 overflow-hidden">
-                {parents.map((p) => {
+              <div className="flex overflow-hidden">
+                {parents.map((p, idx) => {
                   const active = parentParam === p.slug;
                   return (
                     <button
                       key={p.slug}
                       onClick={() => selectParent(p.slug)}
-                      className={`flex-1 py-3 text-sm font-medium text-center transition-all cursor-pointer ${
+                      className={`flex-1 py-3 text-sm font-bold text-center transition-all cursor-pointer ${
+                        idx === 0 ? "rounded-tl-none" : ""
+                      } ${
                         active
-                          ? "bg-[#f59e0b] text-white shadow-[0_0_8px_rgba(245,158,11,0.4)]"
-                          : "bg-[#EEEEEE] text-gray-500 hover:text-gray-800"
+                          ? "bg-[#f59e0b] text-white shadow-sm"
+                          : "bg-[#e2e8f0] text-slate-600 hover:bg-slate-300"
                       }`}
                     >
                       {p.displayLabel}
@@ -632,9 +634,9 @@ export default function Courses() {
                 })}
               </div>
             </div>
-            {/* Category tree */}
-            <nav className="px-3 pt-3 pb-4 overflow-y-auto flex-1">
-              <div className="border border-gray-200 rounded-xl overflow-hidden">
+            {/* Category tree container */}
+            <nav className="p-3 overflow-y-auto flex-1">
+              <div className="bg-white border border-slate-200 rounded-2xl p-2.5 shadow-xs space-y-1">
                 {currentTree.map(sidebarNode)}
               </div>
             </nav>
@@ -649,20 +651,20 @@ export default function Courses() {
               : "max-w-[1600px] pt-0 lg:pt-6"
           }`}
         >
-          {/* Mobile sidebar — persistent PC toggle + narrow filter dropdown + guide */}
+          {/* Mobile sidebar selector */}
           {!listOnly && (
             <div className="lg:hidden mb-0">
-              <div className="flex border border-gray-200">
+              <div className="flex border-b border-gray-200">
                 {parents.map((p) => {
                   const activeParent = parentParam === p.slug;
                   return (
                     <button
                       key={p.slug}
                       onClick={() => selectParent(p.slug)}
-                      className={`flex-1 py-3 text-xs sm:text-sm font-medium text-center transition-all cursor-pointer ${
+                      className={`flex-1 py-3 text-xs sm:text-sm font-bold text-center transition-all cursor-pointer ${
                         activeParent
-                          ? "bg-brand-orange text-white shadow-sm shadow-brand-orange/30"
-                          : "bg-[#EEEEEE] text-gray-500 hover:text-gray-800"
+                          ? "bg-[#f59e0b] text-white shadow-sm"
+                          : "bg-[#e2e8f0] text-slate-600 hover:text-slate-900"
                       }`}
                     >
                       {p.displayLabel}
@@ -685,16 +687,16 @@ export default function Courses() {
                       onClick={() => setMobileOpen((o) => !o)}
                       className={`relative z-30 w-full flex items-center justify-between gap-2 pl-3.5 pr-3 py-2.5 rounded-full border-2 text-sm transition-all duration-200 cursor-pointer bg-white ${
                         mobileOpen
-                          ? "border-brand-blue/40 text-dark-navy"
-                          : "border-gray-300 text-dark-navy hover:border-brand-blue/30"
+                          ? "border-blue-500 text-slate-900"
+                          : "border-gray-300 text-slate-900 hover:border-blue-300"
                       }`}
                       aria-expanded={mobileOpen}
                     >
                       <span className="flex items-center gap-2.5 min-w-0 flex-1">
                         <FiFilter
-                          className={`w-4 h-4 shrink-0 ${mobileOpen ? "text-brand-blue" : "text-gray-400"}`}
+                          className={`w-4 h-4 shrink-0 ${mobileOpen ? "text-blue-600" : "text-gray-400"}`}
                         />
-                        <span className="truncate min-w-0 max-w-full text-left">
+                        <span className="truncate min-w-0 max-w-full text-left font-medium">
                           {activeNavId
                             ? navItems?.find((n) => n.id === activeNavId)?.label
                             : "Select category"}
@@ -736,18 +738,18 @@ export default function Courses() {
                     )}
                   </div>
 
-                  <p className="flex-1 min-w-0 text-xs sm:text-sm text-gray-500 leading-relaxed pt-2">
+                  <p className="flex-1 min-w-0 text-xs sm:text-sm text-slate-500 leading-relaxed pt-2">
                     Tap to filter courses.
                   </p>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-bold text-brand-blue mb-1 mt-6">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B365D] mb-1 mt-6">
                   Find Your Courses related to{" "}
                   {parents.find((p) => p.slug === parentParam)?.label ||
                     "Software Learning"}
                 </h1>
                 {activeNavId && (
-                  <p className="text-lg sm:text-xl font-semibold text-[#175CDD]">
+                  <p className="text-lg sm:text-xl font-bold text-slate-600">
                     {navItems?.find((n) => n.id === activeNavId)?.label || ""}
                   </p>
                 )}
@@ -767,12 +769,12 @@ export default function Courses() {
               <div className="mb-6">
                 <Link
                   to={`/courses?parent=${parentParam}`}
-                  className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-orange transition-colors mb-3"
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-[#f59e0b] transition-colors mb-3"
                 >
                   <FiChevronLeft className="w-4 h-4" />
                   Back
                 </Link>
-                <h1 className="text-2xl sm:text-3xl font-bold text-dark-navy">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B365D]">
                   {navItems?.find((n) => n.id === activeNavId)?.label ||
                     "Courses"}
                 </h1>
@@ -782,12 +784,12 @@ export default function Courses() {
             {/* Sidebar-mode header */}
             {!listOnly && (
               <div className="mb-6 text-center lg:text-left">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-brand-blue mb-1">
+                <h1 className="text-2xl lg:text-3xl font-extrabold text-[#1B365D] tracking-tight mb-1">
                   Find Your Courses related to{" "}
                   {parents.find((p) => p.slug === parentParam)?.label || "Software Learning"}
                 </h1>
                 {activeNavId && (
-                  <p className="text-base sm:text-lg font-semibold text-[#175CDD]">
+                  <p className="text-lg lg:text-xl font-bold text-slate-600">
                     {navItems?.find((n) => n.id === activeNavId)?.label || ""}
                   </p>
                 )}
@@ -795,16 +797,16 @@ export default function Courses() {
             )}
 
             {/* Toolbar row */}
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-3 pb-4 border-b border-gray-100">
-              <p className="text-sm text-gray-500">
-                <span className="font-semibold text-dark-navy">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b border-slate-100">
+              <p className="text-sm font-semibold text-slate-600">
+                <span className="font-extrabold text-slate-900">
                   {totalItems}
                 </span>{" "}
                 {totalItems === 1 ? "course" : "courses"}
               </p>
               <div className="flex items-center gap-3 ml-auto">
-                <div className="relative flex-1 min-w-0 sm:flex-none sm:w-56 lg:w-64">
-                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="relative flex-1 min-w-0 sm:flex-none sm:w-64">
+                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     value={search}
                     onChange={(e) => {
@@ -812,17 +814,17 @@ export default function Courses() {
                       setPage(1);
                     }}
                     placeholder="Search courses..."
-                    className="w-full pl-10 pr-4 py-2.5 rounded-full border-2 border-gray-300 text-sm text-dark-navy bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/30 transition-all"
+                    className="w-full pl-10 pr-4 py-2 rounded-full border border-slate-300 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                     aria-label="Search courses"
                   />
                 </div>
-                <div className="flex items-center gap-1 bg-gray-100 rounded-full p-1 shrink-0">
+                <div className="flex items-center gap-1 bg-slate-100 rounded-full p-1 shrink-0 border border-slate-200">
                   <button
                     onClick={() => setViewMode("grid")}
-                    className={`p-2 rounded-full transition-colors cursor-pointer ${
+                    className={`p-2 rounded-full transition-all cursor-pointer ${
                       viewMode === "grid"
-                        ? "bg-white text-brand-orange shadow-sm"
-                        : "text-gray-400 hover:text-gray-600"
+                        ? "bg-white text-[#f59e0b] shadow-2xs"
+                        : "text-slate-400 hover:text-slate-600"
                     }`}
                     aria-label="Grid view"
                   >
@@ -830,10 +832,10 @@ export default function Courses() {
                   </button>
                   <button
                     onClick={() => setViewMode("list")}
-                    className={`p-2 rounded-full transition-colors cursor-pointer ${
+                    className={`p-2 rounded-full transition-all cursor-pointer ${
                       viewMode === "list"
-                        ? "bg-white text-brand-orange shadow-sm"
-                        : "text-gray-400 hover:text-gray-600"
+                        ? "bg-white text-[#f59e0b] shadow-2xs"
+                        : "text-slate-400 hover:text-slate-600"
                     }`}
                     aria-label="List view"
                   >
@@ -844,34 +846,32 @@ export default function Courses() {
             </div>
 
             {searchedCourses.length === 0 ? (
-              <div className="text-center py-20">
+              <div className="text-center py-24 px-4">
                 {search ? (
                   <>
-                    <FiSearch className="w-14 h-14 text-gray-200 mx-auto mb-4" />
-                    <p className="text-gray-500">
+                    <FiSearch className="w-14 h-14 text-slate-300 mx-auto mb-4" />
+                    <p className="text-slate-500 font-medium">
                       No courses match &quot;{search}&quot;
                     </p>
                   </>
                 ) : (
-                  <>
-                    <div className="w-16 h-16 rounded-full bg-brand-orange/10 flex items-center justify-center mx-auto mb-4">
-                      <FiClock className="w-7 h-7 text-brand-orange" />
+                  <div className="max-w-md mx-auto">
+                    <div className="w-16 h-16 rounded-full bg-amber-100/70 text-amber-600 flex items-center justify-center mx-auto mb-5 shadow-2xs">
+                      <FiClock className="w-8 h-8" />
                     </div>
-                    <p className="text-lg font-semibold text-dark-navy mb-1">
-                      Coming soon
-                    </p>
-                    <p className="text-gray-500 text-sm mb-6">
+                    <h3 className="text-2xl font-bold text-slate-900 mb-2">Coming soon</h3>
+                    <p className="text-slate-500 text-sm leading-relaxed mb-8">
                       We&apos;re working on courses in this category. Check back
                       soon.
                     </p>
                     <Link
                       to="/courses"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white text-sm font-semibold rounded-full hover:bg-brand-orange/90 transition-colors"
+                      className="inline-flex items-center justify-center gap-2.5 px-7 py-3 bg-[#f59e0b] hover:bg-[#d97706] text-white text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
                     >
                       <FiGrid className="w-4 h-4" />
                       Browse all courses
                     </Link>
-                  </>
+                  </div>
                 )}
               </div>
             ) : (
