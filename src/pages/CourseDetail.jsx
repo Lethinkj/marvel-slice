@@ -97,12 +97,12 @@ function CourseTabs({ tabs }) {
           </h2>
         )}
         {content.paragraph && (
-          <p className={`text-gray-600 leading-relaxed ${align("paragraph")} ${align("paragraph") === "text-center" ? "max-w-2xl mx-auto" : ""}`}>
+          <p className={`text-gray-500 leading-relaxed ${align("paragraph")} ${align("paragraph") === "text-center" ? "max-w-2xl mx-auto" : ""}`}>
             {content.paragraph}
           </p>
         )}
         {content.subheading && (
-          <h3 className={`text-lg font-semibold text-dark-navy ${align("subheading")}`}>
+          <h3 className={`text-lg font-semibold text-black ${align("subheading")}`}>
             {content.subheading}
           </h3>
         )}
