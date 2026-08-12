@@ -139,6 +139,7 @@ function slugify(text) {
 
 export default function CourseWizard() {
   const { user: currentUser } = useAuth();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const rawReturn = searchParams.get("return") || (searchParams.get("category") ? `/admin/courses?category=${encodeURIComponent(searchParams.get("category"))}` : null);
   const returnUrl = rawReturn ? decodeURIComponent(rawReturn) : "/admin/courses";
@@ -706,7 +707,7 @@ export default function CourseWizard() {
               <div className="space-y-4">
                 {c.tabs.map((t, i) => (
                   <div key={i} className="border border-admin-200 rounded-xl p-5 bg-white shadow-xs space-y-4">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-admin-100">
+                    <div className="flex items-center justify-between gap-3 pb-3 border-b border-admin-100">
                       <div className="flex items-center gap-3">
                         <span className="text-xs font-bold text-neutral-500">Tab #{i + 1}</span>
                         {(() => {
@@ -739,77 +740,64 @@ export default function CourseWizard() {
                           );
                         })()}
                       </div>
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-admin-100">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 w-full">
-                        <div>
-                          <label className="block text-xs font-semibold text-neutral-600 mb-1">Tab Label <span className="text-destructive-500">*</span></label>
-                          <input
-                            value={t.label || ""}
-                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }}
-                            required
-                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
-                            placeholder="e.g. Overview"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-semibold text-neutral-600 mb-1">Content Type</label>
-                          <select
-                            value={t.content_type || "overview"}
-                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }}
-                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 bg-white"
-                          >
-                            <option value="overview">Overview</option>
-                            <option value="syllabus">Syllabus</option>
-                            <option value="apply_now">Apply Now</option>
-                          </select>
-                        </div>
-                      </div>
                       <button
                         type="button"
                         onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg border border-red-200 transition-colors shrink-0"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg border border-red-200 transition-colors shrink-0 cursor-pointer"
                       >
                         <FiTrash2 className="w-3.5 h-3.5" /> Remove Tab
                       </button>
                     </div>
 
-                    {(t.content_type === "overview" || t.content_type === "syllabus") && (
-                      <div className="space-y-4 pt-1">
-                        {/* Heading */}
-                        <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <label className="text-xs font-semibold text-neutral-700">Heading <span className="text-destructive-500">*</span></label>
-                            <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg">
-                              <span className="text-[10px] text-neutral-400 font-medium px-1">Align:</span>
-                              {['left', 'center', 'right'].map((align) => (
-                                <button
-                                  key={align}
-                                  type="button"
-                                  onClick={() => {
-                                    const n = [...c.tabs];
-                                    n[i] = { ...n[i], content: { ...n[i].content, headingAlign: align } };
-                                    u("tabs", n);
-                                  }}
-                                  className={`px-2 py-0.5 rounded text-xs font-semibold capitalize transition-all ${
-                                    (t.content?.headingAlign || 'left') === align
-                                      ? 'bg-admin-600 text-white shadow-xs'
-                                      : 'text-neutral-600 hover:text-neutral-900'
-                                  }`}
-                                >
-                                  {align}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          <input
-                            value={t.content?.heading || ""}
-                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }}
-                            required
-                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
-                            placeholder="Heading text (left-aligned by default)"
-                          />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 w-full pt-1">
+                      <div>
+                        <div className="flex items-center justify-between h-6 mb-1">
+                          <label className="text-xs font-semibold text-neutral-600">Tab Label <span className="text-destructive-500">*</span></label>
                         </div>
+                        <input
+                          value={t.label || ""}
+                          onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: "overview", label: e.target.value }; u("tabs", n); }}
+                          required
+                          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
+                          placeholder="e.g. Overview"
+                        />
+                      </div>
+                      <div>
+                        <div className="flex items-center justify-between h-6 mb-1">
+                          <label className="text-xs font-semibold text-neutral-600">Section Heading <span className="text-destructive-500">*</span></label>
+                          <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg">
+                            <span className="text-[10px] text-neutral-400 font-medium px-1">Align:</span>
+                            {['left', 'center', 'right'].map((align) => (
+                              <button
+                                key={align}
+                                type="button"
+                                onClick={() => {
+                                  const n = [...c.tabs];
+                                  n[i] = { ...n[i], content_type: "overview", content: { ...n[i].content, headingAlign: align } };
+                                  u("tabs", n);
+                                }}
+                                className={`px-2 py-0.5 rounded text-xs font-semibold capitalize transition-all ${
+                                  (t.content?.headingAlign || 'left') === align
+                                    ? 'bg-admin-600 text-white shadow-xs'
+                                    : 'text-neutral-600 hover:text-neutral-900'
+                                }`}
+                              >
+                                {align}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <input
+                          value={t.content?.heading || ""}
+                          onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: "overview", content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }}
+                          required
+                          className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
+                          placeholder="Heading text (left-aligned by default)"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 pt-1">
 
                         {/* Paragraph (Description) */}
                         <div>
@@ -923,7 +911,6 @@ export default function CourseWizard() {
                           </div>
                         </div>
                       </div>
-                    )}
                   </div>
                 ))}
               </div>
