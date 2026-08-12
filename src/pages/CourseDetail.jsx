@@ -656,8 +656,8 @@ export default function CourseDetail() {
       <section className="relative overflow-hidden bg-white py-8 sm:py-10 lg:py-12">
         {/* Full Section Right-Half Blue Angled Background */}
         <div
-          className="absolute inset-y-0 right-0 w-full lg:w-[50%] bg-[#1E56C7] pointer-events-none z-0 hidden lg:block"
-          style={{ clipPath: 'polygon(30% 0, 100% 0, 100% 100%, 0% 100%)' }}
+          className="absolute inset-y-0 right-0 w-full lg:w-[54%] bg-[#1E56C7] pointer-events-none z-0 hidden lg:block"
+          style={{ clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 0% 100%)' }}
         />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
