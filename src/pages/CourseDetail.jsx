@@ -77,7 +77,7 @@ function getYoutubeEmbedUrl(url) {
   return null;
 }
 
-function CourseTabs({ tabs }) {
+function CourseTabs({ tabs, onApplyNow }) {
   if (!tabs || tabs.length === 0) return null;
   const [active, setActive] = useState(0);
   const activeTab = tabs[active];
@@ -126,13 +126,14 @@ function CourseTabs({ tabs }) {
             activeIndex={active}
             onChange={setActive}
           />
-          <Link
-            to="/contact"
-            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 transition-colors text-sm font-bold shadow-sm"
+          <button
+            type="button"
+            onClick={() => onApplyNow?.('Apply Now')}
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 transition-colors text-sm font-bold shadow-sm cursor-pointer"
           >
             Apply Now
             <FiArrowRight className="w-4 h-4" />
-          </Link>
+          </button>
         </div>
         <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-xl shadow-slate-200/50">
           <div className="p-6 sm:p-8">
@@ -348,6 +349,66 @@ export default function CourseDetail() {
   const [interestError, setInterestError] = useState('');
   const [interestAgree, setInterestAgree] = useState(false);
   const [showInterest, setShowInterest] = useState(false);
+  const [notifiedSuccess, setNotifiedSuccess] = useState(false);
+
+  const [showEnquiry, setShowEnquiry] = useState(false);
+  const [enquirySource, setEnquirySource] = useState('Apply Now');
+  const [enquiryForm, setEnquiryForm] = useState({ name: '', email: '', phone: '' });
+  const [enquirySubmitting, setEnquirySubmitting] = useState(false);
+  const [enquiryDone, setEnquiryDone] = useState(false);
+  const [enquiryError, setEnquiryError] = useState('');
+  const [enquiryAgree, setEnquiryAgree] = useState(false);
+
+  function openEnquiryModal(sourceLabel) {
+    setEnquirySource(sourceLabel || 'Apply Now');
+    setEnquiryForm({ name: '', email: '', phone: '' });
+    setEnquiryDone(false);
+    setEnquiryError('');
+    setEnquiryAgree(false);
+    setShowEnquiry(true);
+  }
+
+  async function handleEnquirySubmit(e) {
+    e.preventDefault();
+    if (!enquiryForm.name.trim() || !enquiryForm.email.trim() || !enquiryForm.phone.trim()) {
+      setEnquiryError('Please fill in all required fields.');
+      return;
+    }
+    if (!enquiryAgree) {
+      setEnquiryError('Please agree to the Terms of Use and Privacy Policy.');
+      return;
+    }
+    setEnquirySubmitting(true);
+    setEnquiryError('');
+
+    const payload = {
+      full_name: enquiryForm.name.trim(),
+      email: enquiryForm.email.trim(),
+      phone: enquiryForm.phone.trim(),
+      course_id: course?.id,
+      course_title: course?.title,
+      button_clicked: enquirySource,
+      terms_accepted: true,
+      created_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase.from('course_enquiries').insert(payload);
+    if (error) {
+      setEnquiryError(error.message);
+      setEnquirySubmitting(false);
+      return;
+    }
+
+    fetch('/api/submit-contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+
+    trackFormSubmit('course_enquiry');
+    setEnquirySubmitting(false);
+    setEnquiryDone(true);
+  }
 
   if (isLoading) {
     return (
@@ -382,12 +443,13 @@ export default function CourseDetail() {
       launch_date: course.start_date || null,
     };
 
-    const { error } = await supabase.from('course_interests').insert(payload);
+    const { error } = await supabase.from('upcoming_course_interests').insert(payload);
     if (error) { setInterestError(error.message); setInterestSubmitting(false); return; }
 
     trackFormSubmit('course_interest');
     setInterestSubmitting(false);
     setInterestDone(true);
+    setNotifiedSuccess(true);
   }
 
   if (course.status === 'Coming Soon') {
@@ -420,20 +482,30 @@ export default function CourseDetail() {
                   </ul>
                 )}
                 <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                  <Button
-                    variant="accent"
-                    size="lg"
-                    onClick={() => {
-                      setInterestForm({ name: '', email: '', phone: '' });
-                      setInterestDone(false);
-                      setInterestError('');
-                      setInterestAgree(false);
-                      setShowInterest(true);
-                    }}
-                    className="w-full sm:w-auto"
-                  >
-                    <FiBell className="w-4 h-4" /> Notify Me
-                  </Button>
+                  {notifiedSuccess ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 text-white rounded-xl font-bold text-sm shadow-md cursor-default transition-all"
+                    >
+                      <FiCheckCircle className="w-5 h-5" /> You're Notified!
+                    </button>
+                  ) : (
+                    <Button
+                      variant="accent"
+                      size="lg"
+                      onClick={() => {
+                        setInterestForm({ name: '', email: '', phone: '' });
+                        setInterestDone(false);
+                        setInterestError('');
+                        setInterestAgree(false);
+                        setShowInterest(true);
+                      }}
+                      className="w-full sm:w-auto"
+                    >
+                      <FiBell className="w-4 h-4" /> Notify Me
+                    </Button>
+                  )}
                   <Button variant="outline" size="lg" to="/courses" className="w-full sm:w-auto !bg-brand-blue !text-white hover:!bg-blue-700 hover:shadow-md hover:-translate-y-0.5 transition-all">
                     Explore All Courses <FiArrowRight className="w-4 h-4" />
                   </Button>
@@ -606,10 +678,10 @@ export default function CourseDetail() {
                 </ul>
               )}
               <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 mt-8 w-full sm:w-auto">
-                <Button variant="accent" size="lg" to={course.cta_link || '#contact'} onClick={() => trackCtaClick(course.cta_left || 'Talk to Advisor', 'course_hero')} className="w-full sm:w-auto">
+                <Button variant="accent" size="lg" onClick={() => openEnquiryModal(course.cta_left || 'Talk to Advisor')} className="w-full sm:w-auto cursor-pointer">
                   {course.cta_left || 'Talk to Advisor'}
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => { trackCtaClick(course.cta_right || 'Download Brochure', 'course_hero'); setBrochureForm({ name: '', email: '', phone: '' }); setBrochureDone(false); setBrochureError(''); setBrochureAgree(false); setShowBrochure(true); }} className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" onClick={() => openEnquiryModal(course.cta_right || 'Download Brochure')} className="w-full sm:w-auto cursor-pointer">
                   {course.cta_right || 'Download Brochure'}
                 </Button>
               </div>
@@ -657,7 +729,7 @@ export default function CourseDetail() {
       <OverviewSection course={course} />
 
       {/* Course Tabs */}
-      <CourseTabs tabs={course.course_tabs} />
+      <CourseTabs tabs={course.course_tabs} onApplyNow={(label) => openEnquiryModal(label || 'Apply Now')} />
 
       {/* CTA Banner */}
       {course.cta_heading && course.cta_heading.trim() ? (
@@ -690,15 +762,14 @@ export default function CourseDetail() {
                   )}
                 </div>
                 <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
-                  <Button
-                    variant="accent"
-                    size="lg"
-                    href={course.cta_link || (course.cta_phone ? `tel:${course.cta_phone}` : undefined)}
+                  <button
+                    type="button"
+                    onClick={() => openEnquiryModal(course.cta_text || 'Enroll Now')}
                     className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-orange hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-brand-orange/30 hover:shadow-brand-orange/50 hover:-translate-y-0.5 transition-all cursor-pointer"
                   >
                     {course.cta_text || 'Enroll Now'}
                     <FiArrowRight className="w-5 h-5" />
-                  </Button>
+                  </button>
                 </div>
               </div>
             </Reveal>
@@ -785,6 +856,111 @@ export default function CourseDetail() {
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-brand-orange text-white hover:bg-brand-orange/90 transition-colors disabled:opacity-60">
                   {brochureSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
                   {brochureSubmitting ? 'Sending...' : 'Get Brochure'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showEnquiry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm cursor-pointer" onClick={() => setShowEnquiry(false)}>
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto cursor-default" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Enquire Now</h2>
+                <p className="text-xs text-brand-orange font-semibold mt-0.5">{course.title}</p>
+              </div>
+              <button onClick={() => setShowEnquiry(false)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
+                <FiX className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+
+            {enquiryDone ? (
+              <div className="p-8 text-center">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                  <FiCheck className="w-7 h-7 text-emerald-600" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Enquiry Submitted!</h3>
+                <p className="text-sm text-gray-500 leading-relaxed mb-6">
+                  Thank you <strong className="text-gray-900">{enquiryForm.name}</strong>! Your enquiry for{' '}
+                  <strong className="text-gray-900">{course.title}</strong> via <span className="font-semibold text-brand-orange">"{enquirySource}"</span> has been recorded.
+                  Our course advisor will contact you shortly.
+                </p>
+                <button onClick={() => setShowEnquiry(false)} className="px-6 py-2.5 text-sm font-semibold rounded-lg bg-brand-orange text-white hover:bg-brand-orange/90 transition-colors cursor-pointer">
+                  Done
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleEnquirySubmit} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Full Name <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    value={enquiryForm.name}
+                    onChange={e => setEnquiryForm(p => ({ ...p, name: e.target.value }))}
+                    placeholder="Enter your full name"
+                    required
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Email Address <span className="text-red-500">*</span></label>
+                  <input
+                    type="email"
+                    value={enquiryForm.email}
+                    onChange={e => setEnquiryForm(p => ({ ...p, email: e.target.value }))}
+                    placeholder="you@example.com"
+                    required
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Phone Number <span className="text-red-500">*</span></label>
+                  <input
+                    type="tel"
+                    value={enquiryForm.phone}
+                    onChange={e => setEnquiryForm(p => ({ ...p, phone: e.target.value }))}
+                    placeholder="Enter 10-digit mobile number"
+                    required
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                  />
+                </div>
+
+                {enquiryError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2 text-xs text-red-700 font-medium">
+                    <FiAlertCircle className="w-4 h-4 shrink-0" /> {enquiryError}
+                  </div>
+                )}
+
+                <label className="flex items-start gap-2.5 cursor-pointer pt-1">
+                  <input
+                    type="checkbox"
+                    checked={enquiryAgree}
+                    onChange={e => {
+                      setEnquiryAgree(e.target.checked);
+                      if (enquiryError) setEnquiryError('');
+                    }}
+                    required
+                    className="mt-0.5 w-4 h-4 rounded border-gray-300 text-brand-orange focus:ring-brand-orange/20"
+                  />
+                  <span className="text-xs text-gray-600 leading-relaxed">
+                    I agree to the{' '}
+                    <a href="/terms" className="text-brand-blue underline hover:text-blue-700">Terms of Use</a>
+                    {' '}and{' '}
+                    <a href="/privacy" className="text-brand-blue underline hover:text-blue-700">Privacy Policy</a>.
+                  </span>
+                </label>
+
+                <button
+                  type="submit"
+                  disabled={enquirySubmitting}
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold rounded-xl bg-brand-orange text-white hover:bg-brand-orange/90 transition-all disabled:opacity-60 cursor-pointer shadow-md shadow-brand-orange/20"
+                >
+                  {enquirySubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
+                  {enquirySubmitting ? 'Submitting Enquiry...' : 'Submit Enquiry'}
                 </button>
               </form>
             )}

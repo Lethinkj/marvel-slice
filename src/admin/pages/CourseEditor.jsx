@@ -11,6 +11,8 @@ import SectionSelect from '../components/ui/SectionSelect';
 import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import useDirty from '../hooks/useDirty';
+import { toDateTimeLocal, fromDateTimeLocal } from '../../lib/datetime';
+import DateTimePicker from '../components/ui/DateTimePicker';
 function limitDescriptionText(val) {
   if (!val) return "";
   let text = val.slice(0, 300);
@@ -821,17 +823,11 @@ export default function CourseEditor() {
                         placeholder="Enroll Now" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Button Link (URL)</label>
-                      <input value={course.cta_link || ''} onChange={(e) => update('cta_link', e.target.value)}
+                      <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:)</label>
+                      <input value={course.cta_phone || ''} onChange={(e) => update('cta_phone', e.target.value)}
                         className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                        placeholder="/courses or https://..." />
+                        placeholder="+916380957390" />
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:)</label>
-                    <input value={course.cta_phone || ''} onChange={(e) => update('cta_phone', e.target.value)}
-                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                      placeholder="+916380957390" />
                   </div>
                   <div>
                     <ImageUploader value={course.cta_background_image || ''} onChange={(v) => update('cta_background_image', v)} label="Background Image" />

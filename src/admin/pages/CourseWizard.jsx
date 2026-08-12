@@ -277,7 +277,6 @@ export default function CourseWizard() {
     if (!c.cta_heading.trim()) add(STEPS[1].label, "CTA Heading");
     if (!c.cta_description.trim()) add(STEPS[1].label, "CTA Description");
     if (!c.cta_text.trim()) add(STEPS[1].label, "Button Text");
-    if (!c.cta_link.trim()) add(STEPS[1].label, "Button Link (URL)");
     if (!c.cta_phone.trim()) add(STEPS[1].label, "Phone Number");
     if (!(c.checklist_items || []).join("").trim()) add(STEPS[1].label, "What You'll Learn");
     if (c.highlights.length < 9 || c.highlights.some((h) => !h.label.trim())) add(STEPS[2].label, `Key Highlights (Minimum 9 required — currently ${c.highlights.length}/9)`);
@@ -610,13 +609,9 @@ export default function CourseWizard() {
                     <input value={c.cta_text || ''} onChange={(e) => u("cta_text", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-black mb-1">Button Link (URL) <span className="text-destructive-500">*</span></label>
-                    <input value={c.cta_link || ''} onChange={(e) => u("cta_link", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="/courses or https://..." />
+                    <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:) <span className="text-destructive-500">*</span></label>
+                    <input value={c.cta_phone || ''} onChange={(e) => u("cta_phone", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="+916380957390" />
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:) <span className="text-destructive-500">*</span></label>
-                  <input value={c.cta_phone || ''} onChange={(e) => u("cta_phone", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="+916380957390" />
                 </div>
                 <div>
                   <ImageUploader value={c.cta_background_image || ''} onChange={(v) => u("cta_background_image", v)} label="Background Image" />

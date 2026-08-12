@@ -1,7 +1,7 @@
 import { FiBriefcase } from "react-icons/fi";
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX, FiBarChart2, FiPlusCircle, FiClock, FiDownload, FiClipboard, FiMail, FiMessageSquare, FiTag, FiImage, FiUsers, FiUser, FiHelpCircle, FiTarget, FiStar, FiInfo, FiCalendar } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX, FiBarChart2, FiPlusCircle, FiClock, FiDownload, FiClipboard, FiMail, FiMessageSquare, FiTag, FiImage, FiUsers, FiUser, FiHelpCircle, FiTarget, FiStar, FiInfo, FiCalendar, FiBell } from "react-icons/fi";
 import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
@@ -49,7 +49,8 @@ const navGroups = [
     { to: "/admin/contact-submissions", label: "Contact Submissions", icon: FiMessageSquare },
     { to: "/admin/about-submissions", label: "About Submissions", icon: FiInfo },
     { to: "/admin/upcoming-class-submissions", label: "Upcoming Class Registrations", icon: FiCalendar },
-    { to: "/admin/course-interests", label: "Course Interests", icon: FiCalendar },
+    { to: "/admin/course-interests", label: "Course Enquiries", icon: FiMessageSquare },
+    { to: "/admin/upcoming-course-interests", label: "Upcoming Course Interests", icon: FiBell },
     { to: "/admin/chat-submissions", label: "Chat Submissions", icon: FiMessageCircle },
     { to: "/admin/courses/reports", label: "Reports", icon: FiBarChart2 }
     ]},
