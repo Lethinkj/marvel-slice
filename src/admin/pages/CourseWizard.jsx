@@ -41,7 +41,7 @@ import DateTimePicker from '../components/ui/DateTimePicker';
 const STEPS = [
   { label: "Basics", icon: FiBookOpen },
   { label: "Media & Content", icon: FiMonitor },
-  { label: "Curriculum", icon: FiLayers },
+  { label: "Highlights & Projects", icon: FiStar },
   { label: "FAQs & Tags", icon: FiAward },
 ];
 
@@ -174,7 +174,7 @@ export default function CourseWizard() {
     projects: [],
     certifications: [{ description: "", certificate_image_url: "", recognized_companies: [] }],
     faqs: [],
-    curriculum: [{ title: "", topics: [] }],
+    curriculum: [],
   });
 
   function resetCategoryPath() {
@@ -265,7 +265,6 @@ export default function CourseWizard() {
     if (!c.cta_link.trim()) add(STEPS[1].label, "Button Link (URL)");
     if (!c.cta_phone.trim()) add(STEPS[1].label, "Phone Number");
     if (!(c.checklist_items || []).join("").trim()) add(STEPS[1].label, "What You'll Learn");
-    if (c.curriculum.length === 0 || c.curriculum.some((m) => !m.title.trim())) add(STEPS[2].label, "Curriculum / Modules");
     if (c.highlights.length === 0 || c.highlights.some((h) => !h.label.trim())) add(STEPS[2].label, "Key Highlights");
     if (c.projects.length === 0 || c.projects.some((p) => !p.title.trim())) add(STEPS[2].label, "Projects");
     if (c.faqs.length === 0 || c.faqs.some((f) => !f.question.trim())) add(STEPS[3].label, "General FAQs");
@@ -289,40 +288,6 @@ export default function CourseWizard() {
 
   function findItem(id) {
     return availablePaths.find((p) => p.id === id);
-  }
-
-  function addModule() {
-    u("curriculum", [...c.curriculum, { title: "", topics: [] }]);
-  }
-
-  function updateModule(i, field, val) {
-    const next = [...c.curriculum];
-    next[i] = { ...next[i], [field]: val };
-    u("curriculum", next);
-  }
-
-  function addTopic(moduleIdx) {
-    const next = [...c.curriculum];
-    next[moduleIdx] = { ...next[moduleIdx], topics: [...(next[moduleIdx].topics || []), ""] };
-    u("curriculum", next);
-  }
-
-  function updateTopic(moduleIdx, topicIdx, val) {
-    const next = [...c.curriculum];
-    const topics = [...(next[moduleIdx].topics || [])];
-    topics[topicIdx] = val;
-    next[moduleIdx] = { ...next[moduleIdx], topics };
-    u("curriculum", next);
-  }
-
-  function removeTopic(moduleIdx, topicIdx) {
-    const next = [...c.curriculum];
-    next[moduleIdx] = { ...next[moduleIdx], topics: next[moduleIdx].topics.filter((_, j) => j !== topicIdx) };
-    u("curriculum", next);
-  }
-
-  function removeModule(i) {
-    u("curriculum", c.curriculum.filter((_, j) => j !== i));
   }
 
   function handleTitleChange(value) {
@@ -377,7 +342,7 @@ export default function CourseWizard() {
         duration: c.duration,
         mode: c.mode,
         checklist_items: (c.checklist_items || []).filter(Boolean),
-        curriculum: c.curriculum,
+        curriculum: [],
         nav_item_id: navItemId || null,
       };
 
@@ -646,68 +611,183 @@ export default function CourseWizard() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-black">Course Tabs <span className="text-destructive-500">*</span></h3>
-                <AddButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: {} }])} label="Add Tab" />
+                <AddButton onClick={() => u("tabs", [...c.tabs, { label: "New Tab", content_type: "overview", content: { headingAlign: "center", paragraphAlign: "left" } }])} label="Add Tab" />
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {c.tabs.map((t, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4 relative">
-                    <button onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))} className="absolute top-3 right-3 p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors">
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                    <div className="grid sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Label <span className="text-destructive-500">*</span></label>
-                        <input value={t.label || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" />
+                  <div key={i} className="border border-admin-200 rounded-xl p-5 bg-white shadow-xs space-y-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-admin-100">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 w-full">
+                        <div>
+                          <label className="block text-xs font-semibold text-neutral-600 mb-1">Tab Label <span className="text-destructive-500">*</span></label>
+                          <input
+                            value={t.label || ""}
+                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], label: e.target.value }; u("tabs", n); }}
+                            required
+                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
+                            placeholder="e.g. Overview"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-neutral-600 mb-1">Content Type</label>
+                          <select
+                            value={t.content_type || "overview"}
+                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }}
+                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 bg-white"
+                          >
+                            <option value="overview">Overview</option>
+                            <option value="syllabus">Syllabus</option>
+                            <option value="apply_now">Apply Now</option>
+                          </select>
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-medium text-neutral-500 mb-1">Type</label>
-                        <select value={t.content_type || "overview"} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: e.target.value }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 bg-white">
-                          <option value="overview">Overview</option>
-                          <option value="syllabus">Syllabus</option>
-                          <option value="apply_now">Apply Now</option>
-                        </select>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => u("tabs", c.tabs.filter((_, j) => j !== i))}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg border border-red-200 transition-colors shrink-0"
+                      >
+                        <FiTrash2 className="w-3.5 h-3.5" /> Remove Tab
+                      </button>
                     </div>
-                    {(t.content_type === "overview" ||
-                      t.content_type === "syllabus") && (
-                      <div className="mt-3 space-y-4">
+
+                    {(t.content_type === "overview" || t.content_type === "syllabus") && (
+                      <div className="space-y-4 pt-1">
+                        {/* Heading */}
                         <div>
-                          <label className="block text-xs font-medium text-neutral-500 mb-1">Heading (centered) <span className="text-destructive-500">*</span></label>
-                          <input value={t.content?.heading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Main heading" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-neutral-500 mb-1">Paragraph <span className="text-destructive-500">*</span></label>
-                          <textarea value={t.content?.paragraph || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }} rows={2} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Paragraph text" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-neutral-500 mb-1">Sub Heading</label>
-                          <input value={t.content?.subheading || ""} onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } }; u("tabs", n); }} className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Sub heading" />
-                        </div>
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <label className="text-xs font-medium text-neutral-500">Q&A Items</label>
-                            <AddButton onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} size="xs" label="Add Question" />
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-xs font-semibold text-neutral-700">Heading <span className="text-destructive-500">*</span></label>
+                            <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg">
+                              <span className="text-[10px] text-neutral-400 font-medium px-1">Align:</span>
+                              {['left', 'center', 'right'].map((align) => (
+                                <button
+                                  key={align}
+                                  type="button"
+                                  onClick={() => {
+                                    const n = [...c.tabs];
+                                    n[i] = { ...n[i], content: { ...n[i].content, headingAlign: align } };
+                                    u("tabs", n);
+                                  }}
+                                  className={`px-2 py-0.5 rounded text-xs font-semibold capitalize transition-all ${
+                                    (t.content?.headingAlign || 'left') === align
+                                      ? 'bg-admin-600 text-white shadow-xs'
+                                      : 'text-neutral-600 hover:text-neutral-900'
+                                  }`}
+                                >
+                                  {align}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                          <div className="space-y-3">
+                          <input
+                            value={t.content?.heading || ""}
+                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, heading: e.target.value } }; u("tabs", n); }}
+                            required
+                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
+                            placeholder="Heading text (left-aligned by default)"
+                          />
+                        </div>
+
+                        {/* Paragraph (Description) */}
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-xs font-semibold text-neutral-700">Paragraph / Description <span className="text-destructive-500">*</span></label>
+                            <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg">
+                              <span className="text-[10px] text-neutral-400 font-medium px-1">Align:</span>
+                              {['left', 'center', 'right'].map((align) => (
+                                <button
+                                  key={align}
+                                  type="button"
+                                  onClick={() => {
+                                    const n = [...c.tabs];
+                                    n[i] = { ...n[i], content: { ...n[i].content, paragraphAlign: align } };
+                                    u("tabs", n);
+                                  }}
+                                  className={`px-2 py-0.5 rounded text-xs font-semibold capitalize transition-all ${
+                                    (t.content?.paragraphAlign || 'left') === align
+                                      ? 'bg-admin-600 text-white shadow-xs'
+                                      : 'text-neutral-600 hover:text-neutral-900'
+                                  }`}
+                                >
+                                  {align}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <textarea
+                            value={t.content?.paragraph || ""}
+                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, paragraph: e.target.value } }; u("tabs", n); }}
+                            rows={3}
+                            required
+                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
+                            placeholder="Description text (left-aligned by default)"
+                          />
+                        </div>
+
+                        {/* Subheading */}
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-xs font-semibold text-neutral-700">Sub Heading</label>
+                            <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg">
+                              <span className="text-[10px] text-neutral-400 font-medium px-1">Align:</span>
+                              {['left', 'center', 'right'].map((align) => (
+                                <button
+                                  key={align}
+                                  type="button"
+                                  onClick={() => {
+                                    const n = [...c.tabs];
+                                    n[i] = { ...n[i], content: { ...n[i].content, subheadingAlign: align } };
+                                    u("tabs", n);
+                                  }}
+                                  className={`px-2 py-0.5 rounded text-xs font-semibold capitalize transition-all ${
+                                    (t.content?.subheadingAlign || 'left') === align
+                                      ? 'bg-admin-600 text-white shadow-xs'
+                                      : 'text-neutral-600 hover:text-neutral-900'
+                                  }`}
+                                >
+                                  {align}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <input
+                            value={t.content?.subheading || ""}
+                            onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content: { ...n[i].content, subheading: e.target.value } }; u("tabs", n); }}
+                            className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
+                            placeholder="Sub heading text"
+                          />
+                        </div>
+
+                        {/* Features / Q&A Items */}
+                        <div className="pt-2">
+                          <div className="flex items-center justify-between mb-3">
+                            <label className="text-xs font-bold text-neutral-800 uppercase tracking-wider">Features / Q&A Items</label>
+                            <AddButton onClick={() => { const n = [...c.tabs]; const qa = [...(n[i].content?.qa || []), { question: "", answers: [""] }]; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} size="xs" label="Add Question / Feature" />
+                          </div>
+                          <div className="space-y-4">
                             {(t.content?.qa || []).map((qa, qi) => (
-                              <div key={qi} className="border border-admin-200 rounded-lg p-3">
-                                <div className="flex items-center justify-between mb-2">
-                                  <span className="text-xs font-semibold text-neutral-400">Question {qi + 1}</span>
-                                  <button onClick={() => { const n = [...c.tabs]; const qa = n[i].content.qa.filter((_, j) => j !== qi); n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-destructive-500 hover:underline">Remove</button>
+                              <div key={qi} className="bg-neutral-50/80 border border-admin-200 rounded-xl p-4 space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-bold text-admin-600 uppercase tracking-wider">Feature #{qi + 1}</span>
+                                  <button onClick={() => { const n = [...c.tabs]; const qa = n[i].content.qa.filter((_, j) => j !== qi); n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-red-500 hover:text-red-700 font-medium hover:underline">Remove</button>
                                 </div>
-                                <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} required className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 mb-2" placeholder="Question" />
                                 <div>
-                                  <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs text-neutral-400">Answers (one per line)</span>
+                                  <label className="block text-xs font-medium text-neutral-600 mb-1">Title / Question</label>
+                                  <input value={qa.question} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], question: e.target.value }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} required className="w-full px-3 py-2 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20" placeholder="Feature title or question" />
+                                </div>
+                                <div>
+                                  <div className="flex items-center justify-between mb-1.5">
+                                    <span className="text-xs font-medium text-neutral-600">Feature Bullets / Answers</span>
                                     <AddButton onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: [...qa[qi].answers, ""] }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} size="xs" label="Add Bullet" />
                                   </div>
-                                  {qa.answers.map((ans, ai) => (
-                                    <div key={ai} className="flex items-center gap-2 mb-1">
-                                      <span className="text-xs text-neutral-300">•</span>
-                                      <input value={ans} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; const an = [...qa[qi].answers]; an[ai] = e.target.value; qa[qi] = { ...qa[qi], answers: an }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="flex-1 px-2 py-1 border border-admin-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Answer bullet" />
-                                      <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="text-xs text-red-500 hover:text-red-600">×</button>
-                                    </div>
-                                  ))}
+                                  <div className="space-y-2">
+                                    {qa.answers.map((ans, ai) => (
+                                      <div key={ai} className="flex items-center gap-2">
+                                        <span className="text-admin-600 text-xs shrink-0 font-bold">•</span>
+                                        <input value={ans} onChange={(e) => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; const an = [...qa[qi].answers]; an[ai] = e.target.value; qa[qi] = { ...qa[qi], answers: an }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="flex-1 px-3 py-1.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20" placeholder="Feature bullet detail" />
+                                        <button onClick={() => { const n = [...c.tabs]; const qa = [...n[i].content.qa]; qa[qi] = { ...qa[qi], answers: qa[qi].answers.filter((_, j) => j !== ai) }; n[i] = { ...n[i], content: { ...n[i].content, qa } }; u("tabs", n); }} className="p-1 text-red-400 hover:text-red-600 transition-colors" title="Delete bullet"><FiTrash2 className="w-3.5 h-3.5" /></button>
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
                             ))}
@@ -724,56 +804,6 @@ export default function CourseWizard() {
 
         {step === 2 && (
           <div className="space-y-8">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiLayers className="w-5 h-5 text-cyan-600" /> Curriculum / Modules <span className="text-destructive-500">*</span></h2>
-                <AddButton onClick={addModule} label="Add Module" />
-              </div>
-              <div className="space-y-3">
-                {c.curriculum.map((mod, i) => (
-                  <div key={i} className="border border-admin-200 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Module {i + 1}</span>
-                      <button onClick={() => removeModule(i)} className="p-1 text-red-500 hover:text-red-600 rounded hover:bg-destructive-50 transition-colors">
-                        <FiTrash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <input
-                      value={mod.title}
-                      onChange={(e) => updateModule(i, "title", e.target.value)}
-                      className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-neutral-500/20 mb-3"
-                      placeholder="Module title (e.g. Introduction to HTML)"
-                      required
-                    />
-                    <div className="space-y-2">
-                      {mod.topics?.map((topic, j) => (
-                        <div key={j} className="flex items-center gap-2">
-                          <span className="text-xs text-neutral-400 w-5 text-right">{j + 1}.</span>
-                          <input
-                            value={topic}
-                            onChange={(e) => updateTopic(i, j, e.target.value)}
-                            className="flex-1 px-3 py-1.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
-                            placeholder="Topic"
-                          />
-                          <button onClick={() => removeTopic(i, j)} className="p-1 text-destructive-300 hover:text-destructive-500 transition-colors">
-                            <FiTrash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
-                      <AddButton onClick={() => addTopic(i)} size="xs" label="Add Topic" />
-                    </div>
-                  </div>
-                ))}
-                {c.curriculum.length === 0 && (
-                  <div className="text-center py-8 text-neutral-400 bg-white rounded-lg border-2 border-dashed border-admin-200">
-                    <FiLayers className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No modules yet. Click "Add Module" to build your curriculum.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <hr className="border-admin-200" />
 
             <div>
               <div className="flex items-center justify-between mb-3">

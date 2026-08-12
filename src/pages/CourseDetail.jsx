@@ -36,21 +36,25 @@ const HIGHLIGHT_ICONS = {
 function AccordionQA({ items }) {
   const [openIdx, setOpenIdx] = useState(null);
   return (
-    <div className="space-y-2">
+    <div className="space-y-3 mt-4">
       {items.map((item, i) => (
-        <div key={i} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-          <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
-            className="w-full flex items-center justify-between p-2.5 text-left font-semibold text-gray-900 bg-gray-100 hover:bg-gray-200 transition-colors gap-3 cursor-pointer"
+        <div key={i} className="border border-gray-200/80 rounded-xl overflow-hidden bg-white shadow-xs">
+          <button
+            onClick={() => setOpenIdx(openIdx === i ? null : i)}
+            className="w-full flex items-center justify-between p-4 text-left font-bold text-dark-navy bg-slate-50 hover:bg-slate-100/80 transition-colors gap-3 cursor-pointer"
           >
             <span className="text-sm sm:text-base leading-snug flex-1">{item.question}</span>
-            <span className="shrink-0 w-8 h-8 flex items-center justify-center text-gray-400">
-              {openIdx === i ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+            <span className="shrink-0 w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-500 shadow-xs">
+              {openIdx === i ? <FiChevronUp className="w-4 h-4 text-brand-blue" /> : <FiChevronDown className="w-4 h-4" />}
             </span>
           </button>
           {openIdx === i && (
-            <div className="px-4 sm:px-5 pb-4 text-sm text-gray-500 leading-relaxed bg-white space-y-1">
+            <div className="p-4 sm:p-5 text-sm text-gray-600 leading-relaxed bg-white border-t border-gray-100 space-y-2.5">
               {item.answers?.map((ans, ai) => (
-                <p key={ai}>{ans}</p>
+                <div key={ai} className="flex items-start gap-2.5 text-left">
+                  <FiCheckCircle className="w-4 h-4 text-brand-blue shrink-0 mt-0.5" />
+                  <span className="text-gray-700 text-sm sm:text-base font-medium">{ans}</span>
+                </div>
               ))}
             </div>
           )}
@@ -82,15 +86,31 @@ function CourseTabs({ tabs }) {
     const content = t.content || {};
     const hasMain = content.heading || content.paragraph || content.subheading || content.text;
     const align = (key) => {
-      const a = content[key + "Align"] || "center";
+      const a = content[key + "Align"] || "left";
       return a === "left" ? "text-left" : a === "right" ? "text-right" : "text-center";
     };
     return (
       <div className="space-y-6">
-        {content.heading && <h2 className={`text-2xl font-bold text-dark-navy ${align("heading")}`}>{content.heading}</h2>}
-        {content.paragraph && <p className={`text-gray-600 leading-relaxed ${align("paragraph")} ${align("paragraph") === "text-center" ? "max-w-2xl mx-auto" : ""}`}>{content.paragraph}</p>}
-        {content.subheading && <h3 className={`text-lg font-semibold text-dark-navy ${align("subheading")}`}>{content.subheading}</h3>}
-        {content.text && <div className={`text-gray-700 leading-relaxed whitespace-pre-line ${align("text")}`}>{content.text}</div>}
+        {content.heading && (
+          <h2 className={`text-2xl font-bold text-dark-navy ${align("heading")}`}>
+            {content.heading}
+          </h2>
+        )}
+        {content.paragraph && (
+          <p className={`text-gray-600 leading-relaxed ${align("paragraph")} ${align("paragraph") === "text-center" ? "max-w-2xl mx-auto" : ""}`}>
+            {content.paragraph}
+          </p>
+        )}
+        {content.subheading && (
+          <h3 className={`text-lg font-semibold text-dark-navy ${align("subheading")}`}>
+            {content.subheading}
+          </h3>
+        )}
+        {content.text && (
+          <div className={`text-gray-700 leading-relaxed whitespace-pre-line ${align("text")}`}>
+            {content.text}
+          </div>
+        )}
         {content.qa?.length > 0 && <AccordionQA items={content.qa} />}
         {!hasMain && !content.qa?.length && <p className="text-gray-400 text-center py-8">Content coming soon.</p>}
       </div>
@@ -114,7 +134,7 @@ function CourseTabs({ tabs }) {
             <FiArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-sm">
+        <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-xl shadow-slate-200/50">
           <div className="p-6 sm:p-8 max-h-[420px] lg:max-h-none overflow-y-auto lg:overflow-visible">
             {renderContent(activeTab)}
           </div>
