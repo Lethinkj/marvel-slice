@@ -653,8 +653,14 @@ export default function CourseDetail() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12">
+      <section className="relative overflow-hidden bg-white py-8 sm:py-10 lg:py-12">
+        {/* Full Section Right-Half Blue Angled Background */}
+        <div
+          className="absolute inset-y-0 right-0 w-full lg:w-[50%] bg-[#1E56C7] pointer-events-none z-0 hidden lg:block"
+          style={{ clipPath: 'polygon(30% 0, 100% 0, 100% 100%, 0% 100%)' }}
+        />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             to="/courses"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-5"
@@ -694,38 +700,40 @@ export default function CourseDetail() {
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              {embedUrl && !videoPlaying ? (
-                <div className="relative rounded-xl overflow-hidden shadow-lg">
-                  {course.video_thumbnail_url ? (
-                    <img src={course.video_thumbnail_url} alt="Course video thumbnail" className="w-full aspect-video object-cover" />
-                  ) : (
-                    <div className="w-full aspect-video bg-gray-100 flex items-center justify-center">
-                      <FiBarChart2 className="w-16 h-16 text-gray-300" />
-                    </div>
-                  )}
-                  <button onClick={() => { setVideoPlaying(true); trackVideoPlay(course.title); }} className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer">
-                    <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg hover:bg-white transition-colors">
-                      <FiPlay className="w-7 h-7 text-brand-orange ml-0.5" />
-                    </div>
-                  </button>
-                </div>
-              ) : embedUrl && videoPlaying ? (
-                <div className="relative rounded-xl overflow-hidden shadow-lg">
-                  <iframe
-                    src={`${embedUrl}?autoplay=1&mute=1&controls=1`}
-                    title="Course Introduction Video"
-                    className="w-full aspect-video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              ) : (
-                <div className="rounded-xl overflow-hidden shadow-lg bg-gray-100 p-12 text-center">
-                  <FiBarChart2 className="w-16 h-16 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-400 text-sm">Course preview video</p>
-                </div>
-              )}
+            <div className="relative flex items-center justify-center">
+              <div className="w-full relative z-10">
+                {embedUrl && !videoPlaying ? (
+                  <div className="relative rounded-xl overflow-hidden shadow-lg border-2 border-white/20">
+                    {course.video_thumbnail_url ? (
+                      <img src={course.video_thumbnail_url} alt="Course video thumbnail" className="w-full aspect-video object-cover" />
+                    ) : (
+                      <div className="w-full aspect-video bg-slate-900/80 flex items-center justify-center">
+                        <FiBarChart2 className="w-16 h-16 text-white/40" />
+                      </div>
+                    )}
+                    <button onClick={() => { setVideoPlaying(true); trackVideoPlay(course.title); }} className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer">
+                      <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg hover:bg-white transition-colors">
+                        <FiPlay className="w-7 h-7 text-brand-orange ml-0.5" />
+                      </div>
+                    </button>
+                  </div>
+                ) : embedUrl && videoPlaying ? (
+                  <div className="relative rounded-xl overflow-hidden shadow-lg border-2 border-white/20">
+                    <iframe
+                      src={`${embedUrl}?autoplay=1&mute=1&controls=1`}
+                      title="Course Introduction Video"
+                      className="w-full aspect-video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <div className="rounded-xl overflow-hidden shadow-lg bg-slate-900/80 p-12 text-center border-2 border-white/20">
+                    <FiBarChart2 className="w-16 h-16 text-white/40 mx-auto mb-3" />
+                    <p className="text-white/60 text-sm">Course preview video</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
