@@ -804,7 +804,7 @@ export default function Career() {
                                   setShowForm(true);
                                 }
                               }}
-                              className="inline-flex items-center gap-1.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
+                              className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
                               Apply Now <FiArrowRight className="w-3.5 h-3.5" />
                             </button>
                           </div>
@@ -821,7 +821,7 @@ export default function Career() {
                         className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="bg-brand-orange/10 text-brand-orange p-2.5 rounded-xl shrink-0">
+                          <div className="bg-brand-blue/10 text-brand-blue p-2.5 rounded-xl shrink-0">
                             <FiBriefcase className="w-5 h-5" />
                           </div>
                           <h3 className="flex-1 font-bold text-slate-800 text-lg leading-tight">{item.title}</h3>
@@ -861,7 +861,7 @@ export default function Career() {
                                 setShowForm(true);
                               }
                             }}
-                            className="inline-flex items-center gap-1.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
+                            className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
                             Apply Now <FiArrowRight className="w-3.5 h-3.5" />
                           </button>
                         </div>

@@ -205,6 +205,19 @@ button:not(:disabled) { cursor: pointer; }
   animation: pulse-scale 0.4s ease-in-out;
 }
 
+@keyframes chat-dot-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
 /* Global max-width constraint */
 .max-w-12xl,
 .max-w-7xl,
