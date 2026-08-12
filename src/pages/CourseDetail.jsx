@@ -213,36 +213,60 @@ function ProjectsSection({ projects }) {
 function CertificationSection({ certifications }) {
   if (!certifications || certifications.length === 0) return null;
   return (
-    <section id="certification" data-section="certification" className="py-16">
+    <section id="certification" data-section="certification" className="py-16 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-2xl font-bold text-dark-navy mb-8 text-center">Certification</Reveal>
-        <div className="max-w-4xl mx-auto">
+        <Reveal as="h2" className="text-2xl sm:text-3xl font-extrabold text-[#1B365D] mb-10 text-center">
+          Certification
+        </Reveal>
+        <div className="max-w-5xl mx-auto space-y-8">
           {certifications.map((cert, i) => (
-            <Reveal key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-              <div className="grid md:grid-cols-2">
+            <Reveal key={i} className="bg-white rounded-3xl border border-slate-200/80 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-0 items-stretch">
                 {(cert.image_url || cert.certificate_image_url) && (
-                  <div className="bg-gray-50 flex items-center justify-center p-8">
-                    <img src={cert.image_url || cert.certificate_image_url} alt="Certification" className="max-w-full max-h-48 object-contain" />
+                  <div className="md:col-span-6 bg-slate-100/80 border-b md:border-b-0 md:border-r border-slate-200/80 p-4 sm:p-6 flex items-center justify-center min-h-[300px] sm:min-h-[360px]">
+                    <img
+                      src={cert.image_url || cert.certificate_image_url}
+                      alt="Certification Certificate"
+                      className="w-full h-full max-h-[400px] object-contain rounded-xl shadow-lg border border-slate-200 bg-white transition-transform duration-300 hover:scale-[1.01]"
+                    />
                   </div>
                 )}
-                <div className="p-8 flex flex-col justify-center">
-                  {cert.description && <p className="text-gray-700 mb-4 leading-relaxed">{cert.description}</p>}
+                <div className={`${(cert.image_url || cert.certificate_image_url) ? "md:col-span-6" : "md:col-span-12"} p-6 sm:p-8 lg:p-10 flex flex-col justify-center space-y-5`}>
+                  {cert.description && (
+                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
+                      {cert.description}
+                    </p>
+                  )}
                   {cert.skills_earned?.length > 0 && (
-                    <div className="mb-4">
-                      <p className="text-sm font-semibold text-dark-navy mb-2">Skills You'll Earn</p>
+                    <div>
+                      <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2.5">
+                        Skills You'll Earn
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         {cert.skills_earned.map((s, j) => (
-                          <span key={j} className="text-xs bg-brand-orange/10 text-brand-orange px-3 py-1 rounded-full">{s}</span>
+                          <span
+                            key={j}
+                            className="text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/80 px-3 py-1.5 rounded-full"
+                          >
+                            {s}
+                          </span>
                         ))}
                       </div>
                     </div>
                   )}
                   {cert.recognized_companies?.length > 0 && (
                     <div>
-                      <p className="text-sm font-semibold text-dark-navy mb-2">Recognized by</p>
+                      <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2.5">
+                        Recognized by
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         {cert.recognized_companies.map((c, j) => (
-                          <span key={j} className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">{c}</span>
+                          <span
+                            key={j}
+                            className="text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200/60 px-3 py-1.5 rounded-full hover:bg-slate-200/70 transition-colors"
+                          >
+                            {c}
+                          </span>
                         ))}
                       </div>
                     </div>
