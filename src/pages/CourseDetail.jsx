@@ -456,9 +456,13 @@ export default function CourseDetail() {
     return (
       <div>
         <section className="bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-            <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-brand-orange font-semibold hover:text-brand-orange/80 mb-6 transition-colors">
-              <FiArrowLeft className="w-4 h-4" /> Back to Home
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100/90 hover:bg-amber-50 text-slate-600 hover:text-brand-orange text-xs font-semibold border border-slate-200/80 hover:border-amber-300/80 transition-all shadow-2xs group mb-5"
+            >
+              <FiArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5 text-slate-400 group-hover:text-brand-orange" />
+              <span>Back to Home</span>
             </Link>
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
@@ -650,9 +654,13 @@ export default function CourseDetail() {
     <div>
       {/* Hero */}
       <section className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-          <Link to="/courses" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-brand-orange mb-6 transition-colors">
-            Explore All Courses <FiArrowRight className="w-4 h-4" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12">
+          <Link
+            to="/courses"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-5"
+          >
+            <FiArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-orange" />
+            <span>Back</span>
           </Link>
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
@@ -786,7 +794,16 @@ export default function CourseDetail() {
       {/* Related Courses */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal as="h2" className="text-2xl font-bold text-dark-navy mb-8">More Courses You Might Like</Reveal>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <Reveal as="h2" className="text-2xl font-bold text-dark-navy">More Courses You Might Like</Reveal>
+            <Link
+              to="/courses"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-orange-600 transition-colors group shrink-0 w-fit"
+            >
+              <span>Explore All Courses</span>
+              <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
           <RelatedCoursesWithId courseId={course.id} />
         </div>
       </section>
