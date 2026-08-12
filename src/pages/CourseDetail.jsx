@@ -34,7 +34,7 @@ const HIGHLIGHT_ICONS = {
 };
 
 function AccordionQA({ items }) {
-  const [openIdx, setOpenIdx] = useState(null);
+  const [openIdx, setOpenIdx] = useState(0);
   return (
     <div className="space-y-3 mt-4">
       {items.map((item, i) => (
@@ -135,7 +135,7 @@ function CourseTabs({ tabs }) {
           </Link>
         </div>
         <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-xl shadow-slate-200/50">
-          <div className="p-6 sm:p-8 max-h-[420px] lg:max-h-none overflow-y-auto lg:overflow-visible">
+          <div className="p-6 sm:p-8">
             {renderContent(activeTab)}
           </div>
         </div>
@@ -386,11 +386,11 @@ export default function CourseDetail() {
                   <p className="mt-4 text-base text-gray-600 leading-relaxed">{course.description}</p>
                 )}
                 {course.checklist_items?.length > 0 && (
-                  <ul className="mt-6 space-y-2.5">
-                    {course.checklist_items.map((item, i) => (
+                  <ul className="mt-6 space-y-2.5 w-full max-w-xl text-left">
+                    {course.checklist_items.slice(0, 6).map((item, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
                         <FiCheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                        <span>{item}</span>
+                        <span className="font-medium leading-relaxed">{(item || "").slice(0, 80)}</span>
                       </li>
                     ))}
                   </ul>
@@ -572,11 +572,11 @@ export default function CourseDetail() {
               </h1>
               <p className="mt-4 text-base text-gray-600 leading-relaxed max-w-xl">{course.description}</p>
               {course.checklist_items?.length > 0 && (
-                <ul className="mt-6 space-y-2.5 text-left">
-                  {course.checklist_items.map((item, i) => (
+                <ul className="mt-6 space-y-2.5 text-left w-full max-w-xl">
+                  {course.checklist_items.slice(0, 6).map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
                       <FiCheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                      <span>{item}</span>
+                      <span className="font-medium leading-relaxed">{(item || "").slice(0, 80)}</span>
                     </li>
                   ))}
                 </ul>
@@ -637,30 +637,45 @@ export default function CourseDetail() {
 
       {/* CTA Banner */}
       {course.cta_heading && course.cta_heading.trim() ? (
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0">
+        <section className="relative w-full overflow-hidden bg-slate-900 my-12 sm:my-16">
+          {/* Background Image & Overlay */}
+          <div className="absolute inset-0 z-0">
             {course.cta_background_image ? (
-              <img src={course.cta_background_image} alt="" className="w-full h-full object-cover" />
+              <img src={course.cta_background_image} alt="" className="w-full h-full object-cover object-center" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-r from-brand-blue to-blue-700" />
+              <div className="w-full h-full bg-gradient-to-r from-slate-950 via-brand-blue to-blue-900" />
             )}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/80 to-slate-900/60 backdrop-blur-[2px]" />
           </div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+
+          {/* Content Over Image */}
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
             <Reveal>
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-                <div className="text-center lg:text-left text-white">
-                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">{course.cta_heading}</h2>
-                  {course.cta_description && <p className="text-white/80 mt-3 max-w-xl text-base sm:text-lg">{course.cta_description}</p>}
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+                <div className="max-w-2xl text-left text-white space-y-3">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-orange/20 border border-brand-orange/40 text-brand-orange text-xs font-semibold uppercase tracking-wider">
+                    <FiZap className="w-3.5 h-3.5" /> Transform Your Career Today
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
+                    {course.cta_heading}
+                  </h2>
+                  {course.cta_description && (
+                    <p className="text-slate-200 text-base sm:text-lg leading-relaxed max-w-xl">
+                      {course.cta_description}
+                    </p>
+                  )}
                 </div>
-                <Button
-                  variant="outline-white"
-                  size="lg"
-                  href={course.cta_link || (course.cta_phone ? `tel:${course.cta_phone}` : undefined)}
-                  className="shrink-0"
-                >
-                  {course.cta_text || 'Enroll Now'} <FiArrowRight className="w-4 h-4" />
-                </Button>
+                <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    href={course.cta_link || (course.cta_phone ? `tel:${course.cta_phone}` : undefined)}
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-orange hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-brand-orange/30 hover:shadow-brand-orange/50 hover:-translate-y-0.5 transition-all cursor-pointer"
+                  >
+                    {course.cta_text || 'Enroll Now'}
+                    <FiArrowRight className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
             </Reveal>
           </div>

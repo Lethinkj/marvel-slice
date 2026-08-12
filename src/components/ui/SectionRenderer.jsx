@@ -369,11 +369,11 @@ export default function SectionRenderer({ section, className }) {
                   {headingParts?.highlight && (
                     <span className="relative inline-block mx-1 text-blue-700">
                       {headingParts.highlight}
-                      <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-[4px] w-14 rounded-full bg-brand-orange" />
                     </span>
                   )}
                   {headingParts?.after}
                 </h2>
+                <div className={`mt-3 h-[4px] w-14 rounded-full bg-brand-orange ${ha === 'center' ? 'mx-auto' : ''}`} />
               </Reveal>
             )}
             {section.subheading && (
