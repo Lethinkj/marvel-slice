@@ -420,32 +420,47 @@ export default function CourseEditor() {
     isSavingRef.current = true;
     setSaving(true);
     setMessage("");
-    if ((course.highlights || []).length < 9) {
-      setTab('highlights');
-      setMessage(`Cannot save course: Minimum 9 Key Highlights are required. Currently configured: ${(course.highlights || []).length}/9.`);
-      setSaveError(`Minimum 9 Key Highlights are required (currently ${(course.highlights || []).length}/9). Use preset buttons to add 9, 12, or 15 items.`);
+    if (!course.title?.trim()) {
+      setTab('basic');
+      setMessage('Cannot save course: Course Title is required.');
+      setSaveError('Course Title is required.');
+      isSavingRef.current = false;
       setSaving(false);
       return;
     }
-    if ((course.projects || []).length !== 3) {
-      setTab('projects');
-      setMessage(`Cannot save course: Exactly 3 Projects are required. Currently configured: ${(course.projects || []).length}/3.`);
-      setSaveError(`Exactly 3 Projects are required (currently ${(course.projects || []).length}/3). Please configure exactly 3 projects.`);
-      setSaving(false);
-      return;
-    }
-    if ((course.faqs || []).length > 4) {
-      setTab('faqs');
-      setMessage(`Cannot save course: Maximum 4 General FAQs allowed. Currently configured: ${(course.faqs || []).length}/4.`);
-      setSaveError(`Maximum 4 General FAQs allowed (currently ${(course.faqs || []).length}/4). Please remove extra FAQs.`);
-      setSaving(false);
-      return;
+    // Only enforce full required fields if status is Active or Coming Soon (bypassed in Draft mode)
+    if (course.status !== 'Draft') {
+      if ((course.highlights || []).length < 9) {
+        setTab('highlights');
+        setMessage(`Cannot save course: Minimum 9 Key Highlights are required for ${course.status} status. Currently configured: ${(course.highlights || []).length}/9.`);
+        setSaveError(`Minimum 9 Key Highlights are required (currently ${(course.highlights || []).length}/9). Use preset buttons to add 9, 12, or 15 items.`);
+        isSavingRef.current = false;
+        setSaving(false);
+        return;
+      }
+      if ((course.projects || []).length !== 3) {
+        setTab('projects');
+        setMessage(`Cannot save course: Exactly 3 Projects are required for ${course.status} status. Currently configured: ${(course.projects || []).length}/3.`);
+        setSaveError(`Exactly 3 Projects are required (currently ${(course.projects || []).length}/3). Please configure exactly 3 projects.`);
+        isSavingRef.current = false;
+        setSaving(false);
+        return;
+      }
+      if ((course.faqs || []).length > 4) {
+        setTab('faqs');
+        setMessage(`Cannot save course: Maximum 4 General FAQs allowed. Currently configured: ${(course.faqs || []).length}/4.`);
+        setSaveError(`Maximum 4 General FAQs allowed (currently ${(course.faqs || []).length}/4). Please remove extra FAQs.`);
+        isSavingRef.current = false;
+        setSaving(false);
+        return;
+      }
     }
     if (course.status === 'Coming Soon' && !course.start_date) {
       setStartDateError(true);
       setTab('basic');
       setMessage('Please set the start date and time — it is required for "Coming Soon" courses.');
       setSaveError('Start date and time is required for "Coming Soon" courses.');
+      isSavingRef.current = false;
       setSaving(false);
       return;
     }

@@ -276,6 +276,14 @@ export default function CourseWizard() {
   function getMissingFields() {
     const missing = [];
     const add = (stepLabel, field) => missing.push(`${stepLabel}: ${field}`);
+    
+    // In Draft mode, allow saving with just Course Title
+    if (c.status === 'Draft') {
+      if (!c.title.trim()) add(STEPS[0].label, "Course Title");
+      return missing;
+    }
+
+    // Active / Coming Soon: All fields are required to save
     if (!c.title.trim()) add(STEPS[0].label, "Course Title");
     if (!c.slug.trim()) add(STEPS[0].label, "Slug");
     if (!navItemId) add(STEPS[0].label, "Category (topic)");
