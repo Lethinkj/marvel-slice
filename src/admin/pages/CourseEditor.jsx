@@ -815,19 +815,11 @@ export default function CourseEditor() {
                       className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                       placeholder="Enroll now and gain industry-ready skills with expert mentors." />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Button Text</label>
-                      <input value={course.cta_text || ''} onChange={(e) => update('cta_text', e.target.value)}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                        placeholder="Enroll Now" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Phone Number (tel:)</label>
-                      <input value={course.cta_phone || ''} onChange={(e) => update('cta_phone', e.target.value)}
-                        className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                        placeholder="+916380957390" />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-black mb-1">Button Text</label>
+                    <input value={course.cta_text || ''} onChange={(e) => update('cta_text', e.target.value)}
+                      className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                      placeholder="Enroll Now" />
                   </div>
                   <div>
                     <ImageUploader value={course.cta_background_image || ''} onChange={(v) => update('cta_background_image', v)} label="Background Image" />

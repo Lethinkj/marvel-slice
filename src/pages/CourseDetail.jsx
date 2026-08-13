@@ -11,6 +11,7 @@ import AccordionItem from '../components/ui/AccordionItem';
 import Countdown from '../components/ui/Countdown';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
 import { supabase } from '../lib/supabaseClient';
+import CourseCTA from '../components/ui/CourseCTA';
 
 const HIGHLIGHT_ICONS = {
   code: FiCode,
@@ -781,51 +782,12 @@ export default function CourseDetail() {
       {/* Course Tabs */}
       <CourseTabs tabs={course.course_tabs} onApplyNow={(label) => openEnquiryModal(label || 'Apply Now')} />
 
-      {/* CTA Banner */}
-      {course.cta_heading && course.cta_heading.trim() ? (
-        <section className="relative w-full overflow-hidden bg-slate-900 my-12 sm:my-16">
-          {/* Background Image & Overlay */}
-          <div className="absolute inset-0 z-0">
-            {course.cta_background_image ? (
-              <img src={course.cta_background_image} alt="" className="w-full h-full object-cover object-center" />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-r from-slate-950 via-brand-blue to-blue-900" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/80 to-slate-900/60 backdrop-blur-[2px]" />
-          </div>
+      {/* Dynamic Futuristic Course CTA */}
+      <CourseCTA
+        course={course}
+        onCtaClick={(label) => openEnquiryModal(label || 'Apply Now')}
+      />
 
-          {/* Content Over Image */}
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-            <Reveal>
-              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-                <div className="max-w-2xl text-left text-white space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-orange/20 border border-brand-orange/40 text-brand-orange text-xs font-semibold uppercase tracking-wider">
-                    <FiZap className="w-3.5 h-3.5" /> Transform Your Career Today
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
-                    {course.cta_heading}
-                  </h2>
-                  {course.cta_description && (
-                    <p className="text-slate-200 text-base sm:text-lg leading-relaxed max-w-xl">
-                      {course.cta_description}
-                    </p>
-                  )}
-                </div>
-                <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto">
-                  <button
-                    type="button"
-                    onClick={() => openEnquiryModal(course.cta_text || 'Enroll Now')}
-                    className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-orange hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-brand-orange/30 hover:shadow-brand-orange/50 hover:-translate-y-0.5 transition-all cursor-pointer"
-                  >
-                    {course.cta_text || 'Enroll Now'}
-                    <FiArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-      ) : null}
 
       {/* Projects */}
       <ProjectsSection projects={course.projects} />
