@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiStar, FiArrowRight, FiArrowLeft, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiBell, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
 import Button from '../components/ui/Button';
@@ -12,6 +12,7 @@ import Countdown from '../components/ui/Countdown';
 import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
 import { supabase } from '../lib/supabaseClient';
 import CourseCTA from '../components/ui/CourseCTA';
+import CourseUnlockAnimation from '../components/ui/CourseUnlockAnimation';
 
 const HIGHLIGHT_ICONS = {
   code: FiCode,
@@ -359,7 +360,17 @@ function RelatedCoursesWithId({ courseId }) {
 
 export default function CourseDetail() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { data: course, isLoading } = useCourse(slug);
+
+  function handleBackNavigation(e) {
+    if (e) e.preventDefault();
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/courses');
+    }
+  }
   const [showBrochure, setShowBrochure] = useState(false);
   const [brochureForm, setBrochureForm] = useState({ name: '', email: '', phone: '' });
   const [brochureSubmitting, setBrochureSubmitting] = useState(false);
@@ -382,6 +393,8 @@ export default function CourseDetail() {
   const [enquiryDone, setEnquiryDone] = useState(false);
   const [enquiryError, setEnquiryError] = useState('');
   const [enquiryAgree, setEnquiryAgree] = useState(false);
+  const [forceUnlocked, setForceUnlocked] = useState(false);
+  const [isUnlocking, setIsUnlocking] = useState(false);
 
   function openEnquiryModal(sourceLabel) {
     setEnquirySource(sourceLabel || 'Apply Now');
@@ -476,18 +489,29 @@ export default function CourseDetail() {
     setNotifiedSuccess(true);
   }
 
-  if (course.status === 'Coming Soon') {
+  const isLaunchPassed = course?.start_date && new Date(course.start_date).getTime() <= Date.now();
+
+  if (course.status === 'Coming Soon' && !isLaunchPassed && !forceUnlocked) {
     return (
       <div>
+        <CourseUnlockAnimation
+          isUnlocking={isUnlocking}
+          courseTitle={course.title}
+          onComplete={() => {
+            setIsUnlocking(false);
+            setForceUnlocked(true);
+          }}
+        />
         <section className="bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100/90 hover:bg-amber-50 text-slate-600 hover:text-brand-orange text-xs font-semibold border border-slate-200/80 hover:border-amber-300/80 transition-all shadow-2xs group mb-5"
+            <button
+              type="button"
+              onClick={handleBackNavigation}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-5 cursor-pointer group"
             >
-              <FiArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5 text-slate-400 group-hover:text-brand-orange" />
-              <span>Back to Home</span>
-            </Link>
+              <FiArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-orange transition-transform group-hover:-translate-x-0.5" />
+              <span>Back</span>
+            </button>
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
               <div>
                 <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15]">
@@ -549,7 +573,7 @@ export default function CourseDetail() {
                   </div>
                   <div className="p-6 sm:p-8">
                     {course.start_date ? (
-                      <Countdown target={course.start_date} />
+                      <Countdown target={course.start_date} onFinish={() => setIsUnlocking(true)} />
                     ) : (
                       <p className="text-sm text-gray-500">Start date will be announced soon.</p>
                     )}
@@ -685,13 +709,14 @@ export default function CourseDetail() {
         />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            to="/courses"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-5"
+          <button
+            type="button"
+            onClick={handleBackNavigation}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-5 cursor-pointer group"
           >
-            <FiArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-orange" />
+            <FiArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-orange transition-transform group-hover:-translate-x-0.5" />
             <span>Back</span>
-          </Link>
+          </button>
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
               <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15]">
