@@ -3,6 +3,8 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import AddButton from "../components/AddButton";
 import ImageUploader from "../components/ImageUploader";
+import CourseAIImportModal from '../components/CourseAIImportModal';
+import { HiSparkles } from 'react-icons/hi2';
 import {
   FiTrash2,
   FiArrowLeft,
@@ -161,6 +163,15 @@ export default function CourseWizard() {
   const [tagsDropdownOpen, setTagsDropdownOpen] = useState(false);
   const [tagSearch, setTagSearch] = useState("");
   const [startDateError, setStartDateError] = useState(false);
+  const [showAIImportModal, setShowAIImportModal] = useState(false);
+
+  function handleAIImportData(importedData) {
+    setC((prev) => ({
+      ...prev,
+      ...importedData,
+      slug: importedData.title ? slugify(importedData.title) : prev.slug,
+    }));
+  }
 
   const [c, setC] = useState({
     title: "",
@@ -169,7 +180,7 @@ export default function CourseWizard() {
     hero_image_url: "",
     video_thumbnail_url: "",
     video_url: "",
-    cta_left: "Enroll Now",
+    cta_left: "Talk to Advisor",
     cta_right: "Download Brochure",
     cta_heading: '',
     cta_description: '',
@@ -310,13 +321,18 @@ export default function CourseWizard() {
     }
   }
 
+  const isSavingRef = useRef(false);
+
   async function handleSave() {
+    if (isSavingRef.current || saving) return;
+    isSavingRef.current = true;
     setSaving(true);
     setMessage("");
     if (c.status === 'Coming Soon' && !c.start_date) {
       setStartDateError(true);
       setStep(0);
       setMessage('Please set the start date and time — it is required for "Coming Soon" courses.');
+      isSavingRef.current = false;
       setSaving(false);
       return;
     }
@@ -365,18 +381,51 @@ export default function CourseWizard() {
       const cid = newCourse.id;
       const inserts = [];
 
-      if (c.tabs.length > 0)
-        inserts.push(supabase.from("course_tabs").insert(c.tabs.map((t, i) => ({ ...t, course_id: cid, sort_order: i }))));
-      if (c.highlights.length > 0)
-        inserts.push(supabase.from("highlights").insert(c.highlights.map((h, i) => ({ ...h, course_id: cid, sort_order: i }))));
-      if (c.overview_faqs.length > 0)
-        inserts.push(supabase.from("overview_faqs").insert(c.overview_faqs.map((f, i) => ({ ...f, course_id: cid, sort_order: i }))));
-      if (c.projects.length > 0)
-        inserts.push(supabase.from("projects").insert(c.projects.map((p, i) => ({ ...p, course_id: cid, sort_order: i }))));
-      if (c.certifications.length > 0)
-        inserts.push(supabase.from("certifications").insert(c.certifications.map((x) => ({ ...x, course_id: cid }))));
-      if (c.faqs.length > 0)
-        inserts.push(supabase.from("faqs").insert(c.faqs.map((f, i) => ({ ...f, course_id: cid, sort_order: i }))));
+      if (c.tabs.length > 0) {
+        const cleanTabs = c.tabs.map((t, i) => ({
+          course_id: cid,
+          sort_order: i,
+          label: t.label || t.title || "Tab",
+          content_type: t.content_type || "overview",
+          content: t.content || {}
+        }));
+        inserts.push(supabase.from("course_tabs").insert(cleanTabs));
+      }
+      if (c.highlights.length > 0) {
+        const cleanHighlights = c.highlights.map((h, i) => {
+          const { id: _, ...rest } = h;
+          return { ...rest, course_id: cid, sort_order: i };
+        });
+        inserts.push(supabase.from("highlights").insert(cleanHighlights));
+      }
+      if (c.overview_faqs.length > 0) {
+        const cleanOverviewFaqs = c.overview_faqs.map((f, i) => {
+          const { id: _, ...rest } = f;
+          return { ...rest, course_id: cid, sort_order: i };
+        });
+        inserts.push(supabase.from("overview_faqs").insert(cleanOverviewFaqs));
+      }
+      if (c.projects.length > 0) {
+        const cleanProjects = c.projects.map((p, i) => {
+          const { id: _, ...rest } = p;
+          return { ...rest, course_id: cid, sort_order: i };
+        });
+        inserts.push(supabase.from("projects").insert(cleanProjects));
+      }
+      if (c.certifications.length > 0) {
+        const cleanCerts = c.certifications.map((x) => {
+          const { id: _, ...rest } = x;
+          return { ...rest, course_id: cid };
+        });
+        inserts.push(supabase.from("certifications").insert(cleanCerts));
+      }
+      if (c.faqs.length > 0) {
+        const cleanFaqs = c.faqs.map((f, i) => {
+          const { id: _, ...rest } = f;
+          return { ...rest, course_id: cid, sort_order: i };
+        });
+        inserts.push(supabase.from("faqs").insert(cleanFaqs));
+      }
       if (courseTags.length > 0)
         inserts.push(supabase.from("course_tags").insert(courseTags.map((tid) => ({ course_id: cid, tag_id: tid }))));
 
@@ -387,8 +436,9 @@ export default function CourseWizard() {
       navigate(returnUrl, { replace: true });
     } catch (err) {
       setMessage(err.message);
+      isSavingRef.current = false;
+      setSaving(false);
     }
-    setSaving(false);
   }
 
   function handleStepClick(targetStep) {
@@ -407,10 +457,18 @@ export default function CourseWizard() {
         <div className="bg-white border border-gray-300 rounded-b-[20px] rounded-tr-[20px] shadow-sm p-6 relative z-30 -mt-[2px]">
           {step === 0 && (
           <div className="space-y-6">
-            <div className="mb-4">
+            <div className="flex items-center justify-between gap-4 mb-4">
               <span className="inline-block px-3 py-1 bg-admin-50 text-admin-600 rounded-md font-semibold text-sm border border-admin-200">
                 Category: {filterSection}
               </span>
+              <button
+                type="button"
+                onClick={() => setShowAIImportModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95 shrink-0"
+              >
+                <HiSparkles className="w-4 h-4" />
+                Import
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
@@ -743,8 +801,8 @@ export default function CourseWizard() {
                           <label className="text-xs font-semibold text-neutral-600">Tab Label <span className="text-destructive-500">*</span></label>
                         </div>
                         <input
-                          value={t.label || ""}
-                          onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: "overview", label: e.target.value }; u("tabs", n); }}
+                          value={t.label || t.title || ""}
+                          onChange={(e) => { const n = [...c.tabs]; n[i] = { ...n[i], content_type: "overview", label: e.target.value, title: e.target.value }; u("tabs", n); }}
                           required
                           className="w-full px-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20"
                           placeholder="e.g. Overview"
@@ -1216,6 +1274,11 @@ export default function CourseWizard() {
         </div>
       )}
 
+      <CourseAIImportModal
+        isOpen={showAIImportModal}
+        onClose={() => setShowAIImportModal(false)}
+        onImportData={handleAIImportData}
+      />
     </PageShell>
   );
 }

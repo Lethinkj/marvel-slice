@@ -396,6 +396,15 @@ export default function CourseEditor() {
     if (delErr) throw new Error(delErr.message);
     if (records.length > 0) {
       const clean = records.map((r, i) => {
+        if (table === "course_tabs") {
+          return {
+            course_id: id,
+            sort_order: i,
+            label: r.label || r.title || "Tab",
+            content_type: r.content_type || "overview",
+            content: r.content || {}
+          };
+        }
         const { id: _, ...rest } = r;
         return { ...rest, course_id: id, sort_order: i };
       });
@@ -404,7 +413,11 @@ export default function CourseEditor() {
     }
   }
 
+  const isSavingRef = useRef(false);
+
   async function handleSave() {
+    if (isSavingRef.current || saving) return;
+    isSavingRef.current = true;
     setSaving(true);
     setMessage("");
     if ((course.highlights || []).length < 9) {
@@ -543,6 +556,7 @@ export default function CourseEditor() {
       setMessage(err.message);
       setSaveError(err.message);
     }
+    isSavingRef.current = false;
     setSaving(false);
   }
 
