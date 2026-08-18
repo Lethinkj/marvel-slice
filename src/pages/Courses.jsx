@@ -21,6 +21,8 @@ import {
   FiUsers,
   FiZap,
   FiGlobe,
+  FiRotateCcw,
+  FiX,
 } from "react-icons/fi";
 import { supabase } from "../lib/supabaseClient";
 import CourseCard from "../components/ui/CourseCard";
@@ -604,7 +606,7 @@ export default function Courses() {
 
   return (
     <div className="bg-white">
-      <div className="flex w-full min-h-screen">
+      <div className="flex w-full min-h-0">
         {/* Left Sidebar — hidden in list-only mode */}
         {!listOnly && (
           <aside
@@ -653,18 +655,18 @@ export default function Courses() {
         >
           {/* Mobile sidebar selector */}
           {!listOnly && (
-            <div className="lg:hidden mb-0">
-              <div className="flex border-b border-gray-200">
+            <div className="lg:hidden pt-4 pb-2 px-4 sm:px-6">
+              <div className="flex bg-[#e2e8f0] p-1 rounded-2xl border border-slate-200 shadow-2xs">
                 {parents.map((p) => {
                   const activeParent = parentParam === p.slug;
                   return (
                     <button
                       key={p.slug}
                       onClick={() => selectParent(p.slug)}
-                      className={`flex-1 py-3 text-xs sm:text-sm font-bold text-center transition-all cursor-pointer ${
+                      className={`flex-1 py-3 sm:py-3.5 px-3 text-xs sm:text-sm font-extrabold text-center transition-all cursor-pointer rounded-xl ${
                         activeParent
-                          ? "bg-[#f59e0b] text-white shadow-sm"
-                          : "bg-[#e2e8f0] text-slate-600 hover:text-slate-900"
+                          ? "bg-[#f59e0b] text-white shadow-md"
+                          : "text-slate-700 hover:text-slate-900 hover:bg-slate-200/60"
                       }`}
                     >
                       {p.displayLabel}
@@ -679,7 +681,7 @@ export default function Courses() {
             className={`${
               listOnly
                 ? "max-w-[1280px] mx-auto px-4 sm:px-6 py-6"
-                : "pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-6 lg:pl-10 pb-16"
+                : "pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-6 lg:pl-10 pb-2 sm:pb-4"
             }`}
           >
             {/* List-only header */}
@@ -765,6 +767,23 @@ export default function Courses() {
                     </div>
                   </div>
                 )}
+
+                {/* Minimal Professional White Popup Tooltip attached below Filter button */}
+                {searchedCourses.length === 0 && !mobileOpen && (
+                  <div
+                    onClick={() => setMobileOpen(true)}
+                    className="absolute left-0 top-12 z-30 bg-white text-slate-800 px-3.5 py-2.5 rounded-xl shadow-lg border border-slate-200 text-left cursor-pointer hover:bg-slate-50 transition-all active:scale-95 whitespace-nowrap"
+                  >
+                    <div className="absolute -top-1.5 left-3.5 w-2.5 h-2.5 bg-white border-t border-l border-slate-200 rotate-45" />
+                    <div className="flex items-start gap-2">
+                      <FiFilter className="w-4 h-4 text-[#f59e0b] shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-900 leading-tight">Filter Courses</h4>
+                        <p className="text-[11px] text-slate-500 font-medium leading-tight mt-0.5">No courses available in this category</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Course Count for Desktop */}
@@ -818,33 +837,21 @@ export default function Courses() {
             </div>
 
             {searchedCourses.length === 0 ? (
-              <div className="text-center py-24 px-4">
-                {search ? (
-                  <>
-                    <FiSearch className="w-14 h-14 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-500 font-medium">
-                      No courses match &quot;{search}&quot;
-                    </p>
-                  </>
-                ) : (
-                  <div className="max-w-md mx-auto">
-                    <div className="w-16 h-16 rounded-full bg-amber-100/70 text-amber-600 flex items-center justify-center mx-auto mb-5 shadow-2xs">
-                      <FiClock className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-slate-900 mb-2">Coming soon</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed mb-8">
-                      We&apos;re working on courses in this category. Check back
-                      soon.
-                    </p>
-                    <Link
-                      to="/courses"
-                      className="inline-flex items-center justify-center gap-2.5 px-7 py-3 bg-[#f59e0b] hover:bg-[#d97706] text-white text-sm font-bold rounded-full shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
-                    >
-                      <FiGrid className="w-4 h-4" />
-                      Browse all courses
-                    </Link>
-                  </div>
-                )}
+              <div className="min-h-[40vh] sm:min-h-[45vh] flex flex-col items-center justify-center text-center px-4 mx-auto max-w-md my-auto">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200/70 mb-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  <span>Coming Soon</span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1.5 text-center">
+                  {search ? `No courses match "${search}"` : "No Courses Available"}
+                </h3>
+
+                <p className="text-slate-500 text-xs sm:text-sm leading-relaxed text-center">
+                  {search
+                    ? "No courses match your search criteria. Please try a different query or select another category."
+                    : "There are currently no courses listed under this category. Please select another category to view available programs."}
+                </p>
               </div>
             ) : (
               <>
