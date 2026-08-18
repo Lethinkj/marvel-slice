@@ -245,7 +245,7 @@ export default function ServicesPage() {
   return (
     <div className="bg-white">
       {hero_image && (
-        <Reveal variant="fadeIn" className="w-full max-w-[1900px] mx-auto h-[400px] overflow-hidden">
+        <Reveal variant="fadeIn" className="w-full max-w-[1900px] mx-auto h-auto sm:h-[400px] lg:h-[400px] overflow-hidden">
           <img src={hero_image} alt="" className="w-full h-full object-cover" />
         </Reveal>
       )}

@@ -537,104 +537,128 @@ export default function LearningJourney({ data }) {
         {/* ════════════════════════════════════════════
             RESPONSIVE TIMELINE (MOBILE/TABLET)
             ════════════════════════════════════════════ */}
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.1 }}
-          variants={{
-            hidden: {},
-            show: {
-              transition: {
-                staggerChildren: 0.1,
-              },
-            },
-          }}
-          className="min-[1200px]:hidden flex flex-col gap-6"
-        >
-          {steps.map((step, i) => (
-            <motion.div
-              key={`step-mobile-${i}`}
-              variants={
-                rm
-                  ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
-                  : {
-                      hidden: { opacity: 0, y: 20 },
-                      show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-                    }
-              }
-              whileHover={rm ? undefined : { y: -2 }}
-              className="bg-white rounded-2xl border border-slate-200/70 p-5 shadow-sm flex items-start gap-4"
-            >
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-                style={{
-                  backgroundColor: step.soft,
-                  border: `2px solid ${step.ring}`,
+        <div className="min-[1200px]:hidden relative my-6 px-1 sm:px-4">
+          {/* Continuous Vertical Timeline Track Line */}
+          <motion.div
+            initial={rm ? undefined : { scaleY: 0 }}
+            whileInView={rm ? undefined : { scaleY: 1 }}
+            viewport={{ once: true, amount: 0.05 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute left-[20px] sm:left-[22px] -translate-x-1/2 top-5 bottom-8 w-[2.5px] rounded-full bg-gradient-to-b from-[#7C3AED] via-[#06B6D4] to-[#22C55E] origin-top z-0"
+          />
+
+          <div className="relative z-10 flex flex-col space-y-6 sm:space-y-8">
+            {steps.map((step, i) => (
+              <motion.div
+                key={`step-mobile-${i}`}
+                initial={rm ? undefined : { opacity: 0, y: 24, x: 8 }}
+                whileInView={rm ? undefined : { opacity: 1, y: 0, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.5,
+                  delay: i * 0.08,
+                  ease: [0.215, 0.61, 0.355, 1],
                 }}
+                className="flex items-start gap-3.5 sm:gap-5 group"
               >
-                <DynamicIcon
-                  name={step.icon}
-                  fallback={step.FallbackIcon}
-                  className="w-6 h-6"
-                  style={{ color: step.color }}
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="text-xs font-bold px-2 py-0.5 rounded-full text-white"
-                    style={{ backgroundColor: step.color }}
-                  >
-                    {step.number}
-                  </span>
-                  <h3 className="font-bold text-base" style={{ color: step.color }}>
-                    {step.title}
-                  </h3>
-                </div>
-                <p className="text-slate-500 text-sm mt-1 leading-relaxed">
-                  {step.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+                {/* Numbered Circle Badge on Vertical Timeline */}
+                <motion.div
+                  initial={rm ? undefined : { scale: 0.7, opacity: 0 }}
+                  whileInView={rm ? undefined : { scale: 1, opacity: 1 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 340,
+                    damping: 18,
+                    delay: i * 0.08 + 0.05,
+                  }}
+                  className="relative z-10 flex items-center justify-center shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full text-white text-xs sm:text-sm font-bold shadow-md cursor-pointer transition-transform duration-300 group-hover:scale-110"
+                  style={{
+                    backgroundColor: step.color,
+                    boxShadow: `0 0 0 3.5px #ffffff, 0 4px 14px ${step.color}35`,
+                  }}
+                >
+                  {step.number}
+                </motion.div>
+
+                {/* Card Content beside Timeline Circle */}
+                <motion.div
+                  initial={rm ? undefined : { opacity: 0, x: 12 }}
+                  whileInView={rm ? undefined : { opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.45,
+                    delay: i * 0.08 + 0.1,
+                    ease: [0.25, 1, 0.5, 1],
+                  }}
+                  whileHover={rm ? undefined : { y: -2 }}
+                  className="flex-1 min-w-0 bg-white rounded-[20px] border border-slate-200/80 p-4 sm:p-5 shadow-[0_4px_20px_rgba(15,23,42,0.05)] hover:shadow-[0_12px_32px_rgba(15,23,42,0.09)] transition-all duration-300 relative overflow-hidden"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    {/* Icon inside Card */}
+                    <motion.div
+                      initial={rm ? undefined : { scale: 0.8 }}
+                      whileInView={rm ? undefined : { scale: 1 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 15, delay: i * 0.08 + 0.15 }}
+                      className="flex items-center justify-center rounded-full shrink-0 w-8 h-8 sm:w-9 sm:h-9 transition-transform duration-300 group-hover:scale-105"
+                      style={{
+                        backgroundColor: step.soft,
+                        border: `2px solid ${step.ring}`,
+                      }}
+                    >
+                      <DynamicIcon
+                        name={step.icon}
+                        fallback={step.FallbackIcon}
+                        className="w-4 h-4 sm:w-4.5 sm:h-4.5"
+                        style={{ color: step.color }}
+                      />
+                    </motion.div>
+
+                    {/* Step Title */}
+                    <h3 className="font-bold text-base sm:text-lg leading-snug truncate" style={{ color: step.color }}>
+                      {step.title}
+                    </h3>
+                  </div>
+
+                  {/* Step Description */}
+                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                    {step.description}
+                  </p>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
         {/* ════════════════════════════════════════════
-            SECTION 3: FEATURES BANNER
+            SECTION 3: FEATURES / BENEFITS BANNER
             ════════════════════════════════════════════ */}
         {features.length > 0 && (
           <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={{
-              hidden: { opacity: 0, y: 28 },
-              show: {
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: 0.6,
-                  delay: 0.2,
-                  staggerChildren: 0.08,
-                },
-              },
+            initial={rm ? undefined : { opacity: 0, y: 28 }}
+            whileInView={rm ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{
+              duration: 0.5,
+              ease: [0.215, 0.61, 0.355, 1],
             }}
-            className="bg-white rounded-2xl p-6 sm:p-7 mx-auto mt-12 max-w-[1340px] border border-[rgba(226,232,240,0.8)] shadow-[0_14px_38px_rgba(15,23,42,0.085)] hover:shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-shadow duration-300"
+            className="bg-white rounded-2xl p-5 sm:p-7 mx-auto mt-10 sm:mt-14 max-w-[1340px] border border-[rgba(226,232,240,0.8)] shadow-[0_14px_38px_rgba(15,23,42,0.085)] hover:shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-shadow duration-300"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-y-0 lg:divide-x divide-slate-200 gap-4 sm:gap-6 lg:gap-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-y-0 lg:divide-x divide-slate-200 gap-3 sm:gap-6 lg:gap-0">
               {features.map((feat, i) => (
                 <motion.div
                   key={`feat-banner-${i}`}
-                  variants={
-                    rm
-                      ? { hidden: { opacity: 0 }, show: { opacity: 1 } }
-                      : {
-                          hidden: { opacity: 0, y: 16 },
-                          show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-                        }
-                  }
+                  initial={rm ? undefined : { opacity: 0, y: 16 }}
+                  whileInView={rm ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: i * 0.08,
+                    ease: [0.25, 1, 0.5, 1],
+                  }}
                   whileHover={rm ? undefined : { y: -2 }}
-                  className={`flex items-start gap-4 py-3 lg:py-1 ${
+                  className={`flex items-start gap-3.5 sm:gap-4 py-3.5 sm:py-3 lg:py-1 ${
                     i === 0 ? 'lg:pr-6' : 'lg:px-6'
                   }`}
                 >
@@ -656,7 +680,7 @@ export default function LearningJourney({ data }) {
                   </motion.div>
 
                   {/* Title & Subtext Stacked on Right */}
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <h4 className="text-sm font-bold text-slate-900 leading-snug">
                       {feat.title}
                     </h4>

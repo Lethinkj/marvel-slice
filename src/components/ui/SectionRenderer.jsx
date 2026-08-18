@@ -117,12 +117,12 @@ export default function SectionRenderer({ section, className }) {
       const statIconBg = ['bg-brand-orange/10', 'bg-blue-100', 'bg-emerald-100', 'bg-purple-100', 'bg-pink-100', 'bg-cyan-100', 'bg-indigo-100', 'bg-teal-100'];
       const statIconColor = ['text-brand-orange', 'text-blue-500', 'text-emerald-500', 'text-purple-500', 'text-pink-500', 'text-cyan-500', 'text-indigo-500', 'text-teal-500'];
       const statCard = (stat, i) => (
-        <div key={i} className="text-center p-[30px] bg-white rounded-[18px] shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-xl cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.08) 0px 4px 16px, rgba(17, 17, 26, 0.04) 0px 8px 32px' }}>
-          <div className={`w-12 h-12 rounded-full ${statIconBg[i % 8]} flex items-center justify-center mx-auto mb-3`}>
-            <DynamicIcon name={stat.icon || statIcons[i % 8]} className={`w-6 h-6 ${statIconColor[i % 8]}`} />
+        <div key={i} className="text-center p-4 sm:p-6 lg:p-[30px] bg-white rounded-[18px] shadow-md transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-xl cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.08) 0px 4px 16px, rgba(17, 17, 26, 0.04) 0px 8px 32px' }}>
+          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${statIconBg[i % 8]} flex items-center justify-center mx-auto mb-2 sm:mb-3`}>
+            <DynamicIcon name={stat.icon || statIcons[i % 8]} className={`w-5 h-5 sm:w-6 sm:h-6 ${statIconColor[i % 8]}`} />
           </div>
-          <div className="text-3xl sm:text-4xl font-bold text-brand-orange leading-none"><AnimatedNumber value={stat.number} /></div>
-          <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-orange leading-none"><AnimatedNumber value={stat.number} /></div>
+          <div className="text-xs sm:text-sm lg:text-base text-gray-600 mt-1.5 sm:mt-2">{stat.label}</div>
         </div>
       );
       return (
@@ -151,8 +151,8 @@ export default function SectionRenderer({ section, className }) {
                 </div>
               </div>
               {items.length > 0 && (
-                <div className="mt-[50px]">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="mt-[30px] sm:mt-[50px]">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                     {items.map((stat, i) => statCard(stat, i))}
                   </div>
                 </div>
@@ -162,7 +162,7 @@ export default function SectionRenderer({ section, className }) {
             <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
               <div className={`max-w-4xl mx-auto text-${ca} mb-12`}>{content}</div>
               {items.length > 0 && (
-                <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                   {items.map((stat, i) => statCard(stat, i))}
                 </div>
               )}
@@ -216,11 +216,11 @@ export default function SectionRenderer({ section, className }) {
       return (
         <Reveal className="py-16">
           {section.heading && <h2 className={`text-3xl sm:text-4xl font-bold text-dark-navy mb-8 text-${ha}`}>{section.heading}</h2>}
-          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {items.map((stat, i) => (
-              <div key={i} className="text-center p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-gray-300 border border-transparent cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px' }}>
-                <div className="text-3xl sm:text-4xl font-bold text-brand-orange"><AnimatedNumber value={stat.number} /></div>
-                <div className="text-sm sm:text-base text-gray-600 mt-2">{stat.label}</div>
+              <div key={i} className="text-center p-4 sm:p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-gray-300 border border-transparent cursor-default" style={{ boxShadow: 'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px' }}>
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-orange"><AnimatedNumber value={stat.number} /></div>
+                <div className="text-xs sm:text-sm lg:text-base text-gray-600 mt-1.5 sm:mt-2">{stat.label}</div>
               </div>
             ))}
           </div>
