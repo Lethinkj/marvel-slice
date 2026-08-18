@@ -672,90 +672,6 @@ export default function Courses() {
                   );
                 })}
               </div>
-
-              <div className="px-4 sm:px-6 pt-5">
-                <div className="flex items-start gap-4">
-                  <div className="relative w-2/3 sm:w-1/2 shrink-0">
-                    {mobileOpen && (
-                      <div
-                        className="fixed inset-0 z-20"
-                        onClick={() => setMobileOpen(false)}
-                        aria-hidden="true"
-                      />
-                    )}
-                    <button
-                      onClick={() => setMobileOpen((o) => !o)}
-                      className={`relative z-30 w-full flex items-center justify-between gap-2 pl-3.5 pr-3 py-2.5 rounded-full border-2 text-sm transition-all duration-200 cursor-pointer bg-white ${
-                        mobileOpen
-                          ? "border-blue-500 text-slate-900"
-                          : "border-gray-300 text-slate-900 hover:border-blue-300"
-                      }`}
-                      aria-expanded={mobileOpen}
-                    >
-                      <span className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <FiFilter
-                          className={`w-4 h-4 shrink-0 ${mobileOpen ? "text-blue-600" : "text-gray-400"}`}
-                        />
-                        <span className="truncate min-w-0 max-w-full text-left font-medium">
-                          {activeNavId
-                            ? navItems?.find((n) => n.id === activeNavId)?.label
-                            : "Select category"}
-                        </span>
-                      </span>
-                      <FiChevronDown
-                        className={`w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200 ${
-                          mobileOpen ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
-
-                    {mobileOpen && (
-                      <div className="absolute left-0 right-0 z-30 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-                        <div className="max-h-[60vh] overflow-y-auto p-2">
-                          {currentTree.length === 0 ? (
-                            <div className="px-2 py-4 text-center text-xs text-gray-400">
-                              No categories yet
-                            </div>
-                          ) : (
-                            <MobileCatList
-                              parentTree={currentTree}
-                              activeCategory={activeCategory}
-                              countFor={countFor}
-                              onSelectParent={(parentNode, parentSlug) => {
-                                if (parentNode.children.length === 0) {
-                                  selectParentCategory(parentParam, parentSlug);
-                                  setMobileOpen(false);
-                                }
-                              }}
-                              onSelectChild={(child, childSlug) => {
-                                selectParentCategory(parentParam, childSlug);
-                                setMobileOpen(false);
-                              }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <p className="flex-1 min-w-0 text-xs sm:text-sm text-slate-500 leading-relaxed pt-2">
-                    Tap to filter courses.
-                  </p>
-                </div>
-
-                <div className="hidden sm:block">
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B365D] mb-1 mt-6">
-                    Find Your Courses related to{" "}
-                    {parents.find((p) => p.slug === parentParam)?.label ||
-                      "Software Learning"}
-                  </h1>
-                  {activeNavId && (
-                    <p className="text-lg sm:text-xl font-bold text-slate-600">
-                      {navItems?.find((n) => n.id === activeNavId)?.label || ""}
-                    </p>
-                  )}
-                </div>
-              </div>
             </div>
           )}
 
@@ -798,52 +714,106 @@ export default function Courses() {
               </div>
             )}
 
-            {/* Toolbar row */}
-            <div className="flex items-center justify-between mb-6 flex-wrap gap-4 pb-4 border-b border-slate-100">
-              <p className="text-sm font-semibold text-slate-600">
+            {/* Toolbar row: Filter Icon, Search Bar, View Toggle in 1 line on Mobile */}
+            <div className="flex items-center justify-between gap-2 sm:gap-3 mb-6 pb-4 border-b border-slate-200 flex-nowrap w-full">
+              {/* 1. Filter Symbol Only Button (Mobile & Tablet view) */}
+              <div className="relative shrink-0 lg:hidden">
+                {mobileOpen && (
+                  <div
+                    className="fixed inset-0 z-20"
+                    onClick={() => setMobileOpen(false)}
+                    aria-hidden="true"
+                  />
+                )}
+                <button
+                  onClick={() => setMobileOpen((o) => !o)}
+                  className={`p-2.5 rounded-full border text-slate-700 bg-white hover:bg-slate-50 transition-all cursor-pointer flex items-center justify-center shrink-0 shadow-2xs ${
+                    mobileOpen
+                      ? "border-blue-500 text-blue-600 ring-2 ring-blue-500/20"
+                      : "border-slate-300 hover:border-slate-400"
+                  }`}
+                  aria-label="Filter by category"
+                  aria-expanded={mobileOpen}
+                >
+                  <FiFilter className="w-4 h-4 text-slate-700" />
+                </button>
+
+                {mobileOpen && (
+                  <div className="absolute left-0 z-30 mt-2 w-64 sm:w-72 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+                    <div className="max-h-[60vh] overflow-y-auto p-2">
+                      {currentTree.length === 0 ? (
+                        <div className="px-2 py-4 text-center text-xs text-gray-400">
+                          No categories yet
+                        </div>
+                      ) : (
+                        <MobileCatList
+                          parentTree={currentTree}
+                          activeCategory={activeCategory}
+                          countFor={countFor}
+                          onSelectParent={(parentNode, parentSlug) => {
+                            if (parentNode.children.length === 0) {
+                              selectParentCategory(parentParam, parentSlug);
+                              setMobileOpen(false);
+                            }
+                          }}
+                          onSelectChild={(child, childSlug) => {
+                            selectParentCategory(parentParam, childSlug);
+                            setMobileOpen(false);
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Course Count for Desktop */}
+              <p className="hidden lg:block text-sm font-semibold text-slate-600 shrink-0">
                 <span className="font-extrabold text-slate-900">
                   {totalItems}
                 </span>{" "}
                 {totalItems === 1 ? "course" : "courses"}
               </p>
-              <div className="flex items-center gap-3 ml-auto">
-                <div className="relative flex-1 min-w-0 sm:flex-none sm:w-64">
-                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input
-                    value={search}
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                      setPage(1);
-                    }}
-                    placeholder="Search courses..."
-                    className="w-full pl-10 pr-4 py-2 rounded-full border border-slate-300 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                    aria-label="Search courses"
-                  />
-                </div>
-                <div className="flex items-center gap-1 bg-slate-100 rounded-full p-1 shrink-0 border border-slate-200">
-                  <button
-                    onClick={() => setViewMode("grid")}
-                    className={`p-2 rounded-full transition-all cursor-pointer ${
-                      viewMode === "grid"
-                        ? "bg-white text-[#f59e0b] shadow-2xs"
-                        : "text-slate-400 hover:text-slate-600"
-                    }`}
-                    aria-label="Grid view"
-                  >
-                    <FiGrid className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`p-2 rounded-full transition-all cursor-pointer ${
-                      viewMode === "list"
-                        ? "bg-white text-[#f59e0b] shadow-2xs"
-                        : "text-slate-400 hover:text-slate-600"
-                    }`}
-                    aria-label="List view"
-                  >
-                    <FiList className="w-4 h-4" />
-                  </button>
-                </div>
+
+              {/* 2. Search Input */}
+              <div className="relative flex-1 min-w-0">
+                <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <input
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="Search courses..."
+                  className="w-full pl-9 pr-3 py-2 rounded-full border border-slate-300 text-xs sm:text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                  aria-label="Search courses"
+                />
+              </div>
+
+              {/* 3. View Mode Toggle (Grid/List) */}
+              <div className="flex items-center gap-0.5 bg-slate-100 rounded-full p-1 shrink-0 border border-slate-200">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-1.5 rounded-full transition-all cursor-pointer ${
+                    viewMode === "grid"
+                      ? "bg-white text-[#f59e0b] shadow-2xs font-bold"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                  aria-label="Grid view"
+                >
+                  <FiGrid className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-1.5 rounded-full transition-all cursor-pointer ${
+                    viewMode === "list"
+                      ? "bg-white text-[#f59e0b] shadow-2xs font-bold"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                  aria-label="List view"
+                >
+                  <FiList className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
