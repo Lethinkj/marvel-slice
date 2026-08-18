@@ -151,8 +151,8 @@ export default function DataTable({
     <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
       {searchable && renderSearchBar()}
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto admin-scrollbar">
+        <table className="w-full min-w-[640px]">
           <thead>
             <tr className={`border-b border-admin-100 ${headerRowClass || 'bg-brand-blue'}`}>
               {columns.map((col, i) => (
