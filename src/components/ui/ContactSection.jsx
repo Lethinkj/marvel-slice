@@ -37,12 +37,12 @@ function ContactDetailItem({ icon: Icon, label, value, href, textColor }) {
     <span className="text-xs sm:text-sm leading-relaxed block break-words" style={{ color: hexToRgba(textColor, 0.9) }}>{value}</span>
   );
   return (
-    <div className="flex items-start text-left gap-3.5 sm:gap-4">
-      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 mt-0.5">
+    <div className="flex flex-col sm:flex-row items-start text-left gap-2 sm:gap-3">
+      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0 mt-0.5">
         <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: textColor }} />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-0.5 sm:mb-1" style={{ color: hexToRgba(textColor, 0.65) }}>{label}</p>
+        <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: hexToRgba(textColor, 0.65) }}>{label}</p>
         {content}
       </div>
     </div>
@@ -138,7 +138,7 @@ export default function ContactSection({ section }) {
               </h2>
               <p className="text-xs sm:text-sm leading-relaxed max-w-xs sm:max-w-md mx-auto lg:mx-0" style={{ color: subheadingColor }}>{leftSubtitle}</p>
             </div>
-            <div className="space-y-4 sm:space-y-5 text-left max-w-xs sm:max-w-sm mx-auto lg:mx-0">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-3.5 sm:gap-5 text-left w-full mx-auto lg:mx-0">
               {address && <ContactDetailItem icon={FiMapPin} label="Address" value={address} textColor={textColor} />}
               {displayPhone && <ContactDetailItem icon={FiPhone} label="Phone" value={displayPhone} href={`tel:${telLink}`} textColor={textColor} />}
               {companyEmail && <ContactDetailItem icon={FiMail} label="Email" value={companyEmail} href={`mailto:${companyEmail}`} textColor={textColor} />}

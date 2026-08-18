@@ -743,16 +743,18 @@ export default function Courses() {
                   </p>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B365D] mb-1 mt-6">
-                  Find Your Courses related to{" "}
-                  {parents.find((p) => p.slug === parentParam)?.label ||
-                    "Software Learning"}
-                </h1>
-                {activeNavId && (
-                  <p className="text-lg sm:text-xl font-bold text-slate-600">
-                    {navItems?.find((n) => n.id === activeNavId)?.label || ""}
-                  </p>
-                )}
+                <div className="hidden sm:block">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B365D] mb-1 mt-6">
+                    Find Your Courses related to{" "}
+                    {parents.find((p) => p.slug === parentParam)?.label ||
+                      "Software Learning"}
+                  </h1>
+                  {activeNavId && (
+                    <p className="text-lg sm:text-xl font-bold text-slate-600">
+                      {navItems?.find((n) => n.id === activeNavId)?.label || ""}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -783,7 +785,7 @@ export default function Courses() {
 
             {/* Sidebar-mode header */}
             {!listOnly && (
-              <div className="mb-6 text-center lg:text-left">
+              <div className="hidden sm:block mb-6 text-center lg:text-left">
                 <h1 className="text-2xl lg:text-3xl font-extrabold text-[#1B365D] tracking-tight mb-1">
                   Find Your Courses related to{" "}
                   {parents.find((p) => p.slug === parentParam)?.label || "Software Learning"}
