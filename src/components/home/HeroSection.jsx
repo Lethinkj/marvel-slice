@@ -49,7 +49,7 @@ export default function HeroSection({ section }) {
     <section className="relative overflow-hidden">
       {bannerImage && (
         <div className="relative w-full overflow-hidden">
-          <img src={bannerImage} alt="" className="w-full" />
+          <img src={bannerImage} alt="" className="w-full h-auto object-cover max-h-[350px] sm:max-h-none" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
           {(bannerHeading || bannerDescription) && (
             <div className="absolute inset-0 flex items-center">

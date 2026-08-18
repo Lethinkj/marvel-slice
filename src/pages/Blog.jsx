@@ -314,8 +314,8 @@ function SinglePost({ slug }) {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-text-gray hover:text-brand-orange mb-8 transition-colors">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-12 sm:pt-6 sm:pb-12">
+      <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm text-text-gray hover:text-brand-orange mb-3 sm:mb-4 transition-colors">
         <FiArrowLeft className="w-4 h-4" /> Back to Blog</Link>
       <Reveal>
         {post.blog_categories && (

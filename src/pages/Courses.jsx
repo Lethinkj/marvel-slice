@@ -656,9 +656,9 @@ export default function Courses() {
 
         {/* Right content — scrollable */}
         <div
-          className={`flex-1 min-w-0 bg-white ${
+          className={`${
             listOnly
-              ? "max-w-[1400px] mx-auto pt-6"
+              ? "max-w-[1400px] mx-auto pt-2 sm:pt-4"
               : "max-w-[1600px] pt-0 lg:pt-6"
           }`}
         >
@@ -689,16 +689,16 @@ export default function Courses() {
           <div
             className={`${
               listOnly
-                ? "max-w-[1280px] mx-auto px-4 sm:px-6 py-6"
+                ? "max-w-[1280px] mx-auto px-4 sm:px-6 pt-2 pb-6 sm:pb-12"
                 : "pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-6 lg:pl-10 pb-8 sm:pb-12"
             }`}
           >
             {/* List-only header */}
             {listOnly && (
-              <div className="mb-6">
+              <div className="mb-4">
                 <Link
                   to={`/courses?parent=${parentParam}`}
-                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-[#f59e0b] transition-colors mb-3"
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-[#f59e0b] transition-colors mb-1.5"
                 >
                   <FiChevronLeft className="w-4 h-4" />
                   Back

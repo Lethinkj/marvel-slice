@@ -503,11 +503,11 @@ export default function CourseDetail() {
           }}
         />
         <section className="bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-6 sm:pb-10 lg:pt-6 lg:pb-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-8 sm:pt-4 sm:pb-10 lg:pt-6 lg:pb-12">
             <button
               type="button"
               onClick={handleBackNavigation}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-5 cursor-pointer group"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-2 cursor-pointer group"
             >
               <FiArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-orange transition-transform group-hover:-translate-x-0.5" />
               <span>Back</span>

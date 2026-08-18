@@ -108,9 +108,9 @@ export default function AllJobs() {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-12 sm:pt-6 sm:pb-16">
         <Reveal>
-          <Link to="/career" className="inline-flex items-center gap-1.5 text-brand-orange hover:text-brand-orange/80 font-medium text-sm mb-6 transition-colors">
+          <Link to="/career" className="inline-flex items-center gap-1.5 text-brand-orange hover:text-brand-orange/80 font-medium text-sm mb-3 sm:mb-4 transition-colors">
             <FiArrowLeft className="w-4 h-4" /> Back to Career
           </Link>
 
