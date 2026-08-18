@@ -432,14 +432,14 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
           </div>
         </div>
 
-      <div className="grid xl:grid-cols-3 gap-4 items-start">
-        <div className={`${selected ? 'xl:col-span-2' : 'xl:col-span-3'}`}>
-          <div className="bg-white border border-admin-200 shadow-sm overflow-hidden">
+      <div className="grid xl:grid-cols-3 gap-4 items-start w-full max-w-full min-w-0">
+        <div className={`w-full max-w-full min-w-0 ${selected ? 'xl:col-span-2' : 'xl:col-span-3'}`}>
+          <div className="bg-white border border-admin-200 shadow-sm overflow-hidden rounded-xl w-full max-w-full min-w-0">
             {paged.length === 0 ? (
               <EmptyState title={search ? 'No results match your search' : 'No submissions yet'} description={search ? 'Try adjusting your search or filters.' : 'Submissions will appear here once received.'} />
             ) : (
-              <div className="admin-table-scroll">
-                <table className="admin-table">
+              <div className="admin-table-scroll w-full max-w-full min-w-0 overflow-x-auto">
+                <table className="admin-table min-w-[760px] w-full">
                   <thead>
                     <tr className="border-b border-admin-100 bg-brand-blue">
                       <th className="w-10 text-left text-xs font-bold text-white uppercase tracking-wider px-4 py-3.5 whitespace-nowrap">#</th>
@@ -494,7 +494,7 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
               </div>
             )}
 
-            <div className="px-4 py-3 border-t border-admin-100 bg-white">
+            <div className="px-4 py-3 border-t border-admin-100 bg-white w-full max-w-full min-w-0">
               <Pagination
                 totalItems={filtered.length}
                 itemsPerPage={pageSize}
