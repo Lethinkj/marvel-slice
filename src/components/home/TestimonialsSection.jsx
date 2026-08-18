@@ -50,7 +50,8 @@ export default function TestimonialsSection({ section }) {
         .select('*')
         .eq('is_active', true)
         .order('sort_order', { ascending: true })
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true })
+        .limit(3);
       if (error) {
         if (error.code === '42P01') return [];
         throw error;

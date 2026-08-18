@@ -438,17 +438,17 @@ export default function SubmissionsInbox({ table, title, columns, fetchQuery, de
             {paged.length === 0 ? (
               <EmptyState title={search ? 'No results match your search' : 'No submissions yet'} description={search ? 'Try adjusting your search or filters.' : 'Submissions will appear here once received.'} />
             ) : (
-              <div className="overflow-x-auto admin-scrollbar">
-                <table className="w-full min-w-[640px]">
+              <div className="admin-table-scroll">
+                <table className="admin-table">
                   <thead>
                     <tr className="border-b border-admin-100 bg-brand-blue">
-                      <th className="w-10 text-left text-xs font-bold text-white uppercase tracking-wider px-4 py-3.5">#</th>
+                      <th className="w-10 text-left text-xs font-bold text-white uppercase tracking-wider px-4 py-3.5 whitespace-nowrap">#</th>
                       {columns.map((col, i) => (
-                        <th key={i} className={`text-left text-xs font-bold text-white uppercase tracking-wider px-4 py-3.5 ${col.className || ''}`}>
+                        <th key={i} className={`text-left text-xs font-bold text-white uppercase tracking-wider px-4 py-3.5 whitespace-nowrap ${col.className || ''}`}>
                           {col.header}
                         </th>
                       ))}
-                      <th className="text-left text-xs font-bold text-white uppercase tracking-wider px-4 py-3.5">Actions</th>
+                      <th className="text-left text-xs font-bold text-white uppercase tracking-wider px-4 py-3.5 whitespace-nowrap">Actions</th>
                     </tr>
                   </thead>
                   <tbody>

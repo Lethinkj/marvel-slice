@@ -365,3 +365,33 @@ select {
     min-width: 0;
   }
 }
+
+/* ─── Global Mobile/Tablet Admin Table Responsive System ─── */
+.admin-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.admin-table-scroll > table,
+.admin-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+@media (max-width: 639px) {
+  .admin-table-scroll {
+    margin-right: 0;
+    max-width: 100%;
+  }
+
+  .admin-table-scroll > table,
+  .admin-table {
+    min-width: 760px;
+  }
+}

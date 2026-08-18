@@ -2,7 +2,7 @@ import Breadcrumbs from "./Breadcrumbs";
 
 export default function PageShell({ title, titleLight, subtitle, actions, children, maxWidth = '', className = '', breadcrumb = true, backTo = '', hideBorder = false }) {
   return (
-    <div className={`relative min-h-[calc(100vh-4rem)] bg-white p-4 sm:p-6 lg:p-8 rounded-xl border border-gray-100/80 shadow-xs w-full max-w-full overflow-x-hidden min-w-0 box-border ${maxWidth} ${className}`}>
+    <div className={`relative min-h-[calc(100vh-4rem)] bg-white p-4 sm:p-6 lg:p-8 rounded-xl border border-gray-100/80 shadow-xs w-full max-w-full min-w-0 box-border ${maxWidth} ${className}`}>
       {breadcrumb && (
         <div className="flex items-center gap-3 mb-4">
           <Breadcrumbs />
