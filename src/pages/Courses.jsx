@@ -164,37 +164,43 @@ function Pagination({ page, total, onPage }) {
   const last = Math.ceil(total / PER_PAGE);
   if (last <= 1) return null;
   return (
-    <div className="flex items-center justify-center gap-1.5 mt-12 flex-wrap">
+    <div className="flex items-center justify-center gap-1 sm:gap-1.5 mt-6 sm:mt-10 flex-wrap">
       <button
-        onClick={() => onPage(page - 1)}
+        onClick={() => {
+          onPage(page - 1);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
         disabled={page <= 1}
-        className="w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-brand-orange hover:bg-brand-orange/10 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+        className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-slate-500 hover:text-[#f59e0b] hover:bg-amber-50 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer border border-slate-200 bg-white"
         aria-label="Previous page"
       >
         <FiChevronLeft className="w-4 h-4" />
       </button>
       {(() => {
         const pages = [];
-        if (last <= 7) {
+        if (last <= 5) {
           for (let i = 1; i <= last; i++) pages.push(i);
         } else {
           pages.push(1);
-          if (page > 3) pages.push('...');
+          if (page > 3) pages.push("...");
           for (let i = Math.max(2, page - 1); i <= Math.min(last - 1, page + 1); i++) pages.push(i);
-          if (page < last - 2) pages.push('...');
+          if (page < last - 2) pages.push("...");
           pages.push(last);
         }
         return pages.map((p, idx) =>
-          p === '...' ? (
-            <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-sm text-gray-400">…</span>
+          p === "..." ? (
+            <span key={`ellipsis-${idx}`} className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-xs text-slate-400">…</span>
           ) : (
             <button
               key={p}
-              onClick={() => onPage(p)}
-              className={`w-9 h-9 rounded-full text-sm font-medium transition-all cursor-pointer ${
+              onClick={() => {
+                onPage(p);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 p === page
-                  ? "bg-brand-orange text-white shadow-sm shadow-brand-orange/30"
-                  : "text-gray-500 hover:bg-gray-100"
+                  ? "bg-[#f59e0b] text-white shadow-md shadow-amber-500/20"
+                  : "text-slate-600 hover:bg-slate-100 border border-slate-200 bg-white"
               }`}
               aria-label={`Page ${p}`}
               aria-current={p === page ? "page" : undefined}
@@ -205,9 +211,12 @@ function Pagination({ page, total, onPage }) {
         );
       })()}
       <button
-        onClick={() => onPage(page + 1)}
+        onClick={() => {
+          onPage(page + 1);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
         disabled={page >= last}
-        className="w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-brand-orange hover:bg-brand-orange/10 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
+        className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-slate-500 hover:text-[#f59e0b] hover:bg-amber-50 disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer border border-slate-200 bg-white"
         aria-label="Next page"
       >
         <FiChevronRight className="w-4 h-4" />
@@ -681,7 +690,7 @@ export default function Courses() {
             className={`${
               listOnly
                 ? "max-w-[1280px] mx-auto px-4 sm:px-6 py-6"
-                : "pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-6 lg:pl-10 pb-2 sm:pb-4"
+                : "pr-4 sm:pr-6 lg:pr-8 pl-4 sm:pl-6 lg:pl-10 pb-8 sm:pb-12"
             }`}
           >
             {/* List-only header */}
