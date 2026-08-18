@@ -125,14 +125,14 @@ export default function DataTable({
 
   if (variant === 'cards') {
     return (
-      <div className="bg-white border border-admin-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
         {searchable && renderSearchBar()}
         <div className="divide-y divide-admin-100">
           {paginated.map((row, rowIndex) => (
             <div
               key={`${row[rowKey]}-${rowIndex}`}
               onClick={() => onRowClick?.(row)}
-              className="px-5 py-4 flex items-center gap-4 hover:bg-white/80 transition-colors cursor-pointer"
+              className="px-5 py-4 flex items-center gap-4 hover:bg-neutral-50/80 transition-colors cursor-pointer"
             >
               {columns.map((col, i) => (
                 <div key={i} className={`${i === 0 ? 'flex-1 min-w-0' : 'shrink-0'} ${col.className || ''}`}>
@@ -148,15 +148,15 @@ export default function DataTable({
   }
 
   return (
-    <div className="bg-white border border-admin-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-admin-200 shadow-sm overflow-hidden">
       {searchable && renderSearchBar()}
 
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className={`border-b border-admin-100 ${headerRowClass || 'bg-blue-600'}`}>
+            <tr className={`border-b border-admin-100 ${headerRowClass || 'bg-brand-blue'}`}>
               {columns.map((col, i) => (
-                <th key={i} className={`text-left text-xs font-semibold uppercase tracking-wider px-4 py-3 ${headerCellClass || 'text-white'} ${col.className || ''}`}>
+                <th key={i} className={`text-left text-xs font-bold uppercase tracking-wider px-4 py-3.5 ${headerCellClass || 'text-white'} ${col.className || ''}`}>
                   {col.header}
                 </th>
               ))}
@@ -167,10 +167,10 @@ export default function DataTable({
               <tr
                 key={`${row[rowKey]}-${rowIndex}`}
                 onClick={() => onRowClick?.(row)}
-                className={`border-b border-gray-100 last:border-0 transition-colors ${rowIndex % 2 === 1 ? 'bg-gray-50' : 'bg-white'} ${onRowClick ? 'cursor-pointer hover:bg-gray-50' : 'hover:bg-gray-50'}`}
+                className={`border-b border-gray-100 last:border-0 transition-colors ${rowIndex % 2 === 1 ? 'bg-gray-50/60' : 'bg-white'} ${onRowClick ? 'cursor-pointer hover:bg-blue-50/40' : 'hover:bg-blue-50/40'}`}
               >
                 {columns.map((col, i) => (
-                  <td key={i} className={`px-4 py-3 text-sm text-neutral-700 ${col.className || ''}`}>
+                  <td key={i} className={`px-4 py-3.5 text-sm align-middle text-neutral-700 ${col.className || ''}`}>
                     {renderCell(row, col, (page - 1) * pageSize + rowIndex)}
                   </td>
                 ))}
