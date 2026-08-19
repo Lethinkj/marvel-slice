@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FiArrowLeft, FiCheckCircle, FiArrowRight, FiTarget } from 'react-icons/fi';
+import { useQuery } from '@tanstack/react-query';
+import { FiArrowLeft, FiCheckCircle, FiArrowRight, FiTarget, FiChevronDown, FiX, FiLoader } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
+import { supabase } from '../lib/supabaseClient';
+import { trackRegister, trackFormSubmit } from '../lib/analytics';
 
 const FAQS = [
   {
@@ -125,6 +129,79 @@ const EXAMS = [
 export default function Banking() {
   const navigate = useNavigate();
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [formName, setFormName] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formPhone, setFormPhone] = useState('');
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  function closeApplyModal() {
+    if (isSubmitting) return;
+    setShowApplyModal(false);
+    setFormName('');
+    setFormEmail('');
+    setFormPhone('');
+    setFormErrors({});
+    setIsSubmitted(false);
+  }
+
+  async function handleApplySubmit(e) {
+    e.preventDefault();
+    const errs = {};
+    if (!formName.trim()) errs.name = 'Please enter your full name';
+    if (!formEmail.trim()) errs.email = 'Please enter your email address';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formEmail.trim())) errs.email = 'Please enter a valid email address';
+    if (!formPhone.trim()) errs.phone = 'Please enter your phone number';
+
+    setFormErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setIsSubmitting(true);
+
+    const payload = {
+      course_title: 'Banking',
+      button_clicked: 'Apply Now',
+      full_name: formName.trim(),
+      email: formEmail.trim(),
+      phone: formPhone.trim(),
+      terms_accepted: true,
+    };
+
+    const { error } = await supabase.from('course_enquiries').insert(payload);
+
+    if (error) {
+      setFormErrors({ form: 'Submission failed. Please try again.' });
+      setIsSubmitting(false);
+      return;
+    }
+
+    trackRegister('Banking');
+    trackFormSubmit('Banking');
+
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+    setFormName('');
+    setFormEmail('');
+    setFormPhone('');
+    setFormErrors({});
+  }
+
+  const { data: upcomingImageData } = useQuery({
+    queryKey: ['homeSections', 'upcoming_image'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('home_sections')
+        .select('*')
+        .eq('section_key', 'upcoming_image')
+        .maybeSingle();
+      if (error) return null;
+      return data?.content?.image_url || null;
+    },
+  });
+
+  const upcomingImage = upcomingImageData || '/images/banking/banking_hero_editorial_1787149136213.jpg';
 
   function handleBackNavigation(e) {
     if (e) e.preventDefault();
@@ -139,7 +216,7 @@ export default function Banking() {
     <div className="bg-white min-h-screen text-slate-800">
       {/* 1. HERO — EDITORIAL HEADER */}
       <section className="relative bg-white pt-8 pb-12 sm:pb-16 overflow-hidden border-b border-slate-100">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <button
             type="button"
             onClick={handleBackNavigation}
@@ -149,50 +226,45 @@ export default function Banking() {
             <span>Back</span>
           </button>
 
-          <Reveal variant="up" className="max-w-4xl space-y-5">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-dark-navy leading-[1.1] tracking-tight">
-              Build Your Career in Banking
-            </h1>
-
-            <div className="space-y-4 text-slate-600 text-base sm:text-lg leading-[1.75]">
-              <p className="font-medium text-slate-700">
-                Banking is one of India's most popular career paths for graduates who are looking for stability, professional growth, and opportunities to work across different areas of financial services.
-              </p>
-              <p>
-                The Institute of Banking Personnel Selection (IBPS) conducts recruitment examinations for several public-sector banking positions. These examinations open doors to roles ranging from customer-facing branch operations to officer-level responsibilities and specialised banking functions.
-              </p>
-              <p className="text-sm sm:text-base font-semibold text-brand-blue pt-1">
-                Explore the major IBPS examinations below and find the path that matches your career goals.
-              </p>
+          <Reveal variant="up" className="max-w-4xl mx-auto text-center space-y-10 sm:space-y-12">
+            <div className="inline-flex flex-col items-center mb-8 sm:mb-12">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark-navy leading-[1.15]">
+                Build Your Career in Banking
+              </h1>
+              <div className="mt-3.5 h-[3px] bg-brand-orange rounded-full w-4/5" />
             </div>
+
+            <p className="text-slate-600 text-base sm:text-lg leading-[1.85] font-normal max-w-3xl mx-auto">
+              Banking is one of India's most popular career paths for graduates who are looking for stability, professional growth, and opportunities to work across different areas of financial services. The Institute of Banking Personnel Selection (IBPS) conducts recruitment examinations for several public-sector banking positions. These examinations open doors to roles ranging from customer-facing branch operations to officer-level responsibilities and specialised banking functions. Explore the major IBPS examinations below and find the path that matches your career goals.
+            </p>
           </Reveal>
         </div>
       </section>
 
-      {/* 3. 5 EDITORIAL EXAM SECTIONS */}
+      {/* 2. 5 EDITORIAL EXAM SECTIONS */}
       <div className="divide-y divide-slate-200/60">
         {EXAMS.map((exam) => (
           <section
             key={exam.id}
             id={exam.id}
-            className={`py-16 sm:py-24 lg:py-28 transition-colors ${
+            className={`py-12 sm:py-16 lg:py-20 transition-colors ${
               exam.number === '01' || exam.number === '03' || exam.number === '05'
                 ? 'bg-slate-50/60'
                 : 'bg-white'
             }`}
           >
-            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                 {/* Image Column */}
                 <Reveal
                   variant={exam.imageLeft ? 'left' : 'right'}
                   className={`lg:col-span-5 ${exam.imageLeft ? 'lg:order-1' : 'lg:order-2'}`}
                 >
-                  <div className="relative rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 group">
+                  <div className="relative rounded-2xl overflow-hidden shadow-md border border-slate-200/80 group">
                     <img
                       src={exam.image}
                       alt={exam.imageAlt}
-                      className="w-full h-[320px] sm:h-[380px] lg:h-[440px] object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                      className="w-full h-[280px] sm:h-[340px] lg:h-[380px] object-cover group-hover:scale-[1.02] transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-dark-navy/40 via-transparent to-transparent opacity-40" />
                   </div>
@@ -201,38 +273,38 @@ export default function Banking() {
                 {/* Content Column */}
                 <Reveal
                   variant={exam.imageLeft ? 'right' : 'left'}
-                  className={`lg:col-span-7 space-y-6 ${exam.imageLeft ? 'lg:order-2' : 'lg:order-1'}`}
+                  className={`lg:col-span-7 space-y-5 ${exam.imageLeft ? 'lg:order-2' : 'lg:order-1'}`}
                 >
                   {/* Large Editorial Section Number */}
-                  <div className="flex items-center gap-4">
-                    <span className="text-5xl sm:text-6xl lg:text-7xl font-black text-brand-orange/80 tracking-tighter leading-none font-mono">
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl sm:text-5xl font-black text-brand-orange/80 tracking-tighter leading-none font-mono">
                       {exam.number}
                     </span>
-                    <div className="h-0.5 w-12 bg-brand-orange/40 rounded-full" />
+                    <div className="h-0.5 w-10 bg-brand-orange/40 rounded-full" />
                     <span className={`px-3 py-1 rounded-full text-[11px] font-extrabold tracking-wider uppercase border ${exam.badgeStyle}`}>
                       {exam.badge}
                     </span>
                   </div>
 
                   <div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark-navy leading-tight">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-dark-navy leading-tight">
                       {exam.title}
                     </h2>
-                    <h3 className="text-base sm:text-lg font-bold text-brand-blue mt-1">
+                    <h3 className="text-sm sm:text-base font-semibold text-brand-blue mt-1">
                       {exam.subtitle}
                     </h3>
                   </div>
 
                   {/* Controlled Reading Width Paragraphs */}
-                  <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-[1.75] max-w-[680px]">
+                  <div className="space-y-3.5 text-slate-600 text-sm sm:text-base leading-relaxed">
                     {exam.paragraphs.map((p, idx) => (
                       <p key={idx}>{p}</p>
                     ))}
                   </div>
 
-                  {/* Clean Editorial Info Blocks (No Heavy Cards!) */}
-                  <div className="grid sm:grid-cols-2 gap-6 pt-4 border-t border-slate-200/80">
-                    <div className="space-y-1.5">
+                  {/* Clean Editorial Info Blocks */}
+                  <div className="grid sm:grid-cols-2 gap-5 pt-4 border-t border-slate-200/80">
+                    <div className="space-y-1">
                       <div className="flex items-center gap-2 text-xs font-extrabold text-brand-orange uppercase tracking-wider">
                         <FiTarget className="w-4 h-4 shrink-0 text-brand-orange" />
                         <span>What Makes It Different?</span>
@@ -242,7 +314,7 @@ export default function Banking() {
                       </p>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <div className="flex items-center gap-2 text-xs font-extrabold text-brand-blue uppercase tracking-wider">
                         <FiCheckCircle className="w-4 h-4 shrink-0 text-brand-blue" />
                         <span>Ideal For</span>
@@ -259,32 +331,113 @@ export default function Banking() {
         ))}
       </div>
 
-      {/* 4. FULL-WIDTH CTA BANNER SECTION */}
-      <section className="py-16 sm:py-24 bg-gradient-to-r from-[#1B365D] via-[#1E56C7] to-[#1B365D] text-white relative overflow-hidden w-full">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <Reveal variant="up" className="max-w-3xl mx-auto space-y-5">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-white">
+      {/* 3. FULL-WIDTH CTA BANNER SECTION */}
+      <section className="py-14 sm:py-20 bg-gradient-to-r from-[#1B365D] via-[#1E56C7] to-[#1B365D] text-white relative overflow-hidden w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <Reveal variant="up" className="max-w-3xl mx-auto space-y-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight text-white">
               Your Banking Career Starts with the Right Choice
             </h2>
 
-            <p className="text-amber-300 font-bold text-base sm:text-lg tracking-wide">
+            <p className="text-amber-300 font-bold text-sm sm:text-base tracking-wide">
               Understand the role. Know the eligibility. Prepare with purpose.
             </p>
 
-            <p className="text-slate-200 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+            <p className="text-slate-200 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto">
               Choose the examination that matches your goals and take the first step toward building a career in banking.
             </p>
 
-            <div className="pt-4 flex justify-center">
-              <Link
-                to="/contact"
+            <div className="pt-3 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setShowApplyModal(true)}
                 className="inline-flex items-center gap-2.5 px-8 py-4 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-full font-bold text-sm shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all cursor-pointer active:scale-95"
               >
-                <span>Get Started / Contact Us</span>
+                <span>Apply Now</span>
                 <FiArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* 4. COURSE HIGHLIGHTS & UPCOMING IMAGE SECTION */}
+      <section className="py-16 sm:py-24 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* Left Column: Heading & 4 Course Bullet Points */}
+            <Reveal variant="left" className="lg:col-span-7 space-y-6">
+                <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy leading-tight">
+                  Why Prepare for Banking <br />
+                  Exams with Us?
+                </h2>
+
+              <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+                Our specialized Banking & IBPS coaching program is designed to build strong concepts, enhance speed and accuracy, and provide end-to-end guidance from Prelims to Final Interviews.
+              </p>
+
+              <ul className="space-y-4 pt-2">
+                <li className="flex items-start gap-3.5">
+                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
+                    <FiCheckCircle className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Comprehensive Syllabus Coverage</h3>
+                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                      In-depth preparation for Quantitative Aptitude, Reasoning Ability, English Language, and General/Banking Awareness.
+                    </p>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-3.5">
+                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
+                    <FiCheckCircle className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Structured Prelims & Mains Training</h3>
+                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                      Targeted strategy covering two-tier objective exams, speed tests, and descriptive paper practice.
+                    </p>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-3.5">
+                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
+                    <FiCheckCircle className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Expert Banking Faculty & Mentorship</h3>
+                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                      Learn directly from experienced competitive exam specialists and former banking professionals.
+                    </p>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-3.5">
+                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
+                    <FiCheckCircle className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Full-Length Mock Tests & Analytics</h3>
+                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                      Regular section-wise speed tests, exam-pattern simulations, and detailed performance tracking.
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </Reveal>
+
+            {/* Right Column: Upcoming Image (Same dimensions as Home page) */}
+            <Reveal variant="right" className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-md group">
+                <img
+                  src={upcomingImage}
+                  alt="Banking Course & Upcoming Classes"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 
@@ -315,6 +468,150 @@ export default function Banking() {
           </Stagger>
         </div>
       </section>
+
+      {/* APPLY NOW REGISTRATION MODAL */}
+      <AnimatePresence>
+        {showApplyModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden"
+            >
+              {/* Modal Header — Solid Brand Blue bg-[#1E56C7] */}
+              <div className="bg-[#1E56C7] text-white px-6 py-5 flex items-center justify-between relative">
+                <div>
+                  <h3 className="text-lg sm:text-xl font-extrabold leading-snug">
+                    Banking Exam Registration
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="bg-white/15 text-white border border-white/20 text-xs font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-orange" />
+                      Banking
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeApplyModal}
+                  className="p-1.5 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Form Content */}
+              <div className="p-6 sm:p-7">
+                {isSubmitted ? (
+                  <div className="text-center py-6 space-y-4">
+                    <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto border border-emerald-200">
+                      <FiCheckCircle className="w-8 h-8" />
+                    </div>
+                    <h4 className="text-xl font-bold text-dark-navy">Application Submitted!</h4>
+                    <p className="text-sm text-slate-600 leading-relaxed max-w-xs mx-auto">
+                      Thank you for applying. Our banking academic advisors will reach out to you shortly.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={closeApplyModal}
+                      className="mt-2 w-full py-3 bg-[#1E56C7] hover:bg-[#1E56C7]/90 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer"
+                    >
+                      Done
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleApplySubmit} className="space-y-4">
+                    {formErrors.form && (
+                      <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-medium">
+                        {formErrors.form}
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={formName}
+                        onChange={(e) => setFormName(e.target.value)}
+                        placeholder="Enter your full name"
+                        className={`w-full px-4 py-3 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none transition-colors ${
+                          formErrors.name
+                            ? 'border-red-400 focus:border-red-500 bg-red-50/30'
+                            : 'border-slate-200 focus:border-brand-blue bg-slate-50/50 focus:bg-white'
+                        }`}
+                      />
+                      {formErrors.name && (
+                        <p className="mt-1 text-xs text-red-500 font-medium">{formErrors.name}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Email Address <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        value={formEmail}
+                        onChange={(e) => setFormEmail(e.target.value)}
+                        placeholder="Enter your email address"
+                        className={`w-full px-4 py-3 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none transition-colors ${
+                          formErrors.email
+                            ? 'border-red-400 focus:border-red-500 bg-red-50/30'
+                            : 'border-slate-200 focus:border-brand-blue bg-slate-50/50 focus:bg-white'
+                        }`}
+                      />
+                      {formErrors.email && (
+                        <p className="mt-1 text-xs text-red-500 font-medium">{formErrors.email}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        value={formPhone}
+                        onChange={(e) => setFormPhone(e.target.value)}
+                        placeholder="Enter your phone number"
+                        className={`w-full px-4 py-3 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none transition-colors ${
+                          formErrors.phone
+                            ? 'border-red-400 focus:border-red-500 bg-red-50/30'
+                            : 'border-slate-200 focus:border-brand-blue bg-slate-50/50 focus:bg-white'
+                        }`}
+                      />
+                      {formErrors.phone && (
+                        <p className="mt-1 text-xs text-red-500 font-medium">{formErrors.phone}</p>
+                      )}
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full py-3.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-bold text-sm rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <FiLoader className="w-4 h-4 animate-spin" />
+                            <span>Submitting...</span>
+                          </>
+                        ) : (
+                          <span>Submit Application</span>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
