@@ -763,8 +763,8 @@ export default function CourseDetail() {
               <div className="w-full relative z-10 group">
                 {embedUrl && !videoPlaying ? (
                   <div className="relative rounded-xl overflow-hidden shadow-xl border-2 border-white/20 group-hover:scale-[1.015] group-hover:shadow-2xl transition-all duration-500">
-                    {course.video_thumbnail_url ? (
-                      <img src={course.video_thumbnail_url} alt="Course video thumbnail" className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700" />
+                    {course.hero_image_url ? (
+                      <img src={course.hero_image_url} alt={course.title} className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700" />
                     ) : (
                       <div className="w-full aspect-video bg-slate-900/80 flex items-center justify-center">
                         <FiBarChart2 className="w-16 h-16 text-white/40" />
@@ -787,10 +787,14 @@ export default function CourseDetail() {
                       allowFullScreen
                     />
                   </div>
+                ) : course.hero_image_url ? (
+                  <div className="relative rounded-xl overflow-hidden shadow-xl border-2 border-white/20 group-hover:scale-[1.015] transition-all duration-500">
+                    <img src={course.hero_image_url} alt={course.title} className="w-full aspect-video object-cover" />
+                  </div>
                 ) : (
                   <div className="rounded-xl overflow-hidden shadow-xl bg-slate-900/80 p-12 text-center border-2 border-white/20 group-hover:scale-[1.015] transition-transform duration-500">
                     <FiBarChart2 className="w-16 h-16 text-white/40 mx-auto mb-3" />
-                    <p className="text-white/60 text-sm">Course preview video</p>
+                    <p className="text-white/60 text-sm">{course.title}</p>
                   </div>
                 )}
               </div>

@@ -178,7 +178,6 @@ export default function CourseWizard() {
     slug: "",
     description: "",
     hero_image_url: "",
-    video_thumbnail_url: "",
     video_url: "",
     cta_left: "Talk to Advisor",
     cta_right: "Download Brochure",
@@ -289,13 +288,12 @@ export default function CourseWizard() {
     if (!navItemId) add(STEPS[0].label, "Category (topic)");
     if (!c.description.trim()) add(STEPS[0].label, "Description");
     if (!c.hero_image_url.trim()) add(STEPS[1].label, "Hero / Banner Image");
-    if (!c.video_thumbnail_url.trim()) add(STEPS[1].label, "Video Thumbnail");
-    if (!c.video_url.trim()) add(STEPS[1].label, "Course Video (YouTube URL)");
     if (!c.cta_left.trim()) add(STEPS[1].label, "CTA Left");
     if (!c.cta_right.trim()) add(STEPS[1].label, "CTA Right");
     if (!c.cta_heading.trim()) add(STEPS[1].label, "CTA Heading");
     if (!c.cta_description.trim()) add(STEPS[1].label, "CTA Description");
     if (!c.cta_text.trim()) add(STEPS[1].label, "Button Text");
+    if (!c.cta_background_image || !c.cta_background_image.trim()) add(STEPS[1].label, "CTA Background Image");
     if (!(c.checklist_items || []).join("").trim()) add(STEPS[1].label, "What You'll Learn");
     if (c.highlights.length < 9 || c.highlights.some((h) => !h.label.trim())) add(STEPS[2].label, `Key Highlights (Minimum 9 required — currently ${c.highlights.length}/9)`);
     if (c.projects.length !== 3 || c.projects.some((p) => !p.title.trim())) add(STEPS[2].label, `Projects (Exactly 3 required — currently ${c.projects.length}/3)`);
@@ -363,8 +361,8 @@ export default function CourseWizard() {
         slug,
         description: c.description,
         hero_image_url: c.hero_image_url,
-        video_thumbnail_url: c.video_thumbnail_url,
-        video_url: c.video_url,
+        video_thumbnail_url: null,
+        video_url: c.video_url || null,
         cta_left: c.cta_left,
         cta_right: c.cta_right,
         cta_heading: c.cta_heading,
@@ -623,23 +621,20 @@ export default function CourseWizard() {
         {step === 1 && (
           <div className="space-y-6">
             <h2 className="text-lg font-semibold text-black flex items-center gap-2"><FiMonitor className="w-5 h-5 text-cyan-600" /> Media</h2>
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">Hero / Banner Image <span className="text-destructive-500">*</span></label>
-                <ImageUploader value={c.hero_image_url} onChange={(url) => u("hero_image_url", url)} />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">Video Thumbnail <span className="text-destructive-500">*</span></label>
-                <ImageUploader value={c.video_thumbnail_url} onChange={(url) => u("video_thumbnail_url", url)} />
-              </div>
+            <div>
+              <label className="block text-sm font-semibold text-black mb-1">Hero / Banner Image <span className="text-destructive-500">*</span></label>
+              <ImageUploader value={c.hero_image_url} onChange={(url) => u("hero_image_url", url)} />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-black mb-1">Course Video (YouTube URL) <span className="text-destructive-500">*</span></label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-semibold text-black">Course Video (YouTube URL)</label>
+                <span className="text-xs text-neutral-400 font-normal">(Optional)</span>
+              </div>
               <input
                 value={c.video_url || ""}
                 onChange={(e) => u("video_url", e.target.value)}
                 className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500/20 text-sm transition-all"
-                placeholder="https://www.youtube.com/watch?v=..."
+                placeholder="https://www.youtube.com/watch?v=... (optional)"
               />
             </div>
 
@@ -673,7 +668,8 @@ export default function CourseWizard() {
                   <input value={c.cta_text || ''} onChange={(e) => u("cta_text", e.target.value)} className="w-full px-3 py-2.5 border border-admin-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-500/20 text-sm transition-all" placeholder="Enroll Now" />
                 </div>
                 <div>
-                  <ImageUploader value={c.cta_background_image || ''} onChange={(v) => u("cta_background_image", v)} label="Background Image" />
+                  <label className="block text-sm font-semibold text-black mb-1">CTA Background Image <span className="text-destructive-500">*</span></label>
+                  <ImageUploader value={c.cta_background_image || ''} onChange={(v) => u("cta_background_image", v)} />
                 </div>
               </div>
             </div>

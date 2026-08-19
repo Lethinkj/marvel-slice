@@ -210,7 +210,6 @@ export default function CourseEditor() {
     subtitle: "",
     description: "",
     hero_image_url: "",
-    video_thumbnail_url: "",
     video_url: "",
     nav_item_id: "",
     is_published: true,
@@ -454,6 +453,14 @@ export default function CourseEditor() {
         setSaving(false);
         return;
       }
+      if (!course.cta_background_image || !course.cta_background_image.trim()) {
+        setTab('basic');
+        setMessage(`Cannot save course: CTA Background Image is required for ${course.status} status.`);
+        setSaveError(`CTA Background Image is required.`);
+        isSavingRef.current = false;
+        setSaving(false);
+        return;
+      }
     }
     if (course.status === 'Coming Soon' && !course.start_date) {
       setStartDateError(true);
@@ -488,8 +495,8 @@ export default function CourseEditor() {
         subtitle: course.subtitle,
         description: course.description,
         hero_image_url: course.hero_image_url,
-        video_thumbnail_url: course.video_thumbnail_url,
-        video_url: course.video_url,
+        video_thumbnail_url: null,
+        video_url: course.video_url || null,
         nav_item_id: course.nav_item_id || null,
         cta_heading: course.cta_heading,
         cta_description: course.cta_description,
@@ -851,7 +858,8 @@ export default function CourseEditor() {
                       placeholder="Enroll Now" />
                   </div>
                   <div>
-                    <ImageUploader value={course.cta_background_image || ''} onChange={(v) => update('cta_background_image', v)} label="Background Image" />
+                    <label className="block text-sm font-semibold text-black mb-1">CTA Background Image <span className="text-destructive-500">*</span></label>
+                    <ImageUploader value={course.cta_background_image || ''} onChange={(v) => update('cta_background_image', v)} />
                   </div>
                 </div>
               </div>
@@ -864,7 +872,7 @@ export default function CourseEditor() {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-black mb-1">
-                  Hero Image
+                  Hero Image *
                 </label>
                 <ImageUploader
                   bucket="hero-images"
@@ -873,24 +881,17 @@ export default function CourseEditor() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Video Thumbnail
-                </label>
-                <ImageUploader
-                  bucket="hero-images"
-                  value={course.video_thumbnail_url}
-                  onChange={(url) => update("video_thumbnail_url", url)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-black mb-1">
-                  Course Introduction Video URL (YouTube)
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-sm font-semibold text-black">
+                    Course Introduction Video URL (YouTube)
+                  </label>
+                  <span className="text-xs text-neutral-400 font-normal">(Optional)</span>
+                </div>
                 <input
                   value={course.video_url || ""}
                   onChange={(e) => update("video_url", e.target.value)}
                   className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                  placeholder="https://www.youtube.com/watch?v=..."
+                  placeholder="https://www.youtube.com/watch?v=... (optional)"
                 />
               </div>
             </div>
