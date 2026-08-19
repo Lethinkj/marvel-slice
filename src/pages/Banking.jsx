@@ -5,6 +5,7 @@ import { FiArrowLeft, FiCheckCircle, FiArrowRight, FiTarget, FiChevronDown, FiX,
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
+import ModularCareerCTA from '../components/ui/ModularCareerCTA';
 import { supabase } from '../lib/supabaseClient';
 import { trackRegister, trackFormSubmit } from '../lib/analytics';
 
@@ -331,38 +332,160 @@ export default function Banking() {
         ))}
       </div>
 
-      {/* 3. FULL-WIDTH CTA BANNER SECTION */}
-      <section className="py-14 sm:py-20 bg-gradient-to-r from-[#1B365D] via-[#1E56C7] to-[#1B365D] text-white relative overflow-hidden w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <Reveal variant="up" className="max-w-3xl mx-auto space-y-4">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight text-white">
-              Your Banking Career Starts with the Right Choice
-            </h2>
+      {/* 3. EDITORIAL INFOGRAPHIC FULL-WIDTH CAREER CTA BANNER SECTION */}
+      <section className="relative py-12 sm:py-16 lg:py-20 bg-[#0a192f] text-white overflow-hidden w-full border-y border-white/10 shadow-lg">
+        {/* EMBEDDED HIGH-PERFORMANCE KEYFRAME ANIMATIONS */}
+        <style>{`
+          @keyframes cta-bg-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          @keyframes solar-orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          @keyframes solar-counter {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+          }
+          .cta-banner-bg {
+            background: linear-gradient(135deg, #09172a 0%, #123370 40%, #1e56c7 75%, #0b2042 100%);
+            background-size: 200% 200%;
+            animation: cta-bg-flow 18s ease-in-out infinite;
+          }
+          .solar-orbit-ring {
+            animation: solar-orbit 24s linear infinite;
+          }
+          .solar-node-upright {
+            animation: solar-counter 24s linear infinite;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .cta-banner-bg, .solar-orbit-ring, .solar-node-upright {
+              animation: none !important;
+            }
+          }
+        `}</style>
 
-            <p className="text-amber-300 font-bold text-sm sm:text-base tracking-wide">
-              Understand the role. Know the eligibility. Prepare with purpose.
-            </p>
+        {/* LAYER 1: MULTI-TONE NAVY & BLUE GRADIENT */}
+        <div className="absolute inset-0 cta-banner-bg pointer-events-none" />
 
-            <p className="text-slate-200 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto">
-              Choose the examination that matches your goals and take the first step toward building a career in banking.
-            </p>
+        {/* LAYER 2: SOFT AMBIENT GLOW ORBS */}
+        <div className="absolute -top-32 -left-20 w-[450px] h-[450px] rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-20 w-[450px] h-[450px] rounded-full bg-brand-orange/20 blur-3xl pointer-events-none" />
 
-            <div className="pt-3 flex justify-center">
-              <button
-                type="button"
-                onClick={() => setShowApplyModal(true)}
-                className="inline-flex items-center gap-2.5 px-8 py-4 bg-brand-orange hover:bg-brand-orange/90 text-white rounded-full font-bold text-sm shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all cursor-pointer active:scale-95"
-              >
-                <span>Apply Now</span>
-                <FiArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </Reveal>
+        {/* FOREGROUND SITE-CONTAINED CONTENT CONTAINER */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+            {/* LEFT COLUMN: SOLAR SYSTEM SPACE THEME GRAPHIC ILLUSTRATION (~50% width) */}
+            <Reveal variant="left" className="lg:col-span-6 flex items-center justify-center">
+              <div className="relative w-full max-w-md h-[260px] sm:h-[320px] flex items-center justify-center">
+                {/* Concentric Solar System Orbit Rings (SVG) */}
+                <svg className="absolute inset-0 w-full h-full text-white/20 pointer-events-none" viewBox="0 0 300 300">
+                  <circle cx="150" cy="150" r="115" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 5" />
+                  <circle cx="150" cy="150" r="65" fill="none" stroke="rgba(251,191,36,0.3)" strokeWidth="1" strokeDasharray="3 3" />
+                </svg>
+
+                {/* CENTRAL CORE PLANET (HIGH-CONTRAST VISIBLE CORE) */}
+                <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#1E56C7] border-2 border-brand-orange shadow-[0_0_30px_rgba(30,86,199,0.8)] flex flex-col items-center justify-center p-2 text-center group">
+                  <div className="w-9 h-9 rounded-full bg-brand-orange text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <FiTarget className="w-4.5 h-4.5 text-white" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-white mt-1">
+                    Banking
+                  </span>
+                </div>
+
+                {/* CONTINUOUS ROTATING SOLAR SYSTEM ORBIT CONTAINER */}
+                <div className="solar-orbit-ring absolute w-[220px] h-[220px] sm:w-[250px] sm:h-[250px] flex items-center justify-center pointer-events-none">
+                  {/* PLANET 1 (TOP / 0°) — FINANCIAL GROWTH */}
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 pointer-events-auto">
+                    <div className="solar-node-upright flex flex-col items-center">
+                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
+                        <div className="w-6 h-6 rounded-full bg-amber-400/20 flex items-center justify-center">
+                          <FiChevronDown className="w-3.5 h-3.5 text-amber-300 transform rotate-180" />
+                        </div>
+                        <span className="text-[8px] font-extrabold text-white mt-0.5">Growth</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* PLANET 2 (RIGHT / 90°) — CAREER STABILITY */}
+                  <div className="absolute top-1/2 -right-3 -translate-y-1/2 pointer-events-auto">
+                    <div className="solar-node-upright flex flex-col items-center">
+                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
+                        <div className="w-6 h-6 rounded-full bg-brand-orange/20 flex items-center justify-center">
+                          <FiCheckCircle className="w-3.5 h-3.5 text-brand-orange" />
+                        </div>
+                        <span className="text-[8px] font-extrabold text-white mt-0.5">Stability</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* PLANET 3 (BOTTOM / 180°) — IBPS OFFICER */}
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 pointer-events-auto">
+                    <div className="solar-node-upright flex flex-col items-center">
+                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
+                        <div className="w-6 h-6 rounded-full bg-amber-400/20 flex items-center justify-center">
+                          <FiArrowRight className="w-3.5 h-3.5 text-amber-300 transform -rotate-45" />
+                        </div>
+                        <span className="text-[8px] font-extrabold text-white mt-0.5">Officer</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* PLANET 4 (LEFT / 270°) — 100% SELECTION */}
+                  <div className="absolute top-1/2 -left-3 -translate-y-1/2 pointer-events-auto">
+                    <div className="solar-node-upright flex flex-col items-center">
+                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
+                        <div className="w-6 h-6 rounded-full bg-brand-orange/20 flex items-center justify-center">
+                          <span className="text-[9px] font-extrabold text-brand-orange">100%</span>
+                        </div>
+                        <span className="text-[8px] font-bold text-white mt-0.5">Selection</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* FLOATING DECORATIVE DIAMONDS & STAR NODES (◇ ✦) */}
+                <span className="absolute top-2 left-1/2 -translate-x-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">✦</span>
+                <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">✦</span>
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">◇</span>
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">◇</span>
+              </div>
+            </Reveal>
+
+            {/* RIGHT COLUMN: HEADING, ORANGE DIVIDER, DESCRIPTION & BUTTON (~50% width) */}
+            <Reveal variant="right" className="lg:col-span-6 space-y-4 text-left">
+              <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-extrabold text-white leading-[1.16] tracking-tight max-w-[540px]">
+                Your Banking Career Starts with <br className="hidden sm:inline" />
+                the Right Choice
+              </h2>
+
+              {/* Orange Accent Line Divider (Inspired directly by reference image) */}
+              <div className="w-20 h-[3.5px] bg-brand-orange rounded-full my-4" />
+
+              <p className="!text-white text-white text-sm sm:text-base leading-relaxed max-w-lg font-medium" style={{ color: '#ffffff' }}>
+                Find the banking exam that matches your goals, understand the role, and start preparing with confidence.
+              </p>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowApplyModal(true)}
+                  className="group inline-flex items-center gap-2.5 h-[48px] px-7 sm:px-8 bg-gradient-to-r from-brand-orange to-amber-500 hover:from-brand-orange/90 hover:to-amber-500/90 text-white rounded-xl font-bold text-sm sm:text-base shadow-xl hover:shadow-orange-500/25 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
+                >
+                  <span>Explore Banking Paths</span>
+                  <FiArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* 4. COURSE HIGHLIGHTS & UPCOMING IMAGE SECTION */}
-      <section className="py-16 sm:py-24 bg-white border-t border-slate-100">
+      <section id="why-prepare-section" className="py-16 sm:py-24 bg-white border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left Column: Heading & 4 Course Bullet Points */}
@@ -480,15 +603,15 @@ export default function Banking() {
               transition={{ duration: 0.2 }}
               className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden"
             >
-              {/* Modal Header — Solid Brand Blue bg-[#1E56C7] */}
-              <div className="bg-[#1E56C7] text-white px-6 py-5 flex items-center justify-between relative">
+              {/* Modal Header — Brand Orange bg-brand-orange */}
+              <div className="bg-brand-orange text-white px-6 py-5 flex items-center justify-between relative">
                 <div>
                   <h3 className="text-lg sm:text-xl font-extrabold leading-snug">
-                    Banking Exam Registration
+                    Enquiry
                   </h3>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="bg-white/15 text-white border border-white/20 text-xs font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand-orange" />
+                    <span className="bg-white/20 text-white border border-white/30 text-xs font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
                       Banking
                     </span>
                   </div>
@@ -516,7 +639,7 @@ export default function Banking() {
                     <button
                       type="button"
                       onClick={closeApplyModal}
-                      className="mt-2 w-full py-3 bg-[#1E56C7] hover:bg-[#1E56C7]/90 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer"
+                      className="mt-2 w-full py-3 bg-brand-orange hover:bg-brand-orange/90 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer"
                     >
                       Done
                     </button>
