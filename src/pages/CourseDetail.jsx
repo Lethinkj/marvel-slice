@@ -946,13 +946,20 @@ export default function CourseDetail() {
               className="bg-white rounded-2xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto cursor-default"
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900">Enquire Now</h2>
-                  <p className="text-xs text-brand-orange font-semibold mt-0.5">{course.title}</p>
+              <div className="px-5 py-4 bg-[#f59e0b] rounded-t-2xl flex items-start justify-between relative">
+                <div className="pr-4 min-w-0">
+                  <h2 className="text-lg sm:text-xl font-extrabold !text-white leading-snug" style={{ color: '#ffffff' }}>Enquire Now</h2>
+                  <div className="mt-1 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white text-dark-navy text-[11px] sm:text-xs font-semibold shadow-2xs max-w-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b] shrink-0"></span>
+                    <span className="truncate">{course.title}</span>
+                  </div>
                 </div>
-                <button onClick={() => setShowEnquiry(false)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-                  <FiX className="w-5 h-5 text-gray-400" />
+                <button
+                  onClick={() => setShowEnquiry(false)}
+                  className="p-1 rounded-full bg-black/15 hover:bg-black/25 text-white transition-colors cursor-pointer shrink-0 mt-0.5"
+                  aria-label="Close modal"
+                >
+                  <FiX className="w-4 h-4 text-white" style={{ color: '#ffffff' }} />
                 </button>
               </div>
 
