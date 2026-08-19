@@ -753,7 +753,7 @@ export default function CourseDetail() {
                   variant="outline"
                   size="lg"
                   onClick={() => openEnquiryModal(course.cta_right || 'Download Brochure')}
-                  className="w-full sm:w-auto cursor-pointer hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md active:scale-95 transition-all duration-300"
+                  className="w-full sm:w-auto cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 transition-all duration-300"
                 >
                   {course.cta_right || 'Download Brochure'}
                 </Button>

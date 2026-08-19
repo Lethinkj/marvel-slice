@@ -26,7 +26,7 @@ function CourseButtons() {
         Software Learning
       </Link>
       <Link
-        to="/courses?parent=competitive-exam"
+        to="/banking"
         className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-[#74a916] text-white font-bold text-xs sm:text-sm hover:bg-[#74a916]/90 transition-all shadow-md active:scale-95 text-center"
       >
         Competitive Exam

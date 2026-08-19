@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, useParams, Link } from "react-router-dom";
+import { useSearchParams, useParams, Link, Navigate } from "react-router-dom";
 import {
   FiBookOpen,
   FiChevronDown,
@@ -31,21 +31,12 @@ import { Stagger, StaggerItem } from "../components/ui/Reveal";
 
 const PER_PAGE = 6;
 
-// Fixed top-level parents — these are the only two groups that should
-// ever appear in the SL/CE segmented control and drive the sidebar tree.
-// Do NOT derive this dynamically from nav_items; that caused every
-// category (Web Development, UPSC, Cybersecurity, etc.) to be treated
-// as a top-level parent and rendered as one long horizontal chip strip.
+// Fixed top-level parents — only Software Learning for now.
 const PARENTS = [
   {
     label: "Software Learning",
     slug: "software-learning",
     displayLabel: "Software",
-  },
-  {
-    label: "Competitive Exam",
-    slug: "competitive-exam",
-    displayLabel: "Competitive",
   },
 ];
 
@@ -279,7 +270,11 @@ export default function Courses() {
   const [userExpanded, setUserExpanded] = useState(null);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
-  const parentParam = searchParams.get("parent") || PARENTS[0].slug;
+  const rawParent = searchParams.get("parent");
+  if (rawParent === "competitive-exam") {
+    return <Navigate to="/banking" replace />;
+  }
+  const parentParam = rawParent || PARENTS[0].slug;
   const activeCategory = searchParams.get("category") || categorySlug || null;
   const listOnly = searchParams.get("view") === "list";
   const page = parseInt(searchParams.get("page") || "1", 10);
