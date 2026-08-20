@@ -215,121 +215,172 @@ export default function Banking() {
 
   return (
     <div className="bg-white min-h-screen text-slate-800">
-      {/* 1. HERO — EDITORIAL HEADER */}
-      <section className="relative bg-white pt-8 pb-12 sm:pb-16 overflow-hidden border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <button
-            type="button"
-            onClick={handleBackNavigation}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-brand-orange transition-colors mb-6 cursor-pointer group"
-          >
-            <FiArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-orange transition-transform group-hover:-translate-x-0.5" />
-            <span>Back</span>
-          </button>
+      {/* SCOPED BANKING CAREER CONTENT WRAPPER */}
+      <div className="banking-career-content">
+        {/* 1. BANKING INTRODUCTION SECTION */}
+        <section className="bg-white pt-8 pb-12 sm:pb-16 border-b border-[#E5ECF5]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <button
+              type="button"
+              onClick={handleBackNavigation}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#0B2A6F] transition-colors mb-6 cursor-pointer group"
+            >
+              <FiArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0B2A6F] transition-transform group-hover:-translate-x-0.5" />
+              <span>Back</span>
+            </button>
 
-          <Reveal variant="up" className="max-w-4xl mx-auto text-center space-y-10 sm:space-y-12">
-            <div className="inline-flex flex-col items-center mb-8 sm:mb-12">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark-navy leading-[1.15]">
-                Build Your Career in Banking
-              </h1>
-              <div className="mt-3.5 h-[3px] bg-brand-orange rounded-full w-4/5" />
-            </div>
+            <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              {/* Left Column: Category Label, Heading, Description */}
+              <Reveal variant="left" className="lg:col-span-7 space-y-5">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-[#1558D6] text-xs font-bold uppercase tracking-wider">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-orange" />
+                  <span>Build Your Future</span>
+                </div>
 
-            <p className="text-slate-600 text-base sm:text-lg leading-[1.85] font-normal max-w-3xl mx-auto">
-              Banking is one of India's most popular career paths for graduates who are looking for stability, professional growth, and opportunities to work across different areas of financial services. The Institute of Banking Personnel Selection (IBPS) conducts recruitment examinations for several public-sector banking positions. These examinations open doors to roles ranging from customer-facing branch operations to officer-level responsibilities and specialised banking functions. Explore the major IBPS examinations below and find the path that matches your career goals.
-            </p>
-          </Reveal>
-        </div>
-      </section>
+                <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#0B2A6F] leading-[1.18] tracking-tight">
+                  Build Your Career <br className="hidden sm:inline" />
+                  in Banking
+                </h1>
 
-      {/* 2. 5 EDITORIAL EXAM SECTIONS */}
-      <div className="divide-y divide-slate-200/60">
-        {EXAMS.map((exam) => (
-          <section
-            key={exam.id}
-            id={exam.id}
-            className={`py-12 sm:py-16 lg:py-20 transition-colors ${
-              exam.number === '01' || exam.number === '03' || exam.number === '05'
-                ? 'bg-slate-50/60'
-                : 'bg-white'
-            }`}
-          >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-                {/* Image Column */}
-                <Reveal
-                  variant={exam.imageLeft ? 'left' : 'right'}
-                  className={`lg:col-span-5 ${exam.imageLeft ? 'lg:order-1' : 'lg:order-2'}`}
-                >
-                  <div className="relative rounded-2xl overflow-hidden shadow-md border border-slate-200/80 group">
+                <p className="text-slate-600 text-base sm:text-lg leading-[1.8] font-normal">
+                  Banking is one of India's most popular career paths for graduates who are looking for stability, professional growth, and opportunities to work across different areas of financial services. The Institute of Banking Personnel Selection (IBPS) conducts recruitment examinations for several public-sector banking positions. These examinations open doors to roles ranging from customer-facing branch operations to officer-level responsibilities and specialised banking functions. Explore the major IBPS examinations below and find the path that matches your career goals.
+                </p>
+              </Reveal>
+
+              {/* Right Column: Visual Container with Image & Decorative Banking Accents */}
+              <Reveal variant="right" className="lg:col-span-5 flex justify-center">
+                <div className="relative w-full max-w-md lg:max-w-none rounded-3xl bg-[#F0F6FF] border border-[#E5ECF5] p-4 sm:p-5 shadow-xs overflow-hidden">
+                  <div className="relative rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 aspect-[4/3] group">
                     <img
-                      src={exam.image}
-                      alt={exam.imageAlt}
-                      className="w-full h-[280px] sm:h-[340px] lg:h-[380px] object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                      src="/images/banking/banking_hero_editorial_1787149136213.jpg"
+                      alt="Banking Career Overview"
+                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-dark-navy/40 via-transparent to-transparent opacity-40" />
-                  </div>
-                </Reveal>
-
-                {/* Content Column */}
-                <Reveal
-                  variant={exam.imageLeft ? 'right' : 'left'}
-                  className={`lg:col-span-7 space-y-5 ${exam.imageLeft ? 'lg:order-2' : 'lg:order-1'}`}
-                >
-                  {/* Large Editorial Section Number */}
-                  <div className="flex items-center gap-3">
-                    <span className="text-4xl sm:text-5xl font-black text-brand-orange/80 tracking-tighter leading-none font-mono">
-                      {exam.number}
-                    </span>
-                    <div className="h-0.5 w-10 bg-brand-orange/40 rounded-full" />
-                    <span className={`px-3 py-1 rounded-full text-[11px] font-extrabold tracking-wider uppercase border ${exam.badgeStyle}`}>
-                      {exam.badge}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-dark-navy leading-tight">
-                      {exam.title}
-                    </h2>
-                    <h3 className="text-sm sm:text-base font-semibold text-brand-blue mt-1">
-                      {exam.subtitle}
-                    </h3>
-                  </div>
-
-                  {/* Controlled Reading Width Paragraphs */}
-                  <div className="space-y-3.5 text-slate-600 text-sm sm:text-base leading-relaxed">
-                    {exam.paragraphs.map((p, idx) => (
-                      <p key={idx}>{p}</p>
-                    ))}
-                  </div>
-
-                  {/* Clean Editorial Info Blocks */}
-                  <div className="grid sm:grid-cols-2 gap-5 pt-4 border-t border-slate-200/80">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs font-extrabold text-brand-orange uppercase tracking-wider">
-                        <FiTarget className="w-4 h-4 shrink-0 text-brand-orange" />
-                        <span>What Makes It Different?</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B2A6F]/50 via-transparent to-transparent opacity-60" />
+                    
+                    {/* Soft Floating Badge Accent */}
+                    <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-xl p-3 border border-white/60 flex items-center justify-between shadow-lg">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-[#1558D6] text-white flex items-center justify-center font-bold text-xs">
+                          IBPS
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-[#0B2A6F]">Public Sector Banking</p>
+                          <p className="text-[10px] text-slate-500 font-medium">5 Major Career Examinations</p>
+                        </div>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                        {exam.difference}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs font-extrabold text-brand-blue uppercase tracking-wider">
-                        <FiCheckCircle className="w-4 h-4 shrink-0 text-brand-blue" />
-                        <span>Ideal For</span>
-                      </div>
-                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                        {exam.idealFor}
-                      </p>
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-amber-50 text-brand-orange border border-amber-200">
+                        Official
+                      </span>
                     </div>
                   </div>
-                </Reveal>
-              </div>
+                </div>
+              </Reveal>
             </div>
-          </section>
-        ))}
+          </div>
+        </section>
+
+        {/* 2. BANKING CAREER CARDS SECTION */}
+        <section id="banking-cards" className="py-12 sm:py-16 lg:py-20 bg-[#F7FAFF]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+            {EXAMS.map((exam) => (
+              <Reveal key={exam.id} variant="up">
+                <div
+                  id={exam.id}
+                  className="bg-white border border-[#E5ECF5] rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-9 shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 group"
+                >
+                  <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+                    {/* LEFT — Image (~35% width / lg:col-span-4) */}
+                    <div className="lg:col-span-4 shrink-0">
+                      <div className="relative w-full h-56 lg:h-full min-h-[220px] rounded-2xl overflow-hidden shadow-xs border border-slate-100">
+                        <img
+                          src={exam.image}
+                          alt={exam.imageAlt}
+                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0B2A6F]/30 via-transparent to-transparent opacity-40" />
+                      </div>
+                    </div>
+
+                    {/* MIDDLE — Main Information (lg:col-span-5) */}
+                    <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
+                      <div className="space-y-3">
+                        {/* Number Badge & Category Pill */}
+                        <div className="flex items-center gap-3">
+                          <span className="w-8 h-8 rounded-lg bg-[#1558D6] text-white flex items-center justify-center font-extrabold text-sm font-mono shadow-xs shrink-0">
+                            {exam.number}
+                          </span>
+                          <span className={`px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase border ${exam.badgeStyle}`}>
+                            {exam.badge}
+                          </span>
+                        </div>
+
+                        <div>
+                          <h2 className="text-xl sm:text-2xl font-bold text-[#0B2A6F] leading-tight">
+                            {exam.title}
+                          </h2>
+                          <h3 className="text-xs sm:text-sm font-semibold text-[#1558D6] mt-0.5">
+                            {exam.subtitle}
+                          </h3>
+                        </div>
+
+                        {/* Existing Paragraphs */}
+                        <div className="space-y-2 text-slate-600 text-xs sm:text-sm leading-relaxed font-normal">
+                          {exam.paragraphs.map((p, idx) => (
+                            <p key={idx}>{p}</p>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* RIGHT — Supporting Information (lg:col-span-3) */}
+                    <div className="lg:col-span-3 border-t lg:border-t-0 lg:border-l border-[#E5ECF5] pt-5 lg:pt-0 lg:pl-6 space-y-5 flex flex-col justify-between">
+                      <div className="space-y-4">
+                        {/* What Makes It Different */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2 text-xs font-bold text-[#1558D6] uppercase tracking-wider">
+                            <div className="w-5 h-5 rounded-md bg-blue-50 flex items-center justify-center text-[#1558D6] shrink-0">
+                              <FiTarget className="w-3.5 h-3.5" />
+                            </div>
+                            <span>What Makes It Different?</span>
+                          </div>
+                          <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                            {exam.difference}
+                          </p>
+                        </div>
+
+                        <div className="h-px bg-slate-100" />
+
+                        {/* Ideal For */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2 text-xs font-bold text-[#0B2A6F] uppercase tracking-wider">
+                            <div className="w-5 h-5 rounded-md bg-amber-50 flex items-center justify-center text-brand-orange shrink-0">
+                              <FiCheckCircle className="w-3.5 h-3.5" />
+                            </div>
+                            <span>Ideal For</span>
+                          </div>
+                          <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                            {exam.idealFor}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Enquire Action Button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowApplyModal(true)}
+                        className="w-full py-2.5 px-4 bg-slate-50 hover:bg-[#1558D6] text-[#0B2A6F] hover:text-white border border-[#E5ECF5] hover:border-transparent rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 group/btn cursor-pointer mt-2"
+                      >
+                        <span>Enquire Now</span>
+                        <FiArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
       </div>
 
       {/* 3. EDITORIAL INFOGRAPHIC FULL-WIDTH CAREER CTA BANNER SECTION */}
