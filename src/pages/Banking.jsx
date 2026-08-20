@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { FiArrowLeft, FiCheckCircle, FiArrowRight, FiTarget, FiChevronDown, FiX, FiLoader } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
-import ModularCareerCTA from '../components/ui/ModularCareerCTA';
 import { supabase } from '../lib/supabaseClient';
 import { trackRegister, trackFormSubmit } from '../lib/analytics';
 
@@ -39,10 +38,9 @@ const EXAMS = [
     title: 'IBPS PO / MT',
     subtitle: 'Start Your Journey as a Bank Officer',
     badge: 'OFFICER LEVEL',
-    badgeStyle: 'bg-blue-50 text-blue-700 border-blue-200/80',
+    badgeStyle: 'bg-blue-50 text-brand-blue border-blue-200/80',
     image: '/images/banking/banking_ibps_po_1787149162525.jpg',
     imageAlt: 'IBPS PO Officer in modern bank office',
-    imageLeft: true,
     paragraphs: [
       'The IBPS Probationary Officer / Management Trainee examination is one of the most sought-after banking examinations for graduates who want to begin their career in an officer-level position.',
       'A Probationary Officer is exposed to different areas of banking during the early stages of their career. The role can involve customer service, account operations, loans and credit, branch administration, financial products, and day-to-day banking activities.',
@@ -57,10 +55,9 @@ const EXAMS = [
     title: 'IBPS Clerk / Customer Service Associate',
     subtitle: 'Be the First Point of Contact for Customers',
     badge: 'CLERICAL / CUSTOMER SERVICE',
-    badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200/80',
+    badgeStyle: 'bg-amber-50 text-brand-orange border-amber-200/80',
     image: '/images/banking/banking_ibps_clerk_1787149180592.jpg',
     imageAlt: 'IBPS Clerk Customer Service Associate assisting customer',
-    imageLeft: false,
     paragraphs: [
       'The IBPS Clerk recruitment, now associated with the Customer Service Associate role, is an excellent entry point into the banking sector.',
       'Customer Service Associates work closely with customers and support essential branch operations. Their responsibilities may include account services, cash-related activities, documentation, customer requests, and assisting customers with banking products and services.',
@@ -78,7 +75,6 @@ const EXAMS = [
     badgeStyle: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
     image: '/images/banking/banking_rrb_officer_1787149492894.jpg',
     imageAlt: 'IBPS RRB Officer interacting with rural community',
-    imageLeft: true,
     paragraphs: [
       'Regional Rural Banks play an important role in providing banking and financial services to rural and semi-urban communities.',
       'The IBPS RRB Officer Scale I examination is designed for candidates seeking an officer-level position in a Regional Rural Bank.',
@@ -97,7 +93,6 @@ const EXAMS = [
     badgeStyle: 'bg-purple-50 text-purple-700 border-purple-200/80',
     image: '/images/banking/banking_hero_editorial_1787149136213.jpg',
     imageAlt: 'IBPS RRB Office Assistant branch operations',
-    imageLeft: false,
     paragraphs: [
       'The RRB Office Assistant role provides an opportunity to begin a banking career within the Regional Rural Banking ecosystem.',
       'Office Assistants support day-to-day branch activities and interact directly with customers. Their work can involve account-related services, documentation, cash and transaction support, customer assistance, and routine branch operations.',
@@ -115,7 +110,6 @@ const EXAMS = [
     badgeStyle: 'bg-indigo-50 text-indigo-700 border-indigo-200/80',
     image: '/images/banking/banking_ibps_po_1787149162525.jpg',
     imageAlt: 'IBPS Specialist Officer IT & Finance expertise',
-    imageLeft: true,
     paragraphs: [
       'Banking is not limited to general banking and customer service. Modern banks also require professionals with expertise in technology, agriculture, law, human resources, marketing, and other specialised fields.',
       'IBPS Specialist Officer recruitment provides opportunities for candidates with specific educational backgrounds to enter banking through specialist positions.',
@@ -131,12 +125,20 @@ export default function Banking() {
   const navigate = useNavigate();
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [enquiryType, setEnquiryType] = useState('general');
+  const [selectedTopic, setSelectedTopic] = useState('General Banking Enquiry');
   const [formName, setFormName] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formPhone, setFormPhone] = useState('');
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  function openApplyModal(type = 'general', topic = 'General Banking Enquiry') {
+    setEnquiryType(type);
+    setSelectedTopic(topic);
+    setShowApplyModal(true);
+  }
 
   function closeApplyModal() {
     if (isSubmitting) return;
@@ -161,21 +163,42 @@ export default function Banking() {
 
     setIsSubmitting(true);
 
+    const buttonClicked = enquiryType === 'topic' ? `Enquire Now (${selectedTopic})` : 'Explore Banking Paths';
+
     const payload = {
-      course_title: 'Banking',
-      button_clicked: 'Apply Now',
       full_name: formName.trim(),
       email: formEmail.trim(),
       phone: formPhone.trim(),
+      enquiry_type: enquiryType,
+      topic_title: selectedTopic || 'General Banking Enquiry',
+      button_clicked: buttonClicked,
       terms_accepted: true,
+      is_read: false,
     };
 
-    const { error } = await supabase.from('course_enquiries').insert(payload);
+    const { error } = await supabase.from('banking_enquiries').insert(payload);
 
     if (error) {
       setFormErrors({ form: 'Submission failed. Please try again.' });
       setIsSubmitting(false);
       return;
+    }
+
+    try {
+      await fetch('/api/submit-banking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: formName.trim(),
+          email: formEmail.trim(),
+          phone: formPhone.trim(),
+          enquiry_type: enquiryType,
+          topic_title: selectedTopic || 'General Banking Enquiry',
+          button_clicked: buttonClicked,
+        }),
+      });
+    } catch {
+      // Non-blocking email attempt
     }
 
     trackRegister('Banking');
@@ -223,21 +246,16 @@ export default function Banking() {
             <button
               type="button"
               onClick={handleBackNavigation}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#0B2A6F] transition-colors mb-6 cursor-pointer group"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-orange transition-colors mb-6 cursor-pointer group"
             >
-              <FiArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0B2A6F] transition-transform group-hover:-translate-x-0.5" />
+              <FiArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-orange transition-transform group-hover:-translate-x-0.5" />
               <span>Back</span>
             </button>
 
             <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               {/* Left Column: Category Label, Heading, Description */}
               <Reveal variant="left" className="lg:col-span-7 space-y-5">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-[#1558D6] text-xs font-bold uppercase tracking-wider">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-orange" />
-                  <span>Build Your Future</span>
-                </div>
-
-                <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#0B2A6F] leading-[1.18] tracking-tight">
+                <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-brand-blue leading-[1.18] tracking-tight">
                   Build Your Career <br className="hidden sm:inline" />
                   in Banking
                 </h1>
@@ -249,45 +267,51 @@ export default function Banking() {
 
               {/* Right Column: Visual Container with Image & Decorative Banking Accents */}
               <Reveal variant="right" className="lg:col-span-5 flex justify-center">
-                <div className="relative w-full max-w-md lg:max-w-none rounded-3xl bg-[#F0F6FF] border border-[#E5ECF5] p-4 sm:p-5 shadow-xs overflow-hidden">
-                  <div className="relative rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 aspect-[4/3] group">
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative w-full max-w-md lg:max-w-none rounded-3xl bg-gradient-to-b from-blue-50/80 to-amber-50/40 border border-blue-100 p-4 sm:p-5 shadow-lg overflow-hidden"
+                >
+                  <div className="relative rounded-2xl overflow-hidden shadow-md border border-white/80 aspect-[4/3] group">
                     <img
                       src="/images/banking/banking_hero_editorial_1787149136213.jpg"
                       alt="Banking Career Overview"
-                      className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B2A6F]/50 via-transparent to-transparent opacity-60" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-dark-navy/60 via-transparent to-transparent opacity-60" />
                     
                     {/* Soft Floating Badge Accent */}
-                    <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-xl p-3 border border-white/60 flex items-center justify-between shadow-lg">
+                    <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md rounded-xl p-3 border border-white/80 flex items-center justify-between shadow-xl">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-[#1558D6] text-white flex items-center justify-center font-bold text-xs">
+                        <div className="w-9 h-9 rounded-lg bg-brand-blue text-white flex items-center justify-center font-extrabold text-xs shadow-md">
                           IBPS
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-[#0B2A6F]">Public Sector Banking</p>
-                          <p className="text-[10px] text-slate-500 font-medium">5 Major Career Examinations</p>
+                          <p className="text-xs font-bold text-dark-navy">Public Sector Banking</p>
+                          <p className="text-[10px] text-slate-500 font-semibold">5 Major Career Examinations</p>
                         </div>
                       </div>
-                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-amber-50 text-brand-orange border border-amber-200">
+                      <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-amber-50 text-brand-orange border border-brand-orange/30 shadow-xs">
                         Official
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </Reveal>
             </div>
           </div>
         </section>
 
         {/* 2. BANKING CAREER CARDS SECTION */}
-        <section id="banking-cards" className="py-12 sm:py-16 lg:py-20 bg-[#F7FAFF]">
+        <section id="banking-cards" className="py-12 sm:py-16 lg:py-20 bg-slate-50/70">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
             {EXAMS.map((exam) => (
               <Reveal key={exam.id} variant="up">
-                <div
+                <motion.div
+                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
                   id={exam.id}
-                  className="bg-white border border-[#E5ECF5] rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-9 shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 group"
+                  className="bg-white border border-[#E5ECF5] hover:border-brand-orange/40 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-9 shadow-sm hover:shadow-2xl hover:shadow-brand-blue/10 transition-all duration-300 group"
                 >
                   <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
                     {/* LEFT — Image (~35% width / lg:col-span-4) */}
@@ -296,9 +320,9 @@ export default function Banking() {
                         <img
                           src={exam.image}
                           alt={exam.imageAlt}
-                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0B2A6F]/30 via-transparent to-transparent opacity-40" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-dark-navy/40 via-transparent to-transparent opacity-40" />
                       </div>
                     </div>
 
@@ -307,7 +331,7 @@ export default function Banking() {
                       <div className="space-y-3">
                         {/* Number Badge & Category Pill */}
                         <div className="flex items-center gap-3">
-                          <span className="w-8 h-8 rounded-lg bg-[#1558D6] text-white flex items-center justify-center font-extrabold text-sm font-mono shadow-xs shrink-0">
+                          <span className="w-8 h-8 rounded-lg bg-brand-blue text-white flex items-center justify-center font-extrabold text-sm font-mono shadow-md shadow-brand-blue/20 shrink-0">
                             {exam.number}
                           </span>
                           <span className={`px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-extrabold tracking-wider uppercase border ${exam.badgeStyle}`}>
@@ -316,10 +340,10 @@ export default function Banking() {
                         </div>
 
                         <div>
-                          <h2 className="text-xl sm:text-2xl font-bold text-[#0B2A6F] leading-tight">
+                          <h2 className="text-xl sm:text-2xl font-bold text-dark-navy leading-tight group-hover:text-brand-blue transition-colors">
                             {exam.title}
                           </h2>
-                          <h3 className="text-xs sm:text-sm font-semibold text-[#1558D6] mt-0.5">
+                          <h3 className="text-xs sm:text-sm font-semibold text-brand-orange mt-0.5">
                             {exam.subtitle}
                           </h3>
                         </div>
@@ -338,8 +362,8 @@ export default function Banking() {
                       <div className="space-y-4">
                         {/* What Makes It Different */}
                         <div className="space-y-1.5">
-                          <div className="flex items-center gap-2 text-xs font-bold text-[#1558D6] uppercase tracking-wider">
-                            <div className="w-5 h-5 rounded-md bg-blue-50 flex items-center justify-center text-[#1558D6] shrink-0">
+                          <div className="flex items-center gap-2 text-xs font-bold text-brand-blue uppercase tracking-wider">
+                            <div className="w-5.5 h-5.5 rounded-md bg-blue-50 flex items-center justify-center text-brand-blue shrink-0">
                               <FiTarget className="w-3.5 h-3.5" />
                             </div>
                             <span>What Makes It Different?</span>
@@ -353,8 +377,8 @@ export default function Banking() {
 
                         {/* Ideal For */}
                         <div className="space-y-1.5">
-                          <div className="flex items-center gap-2 text-xs font-bold text-[#0B2A6F] uppercase tracking-wider">
-                            <div className="w-5 h-5 rounded-md bg-amber-50 flex items-center justify-center text-brand-orange shrink-0">
+                          <div className="flex items-center gap-2 text-xs font-bold text-dark-navy uppercase tracking-wider">
+                            <div className="w-5.5 h-5.5 rounded-md bg-amber-50 flex items-center justify-center text-brand-orange shrink-0">
                               <FiCheckCircle className="w-3.5 h-3.5" />
                             </div>
                             <span>Ideal For</span>
@@ -368,15 +392,15 @@ export default function Banking() {
                       {/* Enquire Action Button */}
                       <button
                         type="button"
-                        onClick={() => setShowApplyModal(true)}
-                        className="w-full py-2.5 px-4 bg-slate-50 hover:bg-[#1558D6] text-[#0B2A6F] hover:text-white border border-[#E5ECF5] hover:border-transparent rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 group/btn cursor-pointer mt-2"
+                        onClick={() => openApplyModal('topic', exam.title)}
+                        className="w-full py-2.5 px-4 bg-brand-blue hover:bg-brand-orange text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-1.5 group/btn cursor-pointer mt-2"
                       >
                         <span>Enquire Now</span>
-                        <FiArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                        <FiArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1.5" />
                       </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </Reveal>
             ))}
           </div>
@@ -384,152 +408,60 @@ export default function Banking() {
       </div>
 
       {/* 3. EDITORIAL INFOGRAPHIC FULL-WIDTH CAREER CTA BANNER SECTION */}
-      <section className="relative py-12 sm:py-16 lg:py-20 bg-[#0a192f] text-white overflow-hidden w-full border-y border-white/10 shadow-lg">
-        {/* EMBEDDED HIGH-PERFORMANCE KEYFRAME ANIMATIONS */}
-        <style>{`
-          @keyframes cta-bg-flow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-          }
-          @keyframes solar-orbit {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-          @keyframes solar-counter {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(-360deg); }
-          }
-          .cta-banner-bg {
-            background: linear-gradient(135deg, #09172a 0%, #123370 40%, #1e56c7 75%, #0b2042 100%);
-            background-size: 200% 200%;
-            animation: cta-bg-flow 18s ease-in-out infinite;
-          }
-          .solar-orbit-ring {
-            animation: solar-orbit 24s linear infinite;
-          }
-          .solar-node-upright {
-            animation: solar-counter 24s linear infinite;
-          }
-          @media (prefers-reduced-motion: reduce) {
-            .cta-banner-bg, .solar-orbit-ring, .solar-node-upright {
-              animation: none !important;
-            }
-          }
-        `}</style>
+      <section className="relative py-14 sm:py-18 lg:py-20 bg-gradient-to-r from-[#07193C] via-[#0B2A6F] to-[#1558D6] text-white overflow-hidden w-full border-y border-white/10 shadow-2xl">
+        {/* SVG HALF CIRCLE & CURVED CONCENTRIC LINE VECTOR PATTERN (BLUE & WHITE ONLY) */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {/* Top-Right Half Circle Arc Lines */}
+          <svg className="absolute -top-24 -right-24 w-[480px] sm:w-[540px] h-[480px] sm:h-[540px] text-white/15" viewBox="0 0 500 500" fill="none">
+            <circle cx="250" cy="250" r="230" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 6" />
+            <circle cx="250" cy="250" r="180" stroke="currentColor" strokeWidth="2" />
+            <circle cx="250" cy="250" r="130" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4 4" />
+            <circle cx="250" cy="250" r="80" stroke="currentColor" strokeWidth="2" />
+          </svg>
 
-        {/* LAYER 1: MULTI-TONE NAVY & BLUE GRADIENT */}
-        <div className="absolute inset-0 cta-banner-bg pointer-events-none" />
+          {/* Bottom-Left Half Circle Arc Lines */}
+          <svg className="absolute -bottom-24 -left-24 w-[420px] sm:w-[480px] h-[420px] sm:h-[480px] text-white/15" viewBox="0 0 450 450" fill="none">
+            <circle cx="225" cy="225" r="205" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 6" />
+            <circle cx="225" cy="225" r="155" stroke="currentColor" strokeWidth="2" />
+            <circle cx="225" cy="225" r="105" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4 4" />
+            <circle cx="225" cy="225" r="55" stroke="currentColor" strokeWidth="2" />
+          </svg>
 
-        {/* LAYER 2: SOFT AMBIENT GLOW ORBS */}
-        <div className="absolute -top-32 -left-20 w-[450px] h-[450px] rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -right-20 w-[450px] h-[450px] rounded-full bg-brand-orange/20 blur-3xl pointer-events-none" />
+          {/* Subtle Horizontal Curved Wave Lines */}
+          <svg className="absolute inset-0 w-full h-full text-white/5" viewBox="0 0 1200 400" preserveAspectRatio="none" fill="none">
+            <path d="M 0 200 Q 300 100 600 200 T 1200 200" stroke="currentColor" strokeWidth="2" />
+            <path d="M 0 240 Q 300 140 600 240 T 1200 240" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 5" />
+          </svg>
+        </div>
 
-        {/* FOREGROUND SITE-CONTAINED CONTENT CONTAINER */}
+        {/* SOFT BLUE & WHITE AMBIENT GLOW ORBS */}
+        <div className="absolute -top-32 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-400/20 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 right-1/4 w-[400px] h-[400px] rounded-full bg-white/10 blur-3xl pointer-events-none" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-            {/* LEFT COLUMN: SOLAR SYSTEM SPACE THEME GRAPHIC ILLUSTRATION (~50% width) */}
-            <Reveal variant="left" className="lg:col-span-6 flex items-center justify-center">
-              <div className="relative w-full max-w-md h-[260px] sm:h-[320px] flex items-center justify-center">
-                {/* Concentric Solar System Orbit Rings (SVG) */}
-                <svg className="absolute inset-0 w-full h-full text-white/20 pointer-events-none" viewBox="0 0 300 300">
-                  <circle cx="150" cy="150" r="115" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 5" />
-                  <circle cx="150" cy="150" r="65" fill="none" stroke="rgba(251,191,36,0.3)" strokeWidth="1" strokeDasharray="3 3" />
-                </svg>
-
-                {/* CENTRAL CORE PLANET (HIGH-CONTRAST VISIBLE CORE) */}
-                <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#1E56C7] border-2 border-brand-orange shadow-[0_0_30px_rgba(30,86,199,0.8)] flex flex-col items-center justify-center p-2 text-center group">
-                  <div className="w-9 h-9 rounded-full bg-brand-orange text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <FiTarget className="w-4.5 h-4.5 text-white" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-white mt-1">
-                    Banking
-                  </span>
-                </div>
-
-                {/* CONTINUOUS ROTATING SOLAR SYSTEM ORBIT CONTAINER */}
-                <div className="solar-orbit-ring absolute w-[220px] h-[220px] sm:w-[250px] sm:h-[250px] flex items-center justify-center pointer-events-none">
-                  {/* PLANET 1 (TOP / 0°) — FINANCIAL GROWTH */}
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 pointer-events-auto">
-                    <div className="solar-node-upright flex flex-col items-center">
-                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
-                        <div className="w-6 h-6 rounded-full bg-amber-400/20 flex items-center justify-center">
-                          <FiChevronDown className="w-3.5 h-3.5 text-amber-300 transform rotate-180" />
-                        </div>
-                        <span className="text-[8px] font-extrabold text-white mt-0.5">Growth</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* PLANET 2 (RIGHT / 90°) — CAREER STABILITY */}
-                  <div className="absolute top-1/2 -right-3 -translate-y-1/2 pointer-events-auto">
-                    <div className="solar-node-upright flex flex-col items-center">
-                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
-                        <div className="w-6 h-6 rounded-full bg-brand-orange/20 flex items-center justify-center">
-                          <FiCheckCircle className="w-3.5 h-3.5 text-brand-orange" />
-                        </div>
-                        <span className="text-[8px] font-extrabold text-white mt-0.5">Stability</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* PLANET 3 (BOTTOM / 180°) — IBPS OFFICER */}
-                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 pointer-events-auto">
-                    <div className="solar-node-upright flex flex-col items-center">
-                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
-                        <div className="w-6 h-6 rounded-full bg-amber-400/20 flex items-center justify-center">
-                          <FiArrowRight className="w-3.5 h-3.5 text-amber-300 transform -rotate-45" />
-                        </div>
-                        <span className="text-[8px] font-extrabold text-white mt-0.5">Officer</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* PLANET 4 (LEFT / 270°) — 100% SELECTION */}
-                  <div className="absolute top-1/2 -left-3 -translate-y-1/2 pointer-events-auto">
-                    <div className="solar-node-upright flex flex-col items-center">
-                      <div className="w-13 h-13 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-lg flex flex-col items-center justify-center p-1.5 hover:scale-110 transition-transform bg-gradient-to-b from-white/20 to-white/5">
-                        <div className="w-6 h-6 rounded-full bg-brand-orange/20 flex items-center justify-center">
-                          <span className="text-[9px] font-extrabold text-brand-orange">100%</span>
-                        </div>
-                        <span className="text-[8px] font-bold text-white mt-0.5">Selection</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* FLOATING DECORATIVE DIAMONDS & STAR NODES (◇ ✦) */}
-                <span className="absolute top-2 left-1/2 -translate-x-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">✦</span>
-                <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">✦</span>
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">◇</span>
-                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-mono text-amber-300/80 pointer-events-none">◇</span>
-              </div>
-            </Reveal>
-
-            {/* RIGHT COLUMN: HEADING, ORANGE DIVIDER, DESCRIPTION & BUTTON (~50% width) */}
-            <Reveal variant="right" className="lg:col-span-6 space-y-4 text-left">
-              <h2 className="text-2xl sm:text-3xl lg:text-[40px] font-extrabold text-white leading-[1.16] tracking-tight max-w-[540px]">
-                Your Banking Career Starts with <br className="hidden sm:inline" />
-                the Right Choice
+          <div className="grid lg:grid-cols-12 gap-8 items-end">
+            {/* LEFT COLUMN: SINGLE LINE HEADING, DIVIDER & EXPANDED CONTENT (~70% width) */}
+            <Reveal variant="left" className="lg:col-span-8 space-y-4 text-left">
+              <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-extrabold text-brand-orange tracking-tight leading-tight">
+                Your Banking Career <br />
+                Starts with the Right Choice
               </h2>
 
-              {/* Orange Accent Line Divider (Inspired directly by reference image) */}
-              <div className="w-20 h-[3.5px] bg-brand-orange rounded-full my-4" />
-
-              <p className="!text-white text-white text-sm sm:text-base leading-relaxed max-w-lg font-medium" style={{ color: '#ffffff' }}>
-                Find the banking exam that matches your goals, understand the role, and start preparing with confidence.
+              <p className="!text-white text-white text-sm sm:text-base leading-relaxed font-medium max-w-3xl" style={{ color: '#ffffff' }}>
+                Whether you are aiming for officer profiles like IBPS PO & RRB Scale I, customer-facing roles like IBPS Clerk & Office Assistant, or specialized technical positions, our structured banking curriculum offers end-to-end guidance from Prelims to Final Interviews. Gain deep conceptual clarity, daily speed tests, and personalized mentorship from former banking professionals.
               </p>
+            </Reveal>
 
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowApplyModal(true)}
-                  className="group inline-flex items-center gap-2.5 h-[48px] px-7 sm:px-8 bg-gradient-to-r from-brand-orange to-amber-500 hover:from-brand-orange/90 hover:to-amber-500/90 text-white rounded-xl font-bold text-sm sm:text-base shadow-xl hover:shadow-orange-500/25 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
-                >
-                  <span>Explore Banking Paths</span>
-                  <FiArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-              </div>
+            {/* RIGHT COLUMN: BUTTON ALIGNED TO BOTTOM RIGHT (~30% width) */}
+            <Reveal variant="right" className="lg:col-span-4 flex lg:justify-end justify-start items-end pt-4 lg:pt-0">
+              <button
+                type="button"
+                onClick={() => openApplyModal('general', 'General Banking Enquiry')}
+                className="group inline-flex items-center gap-2.5 h-[52px] px-8 bg-gradient-to-r from-brand-orange via-amber-500 to-orange-500 hover:from-brand-orange/90 hover:to-orange-500/90 text-white rounded-xl font-bold text-sm sm:text-base shadow-xl shadow-brand-orange/25 hover:scale-105 active:scale-100 transition-all duration-300 cursor-pointer shrink-0"
+              >
+                <span>Explore Banking Paths</span>
+                <FiArrowRight className="w-4.5 h-4.5 text-white transition-transform duration-300 group-hover:translate-x-1.5" />
+              </button>
             </Reveal>
           </div>
         </div>
@@ -541,74 +473,88 @@ export default function Banking() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             {/* Left Column: Heading & 4 Course Bullet Points */}
             <Reveal variant="left" className="lg:col-span-7 space-y-6">
-                <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy leading-tight">
+              <div>
+                <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-brand-blue leading-tight">
                   Why Prepare for Banking <br />
                   Exams with Us?
                 </h2>
+              </div>
 
               <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
                 Our specialized Banking & IBPS coaching program is designed to build strong concepts, enhance speed and accuracy, and provide end-to-end guidance from Prelims to Final Interviews.
               </p>
 
               <ul className="space-y-4 pt-2">
-                <li className="flex items-start gap-3.5">
-                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
-                    <FiCheckCircle className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Comprehensive Syllabus Coverage</h3>
-                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                      In-depth preparation for Quantitative Aptitude, Reasoning Ability, English Language, and General/Banking Awareness.
-                    </p>
-                  </div>
-                </li>
+                <Stagger className="space-y-4">
+                  <StaggerItem>
+                    <li className="flex items-start gap-3.5 group">
+                      <div className="p-1 rounded-full bg-amber-50 border border-brand-orange/40 text-brand-orange mt-0.5 shrink-0 group-hover:scale-110 transition-transform">
+                        <FiCheckCircle className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-dark-navy text-base sm:text-lg group-hover:text-brand-blue transition-colors">Comprehensive Syllabus Coverage</h3>
+                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                          In-depth preparation for Quantitative Aptitude, Reasoning Ability, English Language, and General/Banking Awareness.
+                        </p>
+                      </div>
+                    </li>
+                  </StaggerItem>
 
-                <li className="flex items-start gap-3.5">
-                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
-                    <FiCheckCircle className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Structured Prelims & Mains Training</h3>
-                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                      Targeted strategy covering two-tier objective exams, speed tests, and descriptive paper practice.
-                    </p>
-                  </div>
-                </li>
+                  <StaggerItem>
+                    <li className="flex items-start gap-3.5 group">
+                      <div className="p-1 rounded-full bg-amber-50 border border-brand-orange/40 text-brand-orange mt-0.5 shrink-0 group-hover:scale-110 transition-transform">
+                        <FiCheckCircle className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-dark-navy text-base sm:text-lg group-hover:text-brand-blue transition-colors">Structured Prelims & Mains Training</h3>
+                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                          Targeted strategy covering two-tier objective exams, speed tests, and descriptive paper practice.
+                        </p>
+                      </div>
+                    </li>
+                  </StaggerItem>
 
-                <li className="flex items-start gap-3.5">
-                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
-                    <FiCheckCircle className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Expert Banking Faculty & Mentorship</h3>
-                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                      Learn directly from experienced competitive exam specialists and former banking professionals.
-                    </p>
-                  </div>
-                </li>
+                  <StaggerItem>
+                    <li className="flex items-start gap-3.5 group">
+                      <div className="p-1 rounded-full bg-amber-50 border border-brand-orange/40 text-brand-orange mt-0.5 shrink-0 group-hover:scale-110 transition-transform">
+                        <FiCheckCircle className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-dark-navy text-base sm:text-lg group-hover:text-brand-blue transition-colors">Expert Banking Faculty & Mentorship</h3>
+                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                          Learn directly from experienced competitive exam specialists and former banking professionals.
+                        </p>
+                      </div>
+                    </li>
+                  </StaggerItem>
 
-                <li className="flex items-start gap-3.5">
-                  <div className="p-1 rounded-full bg-amber-50 border border-amber-200 text-brand-orange mt-0.5 shrink-0">
-                    <FiCheckCircle className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-dark-navy text-base sm:text-lg">Full-Length Mock Tests & Analytics</h3>
-                    <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                      Regular section-wise speed tests, exam-pattern simulations, and detailed performance tracking.
-                    </p>
-                  </div>
-                </li>
+                  <StaggerItem>
+                    <li className="flex items-start gap-3.5 group">
+                      <div className="p-1 rounded-full bg-amber-50 border border-brand-orange/40 text-brand-orange mt-0.5 shrink-0 group-hover:scale-110 transition-transform">
+                        <FiCheckCircle className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-dark-navy text-base sm:text-lg group-hover:text-brand-blue transition-colors">Full-Length Mock Tests & Analytics</h3>
+                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                          Regular section-wise speed tests, exam-pattern simulations, and detailed performance tracking.
+                        </p>
+                      </div>
+                    </li>
+                  </StaggerItem>
+                </Stagger>
               </ul>
             </Reveal>
 
-            {/* Right Column: Upcoming Image (Same dimensions as Home page) */}
-            <Reveal variant="right" className="lg:col-span-5 flex justify-center lg:justify-end self-end mt-8 lg:mt-16">
-              <div className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-md group">
-                <img
-                  src={upcomingImage}
-                  alt="Banking Course & Upcoming Classes"
-                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-                />
+            {/* Right Column: Upcoming Image Positioned a little more up */}
+            <Reveal variant="right" className="lg:col-span-5 flex justify-center lg:justify-end self-center my-auto pt-4">
+              <div className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-3xl overflow-hidden border border-blue-100 shadow-xl group bg-white p-2">
+                <div className="w-full h-full rounded-2xl overflow-hidden">
+                  <img
+                    src={upcomingImage}
+                    alt="Banking Course & Upcoming Classes"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                </div>
               </div>
             </Reveal>
           </div>
@@ -616,26 +562,27 @@ export default function Banking() {
       </section>
 
       {/* 5. FREQUENTLY ASKED QUESTIONS SECTION */}
-      <section className="pt-8 pb-16 bg-white border-t border-slate-100">
+      <section className="pt-8 pb-16 bg-slate-50/50 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="text-center">
               <div className="inline-flex flex-col items-center">
                 <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">Frequently Asked Questions</h2>
-                <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
+                <div className="mt-3 h-[3.5px] bg-brand-orange rounded-full w-4/5" />
               </div>
             </div>
           </Reveal>
 
-          <Stagger className="space-y-2 mt-12 w-full max-w-4xl mx-auto">
+          <Stagger className="space-y-3 mt-12 w-full max-w-4xl mx-auto">
             {FAQS.map((faq, i) => (
               <StaggerItem key={i}>
                 <AccordionItem
+                  variant="clean"
                   title={faq.question}
                   isOpen={openFaqIndex === i}
                   onToggle={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
                 >
-                  <p className="text-gray-500 text-base leading-relaxed pt-2">{faq.answer}</p>
+                  <p className="text-slate-600 text-sm sm:text-base leading-relaxed pt-1">{faq.answer}</p>
                 </AccordionItem>
               </StaggerItem>
             ))}
@@ -648,22 +595,22 @@ export default function Banking() {
         {showApplyModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-blue-100"
             >
-              {/* Modal Header — Brand Orange bg-brand-orange */}
-              <div className="bg-brand-orange text-white px-6 py-5 flex items-center justify-between relative">
+              {/* Modal Header */}
+              <div className="bg-brand-blue text-white px-6 py-5 flex items-center justify-between relative border-b border-blue-600/30">
                 <div>
                   <h3 className="text-lg sm:text-xl font-extrabold leading-snug">
-                    Enquiry
+                    Banking Enquiry
                   </h3>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="bg-white/20 text-white border border-white/30 text-xs font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                      Banking
+                    <span className="bg-white/15 text-white border border-white/25 text-xs font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-orange" />
+                      {enquiryType === 'topic' ? `Exam: ${selectedTopic}` : 'General Banking Enquiry'}
                     </span>
                   </div>
                 </div>
@@ -677,11 +624,11 @@ export default function Banking() {
               </div>
 
               {/* Modal Form Content */}
-              <div className="p-6 sm:p-7">
+              <div className="p-6 sm:p-7 bg-[#F8FAFD]">
                 {isSubmitted ? (
                   <div className="text-center py-6 space-y-4">
-                    <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto border border-emerald-200">
-                      <FiCheckCircle className="w-8 h-8" />
+                    <div className="w-14 h-14 bg-blue-50 text-brand-blue rounded-full flex items-center justify-center mx-auto border border-blue-200 shadow-sm">
+                      <FiCheckCircle className="w-8 h-8 text-brand-blue" />
                     </div>
                     <h4 className="text-xl font-bold text-dark-navy">Application Submitted!</h4>
                     <p className="text-sm text-slate-600 leading-relaxed max-w-xs mx-auto">
@@ -690,7 +637,7 @@ export default function Banking() {
                     <button
                       type="button"
                       onClick={closeApplyModal}
-                      className="mt-2 w-full py-3 bg-brand-orange hover:bg-brand-orange/90 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer"
+                      className="mt-2 w-full py-3 bg-brand-blue hover:bg-brand-orange text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg cursor-pointer"
                     >
                       Done
                     </button>
@@ -704,7 +651,7 @@ export default function Banking() {
                     )}
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      <label className="block text-xs font-bold text-dark-navy uppercase tracking-wider mb-1.5">
                         Full Name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -715,7 +662,7 @@ export default function Banking() {
                         className={`w-full px-4 py-3 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none transition-colors ${
                           formErrors.name
                             ? 'border-red-400 focus:border-red-500 bg-red-50/30'
-                            : 'border-slate-200 focus:border-brand-blue bg-slate-50/50 focus:bg-white'
+                            : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 bg-white'
                         }`}
                       />
                       {formErrors.name && (
@@ -724,7 +671,7 @@ export default function Banking() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      <label className="block text-xs font-bold text-dark-navy uppercase tracking-wider mb-1.5">
                         Email Address <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -735,7 +682,7 @@ export default function Banking() {
                         className={`w-full px-4 py-3 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none transition-colors ${
                           formErrors.email
                             ? 'border-red-400 focus:border-red-500 bg-red-50/30'
-                            : 'border-slate-200 focus:border-brand-blue bg-slate-50/50 focus:bg-white'
+                            : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 bg-white'
                         }`}
                       />
                       {formErrors.email && (
@@ -744,7 +691,7 @@ export default function Banking() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      <label className="block text-xs font-bold text-dark-navy uppercase tracking-wider mb-1.5">
                         Phone Number <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -755,7 +702,7 @@ export default function Banking() {
                         className={`w-full px-4 py-3 rounded-xl border text-sm text-slate-800 placeholder-slate-400 focus:outline-none transition-colors ${
                           formErrors.phone
                             ? 'border-red-400 focus:border-red-500 bg-red-50/30'
-                            : 'border-slate-200 focus:border-brand-blue bg-slate-50/50 focus:bg-white'
+                            : 'border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 bg-white'
                         }`}
                       />
                       {formErrors.phone && (
@@ -767,7 +714,7 @@ export default function Banking() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full py-3.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-bold text-sm rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+                        className="w-full py-3.5 bg-brand-blue hover:bg-brand-orange text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:shadow-brand-orange/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
                       >
                         {isSubmitting ? (
                           <>

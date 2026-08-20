@@ -42,6 +42,7 @@ import UpcomingCoursesManager from './pages/UpcomingCoursesManager';
 import UpcomingClassAdd from './pages/UpcomingClassAdd';
 import UpcomingClassSubmissions from './pages/UpcomingClassSubmissions';
 import CourseInterests from './pages/CourseInterests';
+import BankingEnquiries from './pages/BankingEnquiries';
 import UpcomingCourseInterests from './pages/UpcomingCourseInterests';
 import TestimonialsManager from './pages/TestimonialsManager';
 import TestimonialEditor from './pages/TestimonialEditor';
@@ -169,6 +170,7 @@ export default function Admin() {
           <Route path="testimonials/:id" element={<TestimonialEditor key="edit" />} />
           <Route path="upcoming-class-submissions" element={<UpcomingClassSubmissions />} />
           <Route path="course-interests" element={<CourseInterests />} />
+          <Route path="banking-enquiries" element={<BankingEnquiries />} />
           <Route path="upcoming-course-interests" element={<UpcomingCourseInterests />} />
           <Route path="newsletter-subscribers" element={<NewsletterSubscribers />} />
           <Route path="contact-submissions" element={<ContactSubmissions />} />
