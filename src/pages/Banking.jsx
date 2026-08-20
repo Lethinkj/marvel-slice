@@ -487,7 +487,7 @@ export default function Banking() {
       {/* 4. COURSE HIGHLIGHTS & UPCOMING IMAGE SECTION */}
       <section id="why-prepare-section" className="py-16 sm:py-24 bg-white border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             {/* Left Column: Heading & 4 Course Bullet Points */}
             <Reveal variant="left" className="lg:col-span-7 space-y-6">
                 <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy leading-tight">
@@ -551,7 +551,7 @@ export default function Banking() {
             </Reveal>
 
             {/* Right Column: Upcoming Image (Same dimensions as Home page) */}
-            <Reveal variant="right" className="lg:col-span-5 flex justify-center lg:justify-end">
+            <Reveal variant="right" className="lg:col-span-5 flex justify-center lg:justify-end self-end mt-8 lg:mt-16">
               <div className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-md group">
                 <img
                   src={upcomingImage}
