@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { FiArrowLeft, FiCheckCircle, FiArrowRight, FiTarget, FiChevronDown, FiX, FiLoader } from 'react-icons/fi';
+import { FiArrowLeft, FiCheckCircle, FiArrowRight, FiTarget, FiChevronDown, FiX, FiLoader, FiZoomIn } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
@@ -133,6 +133,7 @@ export default function Banking() {
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   function openApplyModal(type = 'general', topic = 'General Banking Enquiry') {
     setEnquiryType(type);
@@ -212,7 +213,7 @@ export default function Banking() {
     setFormErrors({});
   }
 
-  const { data: upcomingImageData } = useQuery({
+  const { data: upcomingSectionData } = useQuery({
     queryKey: ['homeSections', 'upcoming_image'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -221,11 +222,12 @@ export default function Banking() {
         .eq('section_key', 'upcoming_image')
         .maybeSingle();
       if (error) return null;
-      return data?.content?.image_url || null;
+      return data?.content || null;
     },
   });
 
-  const upcomingImage = upcomingImageData || '/images/banking/banking_hero_editorial_1787149136213.jpg';
+  const upcomingImage = upcomingSectionData?.image_url || '/images/banking/banking_hero_editorial_1787149136213.jpg';
+  const upcomingLink = upcomingSectionData?.image_link || '';
 
   function handleBackNavigation(e) {
     if (e) e.preventDefault();
@@ -238,9 +240,7 @@ export default function Banking() {
 
   return (
     <div className="bg-white min-h-screen text-slate-800">
-      {/* SCOPED BANKING CAREER CONTENT WRAPPER */}
       <div className="banking-career-content">
-        {/* 1. BANKING INTRODUCTION SECTION */}
         <section className="bg-white pt-8 pb-12 sm:pb-16 border-b border-[#E5ECF5]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <button
@@ -253,7 +253,6 @@ export default function Banking() {
             </button>
 
             <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-              {/* Left Column: Category Label, Heading, Description */}
               <Reveal variant="left" className="lg:col-span-7 space-y-5">
                 <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-brand-blue leading-[1.18] tracking-tight">
                   Build Your Career <br className="hidden sm:inline" />
@@ -545,17 +544,37 @@ export default function Banking() {
               </ul>
             </Reveal>
 
-            {/* Right Column: Upcoming Image Positioned a little more up */}
-            <Reveal variant="right" className="lg:col-span-5 flex justify-center lg:justify-end self-center my-auto pt-4">
-              <div className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-3xl overflow-hidden border border-blue-100 shadow-xl group bg-white p-2">
-                <div className="w-full h-full rounded-2xl overflow-hidden">
-                  <img
-                    src={upcomingImage}
-                    alt="Banking Course & Upcoming Classes"
-                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
+            {/* Right Column: Upcoming Image Positioned ~10% down & CLICKABLE (MATCHING HOME) */}
+            <Reveal variant="right" className="lg:col-span-5 flex justify-center lg:justify-end self-center my-auto pt-8 lg:pt-10">
+              {upcomingLink ? (
+                <a
+                  href={upcomingLink}
+                  target={upcomingLink.startsWith('http') ? '_blank' : undefined}
+                  rel={upcomingLink.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className="block w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-3xl overflow-hidden border border-blue-100 shadow-xl group bg-white p-2 cursor-pointer transition-all duration-300 hover:shadow-2xl"
+                >
+                  <div className="w-full h-full rounded-2xl overflow-hidden relative">
+                    <img
+                      src={upcomingImage}
+                      alt="Banking Course & Upcoming Classes"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                  </div>
+                </a>
+              ) : (
+                <div
+                  onClick={() => openApplyModal('general', 'Upcoming Banking Batch')}
+                  className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-3xl overflow-hidden border border-blue-100 shadow-xl group bg-white p-2 cursor-pointer transition-all duration-300 hover:shadow-2xl relative"
+                >
+                  <div className="w-full h-full rounded-2xl overflow-hidden relative">
+                    <img
+                      src={upcomingImage}
+                      alt="Banking Course & Upcoming Classes"
+                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </Reveal>
           </div>
         </div>
