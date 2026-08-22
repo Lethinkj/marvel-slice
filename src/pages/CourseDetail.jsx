@@ -528,7 +528,7 @@ export default function CourseDetail() {
                   <ul className="mt-6 space-y-2.5 w-full max-w-xl text-left">
                     {course.checklist_items.slice(0, 6).map((item, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
-                        <FiCheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                        <FiCheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                         <span className="font-medium leading-relaxed">{(item || "").slice(0, 80)}</span>
                       </li>
                     ))}

@@ -104,10 +104,10 @@ export default function CourseHero({
                   {points.map((item, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-slate-50/70 hover:bg-slate-100/60 border border-slate-200/70 shadow-2xs transition-colors"
+                      className="flex items-center gap-2.5 py-1"
                     >
-                      <div className="w-5 h-5 rounded-full border border-blue-500/60 bg-blue-50/50 flex items-center justify-center shrink-0">
-                        <FiCheck className="w-3.5 h-3.5 text-[#1E56C7] stroke-[3]" />
+                      <div className="w-5 h-5 rounded-full border border-emerald-500/60 bg-emerald-50/80 flex items-center justify-center shrink-0">
+                        <FiCheck className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
                       </div>
                       <span className="text-[14px] sm:text-[15px] font-semibold text-[#0F172A] leading-snug">
                         {typeof item === 'string' ? item.slice(0, 85) : (item?.label || item?.title || '').slice(0, 85)}
