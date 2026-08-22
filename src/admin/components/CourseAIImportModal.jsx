@@ -333,7 +333,7 @@ export default function CourseAIImportModal({ isOpen, onClose, onImportData }) {
       cta_text: parsed.cta_text || 'Apply Now',
       cta_link: parsed.cta_link || '',
       cta_background_image: '',
-      checklist_items: checklist,
+      checklist_items: checklist.slice(0, 4),
       tabs: formattedTabs,
       highlights: formattedHighlights,
       projects: formattedProjects,
