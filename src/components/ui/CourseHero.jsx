@@ -1,5 +1,5 @@
 import HeroBackground from './HeroBackground';
-import { FiArrowLeft, FiCheck, FiMessageCircle, FiArrowRight, FiDownload, FiPlay, FiBarChart2 } from 'react-icons/fi';
+import { FiArrowLeft, FiCheck, FiCheckCircle, FiMessageCircle, FiArrowRight, FiDownload, FiPlay, FiBarChart2 } from 'react-icons/fi';
 
 /**
  * Dynamically split any course title into a 2-line visual hierarchy.
@@ -50,7 +50,7 @@ export default function CourseHero({
 
   const { line1, line2 } = splitCourseTitle(course.title);
   const rawPoints = course.checklist_items || course.points || course.highlights || [];
-  const points = (Array.isArray(rawPoints) ? rawPoints : []).filter(Boolean).slice(0, 4);
+  const points = (Array.isArray(rawPoints) ? rawPoints : []).filter(Boolean).slice(0, 6);
 
   return (
     <section className="relative overflow-hidden bg-white py-10 sm:py-14 lg:py-16">
@@ -73,10 +73,10 @@ export default function CourseHero({
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* LEFT SIDE (Content) ~ 48% width */}
           <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left">
-            {/* Dynamic Title (Single Line) */}
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] font-extrabold leading-tight tracking-tight whitespace-nowrap">
-              <span className="text-[#1E56C7]">{line1}</span>
-              {line2 && <span className="text-brand-orange ml-2.5">{line2}</span>}
+            {/* Dynamic Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] font-extrabold text-[#1E56C7] leading-tight tracking-tight max-w-xl">
+              <span>{line1}</span>
+              {line2 && <span className="block mt-0.5">{line2}</span>}
             </h1>
 
             {/* Optional Status Badge */}
@@ -93,23 +93,14 @@ export default function CourseHero({
               </p>
             )}
 
-            {/* Dynamic Course Points (Clean Compact Grid) */}
+            {/* Dynamic Course Points (Clean Compact Vertical List) */}
             {points.length > 0 && (
               <div className="mt-6 w-full max-w-[600px]">
-                <div
-                  className={`grid gap-2.5 text-left ${
-                    points.length >= 3 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
-                  }`}
-                >
+                <div className="space-y-2.5 text-left">
                   {points.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2.5 py-1"
-                    >
-                      <div className="w-5 h-5 rounded-full border border-emerald-500/60 bg-emerald-50/80 flex items-center justify-center shrink-0">
-                        <FiCheck className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
-                      </div>
-                      <span className="text-[14px] sm:text-[15px] font-semibold text-[#0F172A] leading-snug">
+                    <div key={i} className="flex items-start gap-2.5">
+                      <FiCheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                      <span className="text-[14px] sm:text-[15px] font-medium text-slate-600 leading-snug">
                         {typeof item === 'string' ? item.slice(0, 85) : (item?.label || item?.title || '').slice(0, 85)}
                       </span>
                     </div>
