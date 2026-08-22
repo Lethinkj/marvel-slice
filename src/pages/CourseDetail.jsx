@@ -13,6 +13,7 @@ import { useCourse, useRelatedCourses } from '../hooks/useSupabase';
 import { supabase } from '../lib/supabaseClient';
 import CourseCTA from '../components/ui/CourseCTA';
 import CourseUnlockAnimation from '../components/ui/CourseUnlockAnimation';
+import CourseHero from '../components/ui/CourseHero';
 
 const HIGHLIGHT_ICONS = {
   code: FiCode,
@@ -701,107 +702,15 @@ export default function CourseDetail() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white py-8 sm:py-10 lg:py-12">
-        {/* Full Section Right-Half Blue Angled Background */}
-        <div
-          className="absolute inset-y-0 right-0 w-full lg:w-[54%] bg-[#1E56C7] pointer-events-none z-0 hidden lg:block"
-          style={{ clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 0% 100%)' }}
-        />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <button
-            type="button"
-            onClick={handleBackNavigation}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-orange transition-colors mb-5 cursor-pointer group"
-          >
-            <FiArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-orange transition-transform group-hover:-translate-x-0.5" />
-            <span>Back</span>
-          </button>
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-              <h1 className="text-[clamp(1.75rem,3.5vw,3rem)] font-extrabold text-dark-navy leading-[1.15]">
-                {course.title}
-                {course.status && course.status !== 'Active' && (
-                  <span className={`ml-3 inline-block align-middle text-xs font-semibold px-2.5 py-1 rounded-full ${
-                    course.status === 'Coming Soon' ? 'bg-amber-50 text-amber-600' : 'bg-gray-100 text-gray-500'
-                  }`}>
-                    {course.status}
-                  </span>
-                )}
-              </h1>
-              <p className="mt-4 text-base text-gray-600 leading-relaxed max-w-xl">{course.description}</p>
-              {course.checklist_items?.length > 0 && (
-                <ul className="mt-6 space-y-2.5 text-left w-full max-w-xl">
-                  {course.checklist_items.slice(0, 6).map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-gray-600">
-                      <FiCheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                      <span className="font-medium leading-relaxed">{(item || "").slice(0, 80)}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 mt-8 w-full sm:w-auto">
-                <Button
-                  variant="accent"
-                  size="lg"
-                  onClick={() => openEnquiryModal(course.cta_left || 'Talk to Advisor')}
-                  className="w-full sm:w-auto cursor-pointer hover:-translate-y-0.5 hover:shadow-xl hover:shadow-amber-500/20 active:scale-95 transition-all duration-300"
-                >
-                  {course.cta_left || 'Talk to Advisor'}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => openEnquiryModal(course.cta_right || 'Download Brochure')}
-                  className="w-full sm:w-auto cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 transition-all duration-300"
-                >
-                  {course.cta_right || 'Download Brochure'}
-                </Button>
-              </div>
-            </div>
-            <div className="relative flex items-center justify-center">
-              <div className="w-full relative z-10 group">
-                {embedUrl && !videoPlaying ? (
-                  <div className="relative rounded-xl overflow-hidden shadow-xl border-2 border-white/20 group-hover:scale-[1.015] group-hover:shadow-2xl transition-all duration-500">
-                    {course.hero_image_url ? (
-                      <img src={course.hero_image_url} alt={course.title} className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-700" />
-                    ) : (
-                      <div className="w-full aspect-video bg-slate-900/80 flex items-center justify-center">
-                        <FiBarChart2 className="w-16 h-16 text-white/40" />
-                      </div>
-                    )}
-                    <button onClick={() => { setVideoPlaying(true); trackVideoPlay(course.title); }} className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors cursor-pointer">
-                      <div className="relative w-16 h-16 rounded-full bg-white/90 group-hover:bg-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300">
-                        <span className="absolute inset-0 rounded-full bg-white/50 animate-ping" />
-                        <FiPlay className="w-7 h-7 text-brand-orange ml-0.5 relative z-10" />
-                      </div>
-                    </button>
-                  </div>
-                ) : embedUrl && videoPlaying ? (
-                  <div className="relative rounded-xl overflow-hidden shadow-xl border-2 border-white/20">
-                    <iframe
-                      src={`${embedUrl}?autoplay=1&mute=1&controls=1`}
-                      title="Course Introduction Video"
-                      className="w-full aspect-video"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                ) : course.hero_image_url ? (
-                  <div className="relative rounded-xl overflow-hidden shadow-xl border-2 border-white/20 group-hover:scale-[1.015] transition-all duration-500">
-                    <img src={course.hero_image_url} alt={course.title} className="w-full aspect-video object-cover" />
-                  </div>
-                ) : (
-                  <div className="rounded-xl overflow-hidden shadow-xl bg-slate-900/80 p-12 text-center border-2 border-white/20 group-hover:scale-[1.015] transition-transform duration-500">
-                    <FiBarChart2 className="w-16 h-16 text-white/40 mx-auto mb-3" />
-                    <p className="text-white/60 text-sm">{course.title}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <CourseHero
+        course={course}
+        handleBackNavigation={handleBackNavigation}
+        openEnquiryModal={openEnquiryModal}
+        videoPlaying={videoPlaying}
+        setVideoPlaying={setVideoPlaying}
+        trackVideoPlay={trackVideoPlay}
+        embedUrl={embedUrl}
+      />
 
 
 

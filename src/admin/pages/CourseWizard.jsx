@@ -376,7 +376,7 @@ export default function CourseWizard() {
         start_date: c.start_date ? fromDateTimeLocal(c.start_date) : null,
         duration: c.duration,
         mode: c.mode,
-        checklist_items: (c.checklist_items || []).filter(Boolean),
+        checklist_items: (c.checklist_items || []).filter(Boolean).slice(0, 4),
         curriculum: [],
         nav_item_id: navItemId || null,
       };
@@ -678,17 +678,17 @@ export default function CourseWizard() {
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-semibold text-black">What You'll Learn / Feature Bullet Points (one per line) <span className="text-destructive-500">*</span> <span className="text-xs text-neutral-400 font-normal">(Max 80 chars per line)</span></label>
                 <span className="text-xs font-semibold text-neutral-400">
-                  {((c.checklist_items || []).slice(0, 6)).length}/6 items max
+                  {((c.checklist_items || []).slice(0, 4)).length}/4 items max
                 </span>
               </div>
               <textarea
-                value={(c.checklist_items || []).map(line => (line || '').slice(0, 80)).slice(0, 6).join("\n")}
+                value={(c.checklist_items || []).map(line => (line || '').slice(0, 80)).slice(0, 4).join("\n")}
                 onChange={(e) => {
                   const items = e.target.value
                     .split("\n")
                     .map(line => line.slice(0, 80))
                     .filter(Boolean)
-                    .slice(0, 6);
+                    .slice(0, 4);
                   u("checklist_items", items);
                 }}
                 rows={4}

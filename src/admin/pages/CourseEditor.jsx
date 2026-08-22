@@ -509,7 +509,7 @@ export default function CourseEditor() {
         mode: course.mode,
         status: course.status,
         start_date: course.start_date ? fromDateTimeLocal(course.start_date) : null,
-        checklist_items: (course.checklist_items || []).filter(Boolean),
+        checklist_items: (course.checklist_items || []).filter(Boolean).slice(0, 4),
         curriculum: [],
       };
       if (isNew) {
@@ -695,17 +695,17 @@ export default function CourseEditor() {
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-sm font-semibold text-black">Feature Bullet Points (one per line) <span className="text-xs text-neutral-400 font-normal">(Max 80 chars per line)</span></label>
                       <span className="text-xs font-semibold text-neutral-400">
-                        {((course.checklist_items || []).slice(0, 6)).length}/6 items max
+                        {((course.checklist_items || []).slice(0, 4)).length}/4 items max
                       </span>
                     </div>
                     <textarea
-                      value={(course.checklist_items || []).map(line => (line || '').slice(0, 80)).slice(0, 6).join('\n')}
+                      value={(course.checklist_items || []).map(line => (line || '').slice(0, 80)).slice(0, 4).join('\n')}
                       onChange={(e) => {
                         const items = e.target.value
                           .split('\n')
                           .map(line => line.slice(0, 80))
                           .filter(Boolean)
-                          .slice(0, 6);
+                          .slice(0, 4);
                         update("checklist_items", items);
                       }}
                       rows={4}

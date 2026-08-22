@@ -26,7 +26,7 @@ const SAMPLE_JSON = {
     "cta_heading": "Required banner CTA heading",
     "cta_description": "Required banner CTA description",
     "cta_text": "Apply Now",
-    "checklist_items": "Array of 4 to 8 topic strings",
+    "checklist_items": "Array of EXACTLY 4 topic strings",
     "highlights": "EXACTLY 9 objects with icon and label",
     "projects": "EXACTLY 3 objects with title and description",
     "overview_faqs": "Minimum 2 Tabmenu Q&A objects with multi-sentence answers",
