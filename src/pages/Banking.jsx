@@ -7,6 +7,7 @@ import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
 import { supabase } from '../lib/supabaseClient';
 import { trackRegister, trackFormSubmit } from '../lib/analytics';
+import BankingTestimonialsSection from '../components/banking/BankingTestimonialsSection';
 
 const FAQS = [
   {
@@ -579,6 +580,9 @@ export default function Banking() {
           </div>
         </div>
       </section>
+
+      {/* BANKING TESTIMONIALS SECTION */}
+      <BankingTestimonialsSection />
 
       {/* 5. FREQUENTLY ASKED QUESTIONS SECTION */}
       <section className="pt-8 pb-16 bg-slate-50/50 border-t border-slate-100">

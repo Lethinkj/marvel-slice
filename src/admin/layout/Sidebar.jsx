@@ -1,7 +1,7 @@
 import { FiBriefcase } from "react-icons/fi";
 import { useState, useEffect, useCallback } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiChevronLeft, FiChevronRight, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX, FiBarChart2, FiPlusCircle, FiClock, FiDownload, FiClipboard, FiMail, FiMessageSquare, FiTag, FiImage, FiUsers, FiUser, FiHelpCircle, FiTarget, FiStar, FiInfo, FiCalendar, FiBell, FiCheckCircle } from "react-icons/fi";
+import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiChevronLeft, FiChevronRight, FiFileText, FiLayers, FiInbox, FiMenu, FiSettings, FiMessageCircle, FiServer, FiZap, FiX, FiBarChart2, FiPlusCircle, FiClock, FiDownload, FiClipboard, FiMail, FiMessageSquare, FiTag, FiImage, FiUsers, FiUser, FiHelpCircle, FiTarget, FiStar, FiInfo, FiCalendar, FiBell, FiCheckCircle, FiAward } from "react-icons/fi";
 import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
@@ -80,6 +80,12 @@ const navGroups = [
     label: "Testimonials", icon: FiStar, items: [
       { to: "/admin/testimonials/new", label: "Add", icon: FiPlusCircle },
       { to: "/admin/testimonials", label: "View", icon: FiStar, catchSubRoutes: true, siblingRoutes: ["/admin/testimonials/new"] }
+    ],
+  },
+  {
+    label: "Banking Testimonial", icon: FiAward, items: [
+      { to: "/admin/banking-testimonials/new", label: "Add", icon: FiPlusCircle },
+      { to: "/admin/banking-testimonials", label: "View", icon: FiAward, catchSubRoutes: true, siblingRoutes: ["/admin/banking-testimonials/new"] }
     ],
   },
   {

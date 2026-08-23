@@ -46,6 +46,8 @@ import BankingEnquiries from './pages/BankingEnquiries';
 import UpcomingCourseInterests from './pages/UpcomingCourseInterests';
 import TestimonialsManager from './pages/TestimonialsManager';
 import TestimonialEditor from './pages/TestimonialEditor';
+import BankingTestimonialsManager from './pages/BankingTestimonialsManager';
+import BankingTestimonialEditor from './pages/BankingTestimonialEditor';
 import NewsletterSubscribers from "./pages/NewsletterSubscribers";
 import ContactSubmissions from './pages/ContactSubmissions';
 import AboutSubmissions from './pages/AboutSubmissions';
@@ -168,6 +170,9 @@ export default function Admin() {
           <Route path="testimonials" element={<TestimonialsManager />} />
           <Route path="testimonials/new" element={<TestimonialEditor key="new" />} />
           <Route path="testimonials/:id" element={<TestimonialEditor key="edit" />} />
+          <Route path="banking-testimonials" element={<BankingTestimonialsManager />} />
+          <Route path="banking-testimonials/new" element={<BankingTestimonialEditor key="new" />} />
+          <Route path="banking-testimonials/:id" element={<BankingTestimonialEditor key="edit" />} />
           <Route path="upcoming-class-submissions" element={<UpcomingClassSubmissions />} />
           <Route path="course-interests" element={<CourseInterests />} />
           <Route path="banking-enquiries" element={<BankingEnquiries />} />
