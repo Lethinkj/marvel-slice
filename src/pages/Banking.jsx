@@ -585,18 +585,20 @@ export default function Banking() {
       <BankingTestimonialsSection />
 
       {/* 5. FREQUENTLY ASKED QUESTIONS SECTION */}
-      <section className="pt-8 pb-16 bg-slate-50/50 border-t border-slate-100">
+      <section className="py-14 sm:py-20 bg-white border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="text-center">
-              <div className="inline-flex flex-col items-center">
-                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">Frequently Asked Questions</h2>
-                <div className="mt-3 h-[3.5px] bg-brand-orange rounded-full w-4/5" />
-              </div>
+            <div className="text-center mb-10 sm:mb-14">
+              <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy tracking-tight">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-slate-600 text-sm sm:text-base mt-2.5 max-w-xl mx-auto font-normal">
+                Common questions regarding IBPS recruitment examinations, eligibility criteria, and selection process.
+              </p>
             </div>
           </Reveal>
 
-          <Stagger className="space-y-3 mt-12 w-full max-w-4xl mx-auto">
+          <Stagger className="space-y-3.5 w-full max-w-4xl mx-auto">
             {FAQS.map((faq, i) => (
               <StaggerItem key={i}>
                 <AccordionItem
@@ -605,7 +607,7 @@ export default function Banking() {
                   isOpen={openFaqIndex === i}
                   onToggle={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
                 >
-                  <p className="text-slate-600 text-sm sm:text-base leading-relaxed pt-1">{faq.answer}</p>
+                  <p className="text-slate-600 text-sm sm:text-base leading-relaxed">{faq.answer}</p>
                 </AccordionItem>
               </StaggerItem>
             ))}
