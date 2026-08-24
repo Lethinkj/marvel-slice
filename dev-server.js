@@ -324,28 +324,36 @@ async function handleEnquiry(body) {
 }
 
 async function handleAdminReply(body) {
-  const { to_email, to_name, subject, message, type, attachment } = body;
+  const { to_email, to_name, subject, message, type, attachment } = body || {};
   if (!to_email || !subject || !message) return { success: false, error: 'Missing required fields' };
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(String(to_email).trim())) return { success: false, error: 'Invalid email' };
+
+  const cleanSubject = String(subject).replace(/[\r\n]/g, ' ').trim();
+  const cleanToEmail = String(to_email).replace(/[\r\n]/g, '').trim();
+  const cleanToName = String(to_name || 'User').replace(/[\r\n]/g, ' ').trim();
+
   if (!process.env.ADMIN_EMAIL || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) return { success: true };
 
   let html = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
     <div style="background:linear-gradient(135deg,#0B2D6B,#1E56C7);padding:24px 32px;">
-      <h1 style="color:#fff;margin:0;font-size:20px;">${subject}</h1>
+      <h1 style="color:#fff;margin:0;font-size:20px;">${cleanSubject}</h1>
     </div>
     <div style="padding:24px 32px;">
-      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Hi ${to_name},</p>
-      <p style="font-size:15px;color:#1B2333;line-height:1.7;white-space:pre-wrap;">${message.replace(/\n/g, '<br>')}</p>`;
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;">Hi ${cleanToName},</p>
+      <p style="font-size:15px;color:#1B2333;line-height:1.7;white-space:pre-wrap;">${String(message).replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</p>`;
 
   if (type === 'brochure' && attachment?.courseTitle) {
     html += `<div style="margin:24px 0;padding:20px;background:#F5F6F8;border-radius:8px;border-left:4px solid #1E56C7;">
       <p style="margin:0 0 6px;font-size:13px;color:#5F6B7A;font-weight:600;">COURSE BROCHURE</p>
-      <p style="margin:0;font-size:15px;color:#1B2333;font-weight:600;">${attachment.courseTitle}</p>
+      <p style="margin:0;font-size:15px;color:#1B2333;font-weight:600;">${String(attachment.courseTitle).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
       <p style="margin:8px 0 0;font-size:13px;color:#5F6B7A;">Please find the course brochure attached or visit our website for more details.</p>
     </div>`;
   } else if (type === 'brochure' && attachment?.url) {
     html += `<div style="margin:24px 0;padding:20px;background:#F5F6F8;border-radius:8px;border-left:4px solid #1E56C7;">
       <p style="margin:0 0 6px;font-size:13px;color:#5F6B7A;font-weight:600;">ATTACHED DOCUMENT</p>
-      <a href="${attachment.url}" style="display:inline-block;padding:10px 20px;background:#1E56C7;color:#fff;text-decoration:none;border-radius:6px;font-size:14px;">Download Brochure</a>
+      <a href="${String(attachment.url).replace(/["']/g, '')}" style="display:inline-block;padding:10px 20px;background:#1E56C7;color:#fff;text-decoration:none;border-radius:6px;font-size:14px;">Download Brochure</a>
     </div>`;
   }
 
@@ -357,11 +365,11 @@ async function handleAdminReply(body) {
   try {
     await transporter.sendMail({
       from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`,
-      to: to_email,
-      subject: subject,
+      to: cleanToEmail,
+      subject: cleanSubject,
       html,
     });
-    console.log('[dev-server] Admin reply sent to', to_email);
+    console.log('[dev-server] Admin reply sent to', cleanToEmail);
   } catch (err) { console.error('[dev-server] Admin reply failed:', err); }
   return { success: true };
 }

@@ -102,20 +102,6 @@ create table if not exists overview_faqs (
 );
 create index if not exists idx_overview_faqs_course on overview_faqs(course_id);
 
--- 6. Course fees
-create table if not exists course_fees (
-  id uuid primary key default gen_random_uuid(),
-  course_id uuid references courses(id) on delete cascade not null,
-  plan_name text not null,
-  features jsonb default '[]',
-  price numeric,
-  currency text default 'INR',
-  cta_label text,
-  cta_link text,
-  sort_order int default 0
-);
-create index if not exists idx_course_fees_course on course_fees(course_id);
-
 -- 7. Projects per course
 create table if not exists projects (
   id uuid primary key default gen_random_uuid(),
@@ -168,18 +154,6 @@ create table if not exists course_tags (
   primary key (course_id, tag_id)
 );
 create index if not exists idx_course_tags_tag on course_tags(tag_id);
-
--- 13. Curated related courses
-create table if not exists related_courses (
-  id uuid primary key default gen_random_uuid(),
-  course_id uuid references courses(id) on delete cascade not null,
-  related_course_id uuid references courses(id) on delete cascade not null,
-  rating numeric,
-  review_count int,
-  learner_count int,
-  sort_order int default 0,
-  unique(course_id, related_course_id)
-);
 
 -- 14. Course tabs
 create table if not exists course_tabs (
@@ -1270,19 +1244,10 @@ create table if not exists banking_enquiries (
   created_at timestamptz default now()
 );
 
-alter table banking_enquiries enable row level security;
-
-drop policy if exists "Allow public insert banking_enquiries" on banking_enquiries;
-create policy "Allow public insert banking_enquiries" on banking_enquiries for insert to anon, authenticated with check (true);
-
-drop policy if exists "Allow public select banking_enquiries" on banking_enquiries;
-create policy "Allow public select banking_enquiries" on banking_enquiries for select to anon, authenticated using (true);
-
-drop policy if exists "Allow public update banking_enquiries" on banking_enquiries;
-create policy "Allow public update banking_enquiries" on banking_enquiries for update to anon, authenticated using (true);
-
-drop policy if exists "Allow public delete banking_enquiries" on banking_enquiries;
-create policy "Allow public delete banking_enquiries" on banking_enquiries for delete to anon, authenticated using (true);
+-- Cleanup obsolete / unused legacy tables if they exist
+drop table if exists related_courses cascade;
+drop table if exists course_fees cascade;
+drop table if exists skips cascade;
 
 -- Banking Testimonials Table Schema
 create table if not exists banking_testimonials (
@@ -1300,17 +1265,66 @@ create table if not exists banking_testimonials (
   updated_at timestamptz default now()
 );
 
-alter table banking_testimonials enable row level security;
+-- ============================================================
+-- ROW LEVEL SECURITY (RLS) POLICIES FOR ALL TABLES
+-- ============================================================
+-- DYNAMIC ROW LEVEL SECURITY (RLS) MIGRATION FOR 100% OF TABLES
+-- ============================================================
+do $$ 
+declare
+    tbl_record record;
+    pol_record record;
+    t text;
+    is_submission boolean;
+    is_sensitive boolean;
+begin
+    -- Iterate over EVERY table in the public schema dynamically
+    for tbl_record in (
+        select tablename 
+        from pg_tables 
+        where schemaname = 'public'
+    ) loop
+        t := tbl_record.tablename;
+        
+        -- Enable RLS on every table
+        execute format('alter table public.%I enable row level security;', t);
+        
+        -- Drop existing policies
+        for pol_record in (
+            select policyname 
+            from pg_policies 
+            where schemaname = 'public' and tablename = t
+        ) loop
+            execute format('drop policy if exists %I on public.%I;', pol_record.policyname, t);
+        end loop;
 
-drop policy if exists "Allow public select banking_testimonials" on banking_testimonials;
-create policy "Allow public select banking_testimonials" on banking_testimonials for select to anon, authenticated using (true);
+        -- Categorize table
+        is_submission := (
+            t like '%submission%' or t like '%enquir%' or t like '%download%' or 
+            t like '%registration%' or t like '%interest%' or t like '%subscriber%' or 
+            t in ('contact_submissions', 'course_enquiries', 'banking_enquiries', 'brochure_downloads',
+                  'upcoming_class_registrations', 'upcoming_course_interests', 'newsletter_subscribers',
+                  'form_submissions', 'about_submissions', 'career_submissions', 'career_contact_submissions', 'enquiries')
+        );
 
-drop policy if exists "Allow public insert banking_testimonials" on banking_testimonials;
-create policy "Allow public insert banking_testimonials" on banking_testimonials for insert to anon, authenticated with check (true);
+        is_sensitive := (
+            t like '%admin%' or t in ('admin_profiles', 'conversations', 'messages', 'secrets', 'audit_logs', 'logs')
+        );
 
-drop policy if exists "Allow public update banking_testimonials" on banking_testimonials;
-create policy "Allow public update banking_testimonials" on banking_testimonials for update to anon, authenticated using (true);
-
-drop policy if exists "Allow public delete banking_testimonials" on banking_testimonials;
-create policy "Allow public delete banking_testimonials" on banking_testimonials for delete to anon, authenticated using (true);
-
+        -- Assign category policies
+        if is_sensitive then
+            execute format('create policy %I on public.%I for all to authenticated using (true);', 'admin_all_' || t, t);
+        elsif is_submission then
+            execute format('create policy %I on public.%I for insert to anon, authenticated with check (true);', 'anon_insert_' || t, t);
+            execute format('create policy %I on public.%I for select to authenticated using (true);', 'admin_select_' || t, t);
+            execute format('create policy %I on public.%I for update to authenticated using (true);', 'admin_update_' || t, t);
+            execute format('create policy %I on public.%I for delete to authenticated using (true);', 'admin_delete_' || t, t);
+        else
+            execute format('create policy %I on public.%I for select to anon, authenticated using (true);', 'public_select_' || t, t);
+            execute format('create policy %I on public.%I for insert to authenticated with check (true);', 'admin_insert_' || t, t);
+            execute format('create policy %I on public.%I for update to authenticated using (true);', 'admin_update_' || t, t);
+            execute format('create policy %I on public.%I for delete to authenticated using (true);', 'admin_delete_' || t, t);
+        end if;
+        
+    end loop;
+end $$;
