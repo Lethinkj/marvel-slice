@@ -217,6 +217,17 @@ create table if not exists blog_posts (
 );
 create index if not exists idx_blog_posts_category on blog_posts(category_id);
 create index if not exists idx_blog_posts_published on blog_posts(is_published, published_at desc);
+create index if not exists idx_courses_created_at on public.courses(created_at desc);
+create index if not exists idx_courses_slug on public.courses(slug);
+create index if not exists idx_courses_status on public.courses(status);
+create index if not exists idx_blog_posts_slug on public.blog_posts(slug);
+create index if not exists idx_contact_submissions_unread on public.contact_submissions(is_read, created_at desc);
+create index if not exists idx_banking_enquiries_unread on public.banking_enquiries(is_read, created_at desc);
+create index if not exists idx_brochure_downloads_unread on public.brochure_downloads(is_read, created_at desc);
+create index if not exists idx_form_submissions_unread on public.form_submissions(is_read, created_at desc);
+create index if not exists idx_career_submissions_unread on public.career_submissions(is_read, created_at desc);
+create index if not exists idx_career_contact_submissions_unread on public.career_contact_submissions(is_read, created_at desc);
+create index if not exists idx_about_submissions_unread on public.about_submissions(is_read, created_at desc);
 
 -- 20. Blog post–Tag M2M
 create table if not exists blog_post_tags (

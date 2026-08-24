@@ -51,21 +51,24 @@ export default function HeroSection({ section }) {
     <section className="relative overflow-hidden">
       {bannerImage && (
         <div 
-          className="relative w-full h-[280px] sm:h-[380px] md:h-[460px] lg:h-[520px] overflow-hidden bg-slate-950"
+          className="relative w-full overflow-hidden"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
+          {/* Base image dictates natural aspect ratio and natural image height automatically */}
+          <img src={bannerImage} alt="" className="w-full h-auto opacity-0 block pointer-events-none" />
+
           <AnimatePresence initial={false}>
             <motion.div
               key={current}
-              initial={{ opacity: 0, filter: 'blur(8px)' }}
+              initial={{ opacity: 0, filter: 'blur(6px)' }}
               animate={{ opacity: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, filter: 'blur(8px)' }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
+              exit={{ opacity: 0, filter: 'blur(6px)' }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
               className="absolute inset-0 w-full h-full"
             >
-              <img src={bannerImage} alt="" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
+              <img src={bannerImage} alt="" className="w-full h-auto" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
               
               {(bannerHeading || bannerDescription) && (
                 <div className="absolute inset-0 flex items-center">
@@ -87,35 +90,18 @@ export default function HeroSection({ section }) {
           </AnimatePresence>
 
           {carouselEnabled && slides.length > 1 && (
-            <>
-              <button 
-                onClick={prev}
-                aria-label="Previous slide"
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md flex items-center justify-center text-white transition-all cursor-pointer z-10 shadow-lg"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
-              </button>
-              <button 
-                onClick={next}
-                aria-label="Next slide"
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md flex items-center justify-center text-white transition-all cursor-pointer z-10 shadow-lg"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-              </button>
-              
-              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
-                {slides.map((_, i) => (
-                  <button 
-                    key={i} 
-                    onClick={() => setCurrent(i)}
-                    aria-label={`Go to slide ${i + 1}`}
-                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      i === current ? 'bg-white w-7 shadow-sm' : 'bg-white/40 hover:bg-white/70 w-2.5'
-                    }`} 
-                  />
-                ))}
-              </div>
-            </>
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+              {slides.map((_, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => setCurrent(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    i === current ? 'bg-white w-7 shadow-sm' : 'bg-white/40 hover:bg-white/70 w-2.5'
+                  }`} 
+                />
+              ))}
+            </div>
           )}
         </div>
       )}
