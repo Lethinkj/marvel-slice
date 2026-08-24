@@ -57,12 +57,15 @@ export default function BankingTestimonialsSection() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <Reveal variant="up" className="text-center mb-6 sm:mb-9">
-          <h2 className="font-extrabold text-xl sm:text-2xl text-dark-navy tracking-tight">
-            Banking Candidate Testimonials
-          </h2>
-          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mt-1.5 max-w-lg mx-auto font-normal">
-            Real feedback and success stories from aspirants who prepared for IBPS and banking examinations with us.
+        <Reveal variant="up" className="text-center mb-8 sm:mb-12">
+          <div className="inline-flex flex-col items-center">
+            <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy tracking-tight">
+              Banking Aspirants, Real Success Stories
+            </h2>
+            <div className="mt-3.5 h-[3.5px] bg-brand-orange rounded-full w-16 sm:w-20" />
+          </div>
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed mt-4 max-w-xl mx-auto font-normal">
+            Hear from successful aspirants who transformed their preparation into results with focused guidance, expert mentorship, and structured training for IBPS and other banking examinations.
           </p>
         </Reveal>
 

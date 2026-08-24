@@ -589,12 +589,12 @@ export default function Banking() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="text-center mb-10 sm:mb-14">
-              <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy tracking-tight">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-slate-600 text-sm sm:text-base mt-2.5 max-w-xl mx-auto font-normal">
-                Common questions regarding IBPS recruitment examinations, eligibility criteria, and selection process.
-              </p>
+              <div className="inline-flex flex-col items-center">
+                <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy tracking-tight">
+                  Frequently Asked Questions
+                </h2>
+                <div className="mt-3.5 h-[3.5px] bg-brand-orange rounded-full w-16 sm:w-20" />
+              </div>
             </div>
           </Reveal>
 
