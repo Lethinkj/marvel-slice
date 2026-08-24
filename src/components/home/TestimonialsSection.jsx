@@ -90,7 +90,7 @@ export default function TestimonialsSection({ section }) {
     timerRef.current = setInterval(() => {
       setAnimate(true);
       setPos((prev) => prev + 1);
-    }, 4500);
+    }, 7500);
   }
 
   function stopAutoScroll() {

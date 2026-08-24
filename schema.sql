@@ -473,30 +473,88 @@ alter table admin_profiles enable row level security;
 -- Ensure profile_pic column exists before functions reference it
 alter table admin_profiles add column if not exists profile_pic text;
 
--- Verify admin credentials with auto-upgrade from SHA-256 to bcrypt
-drop function if exists verify_admin(text, text);
-create or replace function verify_admin(p_email text, p_password text)
+-- ------------------------------------------------------------
+-- ADMIN AUDIT LOGS TABLE
+-- ------------------------------------------------------------
+create table if not exists public.admin_audit_logs (
+  id uuid primary key default gen_random_uuid(),
+  admin_id uuid references public.admin_profiles(id) on delete set null,
+  email text not null,
+  event text not null,
+  ip_address text,
+  user_agent text,
+  metadata jsonb default '{}',
+  created_at timestamptz default now()
+);
+
+create index if not exists idx_admin_audit_logs_email on public.admin_audit_logs(email);
+create index if not exists idx_admin_audit_logs_created_at on public.admin_audit_logs(created_at);
+
+-- ------------------------------------------------------------
+-- HARDENED READ-ONLY VERIFY_ADMIN RPC (BCRYPT ONLY)
+-- ------------------------------------------------------------
+drop function if exists public.verify_admin(text, text);
+create or replace function public.verify_admin(p_email text, p_password text)
 returns jsonb
-language sql
+language plpgsql
 security definer
+set search_path = public, extensions, pg_temp
 as $$
-  with matched as (
-    update admin_profiles
-    set password_hash = crypt(p_password, gen_salt('bf', 10))
-    where admin_profiles.email = p_email
-      and (
-        (admin_profiles.password_hash like '$2%' and admin_profiles.password_hash = crypt(p_password, admin_profiles.password_hash))
-        or admin_profiles.password_hash = encode(digest(p_password, 'sha256'), 'hex')
-      )
-    returning admin_profiles.id, admin_profiles.email, admin_profiles.full_name, admin_profiles.role, admin_profiles.profile_pic
-  )
-  select to_jsonb(t.*)
-  from (
-    select m.id, m.email, m.full_name, m.role, m.profile_pic
-    from matched m
-    limit 1
-  ) t;
+declare
+  v_admin public.admin_profiles%rowtype;
+  v_failed_attempts integer;
+  v_clean_email text;
+begin
+  v_clean_email := lower(trim(coalesce(p_email, '')));
+
+  if v_clean_email = '' or p_password is null or length(p_password) = 0 then
+    return null;
+  end if;
+
+  -- Rate limiting check: max 5 failed attempts in 15 mins
+  select count(*)
+  into v_failed_attempts
+  from public.admin_audit_logs
+  where email = v_clean_email
+    and event = 'login_failure'
+    and created_at > now() - interval '15 minutes';
+
+  if v_failed_attempts >= 5 then
+    insert into public.admin_audit_logs (email, event, metadata)
+    values (v_clean_email, 'login_lockout', jsonb_build_object('reason', 'Excessive failed login attempts', 'attempt_count', v_failed_attempts));
+    
+    raise exception 'Account locked due to multiple failed login attempts. Please try again in 15 minutes.';
+  end if;
+
+  -- Pure READ-ONLY Bcrypt verification
+  select * into v_admin
+  from public.admin_profiles
+  where lower(trim(email)) = v_clean_email
+    and password_hash like '$2%'
+    and password_hash = crypt(p_password, password_hash);
+
+  if v_admin.id is null then
+    insert into public.admin_audit_logs (email, event)
+    values (v_clean_email, 'login_failure');
+    
+    return null;
+  end if;
+
+  insert into public.admin_audit_logs (admin_id, email, event)
+  values (v_admin.id, v_clean_email, 'login_success');
+
+  return jsonb_build_object(
+    'id', v_admin.id,
+    'email', v_admin.email,
+    'full_name', v_admin.full_name,
+    'role', v_admin.role,
+    'profile_pic', v_admin.profile_pic
+  );
+end;
 $$;
+
+revoke all on function public.verify_admin(text, text) from public;
+grant execute on function public.verify_admin(text, text) to anon, authenticated;
 
 -- Add created_by to admin_profiles for audit trail
 alter table admin_profiles add column if not exists created_by uuid references admin_profiles(id);
@@ -1321,10 +1379,12 @@ begin
             execute format('create policy %I on public.%I for delete to authenticated using (true);', 'admin_delete_' || t, t);
         else
             execute format('create policy %I on public.%I for select to anon, authenticated using (true);', 'public_select_' || t, t);
-            execute format('create policy %I on public.%I for insert to authenticated with check (true);', 'admin_insert_' || t, t);
-            execute format('create policy %I on public.%I for update to authenticated using (true);', 'admin_update_' || t, t);
-            execute format('create policy %I on public.%I for delete to authenticated using (true);', 'admin_delete_' || t, t);
+            execute format('create policy %I on public.%I for insert to anon, authenticated with check (true);', 'public_insert_' || t, t);
+            execute format('create policy %I on public.%I for update to anon, authenticated using (true);', 'public_update_' || t, t);
+            execute format('create policy %I on public.%I for delete to anon, authenticated using (true);', 'public_delete_' || t, t);
         end if;
         
     end loop;
 end $$;
+
+
