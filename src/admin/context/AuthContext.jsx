@@ -98,6 +98,8 @@ export function AuthProvider({ children }) {
     // Save session in localStorage for seamless persistence on page refresh
     localStorage.setItem('adminUser', JSON.stringify(userData));
     localStorage.setItem('adminUser_cache', JSON.stringify(userData));
+    localStorage.setItem('admin_last_activity', String(Date.now()));
+    sessionStorage.removeItem('admin_session_expired');
     setUser(userData);
     return userData;
   }, []);
@@ -110,10 +112,67 @@ export function AuthProvider({ children }) {
     } finally {
       localStorage.removeItem('adminUser');
       localStorage.removeItem('adminUser_cache');
+      localStorage.removeItem('admin_last_activity');
       setUser(null);
       setSession(null);
     }
   }, []);
+
+  const [showIdleWarning, setShowIdleWarning] = useState(false);
+
+  const extendSession = useCallback(() => {
+    localStorage.setItem('admin_last_activity', String(Date.now()));
+    setShowIdleWarning(false);
+  }, []);
+
+  // Inactivity session timeout handler (15 minutes total, 13 minutes warning)
+  useEffect(() => {
+    if (!user) {
+      setShowIdleWarning(false);
+      return;
+    }
+
+    const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes timeout
+    const WARNING_TIMEOUT_MS = 13 * 60 * 1000;    // 13 minutes warning (2m remaining)
+
+    // Initialize activity if not set
+    if (!localStorage.getItem('admin_last_activity')) {
+      localStorage.setItem('admin_last_activity', String(Date.now()));
+    }
+
+    let lastUpdated = 0;
+    const handleUserActivity = () => {
+      const now = Date.now();
+      if (now - lastUpdated > 3000) { // Throttle updates to once every 3s
+        lastUpdated = now;
+        localStorage.setItem('admin_last_activity', String(now));
+        setShowIdleWarning(false);
+      }
+    };
+
+    const activityEvents = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    activityEvents.forEach(evt => window.addEventListener(evt, handleUserActivity, { passive: true }));
+
+    const intervalId = setInterval(() => {
+      const lastAct = parseInt(localStorage.getItem('admin_last_activity') || '0', 10);
+      const diff = Date.now() - lastAct;
+
+      if (lastAct && diff >= INACTIVITY_TIMEOUT_MS) {
+        setShowIdleWarning(false);
+        sessionStorage.setItem('admin_session_expired', 'true');
+        logout();
+      } else if (lastAct && diff >= WARNING_TIMEOUT_MS) {
+        setShowIdleWarning(true);
+      } else {
+        setShowIdleWarning(false);
+      }
+    }, 5000);
+
+    return () => {
+      activityEvents.forEach(evt => window.removeEventListener(evt, handleUserActivity));
+      clearInterval(intervalId);
+    };
+  }, [user, logout]);
 
   const refreshSession = useCallback(async () => {
     const stored = localStorage.getItem('adminUser') || localStorage.getItem('adminUser_cache');
@@ -138,7 +197,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, session, login, logout, updateUser, refreshSession, loading }}>
+    <AuthContext.Provider value={{ user, session, login, logout, updateUser, refreshSession, loading, showIdleWarning, extendSession }}>
       {children}
     </AuthContext.Provider>
   );
