@@ -176,6 +176,14 @@ const tabMeta = {
 
 const editorTabs = Object.keys(tabMeta);
 
+function ensureArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'object') return [val];
+  if (typeof val === 'string') return val.split('\n').map(s => s.trim()).filter(Boolean);
+  return [];
+}
+
 export default function CourseEditor() {
   const { user: currentUser } = useAuth();
   const { id } = useParams();
@@ -259,8 +267,13 @@ export default function CourseEditor() {
             ...courseRes.data,
             status: courseRes.data.status === 'Inactive' || courseRes.data.status === 'Unpublished' ? 'Draft' : courseRes.data.status,
             is_published: courseRes.data.status === 'Inactive' || courseRes.data.status === 'Unpublished' || courseRes.data.status === 'Draft' ? false : !!courseRes.data.is_published,
-            tabs: tabsRes.data || [],
-            faqs: faqsRes.data || [],
+            certifications: ensureArray(courseRes.data.certifications),
+            projects: ensureArray(courseRes.data.projects),
+            highlights: ensureArray(courseRes.data.highlights),
+            overview_faqs: ensureArray(courseRes.data.overview_faqs),
+            checklist_items: ensureArray(courseRes.data.checklist_items),
+            tabs: ensureArray(tabsRes.data),
+            faqs: ensureArray(faqsRes.data),
           }));
         }
         setCourseTags(tagsRes.data?.map((t) => t.tag_id) || []);
@@ -1472,119 +1485,104 @@ export default function CourseEditor() {
             </div>
           )}
 
-          {tab === "certification" && (
-            <div className="max-w-3xl space-y-6">
-              <div className="flex items-center justify-between pb-3 border-b border-admin-200">
-                <h3 className="font-semibold text-black text-lg">Certification <span className="text-destructive-500">*</span></h3>
-                {course.certifications.length < 2 && (
-                  <AddButton
-                    onClick={() =>
-                      update("certifications", [
-                        ...course.certifications,
-                        { description: "", certificate_image_url: "", recognized_companies: [] },
-                      ])
-                    }
-                    label="Add Certification"
-                  />
-                )}
-              </div>
-              {(course.certifications.length === 0
-                ? [
-                    {
-                      description: "",
-                      certificate_image_url: "",
-                      recognized_companies: [],
-                    },
-                  ]
-                : course.certifications
-              ).map((cert, i) => (
-                <div key={i} className="bg-white border border-admin-200 rounded-xl p-5 shadow-xs space-y-4 relative">
-                  <div className="flex items-center justify-between pb-2 border-b border-admin-100">
-                    <span className="text-xs font-bold text-neutral-500">Certification #{i + 1}</span>
-                    {course.certifications.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          update(
-                            "certifications",
-                            course.certifications.filter((_, j) => j !== i)
-                          )
-                        }
-                        className="text-xs text-red-500 hover:text-red-600 font-medium hover:underline flex items-center gap-1"
-                      >
-                        <FiTrash2 className="w-3.5 h-3.5" /> Remove
-                      </button>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-600 mb-1">
-                        Description <span className="text-destructive-500">*</span>
-                      </label>
-                      <textarea
-                        value={cert.description || ""}
-                        onChange={(e) => {
-                          const n = [
-                            ...(course.certifications.length
-                              ? course.certifications
-                              : [{ ...cert }]),
-                          ];
-                          n[i] = { ...n[i], description: e.target.value };
-                          update("certifications", n);
-                        }}
-                        rows={4}
-                        required
-                        className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                        placeholder="Describe the certification value..."
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-neutral-600 mb-1">
-                        Recognized Companies (one per line) <span className="text-destructive-500">*</span>
-                      </label>
-                      <textarea
-                        value={(cert.recognized_companies || []).join("\n")}
-                        onChange={(e) => {
-                          const n = [
-                            ...(course.certifications.length
-                              ? course.certifications
-                              : [{ ...cert }]),
-                          ];
-                          n[i] = {
-                            ...n[i],
-                            recognized_companies: e.target.value.split("\n"),
-                          };
-                          update("certifications", n);
-                        }}
-                        rows={4}
-                        required
-                        className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                        placeholder="Google&#10;Microsoft&#10;Amazon"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-neutral-600 mb-1">
-                      Certificate Image <span className="text-destructive-500">*</span>
-                    </label>
-                    <ImageUploader
-                      bucket="certificates"
-                      value={cert.certificate_image_url || ""}
-                      onChange={(url) => {
-                        const n = [
-                          ...(course.certifications.length
-                            ? course.certifications
-                            : [{ ...cert }]),
-                        ];
-                        n[i] = { ...n[i], certificate_image_url: url };
-                        update("certifications", n);
-                      }}
+          {tab === "certification" && (() => {
+            const rawCerts = ensureArray(course.certifications);
+            const certsList = rawCerts.length === 0
+              ? [{ description: "", certificate_image_url: "", recognized_companies: [] }]
+              : rawCerts;
+            return (
+              <div className="max-w-3xl space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-admin-200">
+                  <h3 className="font-semibold text-black text-lg">Certification <span className="text-destructive-500">*</span></h3>
+                  {certsList.length < 2 && (
+                    <AddButton
+                      onClick={() =>
+                        update("certifications", [
+                          ...certsList,
+                          { description: "", certificate_image_url: "", recognized_companies: [] },
+                        ])
+                      }
+                      label="Add Certification"
                     />
-                  </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
+                {certsList.map((cert, i) => (
+                  <div key={i} className="bg-white border border-admin-200 rounded-xl p-5 shadow-xs space-y-4 relative">
+                    <div className="flex items-center justify-between pb-2 border-b border-admin-100">
+                      <span className="text-xs font-bold text-neutral-500">Certification #{i + 1}</span>
+                      {certsList.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            update(
+                              "certifications",
+                              certsList.filter((_, j) => j !== i)
+                            )
+                          }
+                          className="text-xs text-red-500 hover:text-red-600 font-medium hover:underline flex items-center gap-1"
+                        >
+                          <FiTrash2 className="w-3.5 h-3.5" /> Remove
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                      <div>
+                        <label className="block text-xs font-semibold text-neutral-600 mb-1">
+                          Description <span className="text-destructive-500">*</span>
+                        </label>
+                        <textarea
+                          value={cert.description || ""}
+                          onChange={(e) => {
+                            const n = [...certsList];
+                            n[i] = { ...n[i], description: e.target.value };
+                            update("certifications", n);
+                          }}
+                          rows={4}
+                          required
+                          className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          placeholder="Describe the certification value..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-neutral-600 mb-1">
+                          Recognized Companies (one per line) <span className="text-destructive-500">*</span>
+                        </label>
+                        <textarea
+                          value={ensureArray(cert.recognized_companies).join("\n")}
+                          onChange={(e) => {
+                            const n = [...certsList];
+                            n[i] = {
+                              ...n[i],
+                              recognized_companies: e.target.value.split("\n"),
+                            };
+                            update("certifications", n);
+                          }}
+                          rows={4}
+                          required
+                          className="w-full px-3 py-2.5 bg-white border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
+                          placeholder="Google&#10;Microsoft&#10;Amazon"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-neutral-600 mb-1">
+                        Certificate Image <span className="text-destructive-500">*</span>
+                      </label>
+                      <ImageUploader
+                        bucket="certificates"
+                        value={cert.certificate_image_url || ""}
+                        onChange={(url) => {
+                          const n = [...certsList];
+                          n[i] = { ...n[i], certificate_image_url: url };
+                          update("certifications", n);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
 
           {tab === "faqs" && !isNew && (
             <div className="max-w-3xl space-y-6">
