@@ -70,15 +70,21 @@ export default function AllJobs() {
     },
   });
 
-  const { data: interns, isLoading: internsLoading } = useQuery({
+  const { data: interns = [], isLoading: internsLoading } = useQuery({
     queryKey: ['internships-all'],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('internships')
         .select('*')
         .eq('is_active', true)
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
+      if (error) {
+        if (error.code === '42P01' || error.code === 'PGRST204' || error.message?.includes('schema cache')) {
+          return [];
+        }
+        return [];
+      }
       return (data || []).map(i => ({ ...i, _type: 'intern' }));
     },
   });
@@ -147,67 +153,71 @@ export default function AllJobs() {
               <div className="max-w-4xl mx-auto space-y-4">
                 {pageItems.map((item, i) => {
                   const isIntern = item._type === 'intern';
-                  return (
-                    <motion.div
-                      key={`${item._type}-${item.id}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.05 }}
-                      className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-brand-orange/40 transition-all p-5"
-                    >
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <span className="w-12 h-12 shrink-0 rounded-full bg-brand-orange/10 text-brand-orange flex items-center justify-center">
-                          <FiBriefcase className="w-5 h-5" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-semibold text-dark-navy text-base leading-snug">{item.title}</p>
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange text-[11px] font-bold">
-                              {isIntern ? 'Internship' : 'Job'}
-                            </span>
+                    return (
+                      <motion.div
+                        key={`${item._type}-${item.id}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.05 }}
+                        className="bg-white rounded-2xl border border-gray-200 shadow-xs hover:shadow-md transition-all p-4 flex flex-col justify-between"
+                      >
+                        <div>
+                          {/* TOP ROW: Title + Badge (Left) | Salary / Stipend (Right Top) */}
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <p className="font-bold text-dark-navy text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
+                                {item.title}
+                              </p>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange text-[10px] font-bold shrink-0">
+                                {isIntern ? 'Internship' : 'Job'}
+                              </span>
+                            </div>
+
+                            {/* RIGHT SIDE TOP: Salary or Stipend */}
+                            {(item.salary || item.stipend) && (
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-amber-50 text-brand-orange text-xs font-bold border border-amber-200/60">
+                                  {(item.salary || item.stipend).startsWith('₹')
+                                    ? (item.salary || item.stipend)
+                                    : `₹${item.salary || item.stipend}`}
+                                </span>
+                              </div>
+                            )}
                           </div>
-                          {(item.experience || item.salary || item.duration || item.stipend || item.location) && (
-                            <p className="flex items-center gap-x-3 gap-y-1 flex-wrap text-text-gray text-sm mt-1">
-                              {item.experience && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />{item.experience}
-                                </span>
-                              )}
-                              {item.salary && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiDollarSign className="w-3.5 h-3.5 shrink-0 text-brand-orange" />{item.salary}
-                                </span>
-                              )}
-                              {item.duration && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />{item.duration}
-                                </span>
-                              )}
-                              {item.stipend && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiDollarSign className="w-3.5 h-3.5 shrink-0 text-brand-orange" />{item.stipend}
-                                </span>
-                              )}
-                              {item.location && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiMapPin className="w-3.5 h-3.5 shrink-0 text-brand-orange" />{item.location}
-                                </span>
-                              )}
+
+                          {/* FULL DESCRIPTION TEXT (NOT HIDDEN) */}
+                          {item.description && (
+                            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-3">
+                              {item.description}
                             </p>
                           )}
                         </div>
-                      </div>
-                      <div className="shrink-0">
-                        <button
-                          onClick={() => handleApply(item)}
-                          className="w-full sm:w-auto inline-block bg-brand-orange hover:bg-brand-orange/90 text-white font-bold text-sm py-2.5 px-6 rounded-full transition-all cursor-pointer"
-                        >
-                          Apply Now
-                        </button>
-                      </div>
-                    </motion.div>
-                  );
+
+                        {/* BOTTOM ROW: Experience/Duration + Location (Left) & Apply Button (Right) */}
+                        <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-wrap">
+                          <div className="flex items-center gap-3 flex-wrap">
+                            {(item.experience || item.duration) && (
+                              <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
+                                <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
+                                {item.experience || item.duration}
+                              </span>
+                            )}
+                            {item.location && (
+                              <span className="text-slate-500 text-xs flex items-center gap-1 font-medium">
+                                <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />{item.location}
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => handleApply(item)}
+                            className="inline-flex items-center gap-1.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer"
+                          >
+                            Apply Now
+                          </button>
+                        </div>
+                      </motion.div>
+                    );
                 })}
               </div>
               <Pagination page={page} totalPages={totalPages} onChange={setPage} />

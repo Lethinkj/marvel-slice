@@ -182,8 +182,9 @@ const queryClient = useQueryClient();
                   <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
                   <input type="text" value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
                     className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-                    placeholder="+91 6380957390" />
+                    placeholder="+91 6380957390, +91 9876543210" />
                 </div>
+                <p className="text-[11px] text-neutral-400 mt-1">Separate multiple phone numbers with a comma (,)</p>
               </div>
             </div>
           </div>

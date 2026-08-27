@@ -23,15 +23,16 @@ export default function TopBar() {
               <span className="hidden sm:inline">{email}</span>
             </a>
           )}
-          {phone && (
+          {phone && phone.split(',').map(p => p.trim()).filter(Boolean).map((num, i) => (
             <a
-              href={`tel:${phone}`}
+              key={i}
+              href={`tel:${num.replace(/\s+/g, '')}`}
               className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
             >
               <FiPhone className="w-3 h-3 shrink-0" />
-              <span className="hidden sm:inline">{phone}</span>
+              <span className="hidden sm:inline">{num}</span>
             </a>
-          )}
+          ))}
         </div>
         <div className="flex items-center gap-2 text-xs lg:text-sm">
           <a href="#" className="hover:underline" onClick={() => trackCtaClick('Login', 'topbar')}>Login</a>

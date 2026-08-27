@@ -289,15 +289,21 @@ export default function Career() {
     },
   });
 
-  const { data: internships, isLoading: internshipsLoading } = useQuery({
+  const { data: internships = [], isLoading: internshipsLoading } = useQuery({
     queryKey: ['internships'],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('internships')
         .select('*')
         .eq('is_active', true)
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
+      if (error) {
+        if (error.code === '42P01' || error.code === 'PGRST204' || error.message?.includes('schema cache')) {
+          return [];
+        }
+        return [];
+      }
       return data || [];
     },
   });
@@ -756,45 +762,51 @@ export default function Career() {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: i * 0.05 }}
-                          className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
+                          className="bg-white rounded-2xl border border-gray-200 shadow-xs hover:shadow-md transition-all p-4 flex flex-col justify-between"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="bg-brand-orange/10 text-brand-orange p-2.5 rounded-xl shrink-0">
-                              <FiBriefcase className="w-5 h-5" />
-                            </div>
-                            <h3 className="flex-1 font-bold text-slate-800 text-lg leading-tight">{item.title}</h3>
-                            <span className="text-xs font-semibold text-brand-orange bg-orange-50 px-2.5 py-1 rounded-full shrink-0">Internship</span>
-                          </div>
-                          {(item.duration || item.stipend || item.experience) && (
-                            <div className="flex items-center gap-4 flex-wrap border-y border-slate-100 py-2.5 px-3 my-3 rounded-lg bg-orange-50/40 text-sm text-slate-600">
-                              {item.duration && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiClock className="w-3.5 h-3.5 text-brand-orange" />{item.duration}
-                                </span>
-                              )}
+                          <div>
+                            {/* TOP ROW: Name + Badge (Left) | Stipend (Right Top) */}
+                            <div className="flex items-center justify-between gap-3 mb-3">
+                              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                <h3 className="font-bold text-slate-800 text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
+                                  {item.title}
+                                </h3>
+                                <span className="text-[10px] font-bold text-brand-orange bg-orange-50 border border-orange-200/60 px-2 py-0.5 rounded-full shrink-0">Internship</span>
+                              </div>
+
+                              {/* RIGHT SIDE TOP: Stipend */}
                               {item.stipend && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiDollarSign className="w-3.5 h-3.5 text-brand-orange" />{item.stipend}
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-amber-50 text-brand-orange text-xs font-bold border border-amber-200/60">
+                                    {item.stipend.startsWith('₹') ? item.stipend : `₹${item.stipend}`}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* FULL DESCRIPTION (NOT HIDDEN) */}
+                            {item.description && (
+                              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-3">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* BOTTOM ROW: Experience/Duration + Location (Left) & Apply Button (Right) */}
+                          <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-wrap">
+                            <div className="flex items-center gap-3 flex-wrap">
+                              {(item.experience || item.duration) && (
+                                <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
+                                  <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
+                                  {item.experience || item.duration}
                                 </span>
                               )}
-                              {item.experience && (
-                                <span className="flex items-center gap-1.5">
-                                  <FiBriefcase className="w-3.5 h-3.5 text-brand-orange" />{item.experience}
+                              {item.location && (
+                                <span className="text-slate-500 text-xs flex items-center gap-1 font-medium">
+                                  <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />{item.location}
                                 </span>
                               )}
                             </div>
-                          )}
-                          {item.description && (
-                            <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-3 flex-1">
-                              {item.description}
-                            </p>
-                          )}
-                          <div className="flex items-center justify-between mt-auto pt-2">
-                            {item.location ? (
-                              <span className="text-slate-600 text-sm flex items-center gap-1 font-medium">
-                                <FiMapPin className="w-3.5 h-3.5 shrink-0" />{item.location}
-                              </span>
-                            ) : <span />}
                             <button
                               onClick={() => {
                                 if (item.apply_url?.trim()) {
@@ -804,7 +816,7 @@ export default function Career() {
                                   setShowForm(true);
                                 }
                               }}
-                              className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
+                              className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer">
                               Apply Now <FiArrowRight className="w-3.5 h-3.5" />
                             </button>
                           </div>
@@ -818,40 +830,51 @@ export default function Career() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.05 }}
-                        className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all p-5 flex flex-col"
+                        className="bg-white rounded-2xl border border-gray-200 shadow-xs hover:shadow-md transition-all p-4 flex flex-col justify-between"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="bg-brand-blue/10 text-brand-blue p-2.5 rounded-xl shrink-0">
-                            <FiBriefcase className="w-5 h-5" />
-                          </div>
-                          <h3 className="flex-1 font-bold text-slate-800 text-lg leading-tight">{item.title}</h3>
-                          <span className="text-xs font-semibold text-brand-orange bg-orange-50 px-2.5 py-1 rounded-full shrink-0">Job</span>
-                        </div>
-                        {(item.experience || item.salary) && (
-                          <div className="flex items-center gap-4 flex-wrap border-y border-slate-100 py-2.5 px-3 my-3 rounded-lg bg-orange-50/40 text-sm text-slate-600">
-                            {item.experience && (
-                              <span className="flex items-center gap-1.5">
-                                <FiClock className="w-3.5 h-3.5 text-brand-orange" />{item.experience}
-                              </span>
-                            )}
+                        <div>
+                          {/* TOP ROW: Name + Badge (Left) | Salary (Right Top) */}
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <h3 className="font-bold text-slate-800 text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
+                                {item.title}
+                              </h3>
+                              <span className="text-[10px] font-bold text-brand-blue bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-full shrink-0">Job</span>
+                            </div>
+
+                            {/* RIGHT SIDE TOP: Salary */}
                             {item.salary && (
-                              <span className="flex items-center gap-1.5">
-                                <FiDollarSign className="w-3.5 h-3.5 text-brand-orange" />{item.salary}
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-blue-50 text-brand-blue text-xs font-bold border border-blue-200/60">
+                                  {item.salary.startsWith('₹') ? item.salary : `₹${item.salary}`}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* FULL DESCRIPTION (NOT HIDDEN) */}
+                          {item.description && (
+                            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-3">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* BOTTOM ROW: Experience (Left of Location) & Apply Button */}
+                        <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-wrap">
+                          <div className="flex items-center gap-3 flex-wrap">
+                            {item.experience && (
+                              <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
+                                <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
+                                {item.experience}
+                              </span>
+                            )}
+                            {item.location && (
+                              <span className="text-slate-500 text-xs flex items-center gap-1 font-medium">
+                                <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />{item.location}
                               </span>
                             )}
                           </div>
-                        )}
-                        {item.description && (
-                          <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-3 flex-1">
-                            {item.description}
-                          </p>
-                        )}
-                        <div className="flex items-center justify-between mt-auto pt-2">
-                          {item.location ? (
-                            <span className="text-slate-600 text-sm flex items-center gap-1 font-medium">
-                              <FiMapPin className="w-3.5 h-3.5 shrink-0" />{item.location}
-                            </span>
-                          ) : <span />}
                           <button
                             onClick={() => {
                               if (item.apply_url?.trim()) {
@@ -861,7 +884,7 @@ export default function Career() {
                                 setShowForm(true);
                               }
                             }}
-                            className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-pointer">
+                            className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer">
                             Apply Now <FiArrowRight className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -888,7 +911,7 @@ export default function Career() {
             </div>
           )}
             </div>
-            <aside className="order-1 lg:order-2">
+            <aside className="order-1 lg:order-2 pt-5 lg:pt-10">
               <BookDemoForm />
             </aside>
           </div>

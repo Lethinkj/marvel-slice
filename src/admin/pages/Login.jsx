@@ -158,6 +158,8 @@ function LoginFormCard({
   setShowPw,
   setRememberMe,
   onOpenForgot,
+  ipBlocked,
+  ipBlockRemaining,
 }) {
   return (
     <div className="w-full max-w-[440px] relative z-20 -mt-3">
@@ -176,8 +178,25 @@ function LoginFormCard({
           Enter your administrator credentials to access your dashboard
         </p>
 
+        {/* IP Lockout Warning Banner */}
+        {ipBlocked && (
+          <motion.div 
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-5 p-4 bg-rose-50 border border-rose-200 rounded-xl text-left space-y-1"
+          >
+            <div className="flex items-center gap-2 text-rose-700 font-bold text-xs">
+              <FiShield className="w-4 h-4 shrink-0 text-rose-600" />
+              <span>IP ACCESS BLOCKED (15 MIN LOCKOUT)</span>
+            </div>
+            <p className="text-xs text-rose-600 leading-snug">
+              Access from your IP address / device has been temporarily blocked for {ipBlockRemaining || 15} minutes due to multiple failed login attempts.
+            </p>
+          </motion.div>
+        )}
+
         {/* Session Expired Banner */}
-        {sessionExpiredMsg && (
+        {sessionExpiredMsg && !ipBlocked && (
           <motion.div 
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
@@ -189,7 +208,7 @@ function LoginFormCard({
         )}
 
         {/* Error Alert Banner (Only shown if runtime error occurs) */}
-        {error && (
+        {error && !ipBlocked && (
           <motion.div 
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
@@ -216,10 +235,11 @@ function LoginFormCard({
               <input
                 type="email"
                 value={email}
+                disabled={ipBlocked || loading}
                 onChange={handleEmailChange}
                 onBlur={() => handleBlur('email')}
-                placeholder="klethin24@gmail.com"
-                className={`w-full h-13 pl-10 pr-4 bg-white border rounded-xl text-sm font-medium text-[#0F172A] placeholder-slate-400 focus:outline-none transition-all duration-200 shadow-2xs ${
+                placeholder="admin@marvelslice.com"
+                className={`w-full h-13 pl-10 pr-4 bg-white border rounded-xl text-sm font-medium text-[#0F172A] placeholder-slate-400 focus:outline-none transition-all duration-200 shadow-2xs disabled:opacity-50 disabled:bg-slate-50 ${
                   touched.email && fieldErrors.email 
                     ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500' 
                     : 'border-slate-200 focus:ring-2 focus:ring-[#0052FF]/20 focus:border-[#0052FF]'
@@ -246,10 +266,11 @@ function LoginFormCard({
               <input
                 type={showPw ? 'text' : 'password'}
                 value={password}
+                disabled={ipBlocked || loading}
                 onChange={handlePasswordChange}
                 onBlur={() => handleBlur('password')}
                 placeholder="••••••••"
-                className={`w-full h-13 pl-10 pr-11 bg-white border rounded-xl text-sm font-medium text-[#0F172A] placeholder-slate-400 focus:outline-none transition-all duration-200 shadow-2xs ${
+                className={`w-full h-13 pl-10 pr-11 bg-white border rounded-xl text-sm font-medium text-[#0F172A] placeholder-slate-400 focus:outline-none transition-all duration-200 shadow-2xs disabled:opacity-50 disabled:bg-slate-50 ${
                   touched.password && fieldErrors.password 
                     ? 'border-rose-500 focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500' 
                     : 'border-slate-200 focus:ring-2 focus:ring-[#0052FF]/20 focus:border-[#0052FF]'
@@ -296,14 +317,16 @@ function LoginFormCard({
           <div className="pt-1.5">
             <button
               type="submit"
-              disabled={loading}
-              className="w-full h-13 rounded-xl bg-gradient-to-r from-[#0052FF] to-[#003FD5] hover:from-[#0047DF] hover:to-[#0034B8] text-white font-bold text-sm tracking-wide shadow-md shadow-blue-600/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-70"
+              disabled={loading || ipBlocked}
+              className="w-full h-13 rounded-xl bg-gradient-to-r from-[#0052FF] to-[#003FD5] hover:from-[#0047DF] hover:to-[#0034B8] text-white font-bold text-sm tracking-wide shadow-md shadow-blue-600/20 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span>Signing in...</span>
                 </>
+              ) : ipBlocked ? (
+                <span>Access Blocked ({ipBlockRemaining || 15}m)</span>
               ) : (
                 <>
                   <span>Sign In to Dashboard</span>
@@ -389,10 +412,10 @@ export default function Login() {
     if (user) navigate('/admin', { replace: true });
   }, [user, navigate]);
 
-  const [email, setEmail] = useState('klethin24@gmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [error, setError] = useState('');
   const [sessionExpiredMsg, setSessionExpiredMsg] = useState('');
@@ -401,11 +424,30 @@ export default function Login() {
   const [touched, setTouched] = useState({ email: false, password: false });
   const [fieldErrors, setFieldErrors] = useState({ email: '', password: '' });
 
+  const [ipBlocked, setIpBlocked] = useState(false);
+  const [ipBlockRemaining, setIpBlockRemaining] = useState(0);
+
   useEffect(() => {
     if (sessionStorage.getItem('admin_session_expired') === 'true') {
       setSessionExpiredMsg('Your session has expired due to inactivity. Please sign in again.');
       sessionStorage.removeItem('admin_session_expired');
     }
+
+    const checkLockout = () => {
+      const blockedUntil = parseInt(localStorage.getItem('admin_ip_blocked_until') || '0', 10);
+      if (blockedUntil && Date.now() < blockedUntil) {
+        setIpBlocked(true);
+        const minsLeft = Math.ceil((blockedUntil - Date.now()) / (60 * 1000));
+        setIpBlockRemaining(minsLeft);
+      } else {
+        setIpBlocked(false);
+        localStorage.removeItem('admin_ip_blocked_until');
+      }
+    };
+
+    checkLockout();
+    const interval = setInterval(checkLockout, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   function validateEmailStr(val) {
@@ -451,6 +493,14 @@ export default function Login() {
     setError('');
     setSessionExpiredMsg('');
 
+    // Check if IP is currently blocked
+    const blockedUntil = parseInt(localStorage.getItem('admin_ip_blocked_until') || '0', 10);
+    if (blockedUntil && Date.now() < blockedUntil) {
+      const minsLeft = Math.ceil((blockedUntil - Date.now()) / (60 * 1000));
+      setError(`Your IP address is temporarily blocked for ${minsLeft} more minutes due to multiple failed login attempts.`);
+      return;
+    }
+
     setTouched({ email: true, password: true });
 
     const emailErr = validateEmailStr(email);
@@ -463,11 +513,27 @@ export default function Login() {
 
     setLoading(true);
     try {
-      await login(email.trim(), password);
+      await login(email.trim(), password, rememberMe);
       trackLogin('admin');
+      localStorage.removeItem('admin_failed_attempts');
+      localStorage.removeItem('admin_ip_blocked_until');
       navigate('/admin', { replace: true });
     } catch (err) {
-      setError(err.message || 'Invalid email or password. Please try again.');
+      const errMsg = err.message || 'Invalid email or password. Please try again.';
+      
+      // Track failed attempt count in localStorage for IP/device protection
+      const attempts = (parseInt(localStorage.getItem('admin_failed_attempts') || '0', 10)) + 1;
+      localStorage.setItem('admin_failed_attempts', String(attempts));
+
+      if (attempts >= 5 || errMsg.toLowerCase().includes('blocked') || errMsg.toLowerCase().includes('locked')) {
+        const lockoutTime = Date.now() + 15 * 60 * 1000;
+        localStorage.setItem('admin_ip_blocked_until', String(lockoutTime));
+        setIpBlocked(true);
+        setIpBlockRemaining(15);
+        setError('Your IP address has been blocked for 15 minutes due to multiple failed login attempts.');
+      } else {
+        setError(`${errMsg} (${5 - attempts} attempts remaining before IP lockout)`);
+      }
     } finally {
       setLoading(false);
     }
@@ -536,6 +602,8 @@ export default function Login() {
             setShowPw={setShowPw}
             setRememberMe={setRememberMe}
             onOpenForgot={() => setForgotModalOpen(true)}
+            ipBlocked={ipBlocked}
+            ipBlockRemaining={ipBlockRemaining}
           />
         </motion.div>
       </div>

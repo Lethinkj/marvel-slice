@@ -81,12 +81,12 @@ export default function Footer() {
                   <span>{address}</span>
                 </p>
               )}
-              {phone && (
-                <a href={`tel:${phone}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
+              {phone && phone.split(',').map(p => p.trim()).filter(Boolean).map((num, i) => (
+                <a key={i} href={`tel:${num.replace(/\s+/g, '')}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
                   <FiPhone className="w-4 h-4 shrink-0 text-brand-orange" />
-                  <span>{phone}</span>
+                  <span>{num}</span>
                 </a>
-              )}
+              ))}
               {email && (
                 <a href={`mailto:${email}`} className="flex items-center gap-2 hover:text-brand-orange transition-colors">
                   <FiMail className="w-4 h-4 shrink-0 text-brand-orange" />
