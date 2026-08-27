@@ -1,5 +1,5 @@
 import { FiMail, FiPhone } from 'react-icons/fi';
-import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
 import { useSiteSettings } from '../../hooks/useSupabase';
 import { trackCtaClick } from '../../lib/analytics';
 
@@ -52,6 +52,11 @@ export default function TopBar() {
             <a href={social.linkedin || '#'} aria-label="LinkedIn" className="flex h-5 w-5 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition-all duration-300 hover:border-transparent hover:bg-brand-orange hover:-translate-y-0.5">
               <FaLinkedinIn className="w-2.5 h-2.5" />
             </a>
+            {social.youtube && (
+              <a href={social.youtube} aria-label="YouTube" target="_blank" rel="noopener noreferrer" className="flex h-5 w-5 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition-all duration-300 hover:border-transparent hover:bg-brand-orange hover:-translate-y-0.5">
+                <FaYoutube className="w-2.5 h-2.5" />
+              </a>
+            )}
           </div>
         </div>
       </div>

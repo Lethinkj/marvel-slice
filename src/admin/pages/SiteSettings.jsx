@@ -66,6 +66,7 @@ const queryClient = useQueryClient();
     facebook: '',
     instagram: '',
     linkedin: '',
+    youtube: '',
     address: '',
     hours_weekday: '',
     hours_saturday: '',
@@ -103,6 +104,7 @@ const queryClient = useQueryClient();
             facebook: social.facebook || '',
             instagram: social.instagram || '',
             linkedin: social.linkedin || '',
+            youtube: social.youtube || '',
             address: data.address || '',
             hours_weekday: hours.weekday || '',
             hours_saturday: hours.saturday || '',
@@ -124,6 +126,7 @@ const queryClient = useQueryClient();
         facebook: form.facebook || null,
         instagram: form.instagram || null,
         linkedin: form.linkedin || null,
+        youtube: form.youtube || null,
       },
       address: form.address || null,
       working_hours: {
@@ -199,6 +202,7 @@ const queryClient = useQueryClient();
                 { key: 'facebook', label: 'Facebook URL', placeholder: 'https://facebook.com/...' },
                 { key: 'instagram', label: 'Instagram URL', placeholder: 'https://instagram.com/...' },
                 { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/...' },
+                { key: 'youtube', label: 'YouTube URL', placeholder: 'https://youtube.com/...' },
               ].map((s) => (
                 <div key={s.key}>
                   <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">{s.label}</label>
