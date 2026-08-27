@@ -103,7 +103,7 @@ function BookDemoForm() {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden" style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
-      <div className="bg-brand-orange px-6 py-4">
+      <div className="bg-brand-blue px-6 py-4">
         <h3 className="text-xl font-bold text-white">Enquiry</h3>
         <div className="text-white text-xs mt-0.5">Fill the form and our team will contact you shortly.</div>
       </div>
@@ -115,7 +115,7 @@ function BookDemoForm() {
             </div>
             <h4 className="text-lg font-bold text-slate-900 mb-1">Thank You!</h4>
             <p className="text-sm text-slate-500">We have received your request. Our team will get in touch with you shortly.</p>
-            <button onClick={() => { setDemoDone(false); setDemoForm({ name: '', email: '', phone: '' }); setDemoAgree(false); }} className="mt-6 text-sm font-semibold text-brand-orange hover:underline">
+            <button onClick={() => { setDemoDone(false); setDemoForm({ name: '', email: '', phone: '' }); setDemoAgree(false); }} className="mt-6 text-sm font-semibold text-brand-blue hover:underline">
               Send Another Message
             </button>
           </div>
@@ -128,7 +128,7 @@ function BookDemoForm() {
                 onChange={(e) => setDemoForm(p => ({ ...p, name: e.target.value }))}
                 placeholder="Your Name *"
                 required
-                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
               />
             </div>
             <div>
@@ -138,7 +138,7 @@ function BookDemoForm() {
                 onChange={(e) => setDemoForm(p => ({ ...p, email: e.target.value }))}
                 placeholder="Email Address *"
                 required
-                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
               />
             </div>
             <div>
@@ -148,7 +148,7 @@ function BookDemoForm() {
                 onChange={(e) => setDemoForm(p => ({ ...p, phone: e.target.value }))}
                 placeholder="Phone Number *"
                 required
-                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange"
+                className="w-full px-4 py-3 text-sm border rounded-lg outline-none transition-colors border-gray-300 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
               />
             </div>
             {demoMsg && (
@@ -158,18 +158,18 @@ function BookDemoForm() {
               <input type="checkbox" checked={demoAgree} onChange={(e) => {
                 setDemoAgree(e.target.checked);
                 if (demoMsg?.type === 'error') setDemoMsg(null);
-              }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-brand-orange focus:ring-brand-orange/20" />
+              }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue/20" />
               <span className="text-xs text-slate-600 leading-relaxed">
                 I agree to the{' '}
-                <a href="/terms" className="text-brand-orange underline hover:text-brand-orange/80">Terms of Use</a>
+                <a href="/terms" className="text-brand-blue underline hover:text-brand-blue/80">Terms of Use</a>
                 {' '}and{' '}
-                <a href="/privacy" className="text-brand-orange underline hover:text-brand-orange/80">Privacy Policy</a>.
+                <a href="/privacy" className="text-brand-blue underline hover:text-brand-blue/80">Privacy Policy</a>.
               </span>
             </label>
             <button
               type="submit"
               disabled={demoSubmitting}
-              className="w-1/2 mx-auto block py-2.5 rounded-lg bg-brand-orange text-white text-sm font-semibold hover:bg-brand-orange/90 transition-colors disabled:opacity-60 cursor-pointer"
+              className="w-1/2 mx-auto block py-2.5 rounded-lg bg-brand-blue text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60 cursor-pointer"
             >
               {demoSubmitting ? 'Submitting...' : 'Send'}
             </button>
@@ -448,7 +448,7 @@ export default function Career() {
             <h3 className="text-lg font-bold text-slate-800 mb-1">Application Submitted!</h3>
             <p className="text-sm text-slate-500 mb-6">{status.message}</p>
             <button onClick={() => { setShowForm(false); setSelectedJob(null); }}
-              className="inline-flex items-center gap-2 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-6 py-2.5 rounded-xl transition-all text-sm cursor-pointer">
+              className="inline-flex items-center gap-2 bg-brand-blue hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-xl transition-all text-sm cursor-pointer">
               Close
             </button>
           </motion.div>
@@ -481,7 +481,7 @@ export default function Career() {
             {fieldDefs.full_name.enabled !== false && (
               <Field label={fieldDefs.full_name.label} required={fieldDefs.full_name.required !== false} error={errors.full_name}>
                 <input name="full_name" value={form.full_name} onChange={handleChange}
-                  className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/15 transition-all outline-none placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${
                     errors.full_name ? 'border-red-300' : 'border-slate-200'
                   }`} placeholder={fieldDefs.full_name.placeholder} />
               </Field>
@@ -489,7 +489,7 @@ export default function Career() {
             {fieldDefs.email.enabled !== false && (
               <Field label={fieldDefs.email.label} required={fieldDefs.email.required !== false} error={errors.email}>
                 <input name="email" type="email" value={form.email} onChange={handleChange}
-                  className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/15 transition-all outline-none placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${
                     errors.email ? 'border-red-300' : 'border-slate-200'
                   }`} placeholder={fieldDefs.email.placeholder} />
               </Field>
@@ -498,7 +498,7 @@ export default function Career() {
             {fieldDefs.phone.enabled !== false && (
               <Field label={fieldDefs.phone.label} required={fieldDefs.phone.required !== false} error={errors.phone}>
                 <input name="phone" type="tel" value={form.phone} onChange={handleChange}
-                  className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/15 transition-all outline-none placeholder:text-slate-400 ${
+                  className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${
                     errors.phone ? 'border-red-300' : 'border-slate-200'
                   }`} placeholder={fieldDefs.phone.placeholder} />
               </Field>
@@ -520,7 +520,7 @@ export default function Career() {
                     <>
                       <select name="category" value={form.category} onChange={handleChange}
                         style={{ WebkitAppearance: 'none', MozAppearance: 'none', appearance: 'none' }}
-                        className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/15 transition-all outline-none ${
+                        className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15 transition-all outline-none ${
                           errors.category ? 'border-red-300' : 'border-slate-200'
                         } ${!form.category ? 'text-slate-400' : ''}`}>
                         <option value="" disabled>{fieldDefs.category.placeholder}</option>
@@ -537,7 +537,7 @@ export default function Career() {
               <div className="sm:col-span-2">
                 <Field label={fieldDefs.description.label} required={fieldDefs.description.required !== false} error={errors.description}>
                   <textarea name="description" value={form.description} onChange={handleChange} rows={3}
-                    className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-orange focus:ring-4 focus:ring-brand-orange/15 transition-all outline-none placeholder:text-slate-400 resize-y ${
+                    className={`w-full px-4 py-2.5 rounded-xl border bg-slate-50/50 text-slate-800 text-sm focus:bg-white focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 resize-y ${
                       errors.description ? 'border-red-300' : 'border-slate-200'
                     }`} placeholder={fieldDefs.description.placeholder} />
                 </Field>
@@ -550,14 +550,14 @@ export default function Career() {
                   <label className={`relative flex flex-col items-center justify-center p-5 border-2 border-dashed rounded-2xl cursor-pointer transition-all group ${
                     errors.file
                       ? 'border-red-300 bg-red-50/50'
-                      : 'border-brand-orange/40 hover:border-brand-orange bg-orange-50/40 hover:bg-orange-50/80'
+                      : 'border-brand-blue/40 hover:border-brand-blue bg-blue-50/40 hover:bg-blue-50/80'
                   }`}>
-                    <div className="w-10 h-10 bg-brand-orange/10 text-brand-orange rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                    <div className="w-10 h-10 bg-brand-blue/10 text-brand-blue rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                       <FiUpload className="w-5 h-5" />
                     </div>
                     <div className="text-center">
                       {file ? (
-                        <span className="text-sm font-semibold text-brand-orange">{file.name}</span>
+                        <span className="text-sm font-semibold text-brand-blue">{file.name}</span>
                       ) : (
                         <>
                           <p className="text-sm font-semibold text-slate-700">Click to upload or drag and drop</p>
@@ -586,12 +586,12 @@ export default function Career() {
                 <input type="checkbox" checked={agreeTerms} onChange={(e) => {
                   setAgreeTerms(e.target.checked);
                   if (errors.agree) setErrors(prev => ({ ...prev, agree: '' }));
-                }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-brand-orange focus:ring-brand-orange/20" />
+                }} className="mt-0.5 w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue/20" />
                 <span className="text-sm text-slate-600 leading-relaxed">
                   I agree to the{' '}
-                  <a href="/terms" className="underline hover:opacity-80 text-brand-orange">Terms of Use</a>
+                  <a href="/terms" className="underline hover:opacity-80 text-brand-blue">Terms of Use</a>
                   {' '}and{' '}
-                  <a href="/privacy" className="underline hover:opacity-80 text-brand-orange">Privacy Policy</a>.
+                  <a href="/privacy" className="underline hover:opacity-80 text-brand-blue">Privacy Policy</a>.
                 </span>
               </label>
               {errors.agree && <p className="text-xs text-red-500 mt-1">{errors.agree}</p>}
@@ -599,7 +599,7 @@ export default function Career() {
 
             <div className="sm:col-span-2 pt-1">
               <button type="submit" disabled={submitting || uploading}
-                className="w-fit mx-auto bg-brand-orange hover:bg-brand-orange/90 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                className="w-fit mx-auto bg-brand-blue hover:bg-blue-700 active:scale-[0.99] text-white font-semibold py-2 px-5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                 {uploading ? (
                   <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> Uploading...</>
                 ) : submitting ? (
@@ -771,13 +771,13 @@ export default function Career() {
                                 <h3 className="font-bold text-slate-800 text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
                                   {item.title}
                                 </h3>
-                                <span className="text-[10px] font-bold text-brand-orange bg-orange-50 border border-orange-200/60 px-2 py-0.5 rounded-full shrink-0">Internship</span>
+                                <span className="text-[10px] font-bold text-brand-blue bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-full shrink-0">Internship</span>
                               </div>
 
                               {/* RIGHT SIDE TOP: Stipend */}
                               {item.stipend && (
                                 <div className="flex items-center gap-1.5 shrink-0">
-                                  <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-amber-50 text-brand-orange text-xs font-bold border border-amber-200/60">
+                                  <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-blue-50 text-brand-blue text-xs font-bold border border-blue-200/60">
                                     {item.stipend.startsWith('₹') ? item.stipend : `₹${item.stipend}`}
                                   </span>
                                 </div>
@@ -797,7 +797,7 @@ export default function Career() {
                             <div className="flex items-center gap-3 flex-wrap">
                               {(item.experience || item.duration) && (
                                 <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
-                                  <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
+                                  <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-blue" />
                                   {item.experience || item.duration}
                                 </span>
                               )}
@@ -865,7 +865,7 @@ export default function Career() {
                           <div className="flex items-center gap-3 flex-wrap">
                             {item.experience && (
                               <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
-                                <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
+                                <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-blue" />
                                 {item.experience}
                               </span>
                             )}
@@ -897,7 +897,7 @@ export default function Career() {
                 <div className="flex justify-end mt-4">
                   <Link
                     to="/career/jobs"
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-brand-orange/80 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue hover:text-blue-700 transition-colors cursor-pointer"
                   >
                     View More <FiArrowRight className="w-3.5 h-3.5" />
                   </Link>
@@ -927,7 +927,7 @@ export default function Career() {
             className="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-slate-100"
             onClick={e => e.stopPropagation()}
           >
-            <div className="bg-brand-orange px-6 py-4 text-white relative">
+            <div className="bg-brand-blue px-6 py-4 text-white relative">
               <button onClick={() => { setShowForm(false); setSelectedJob(null); }} className="absolute top-3 right-3 bg-white shadow-md text-slate-600 hover:text-slate-800 p-1.5 rounded-full transition-all cursor-pointer border border-slate-200 z-10" aria-label="Close">
                 <FiX className="w-4 h-4" />
               </button>

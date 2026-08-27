@@ -34,7 +34,7 @@ function Pagination({ page, totalPages, onChange }) {
         ) : (
           <button key={p} onClick={() => onChange(p)}
             className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-sm font-medium transition-colors ${
-              p === page ? 'bg-brand-orange text-white shadow-md' : 'border border-gray-200 text-gray-500 hover:bg-gray-50'
+              p === page ? 'bg-brand-blue text-white shadow-md' : 'border border-gray-200 text-gray-500 hover:bg-gray-50'
             }`}>{p}</button>
         )
       ))}
@@ -99,8 +99,8 @@ export default function AllJobs() {
   const start = (page - 1) * perPage;
   const pageItems = filtered.slice(start, start + perPage);
 
-  function switchTab(key) {
-    setTab(key);
+  function handleTabChange(t) {
+    setTab(t);
     setPage(1);
   }
 
@@ -113,31 +113,41 @@ export default function AllJobs() {
   }
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-12 sm:pt-6 sm:pb-16">
-        <Reveal>
-          <Link to="/career" className="inline-flex items-center gap-1.5 text-brand-orange hover:text-brand-orange/80 font-medium text-sm mb-3 sm:mb-4 transition-colors">
-            <FiArrowLeft className="w-4 h-4" /> Back to Career
-          </Link>
+    <div className="min-h-screen bg-slate-50 py-12 sm:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link
+          to="/career"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-brand-blue transition-colors mb-8"
+        >
+          <FiArrowLeft className="w-4 h-4" /> Back to Career
+        </Link>
 
+        <Reveal>
           <div className="text-center mb-10">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">All Job Openings</h1>
-            <p className="text-slate-600 text-sm mt-1">Browse every open position and apply today.</p>
-            <div className="w-12 h-1 bg-brand-orange mx-auto rounded-full mt-3" />
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+              All Openings
+            </h1>
+            <p className="text-slate-600 text-sm mt-2 max-w-xl mx-auto">
+              Explore full-time positions and internship opportunities to build your career with us.
+            </p>
+            <div className="w-12 h-1 bg-brand-blue mx-auto rounded-full mt-3" />
           </div>
 
-          <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+          <div className="flex items-center justify-center gap-2 mb-8">
             {TABS.map(t => {
               const count = t.key === 'all' ? (jobs?.length || 0) + (interns?.length || 0)
                 : t.key === 'jobs' ? (jobs?.length || 0)
                   : (interns?.length || 0);
               return (
-                <button key={t.key} onClick={() => switchTab(t.key)}
+                <button
+                  key={t.key}
+                  onClick={() => handleTabChange(t.key)}
                   className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer ${
                     tab === t.key
-                      ? 'bg-brand-orange text-white shadow-md'
-                      : 'bg-gray-100 text-slate-600 border border-gray-300 hover:bg-gray-200'
-                  }`}>
+                      ? 'bg-brand-blue text-white shadow-md'
+                      : 'bg-white text-slate-600 border border-gray-200 hover:bg-gray-50'
+                  }`}
+                >
                   {t.label} <span className={tab === t.key ? 'text-white/80' : 'text-slate-400'}>({count})</span>
                 </button>
               );
@@ -169,7 +179,7 @@ export default function AllJobs() {
                               <p className="font-bold text-dark-navy text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
                                 {item.title}
                               </p>
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-brand-orange/10 text-brand-orange text-[10px] font-bold shrink-0">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-brand-blue border border-blue-200/60 text-[10px] font-bold shrink-0">
                                 {isIntern ? 'Internship' : 'Job'}
                               </span>
                             </div>
@@ -177,7 +187,7 @@ export default function AllJobs() {
                             {/* RIGHT SIDE TOP: Salary or Stipend */}
                             {(item.salary || item.stipend) && (
                               <div className="flex items-center gap-1.5 shrink-0">
-                                <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-amber-50 text-brand-orange text-xs font-bold border border-amber-200/60">
+                                <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-blue-50 text-brand-blue text-xs font-bold border border-blue-200/60">
                                   {(item.salary || item.stipend).startsWith('₹')
                                     ? (item.salary || item.stipend)
                                     : `₹${item.salary || item.stipend}`}
@@ -199,7 +209,7 @@ export default function AllJobs() {
                           <div className="flex items-center gap-3 flex-wrap">
                             {(item.experience || item.duration) && (
                               <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
-                                <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
+                                <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-blue" />
                                 {item.experience || item.duration}
                               </span>
                             )}
@@ -211,7 +221,7 @@ export default function AllJobs() {
                           </div>
                           <button
                             onClick={() => handleApply(item)}
-                            className="inline-flex items-center gap-1.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer"
+                            className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer"
                           >
                             Apply Now
                           </button>

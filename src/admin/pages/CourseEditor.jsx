@@ -227,11 +227,14 @@ export default function CourseEditor() {
     start_date: '',
     checklist_items: [],
     highlights: [],
-    overview_faqs: [],
     cta_heading: '',
     cta_description: '',
     cta_text: '',
     cta_link: '',
+    cta_left: 'Talk to Advisor/Pay Now',
+    cta_right: 'Download Brochure',
+    cta_left_action: 'choice_popup',
+    pay_now_url: '',
     cta_phone: '',
     cta_background_image: '',
     projects: [],
@@ -265,6 +268,11 @@ export default function CourseEditor() {
           setCourse((p) => ({
             ...p,
             ...courseRes.data,
+            cta_left: courseRes.data.cta_left || 'Talk to Advisor/Pay Now',
+            cta_right: courseRes.data.cta_right || 'Download Brochure',
+            cta_left_action: courseRes.data.cta_left_action || 'choice_popup',
+            pay_now_url: courseRes.data.pay_now_url || courseRes.data.cta_link || '',
+            cta_link: courseRes.data.cta_link || courseRes.data.pay_now_url || '',
             status: courseRes.data.status === 'Inactive' || courseRes.data.status === 'Unpublished' ? 'Draft' : courseRes.data.status,
             is_published: courseRes.data.status === 'Inactive' || courseRes.data.status === 'Unpublished' || courseRes.data.status === 'Draft' ? false : !!courseRes.data.is_published,
             certifications: ensureArray(courseRes.data.certifications),
@@ -474,6 +482,14 @@ export default function CourseEditor() {
         setSaving(false);
         return;
       }
+      if ((course.cta_left_action === 'choice_popup' || course.cta_left_action === 'pay_now' || !course.cta_left_action) && (!course.pay_now_url?.trim() && !course.cta_link?.trim())) {
+        setTab('basic');
+        setMessage(`Cannot save course: Pay Now Website Link is mandatory when Left Button Action is set to Popup or Pay Now.`);
+        setSaveError(`Pay Now URL / Payment Link is mandatory.`);
+        isSavingRef.current = false;
+        setSaving(false);
+        return;
+      }
     }
     if (course.status === 'Coming Soon' && !course.start_date) {
       setStartDateError(true);
@@ -514,7 +530,9 @@ export default function CourseEditor() {
         cta_heading: course.cta_heading,
         cta_description: course.cta_description,
         cta_text: course.cta_text,
-        cta_link: course.cta_link,
+        cta_link: course.pay_now_url || course.cta_link || null,
+        cta_left: course.cta_left || 'Talk to Advisor',
+        cta_right: course.cta_right || 'Download Brochure',
         cta_phone: course.cta_phone,
         cta_background_image: course.cta_background_image,
         is_published: course.is_published,
@@ -728,10 +746,10 @@ export default function CourseEditor() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-black mb-1">Left Button Label</label>
-                      <input value={course.cta_left || ''} onChange={(e) => update('cta_left', e.target.value)}
+                      <label className="block text-sm font-semibold text-black mb-1">Left Button Text / Label</label>
+                      <input value={course.cta_left || 'Talk to Advisor/Pay Now'} onChange={(e) => update('cta_left', e.target.value)}
                         className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
-                        placeholder="Talk to Advisor" />
+                        placeholder="Talk to Advisor/Pay Now" />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-black mb-1">Right Button Label</label>
@@ -739,6 +757,46 @@ export default function CourseEditor() {
                         className="w-full px-3 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-500/20 transition-all"
                         placeholder="Download Brochure" />
                     </div>
+                  </div>
+
+                  {/* Left Button Action Mode & Mandatory Pay Now URL */}
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-4 mt-2">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5">
+                        Left Button Click Action
+                      </label>
+                      <select
+                        value={course.cta_left_action || 'choice_popup'}
+                        onChange={(e) => update('cta_left_action', e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-admin-500/20 cursor-pointer"
+                      >
+                        <option value="choice_popup">Popup Choice (Pay Now OR Talk to Advisor)</option>
+                        <option value="pay_now">Direct Pay Now Website Redirect</option>
+                        <option value="enquiry">Talk to Advisor Form Only</option>
+                      </select>
+                    </div>
+
+                    {(course.cta_left_action === 'choice_popup' || course.cta_left_action === 'pay_now' || !course.cta_left_action) && (
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#0052FF]">
+                          PAY NOW WEBSITE LINK <span className="text-red-500">* (MANDATORY)</span>
+                        </label>
+                        <input
+                          type="url"
+                          value={course.pay_now_url || course.cta_link || ''}
+                          onChange={(e) => {
+                            update('pay_now_url', e.target.value);
+                            update('cta_link', e.target.value);
+                          }}
+                          required
+                          className="w-full px-3.5 py-2.5 bg-white border border-blue-300 rounded-lg text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
+                          placeholder="https://checkout.razorpay.com/pay_course_123 or https://your-website.com/pay"
+                        />
+                        <p className="text-[11px] text-slate-500 font-normal">
+                          Mandatory field. When users click "Pay Now" in the course popup, they will be redirected directly to this website URL.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

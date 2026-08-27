@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiStar, FiArrowRight, FiArrowLeft, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiBell, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle } from 'react-icons/fi';
+import { FiStar, FiArrowRight, FiArrowLeft, FiUsers, FiBarChart2, FiClock, FiBookOpen, FiAward, FiBell, FiCode, FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiVideo, FiCalendar, FiRefreshCw, FiMessageCircle, FiBriefcase, FiGlobe, FiCpu, FiDatabase, FiLayers, FiZap, FiShield, FiTrendingUp, FiX, FiCheck, FiAlertCircle, FiSend, FiPlay, FiCheckCircle, FiCreditCard, FiExternalLink } from 'react-icons/fi';
 import Button from '../components/ui/Button';
 import TabBar from '../components/ui/TabBar';
 import { trackFormSubmit, trackDownload, trackCtaClick, trackVideoPlay } from '../lib/analytics';
@@ -407,6 +407,7 @@ export default function CourseDetail() {
   const [notifiedSuccess, setNotifiedSuccess] = useState(false);
 
   const [showEnquiry, setShowEnquiry] = useState(false);
+  const [showChoicePopup, setShowChoicePopup] = useState(false);
   const [enquirySource, setEnquirySource] = useState('Apply Now');
   const [enquiryForm, setEnquiryForm] = useState({ name: '', email: '', phone: '' });
   const [enquirySubmitting, setEnquirySubmitting] = useState(false);
@@ -423,6 +424,23 @@ export default function CourseDetail() {
     setEnquiryError('');
     setEnquiryAgree(false);
     setShowEnquiry(true);
+  }
+
+  function handleLeftCtaClick() {
+    const action = course?.cta_left_action || 'choice_popup';
+    const payUrl = course?.pay_now_url || course?.cta_link;
+
+    if (action === 'pay_now' && payUrl) {
+      if (payUrl.startsWith('http://') || payUrl.startsWith('https://')) {
+        window.open(payUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        window.location.href = payUrl;
+      }
+    } else if (action === 'enquiry') {
+      openEnquiryModal(course?.cta_left || 'Talk to Advisor');
+    } else {
+      setShowChoicePopup(true);
+    }
   }
 
   async function handleEnquirySubmit(e) {
@@ -725,13 +743,12 @@ export default function CourseDetail() {
         course={course}
         handleBackNavigation={handleBackNavigation}
         openEnquiryModal={openEnquiryModal}
+        onLeftCtaClick={handleLeftCtaClick}
         videoPlaying={videoPlaying}
         setVideoPlaying={setVideoPlaying}
         trackVideoPlay={trackVideoPlay}
         embedUrl={embedUrl}
       />
-
-
 
       {/* Overview */}
       <OverviewSection course={course} />
@@ -742,7 +759,7 @@ export default function CourseDetail() {
       {/* Dynamic Futuristic Course CTA */}
       <CourseCTA
         course={course}
-        onCtaClick={(label) => openEnquiryModal(label || 'Apply Now')}
+        onCtaClick={() => handleLeftCtaClick()}
       />
 
 
@@ -981,6 +998,102 @@ export default function CourseDetail() {
               )}
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Choice Modal: Pay Now OR Talk to Advisor */}
+      <AnimatePresence>
+        {showChoicePopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs" onClick={() => setShowChoicePopup(false)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 relative text-center"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Header Bar */}
+              <div className="bg-gradient-to-r from-[#0052FF] to-[#003FD5] px-6 py-5 text-white relative">
+                <button
+                  onClick={() => setShowChoicePopup(false)}
+                  className="absolute top-3.5 right-3.5 bg-white/20 hover:bg-white/30 text-white p-1.5 rounded-full transition-all cursor-pointer"
+                  aria-label="Close"
+                >
+                  <FiX className="w-4 h-4" />
+                </button>
+                <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center mx-auto mb-2">
+                  <FiZap className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white tracking-tight">How would you like to proceed?</h3>
+                <p className="text-xs text-white/80 mt-1 max-w-[280px] mx-auto">
+                  Select an option for <span className="font-semibold text-white">{course?.title}</span>
+                </p>
+              </div>
+
+              {/* Modal Options */}
+              <div className="p-6 space-y-3.5">
+                {/* OPTION 1: PAY NOW */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowChoicePopup(false);
+                    const payUrl = course?.pay_now_url || course?.cta_link;
+                    if (payUrl) {
+                      if (payUrl.startsWith('http://') || payUrl.startsWith('https://')) {
+                        window.open(payUrl, '_blank', 'noopener,noreferrer');
+                      } else {
+                        window.location.href = payUrl;
+                      }
+                    } else {
+                      alert('Payment link is being configured by administrator. Please talk to an advisor.');
+                    }
+                  }}
+                  className="w-full p-4 rounded-2xl bg-gradient-to-r from-[#FF7A00] to-[#FF5500] hover:from-[#E66E00] hover:to-[#E64C00] text-white text-left transition-all duration-200 shadow-md shadow-orange-500/20 hover:shadow-lg hover:-translate-y-0.5 group cursor-pointer flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 shrink-0 flex items-center justify-center">
+                      <FiCreditCard className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-extrabold text-sm sm:text-base text-white leading-snug">
+                        Pay Now & Enroll Online
+                      </div>
+                      <div className="text-xs text-white/80 font-medium">
+                        Instant checkout & direct redirect
+                      </div>
+                    </div>
+                  </div>
+                  <FiExternalLink className="w-5 h-5 text-white/90 group-hover:translate-x-1 transition-transform shrink-0" />
+                </button>
+
+                {/* OPTION 2: TALK TO ADVISOR */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowChoicePopup(false);
+                    openEnquiryModal('Talk to Advisor');
+                  }}
+                  className="w-full p-4 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 text-slate-800 text-left transition-all duration-200 group cursor-pointer flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-xl bg-[#EBF2FF] text-[#0052FF] shrink-0 flex items-center justify-center">
+                      <FiMessageCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-extrabold text-sm sm:text-base text-[#0B132B] leading-snug">
+                        Talk to an Advisor
+                      </div>
+                      <div className="text-xs text-slate-500 font-medium">
+                        Request a callback & details
+                      </div>
+                    </div>
+                  </div>
+                  <FiArrowRight className="w-5 h-5 text-slate-400 group-hover:text-[#0052FF] group-hover:translate-x-1 transition-all shrink-0" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
