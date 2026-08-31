@@ -83,7 +83,10 @@ function AnimatedRoutes() {
       <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
       <Route path="/competitive-exam" element={<Navigate to="/banking" replace />} />
       <Route path="/terms" element={<LegalPage pageKey="terms" />} />
+      <Route path="/terms-and-conditions" element={<LegalPage pageKey="terms" />} />
+      <Route path="/terms-of-service" element={<LegalPage pageKey="terms" />} />
       <Route path="/privacy" element={<LegalPage pageKey="privacy" />} />
+      <Route path="/privacy-policy" element={<LegalPage pageKey="privacy" />} />
       <Route path="/:slug/*" element={<NavPage />} />
     </Routes>
   );

@@ -160,11 +160,11 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-white font-medium">
           <span className="text-center sm:text-left">&copy; Marvel Slice. All rights reserved.</span>
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
-            <a href="#" className="hover:underline">Privacy Policy</a>
+            <Link to="/privacy" className="hover:underline">Privacy Policy</Link>
             <span className="text-white/60">|</span>
-            <a href="#" className="hover:underline">Terms of Service</a>
+            <Link to="/terms" className="hover:underline">Terms & Conditions</Link>
             <span className="text-white/60">|</span>
-            <a href="#" className="hover:underline">Designed by Marvel Slice</a>
+            <span className="text-white/90">Designed by Marvel Slice</span>
           </div>
         </div>
       </div>
