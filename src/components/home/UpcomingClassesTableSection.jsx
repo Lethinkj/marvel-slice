@@ -139,14 +139,14 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
               </div>
             </Reveal>
             {imageUrl && (
-              <Reveal className="lg:col-span-5 min-w-0 flex items-center justify-center">
+              <Reveal className="lg:col-span-5 min-w-0 flex items-center justify-center w-full">
                 {imageLink ? (
-                  <a href={imageLink} target={imageLink.startsWith('http') ? '_blank' : undefined} rel={imageLink.startsWith('http') ? 'noopener noreferrer' : undefined} className="block w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-md group lg:-translate-y-[1%]">
-                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+                  <a href={imageLink} target={imageLink.startsWith('http') ? '_blank' : undefined} rel={imageLink.startsWith('http') ? 'noopener noreferrer' : undefined} className="block w-full max-w-lg lg:max-w-none aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:h-full max-h-[420px] rounded-2xl overflow-hidden border border-gray-200 shadow-md group bg-slate-50">
+                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </a>
                 ) : (
-                  <div className="w-full h-[320px] lg:w-[480px] lg:h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-md lg:-translate-y-[1%]">
-                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full object-contain" />
+                  <div className="w-full max-w-lg lg:max-w-none aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:h-full max-h-[420px] rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-slate-50">
+                    <img src={imageUrl} alt="Upcoming classes" className="w-full h-full object-cover" />
                   </div>
                 )}
               </Reveal>

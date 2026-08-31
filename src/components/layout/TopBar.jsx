@@ -34,10 +34,10 @@ export default function TopBar() {
             </a>
           ))}
         </div>
-        <div className="flex items-center gap-2 text-xs lg:text-sm">
-          <a href="#" className="hover:underline" onClick={() => trackCtaClick('Login', 'topbar')}>Login</a>
+        <div className="flex items-center gap-2 text-xs lg:text-sm font-medium">
+          <a href="#" className="hover:underline transition-colors" onClick={() => trackCtaClick('Login', 'topbar')}>Login</a>
           <span className="text-white/40">|</span>
-          <a href="#" className="hover:underline font-semibold" onClick={() => trackCtaClick('Sign Up', 'topbar')}>SIGN UP</a>
+          <a href="#" className="hover:underline transition-colors" onClick={() => trackCtaClick('Sign Up', 'topbar')}>Sign Up</a>
           <span className="text-white/40">|</span>
           <div className="flex items-center gap-3 ml-2">
             <a href={social.twitter || '#'} aria-label="Twitter" className="flex h-5 w-5 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition-all duration-300 hover:border-transparent hover:bg-brand-orange hover:-translate-y-0.5">

@@ -167,9 +167,9 @@ function BookDemoForm() {
             <button
               type="submit"
               disabled={demoSubmitting}
-              className="w-1/2 mx-auto block py-2.5 rounded-lg bg-brand-blue text-white text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60 cursor-pointer"
+              className="w-full py-3 sm:py-3.5 rounded-xl bg-brand-blue hover:bg-blue-700 text-white text-sm sm:text-base font-bold transition-all shadow-md shadow-brand-blue/20 active:scale-95 disabled:opacity-60 cursor-pointer"
             >
-              {demoSubmitting ? 'Submitting...' : 'Send'}
+              {demoSubmitting ? 'Submitting...' : 'Send Message'}
             </button>
           </form>
         )}
@@ -764,7 +764,7 @@ export default function Career() {
                             {/* TOP ROW: Name + Badge (Left) | Stipend (Right Top) */}
                             <div className="flex items-center justify-between gap-3 mb-3">
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                <h3 className="font-bold text-slate-800 text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
+                                <h3 className="font-bold text-slate-800 text-base leading-snug line-clamp-2 break-words min-w-0 flex-1" title={item.title}>
                                   {item.title}
                                 </h3>
                                 <span className="text-[10px] font-bold text-brand-blue bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-full shrink-0">Internship</span>
@@ -789,17 +789,18 @@ export default function Career() {
                           </div>
 
                           {/* BOTTOM ROW: Experience/Duration + Location (Left) & Apply Button (Right) */}
-                          <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-wrap">
-                            <div className="flex items-center gap-3 flex-wrap">
+                          <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-nowrap w-full">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-hidden">
                               {(item.experience || item.duration) && (
-                                <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
+                                <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold shrink-0">
                                   <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-blue" />
                                   {item.experience || item.duration}
                                 </span>
                               )}
                               {item.location && (
-                                <span className="text-slate-500 text-xs flex items-center gap-1 font-medium">
-                                  <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />{item.location}
+                                <span className="text-slate-500 text-xs flex items-center gap-1 font-medium min-w-0 truncate">
+                                  <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                                  <span className="truncate">{item.location}</span>
                                 </span>
                               )}
                             </div>
@@ -812,8 +813,9 @@ export default function Career() {
                                   setShowForm(true);
                                 }
                               }}
-                              className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer">
-                              Apply Now <FiArrowRight className="w-3.5 h-3.5" />
+                              className="shrink-0 inline-flex items-center justify-center gap-1.5 bg-brand-orange hover:bg-amber-600 text-white font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm shadow-sm shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
+                            >
+                              Apply Now <FiArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
                           </div>
                         </motion.div>
@@ -832,7 +834,7 @@ export default function Career() {
                           {/* TOP ROW: Name + Badge (Left) | Salary (Right Top) */}
                           <div className="flex items-center justify-between gap-3 mb-3">
                             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <h3 className="font-bold text-slate-800 text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
+                              <h3 className="font-bold text-slate-800 text-base leading-snug line-clamp-2 break-words min-w-0 flex-1" title={item.title}>
                                 {item.title}
                               </h3>
                               <span className="text-[10px] font-bold text-brand-blue bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-full shrink-0">Job</span>
@@ -857,17 +859,18 @@ export default function Career() {
                         </div>
 
                         {/* BOTTOM ROW: Experience (Left of Location) & Apply Button */}
-                        <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-wrap">
-                          <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-nowrap w-full">
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-hidden">
                             {item.experience && (
-                              <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
+                              <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold shrink-0">
                                 <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-blue" />
                                 {item.experience}
                               </span>
                             )}
                             {item.location && (
-                              <span className="text-slate-500 text-xs flex items-center gap-1 font-medium">
-                                <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />{item.location}
+                              <span className="text-slate-500 text-xs flex items-center gap-1 font-medium min-w-0 truncate">
+                                <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                                <span className="truncate">{item.location}</span>
                               </span>
                             )}
                           </div>
@@ -880,8 +883,9 @@ export default function Career() {
                                 setShowForm(true);
                               }
                             }}
-                            className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer">
-                            Apply Now <FiArrowRight className="w-3.5 h-3.5" />
+                            className="shrink-0 inline-flex items-center justify-center gap-1.5 bg-brand-orange hover:bg-amber-600 text-white font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm shadow-sm shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
+                          >
+                            Apply Now <FiArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </button>
                         </div>
                       </motion.div>

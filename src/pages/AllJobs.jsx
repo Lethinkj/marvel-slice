@@ -8,7 +8,7 @@ import JobApplyModal from '../components/apply/JobApplyModal';
 import {
   FiMapPin, FiClock, FiDollarSign,
   FiBriefcase,
-  FiChevronLeft, FiChevronRight, FiSearch, FiArrowLeft,
+  FiChevronLeft, FiChevronRight, FiSearch, FiArrowLeft, FiArrowRight,
 } from 'react-icons/fi';
 
 function Pagination({ page, totalPages, onChange }) {
@@ -176,7 +176,7 @@ export default function AllJobs() {
                           {/* TOP ROW: Title + Badge (Left) | Salary / Stipend (Right Top) */}
                           <div className="flex items-center justify-between gap-3 mb-3">
                             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <p className="font-bold text-dark-navy text-base leading-snug truncate whitespace-nowrap min-w-0" title={item.title}>
+                              <p className="font-bold text-dark-navy text-base leading-snug line-clamp-2 break-words min-w-0 flex-1" title={item.title}>
                                 {item.title}
                               </p>
                               <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-brand-blue border border-blue-200/60 text-[10px] font-bold shrink-0">
@@ -205,25 +205,26 @@ export default function AllJobs() {
                         </div>
 
                         {/* BOTTOM ROW: Experience/Duration + Location (Left) & Apply Button (Right) */}
-                        <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-wrap">
-                          <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 mt-auto gap-2 flex-nowrap w-full">
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-hidden">
                             {(item.experience || item.duration) && (
-                              <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold">
+                              <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold shrink-0">
                                 <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-blue" />
                                 {item.experience || item.duration}
                               </span>
                             )}
                             {item.location && (
-                              <span className="text-slate-500 text-xs flex items-center gap-1 font-medium">
-                                <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />{item.location}
+                              <span className="text-slate-500 text-xs flex items-center gap-1 font-medium min-w-0 truncate">
+                                <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                                <span className="truncate">{item.location}</span>
                               </span>
                             )}
                           </div>
                           <button
                             onClick={() => handleApply(item)}
-                            className="inline-flex items-center gap-1.5 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer"
+                            className="shrink-0 inline-flex items-center justify-center gap-1.5 bg-brand-orange hover:bg-amber-600 text-white font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm shadow-sm shadow-orange-500/20 active:scale-95 transition-all cursor-pointer"
                           >
-                            Apply Now
+                            Apply Now <FiArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </button>
                         </div>
                       </motion.div>
