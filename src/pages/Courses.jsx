@@ -685,27 +685,17 @@ export default function Courses() {
             className="w-[280px] shrink-0 hidden lg:flex lg:flex-col bg-[#f8fafc] border-r border-slate-200 overflow-y-auto sticky top-0"
             aria-label="Course categories"
           >
-            {/* Top Category Tabs (Software vs Competitive) */}
+            {/* Top Category Header (Static) */}
             <div className="px-0 pt-0">
               <div className="flex overflow-hidden">
-                {parents.map((p, idx) => {
-                  const active = parentParam === p.slug;
-                  return (
-                    <button
-                      key={p.slug}
-                      onClick={() => selectParent(p.slug)}
-                      className={`flex-1 py-3 text-sm font-bold text-center transition-all cursor-pointer ${
-                        idx === 0 ? "rounded-tl-none" : ""
-                      } ${
-                        active
-                          ? "bg-[#f59e0b] text-white shadow-sm"
-                          : "bg-[#e2e8f0] text-slate-600 hover:bg-slate-300"
-                      }`}
-                    >
-                      {p.displayLabel}
-                    </button>
-                  );
-                })}
+                {parents.map((p) => (
+                  <div
+                    key={p.slug}
+                    className="flex-1 py-3 text-sm font-bold text-center bg-[#f59e0b] text-white shadow-sm select-none"
+                  >
+                    {p.displayLabel}
+                  </div>
+                ))}
               </div>
             </div>
             {/* Category tree container */}

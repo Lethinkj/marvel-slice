@@ -152,26 +152,35 @@ export default function UpcomingCoursesSection({ section }) {
                 <p className="text-text-gray text-sm sm:text-base leading-relaxed mt-4 whitespace-pre-line">{subheading}</p>
               )}
             </div>
-            {isSlider && (
-              <div className="flex items-center gap-2 shrink-0 pt-1">
-                <button
-                  type="button"
-                  aria-label="Previous courses"
-                  onClick={goPrev}
-                  className="w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
-                >
-                  <FiChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Next courses"
-                  onClick={goNext}
-                  className="w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
-                >
-                  <FiChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            )}
+            <div className="flex items-center gap-3 shrink-0 pt-1">
+              <Link
+                to="/courses"
+                className="inline-flex items-center gap-2 bg-brand-orange hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-full text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer"
+              >
+                <span>View All Courses</span>
+                <FiArrowRight className="w-4 h-4" />
+              </Link>
+              {isSlider && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label="Previous courses"
+                    onClick={goPrev}
+                    className="w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
+                  >
+                    <FiChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Next courses"
+                    onClick={goNext}
+                    className="w-10 h-10 bg-white rounded-full shadow-md border border-gray-200 flex items-center justify-center text-text-gray hover:text-brand-orange hover:border-brand-orange/40 transition-colors cursor-pointer"
+                  >
+                    <FiChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </Reveal>
 
