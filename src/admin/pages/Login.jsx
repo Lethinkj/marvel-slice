@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useSiteSettings } from '../../hooks/useSupabase';
 import { trackLogin } from '../../lib/analytics';
+import { validateStrongPassword } from '../../lib/passwordValidation';
 import { 
   FiEye, FiEyeOff, FiLogIn, FiMail, FiLock, FiAlertCircle, 
   FiShield, FiBarChart2, FiFileText, FiClock, FiX, FiUsers
@@ -332,8 +333,7 @@ export default function Login() {
 
   function validatePasswordStr(val) {
     if (!val) return 'Password is required.';
-    if (val.length < 6) return 'Password must be at least 6 characters.';
-    return '';
+    return validateStrongPassword(val, { email });
   }
 
   function handleEmailChange(e) {
