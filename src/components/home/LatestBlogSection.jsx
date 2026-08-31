@@ -30,7 +30,7 @@ export default function LatestBlogSection({ section }) {
                 <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
               </div>
               {subheading && (
-                <p className="text-text-gray text-base sm:text-lg leading-relaxed max-w-2xl mt-4">
+                <p className="text-text-gray text-sm sm:text-base leading-relaxed max-w-2xl mt-4 whitespace-pre-line">
                   {subheading}
                 </p>
               )}

@@ -73,12 +73,12 @@ export default function HeroSection({ section }) {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {bannerHeading && (
-                      <h1 className="text-[clamp(1.75rem,4vw,3.25rem)] font-extrabold text-white leading-[1.15] text-pretty drop-shadow-md">
+                      <h1 className="text-[clamp(1.75rem,4vw,3.25rem)] font-extrabold text-white leading-[1.15] text-pretty drop-shadow-md whitespace-pre-line">
                         {bannerHeading}
                       </h1>
                     )}
                     {bannerDescription && (
-                      <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/90 leading-relaxed max-w-xl drop-shadow-sm">
+                      <p className="mt-3 sm:mt-4 text-sm sm:text-base text-white/90 leading-relaxed max-w-xl drop-shadow-sm whitespace-pre-line">
                         {bannerDescription}
                       </p>
                     )}
@@ -121,8 +121,8 @@ export default function HeroSection({ section }) {
               transition={{ duration: 0.5, ease: 'easeInOut' }}
               className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 text-center"
             >
-              {bannerHeading && <h1 className="text-[clamp(1.75rem,4vw,3.25rem)] font-extrabold text-white leading-[1.15] text-pretty">{bannerHeading}</h1>}
-              {bannerDescription && <p className="mt-4 text-base sm:text-lg text-white/85 leading-relaxed max-w-2xl mx-auto">{bannerDescription}</p>}
+              {bannerHeading && <h1 className="text-[clamp(1.75rem,4vw,3.25rem)] font-extrabold text-white leading-[1.15] text-pretty whitespace-pre-line">{bannerHeading}</h1>}
+              {bannerDescription && <p className="mt-4 text-sm sm:text-base text-white/85 leading-relaxed max-w-2xl mx-auto whitespace-pre-line">{bannerDescription}</p>}
             </motion.div>
           </AnimatePresence>
 

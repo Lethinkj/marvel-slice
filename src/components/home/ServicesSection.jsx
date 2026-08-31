@@ -43,7 +43,7 @@ export default function ServicesSection({ section }) {
         </div>
         {intro && (
           <Reveal className="text-text-gray mb-12 text-center">
-            <p className="text-lg">{intro}</p>
+            <p className="text-sm sm:text-base leading-relaxed whitespace-pre-line">{intro}</p>
           </Reveal>
         )}
 
@@ -60,7 +60,7 @@ export default function ServicesSection({ section }) {
             )}
             <h3 className="font-bold text-xl mt-6 text-dark-navy text-center sm:text-left">{leftHeading}</h3>
             {leftDescription && (
-              <p className="text-text-gray mt-3 text-center sm:text-left">{leftDescription}</p>
+              <p className="text-text-gray text-sm leading-relaxed mt-3 text-center sm:text-left whitespace-pre-line">{leftDescription}</p>
             )}
             <Button
               variant="accent"
@@ -83,7 +83,7 @@ export default function ServicesSection({ section }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-dark-navy text-base">{service.title}</h4>
-                      <p className="text-text-gray text-base mt-1">{service.description}</p>
+                      <p className="text-text-gray text-sm leading-relaxed mt-1 whitespace-pre-line">{service.description}</p>
                     </div>
                   </div>
                   {i < servicesList.length - 1 && <div className="border-b border-gray-100" />}

@@ -132,7 +132,7 @@ export default function TestimonialsSection({ section }) {
               <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
             </div>
             {subheading && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed mt-4 mb-10">{subheading}</p>
+              <p className="text-text-gray text-sm sm:text-base leading-relaxed mt-4 mb-10 whitespace-pre-line">{subheading}</p>
             )}
           </div>
         </Reveal>

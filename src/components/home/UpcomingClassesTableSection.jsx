@@ -95,7 +95,7 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
             )}
             <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-14" />
             {subheading && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed max-w-2xl mt-4">{subheading}</p>
+              <p className="text-text-gray text-sm sm:text-base leading-relaxed max-w-2xl mt-4 whitespace-pre-line">{subheading}</p>
             )}
           </div>
         </Reveal>

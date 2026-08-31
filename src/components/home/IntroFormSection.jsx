@@ -65,7 +65,7 @@ function PillGrid({ pills }) {
             <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
               <FiCheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-blue" />
             </div>
-            <span className="text-[11px] sm:text-xs font-bold text-brand-blue leading-tight whitespace-nowrap flex-1 min-w-0 truncate">{label}</span>
+            <span className="text-[11px] sm:text-xs font-bold text-brand-blue leading-snug flex-1 min-w-0 break-words">{label}</span>
           </div>
         </StaggerItem>
       ))}
@@ -135,7 +135,7 @@ export default function IntroFormSection({ section }) {
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           <Reveal variant="up" className="lg:col-span-7 xl:col-span-8 space-y-4 sm:space-y-6 text-center lg:text-left">
             {heading && (
-              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy text-center lg:text-left leading-tight sm:leading-snug max-w-xl">
+              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy text-center lg:text-left leading-tight sm:leading-snug max-w-none whitespace-pre-line">
                 {heading}
               </h2>
             )}
@@ -153,7 +153,7 @@ export default function IntroFormSection({ section }) {
 
           <Reveal variant="right" className="lg:col-span-5 xl:col-span-4 w-full flex flex-col items-center lg:items-end">
             <div className="max-w-sm w-full flex flex-col items-center text-center">
-              <p className="text-sm sm:text-base font-[600] text-center mb-1 w-full pt-3 sm:pt-5" style={{ color: '#ef4444' }}>
+              <p className="text-[24px] sm:text-[32px] font-bold text-center mb-1 w-full pt-3 sm:pt-5 leading-tight" style={{ color: '#ef4444' }}>
                 Book Your Demo Now!
               </p>
               <div className="rounded-2xl overflow-hidden w-full mt-4 sm:mt-5" style={{ backgroundColor: '#74a916', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>

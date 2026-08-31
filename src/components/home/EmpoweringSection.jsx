@@ -18,7 +18,7 @@ export default function EmpoweringSection({ section }) {
             )}
             <div className="w-4/5 max-w-xs h-[3px] bg-brand-orange mx-auto mb-5" />
             {description && (
-              <p className="text-text-gray text-base sm:text-lg leading-relaxed">{description}</p>
+              <p className="text-text-gray text-sm sm:text-base leading-relaxed whitespace-pre-line">{description}</p>
             )}
           </div>
         </Reveal>
