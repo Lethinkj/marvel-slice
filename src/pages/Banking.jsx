@@ -620,9 +620,10 @@ export default function Banking() {
                 <button
                   type="button"
                   onClick={closeApplyModal}
-                  className="p-1 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+                  className="w-7 h-7 rounded-full bg-white text-red-500 hover:bg-red-50 hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-xs"
+                  aria-label="Close modal"
                 >
-                  <FiX className="w-4 h-4" />
+                  <FiX className="w-4 h-4 stroke-[2.5]" />
                 </button>
               </div>
 

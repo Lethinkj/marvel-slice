@@ -152,7 +152,7 @@ export default function IntroFormSection({ section }) {
               </h2>
             )}
             {introText && (
-              <p className="text-sm sm:text-base leading-relaxed text-center lg:text-left text-slate-600 max-w-3xl px-1 sm:px-0">
+              <p className="text-sm sm:text-base leading-relaxed text-center lg:text-left text-slate-600 w-full">
                 {introText}
               </p>
             )}
@@ -163,9 +163,9 @@ export default function IntroFormSection({ section }) {
             </div>
           </Reveal>
 
-          <Reveal variant="right" className="lg:col-span-5 xl:col-span-4 w-full flex flex-col items-center lg:items-end lg:pt-4">
+          <Reveal variant="right" className="lg:col-span-5 xl:col-span-4 w-full flex flex-col items-center lg:items-end">
             <div className="max-w-sm w-full flex flex-col items-center text-center">
-              <p className="text-[24px] sm:text-[32px] font-bold text-center mb-1 w-full pt-3 sm:pt-5 leading-tight" style={{ color: '#ef4444' }}>
+              <p className="text-[24px] sm:text-[32px] font-bold text-center mb-1 w-full leading-tight" style={{ color: '#ef4444' }}>
                 Book Your Demo Now!
               </p>
               <div className="rounded-2xl overflow-hidden w-full mt-4 sm:mt-5" style={{ backgroundColor: '#74a916', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
