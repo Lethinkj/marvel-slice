@@ -250,12 +250,11 @@ export default function Banking() {
 
             <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <Reveal variant="left" className="lg:col-span-7 space-y-5">
-                <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-brand-blue leading-[1.18] tracking-tight">
-                  Build Your Career <br className="hidden sm:inline" />
-                  in Banking
+                <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl text-dark-navy leading-tight sm:leading-snug max-w-none">
+                  Build Your Career in Banking
                 </h1>
 
-                <p className="text-slate-600 text-base sm:text-lg leading-[1.8] font-normal">
+                <p className="text-sm sm:text-base leading-relaxed text-slate-600 w-full">
                   Banking is one of India's most popular career paths for graduates who are looking for stability, professional growth, and opportunities to work across different areas of financial services. The Institute of Banking Personnel Selection (IBPS) conducts recruitment examinations for several public-sector banking positions. These examinations open doors to roles ranging from customer-facing branch operations to officer-level responsibilities and specialised banking functions. Explore the major IBPS examinations below and find the path that matches your career goals.
                 </p>
               </Reveal>
@@ -452,13 +451,12 @@ export default function Banking() {
             {/* Left Column: Heading & 4 Course Bullet Points */}
             <Reveal variant="left" className="lg:col-span-7 space-y-6">
               <div>
-                <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-brand-blue leading-tight">
-                  Why Prepare for Banking <br />
-                  Exams with Us?
+                <h2 className="font-bold text-2xl sm:text-3xl lg:text-4xl text-dark-navy leading-tight">
+                  Why Prepare for Banking Exams with Us?
                 </h2>
               </div>
 
-              <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+              <p className="text-sm sm:text-base leading-relaxed text-slate-600 w-full">
                 Our specialized Banking & IBPS coaching program is designed to build strong concepts, enhance speed and accuracy, and provide end-to-end guidance from Prelims to Final Interviews.
               </p>
 
