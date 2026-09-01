@@ -44,137 +44,203 @@ function ForgotPasswordModal({ open, onClose }) {
 }
 
 /* ========================================================= */
-/* INTERACTIVE ANIMATED SVG DASHBOARD ILLUSTRATION           */
+/* PURE HARDWARE-ACCELERATED ANIMATED SVG DASHBOARD          */
 /* ========================================================= */
 function AnimatedAdminDashboardSvg() {
   return (
-    <div className="w-full max-w-[340px] sm:max-w-[360px] aspect-square flex items-center justify-center relative select-none">
+    <div className="w-full max-w-[340px] sm:max-w-[370px] aspect-square flex items-center justify-center relative select-none">
       <svg 
         viewBox="0 0 400 400" 
-        className="w-full h-full drop-shadow-xl" 
+        className="w-full h-full drop-shadow-2xl" 
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
       >
+        <style>{`
+          @keyframes spinClockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          @keyframes spinCounter {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+          }
+          @keyframes sliderMove1 {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(18px); }
+          }
+          @keyframes sliderMove2 {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-16px); }
+          }
+          @keyframes sliderMove3 {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(14px); }
+          }
+          @keyframes pulseBar1 {
+            0%, 100% { transform: scaleY(0.7); }
+            50% { transform: scaleY(1.15); }
+          }
+          @keyframes pulseBar2 {
+            0%, 100% { transform: scaleY(1.05); }
+            50% { transform: scaleY(0.65); }
+          }
+          @keyframes pulseBar3 {
+            0%, 100% { transform: scaleY(0.6); }
+            50% { transform: scaleY(1.2); }
+          }
+          @keyframes floatGentle {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(2deg); }
+          }
+          @keyframes glowPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+          }
+          .gear-1 {
+            animation: spinClockwise 22s linear infinite;
+            transform-origin: 95px 185px;
+          }
+          .gear-2 {
+            animation: spinCounter 18s linear infinite;
+            transform-origin: 75px 245px;
+          }
+          .knob-1 {
+            animation: sliderMove1 3.5s ease-in-out infinite;
+          }
+          .knob-2 {
+            animation: sliderMove2 4s ease-in-out infinite 0.3s;
+          }
+          .knob-3 {
+            animation: sliderMove3 3.8s ease-in-out infinite 0.7s;
+          }
+          .bar-1 {
+            animation: pulseBar1 2.8s ease-in-out infinite;
+            transform-origin: 138px 225px;
+          }
+          .bar-2 {
+            animation: pulseBar2 3.2s ease-in-out infinite 0.2s;
+            transform-origin: 154px 225px;
+          }
+          .bar-3 {
+            animation: pulseBar3 2.6s ease-in-out infinite 0.5s;
+            transform-origin: 170px 225px;
+          }
+          .monitor-unit {
+            animation: floatGentle 5s ease-in-out infinite;
+            transform-origin: 200px 200px;
+          }
+          .glow-ring {
+            animation: glowPulse 2.5s ease-in-out infinite;
+          }
+        `}</style>
+
         <defs>
           <linearGradient id="monitorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#4A54E8" />
-            <stop offset="100%" stopColor="#2563EB" />
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#1D4ED8" />
           </linearGradient>
           <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="100%" stopColor="#F0F7FF" />
+            <stop offset="100%" stopColor="#F8FAFC" />
           </linearGradient>
           <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00B4D8" />
-            <stop offset="100%" stopColor="#0077B6" />
+            <stop offset="0%" stopColor="#06B6D4" />
+            <stop offset="100%" stopColor="#0284C7" />
           </linearGradient>
+          <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F97316" />
+            <stop offset="100%" stopColor="#EA580C" />
+          </linearGradient>
+          <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#0F172A" floodOpacity="0.12" />
+          </filter>
         </defs>
 
         {/* 1. Animated Rotating Mechanical Gears in Background */}
-        <motion.g 
-          animate={{ rotate: 360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          style={{ transformOrigin: "95px 185px" }}
-        >
-          <circle cx="95" cy="185" r="32" fill="#E2E8F0" opacity="0.7" stroke="#CBD5E1" strokeWidth="4" strokeDasharray="10 8" />
+        <g className="gear-1">
+          <circle cx="95" cy="185" r="32" fill="#E2E8F0" opacity="0.8" stroke="#CBD5E1" strokeWidth="4" strokeDasharray="10 8" />
           <circle cx="95" cy="185" r="14" fill="#FFFFFF" />
-        </motion.g>
+        </g>
 
-        <motion.g 
-          animate={{ rotate: -360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          style={{ transformOrigin: "75px 245px" }}
-        >
-          <circle cx="75" cy="245" r="24" fill="#E2E8F0" opacity="0.6" stroke="#CBD5E1" strokeWidth="3" strokeDasharray="8 6" />
+        <g className="gear-2">
+          <circle cx="75" cy="245" r="24" fill="#E2E8F0" opacity="0.7" stroke="#CBD5E1" strokeWidth="3" strokeDasharray="8 6" />
           <circle cx="75" cy="245" r="10" fill="#FFFFFF" />
-        </motion.g>
-
-        {/* 2. Monitor Stand & Base */}
-        <ellipse cx="200" cy="335" rx="75" ry="12" fill="#CBD5E1" opacity="0.5" />
-        <path d="M185 270 L175 325 C175 330 185 334 200 334 C215 334 225 330 225 325 L215 270 Z" fill="#0077B6" />
-        <ellipse cx="200" cy="328" rx="42" ry="7" fill="#0096C7" />
-
-        {/* 3. Main Monitor Frame */}
-        <rect x="105" y="85" width="200" height="185" rx="14" fill="#0077B6" stroke="#023E8A" strokeWidth="4" />
-        <rect x="110" y="90" width="190" height="175" rx="10" fill="url(#screenGrad)" />
-
-        {/* 4. Window Header Bar with Action Dots */}
-        <path d="M110 90 H300 V115 H110 Z" fill="#2B3044" />
-        <circle cx="125" cy="102" r="3.5" fill="#FF5F56" />
-        <circle cx="137" cy="102" r="3.5" fill="#FFBD2E" />
-        <circle cx="149" cy="102" r="3.5" fill="#27C93F" />
-
-        {/* 5. User Profile Card / Badge on Screen */}
-        <g transform="translate(140, 125)">
-          <rect x="0" y="0" width="40" height="38" rx="6" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1.5" />
-          {/* Avatar Head & Body */}
-          <circle cx="20" cy="13" r="6.5" fill="#FF6B6B" />
-          <path d="M10 30 C10 24 14 22 20 22 C26 22 30 24 30 30 Z" fill="#FF6B6B" />
         </g>
 
-        {/* 6. Settings / Sliders Control Panel on Screen Right */}
-        <g transform="translate(195, 125)">
-          <rect x="0" y="0" width="90" height="60" rx="8" fill="url(#cyanGrad)" />
-          
-          {/* Slider Vertical Tracks */}
-          <line x1="20" y1="12" x2="20" y2="48" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
-          <line x1="45" y1="12" x2="45" y2="48" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
-          <line x1="70" y1="12" x2="70" y2="48" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
+        {/* 2. Floating Monitor Unit */}
+        <g className="monitor-unit">
+          {/* Monitor Stand & Base */}
+          <ellipse cx="200" cy="335" rx="75" ry="12" fill="#CBD5E1" opacity="0.6" />
+          <path d="M185 270 L175 325 C175 330 185 334 200 334 C215 334 225 330 225 325 L215 270 Z" fill="#0077B6" />
+          <ellipse cx="200" cy="328" rx="42" ry="7" fill="#0096C7" />
 
-          {/* Animated Slider Knobs using smooth translateY */}
-          <motion.g 
-            animate={{ y: [0, 16, 0] }} 
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <circle cx="20" cy="20" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" />
-          </motion.g>
-          <motion.g 
-            animate={{ y: [0, -18, 0] }} 
-            transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-          >
-            <circle cx="45" cy="40" r="5.5" fill="#FF6B6B" stroke="#C0392B" strokeWidth="2" />
-          </motion.g>
-          <motion.g 
-            animate={{ y: [0, 15, 0] }} 
-            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
-          >
-            <circle cx="70" cy="25" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" />
-          </motion.g>
+          {/* Main Monitor Bezel */}
+          <rect x="105" y="85" width="200" height="185" rx="14" fill="#0077B6" stroke="#023E8A" strokeWidth="4" filter="url(#cardShadow)" />
+          <rect x="110" y="90" width="190" height="175" rx="10" fill="url(#screenGrad)" />
+
+          {/* Window Header Bar with Action Dots */}
+          <path d="M110 90 H300 V115 H110 Z" fill="#1E293B" />
+          <circle cx="125" cy="102" r="3.5" fill="#EF4444" />
+          <circle cx="137" cy="102" r="3.5" fill="#F59E0B" />
+          <circle cx="149" cy="102" r="3.5" fill="#10B981" />
+
+          {/* User Profile Card on Screen Left */}
+          <g transform="translate(130, 125)">
+            <rect x="0" y="0" width="48" height="42" rx="7" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" filter="url(#cardShadow)" />
+            {/* Avatar */}
+            <circle cx="24" cy="14" r="7" fill="#F43F5E" />
+            <path d="M12 34 C12 27 16 25 24 25 C32 25 36 27 36 34 Z" fill="#F43F5E" />
+          </g>
+
+          {/* Sliders / Control Panel on Screen Right */}
+          <g transform="translate(190, 125)">
+            <rect x="0" y="0" width="95" height="62" rx="8" fill="url(#cyanGrad)" filter="url(#cardShadow)" />
+            
+            {/* Slider Vertical Tracks */}
+            <line x1="22" y1="12" x2="22" y2="50" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
+            <line x1="48" y1="12" x2="48" y2="50" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
+            <line x1="74" y1="12" x2="74" y2="50" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
+
+            {/* Moving Slider Knobs */}
+            <g className="knob-1">
+              <circle cx="22" cy="20" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" />
+            </g>
+            <g className="knob-2">
+              <circle cx="48" cy="40" r="5.5" fill="#F97316" stroke="#C2410C" strokeWidth="2" />
+            </g>
+            <g className="knob-3">
+              <circle cx="74" cy="25" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" />
+            </g>
+          </g>
+
+          {/* Animated Metrics Bar Chart */}
+          <g>
+            {/* Bar 1 (Cyan) */}
+            <rect className="bar-1" x="133" y="185" width="10" height="40" rx="3" fill="#06B6D4" />
+            {/* Bar 2 (Orange) */}
+            <rect className="bar-2" x="149" y="173" width="10" height="52" rx="3" fill="#F97316" />
+            {/* Bar 3 (Blue) */}
+            <rect className="bar-3" x="165" y="190" width="10" height="35" rx="3" fill="#2563EB" />
+          </g>
+
+          {/* Activity Mini Sparkline on Screen Bottom Right */}
+          <g transform="translate(190, 198)">
+            <rect x="0" y="0" width="95" height="28" rx="6" fill="#F1F5F9" />
+            <path d="M8 18 L24 10 L42 20 L62 8 L86 14" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            <circle cx="86" cy="14" r="3" fill="#10B981" className="glow-ring" />
+          </g>
         </g>
 
-        {/* 7. Dynamic Animated Bar Chart at Screen Bottom */}
-        <g transform="translate(130, 185)">
-          {/* Bar 1 (Cyan) */}
-          <motion.rect 
-            x="8" y="0" width="10" height="40" rx="3" fill="#00B4D8"
-            animate={{ scaleY: [0.75, 1.1, 0.6, 0.75] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "bottom" }}
-          />
-          {/* Bar 2 (Red/Orange) */}
-          <motion.rect 
-            x="24" y="-12" width="10" height="52" rx="3" fill="#FF6B6B"
-            animate={{ scaleY: [1, 0.75, 1.15, 1] }}
-            transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-            style={{ transformOrigin: "bottom" }}
-          />
-          {/* Bar 3 (Dark Blue) */}
-          <motion.rect 
-            x="40" y="5" width="10" height="35" rx="3" fill="#2563EB"
-            animate={{ scaleY: [0.65, 1.2, 0.8, 0.65] }}
-            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            style={{ transformOrigin: "bottom" }}
-          />
+        {/* 3. Floating Accent Code & Tech Badges */}
+        <g transform="translate(290, 80)">
+          <circle cx="16" cy="16" r="16" fill="url(#orangeGrad)" filter="url(#cardShadow)" />
+          <path d="M11 16 L14 13 M21 13 L24 16 M14 19 L11 16 M24 16 L21 19 M17 11 L15 21" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </g>
 
-        {/* 8. Curved Floating Flow Arrow */}
-        <motion.path 
-          animate={{ opacity: [0.75, 1, 0.75], x: [0, 4, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          d="M275 230 C295 245 295 285 260 305 L262 315 L235 300 L255 280 L256 290 C280 275 280 250 265 240 Z" 
-          fill="#FCA5A5" 
-          opacity="0.85"
-        />
+        <g transform="translate(60, 110)">
+          <circle cx="14" cy="14" r="14" fill="#3B82F6" opacity="0.9" filter="url(#cardShadow)" />
+          <path d="M9 14 L12 17 L19 10" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
       </svg>
     </div>
   );
