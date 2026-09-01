@@ -178,32 +178,83 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#5D64F5] via-[#6C73FF] to-[#888EFF] flex items-center justify-center p-4 sm:p-8 lg:p-12 relative overflow-hidden font-sans selection:bg-[#5B4DF5] selection:text-white">
+    <div className="min-h-screen w-full bg-[#525CEB] flex items-center justify-center p-4 sm:p-8 lg:p-12 relative overflow-hidden font-sans selection:bg-[#5B4DF5] selection:text-white">
       
-      {/* Background Organic Wave Layers & Ambience */}
-      <div className="absolute -top-32 -left-32 w-[600px] h-[600px] rounded-full bg-white/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -right-32 w-[650px] h-[650px] rounded-full bg-[#4046D4]/40 blur-3xl pointer-events-none" />
-      
-      {/* Top Right Decorative Dot Matrix Grid */}
+      {/* 1. Rich Modern Multi-Stop Mesh Gradient Base */}
       <div 
-        className="absolute top-0 right-0 w-80 h-80 pointer-events-none opacity-25 hidden sm:block"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(circle, #FFFFFF 1.75px, transparent 1.75px)',
-          backgroundSize: '24px 24px'
+          background: `
+            radial-gradient(circle 800px at 0% 0%, rgba(136, 146, 255, 0.45), transparent 70%),
+            radial-gradient(circle 700px at 100% 0%, rgba(100, 110, 255, 0.4), transparent 60%),
+            radial-gradient(circle 900px at 100% 100%, rgba(45, 52, 190, 0.5), transparent 70%),
+            radial-gradient(circle 600px at 0% 100%, rgba(65, 75, 230, 0.45), transparent 60%),
+            linear-gradient(135deg, #4A54E8 0%, #5E67F6 50%, #767EFF 100%)
+          `
         }}
       />
 
-      {/* Decorative Wave Curves */}
-      <svg className="absolute bottom-0 left-0 w-full h-80 pointer-events-none opacity-20" viewBox="0 0 1440 320" fill="none" preserveAspectRatio="none">
-        <path d="M0,96L80,117.3C160,139,320,181,480,181.3C640,181,800,139,960,133.3C1120,128,1280,160,1360,176L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z" fill="#FFFFFF" />
+      {/* 2. Top-Left & Bottom Fluid Organic Curved Wave Layers */}
+      <svg 
+        className="absolute inset-0 w-full h-full pointer-events-none" 
+        viewBox="0 0 1440 900" 
+        fill="none" 
+        preserveAspectRatio="none"
+      >
+        {/* Top-Left Soft Organic Wave Curve */}
+        <path 
+          d="M-100,-50 C200,-50 350,150 280,380 C220,550 50,600 -100,650 Z" 
+          fill="rgba(255, 255, 255, 0.08)" 
+        />
+        <path 
+          d="M-50,-50 C180,-50 280,100 220,280 C170,420 30,480 -80,500 Z" 
+          fill="rgba(255, 255, 255, 0.05)" 
+        />
+
+        {/* Bottom-Left Fluid Curve */}
+        <path 
+          d="M-100,600 C150,550 300,750 200,950 L-100,950 Z" 
+          fill="rgba(35, 42, 160, 0.35)" 
+        />
+
+        {/* Top-Right & Bottom-Right Flowing Waves */}
+        <path 
+          d="M1100,-100 C1000,100 1250,280 1550,220 L1550,-100 Z" 
+          fill="rgba(255, 255, 255, 0.07)" 
+        />
+        <path 
+          d="M800,950 C950,700 1200,720 1550,820 L1550,950 Z" 
+          fill="rgba(35, 42, 160, 0.3)" 
+        />
       </svg>
 
-      {/* Main 2-Column Focus-Style Card */}
+      {/* 3. Top-Right Modern Dot-Matrix Grid Panel */}
+      <div 
+        className="absolute top-4 right-4 sm:top-8 sm:right-8 w-64 h-64 sm:w-80 sm:h-80 pointer-events-none opacity-30 hidden md:block"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #FFFFFF 1.75px, transparent 1.75px)',
+          backgroundSize: '22px 22px'
+        }}
+      />
+
+      {/* 4. Ambient Glowing Light Flares */}
+      <motion.div 
+        animate={{ scale: [1, 1.1, 1], opacity: [0.25, 0.4, 0.25] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-white/20 blur-3xl pointer-events-none" 
+      />
+      <motion.div 
+        animate={{ scale: [1, 1.12, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute -bottom-40 -right-40 w-[650px] h-[650px] rounded-full bg-[#353CC8]/50 blur-3xl pointer-events-none" 
+      />
+
+      {/* 5. Main 2-Column Card */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.96, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-[1000px] min-h-[560px] bg-white rounded-3xl sm:rounded-[36px] shadow-[0_25px_60px_-15px_rgba(30,40,120,0.3)] overflow-hidden grid grid-cols-1 md:grid-cols-12 relative z-20"
+        className="w-full max-w-[1000px] min-h-[560px] bg-white rounded-3xl sm:rounded-[36px] shadow-[0_30px_90px_-15px_rgba(20,28,100,0.35),0_0_0_1px_rgba(255,255,255,0.2)] overflow-hidden grid grid-cols-1 md:grid-cols-12 relative z-20"
       >
         
         {/* ===================================================== */}
@@ -223,151 +274,13 @@ export default function Login() {
             </span>
           </div>
 
-          {/* Center Isometric 3D Illustration */}
+          {/* Center Illustration Image */}
           <div className="my-auto py-6 sm:py-8 flex items-center justify-center relative w-full">
-            <svg viewBox="0 0 460 380" className="w-full max-w-[390px] drop-shadow-sm select-none" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                {/* Gradients */}
-                <linearGradient id="screenFaceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#4F46E5" />
-                  <stop offset="60%" stopColor="#5B56F6" />
-                  <stop offset="100%" stopColor="#3B82F6" />
-                </linearGradient>
-                <linearGradient id="checkBadgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#2DD4BF" />
-                  <stop offset="100%" stopColor="#0D9488" />
-                </linearGradient>
-                <linearGradient id="coralCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FB7185" />
-                  <stop offset="100%" stopColor="#F43F5E" />
-                </linearGradient>
-                <linearGradient id="lockFrontGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#22D3EE" />
-                  <stop offset="100%" stopColor="#06B6D4" />
-                </linearGradient>
-                <filter id="docCardShadow" x="-10%" y="-10%" width="130%" height="130%">
-                  <feDropShadow dx="-2" dy="6" stdDeviation="5" floodColor="#3B4265" floodOpacity="0.15" />
-                </filter>
-                <filter id="badgeShadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#0D9488" floodOpacity="0.25" />
-                </filter>
-              </defs>
-
-              {/* 1. Isometric Floor Platforms & Scattered Diamond Tiles */}
-              <g opacity="0.85">
-                {/* Main Ground Soft Shading */}
-                <path d="M230,350 L380,260 L230,175 L80,260 Z" fill="#E8EEFC" opacity="0.6" />
-                <path d="M220,335 L350,255 L220,180 L90,255 Z" fill="#EEF3FE" opacity="0.8" />
-
-                {/* Floating Isometric Diamonds */}
-                <path d="M60,195 L95,175 L60,155 L25,175 Z" fill="#DDE6FC" opacity="0.75" />
-                <path d="M120,345 L155,325 L120,305 L85,325 Z" fill="#DDE6FC" opacity="0.8" />
-                <path d="M380,180 L415,160 L380,140 L345,160 Z" fill="#DDE6FC" opacity="0.75" />
-                <path d="M430,270 L465,250 L430,230 L395,250 Z" fill="#E2EBFE" opacity="0.6" />
-                <path d="M270,360 L300,343 L270,325 L240,343 Z" fill="#E2EBFE" opacity="0.7" />
-                <path d="M190,135 L220,118 L190,100 L160,118 Z" fill="#E2EBFE" opacity="0.5" />
-              </g>
-
-              {/* 2. Main 3D Standing Screen (Isometric View) */}
-              <g>
-                {/* Screen Floor Shadow */}
-                <path d="M100,295 L270,195 L310,218 L140,318 Z" fill="#C5D3F8" opacity="0.4" />
-
-                {/* Screen 3D Back Frame / Thickness */}
-                <path d="M90,270 L260,172 L260,62 L90,160 Z" fill="#2563EB" opacity="0.9" />
-                <path d="M90,160 L260,62 L275,70 L105,168 Z" fill="#93C5FD" />
-                <path d="M90,270 L105,278 L105,168 L90,160 Z" fill="#1D4ED8" />
-
-                {/* Screen White Outer Border Frame */}
-                <path d="M100,275 L270,177 L270,67 L100,165 Z" fill="#FFFFFF" />
-
-                {/* Inner Screen Display (Gradient Blue) */}
-                <path d="M106,268 L264,177 L264,76 L106,167 Z" fill="url(#screenFaceGrad)" />
-
-                {/* Screen Header White Bar */}
-                <path d="M106,167 L264,76 L264,98 L106,189 Z" fill="#FFFFFF" opacity="0.15" />
-
-                {/* Avatar Placeholder Container (Left side of screen) */}
-                <path d="M120,242 L165,216 L165,152 L120,178 Z" fill="#3B82F6" opacity="0.45" />
-                <path d="M120,242 L165,216 L165,152 L120,178 Z" stroke="#FFFFFF" strokeWidth="1" strokeOpacity="0.4" />
-                
-                {/* User Avatar Inside Container */}
-                <ellipse cx="142" cy="178" rx="10" ry="11" fill="#FFFFFF" opacity="0.85" />
-                <path d="M127,222 C127,205 157,205 157,222 Z" fill="#FFFFFF" opacity="0.85" />
-
-                {/* Content Indicator Bars (Right side of screen) */}
-                <path d="M180,148 L248,109" stroke="#FFFFFF" strokeWidth="6" strokeLinecap="round" opacity="0.9" />
-                <path d="M180,170 L238,137" stroke="#FFFFFF" strokeWidth="4.5" strokeLinecap="round" opacity="0.8" />
-                <path d="M180,188 L225,162" stroke="#FFFFFF" strokeWidth="4.5" strokeLinecap="round" opacity="0.8" />
-
-                {/* Lower Thin Accent Line */}
-                <path d="M180,210 L250,170" stroke="#93C5FD" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
-              </g>
-
-              {/* 3. Floating Verified Checkmark Badge (Top-Left corner of screen) */}
-              <g filter="url(#badgeShadow)">
-                <circle cx="98" cy="155" r="23" fill="#FFFFFF" />
-                <circle cx="98" cy="155" r="20" fill="url(#checkBadgeGrad)" />
-                <path d="M89,155 L95,161 L108,148" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              </g>
-
-              {/* 4. 3D Cyan / Turquoise Padlock (Sitting on Right) */}
-              <g>
-                {/* Lock Shadow */}
-                <path d="M280,265 L360,218 L385,232 L305,280 Z" fill="#C5D3F8" opacity="0.5" />
-
-                {/* Metallic Lock Shackle (3D Arched Bar) */}
-                <path d="M315,195 C315,145 358,145 358,195" stroke="#CBD5E1" strokeWidth="12" strokeLinecap="round" fill="none" />
-                <path d="M315,195 C315,145 358,145 358,195" stroke="#F1F5F9" strokeWidth="7" strokeLinecap="round" fill="none" />
-
-                {/* Padlock 3D Box Body */}
-                {/* Left Side Extrusion */}
-                <path d="M292,246 L312,234 L312,178 L292,190 Z" fill="#0891B2" />
-                {/* Top Side Extrusion */}
-                <path d="M292,190 L312,178 L374,214 L354,226 Z" fill="#67E8F9" />
-                {/* Front Face (Facing right-isometric) */}
-                <path d="M312,234 L374,198 L374,256 L312,292 Z" fill="url(#lockFrontGrad)" />
-
-                {/* Keyhole */}
-                <circle cx="343" cy="242" r="5" fill="#0E7490" />
-                <path d="M343,244 L343,256" stroke="#0E7490" strokeWidth="4" strokeLinecap="round" />
-              </g>
-
-              {/* 5. Standing White Document Sheet (Front-Left Foreground) */}
-              <g filter="url(#docCardShadow)">
-                {/* Paper Body */}
-                <path d="M125,248 C125,248 178,217 178,217 L178,318 C178,318 132,345 125,340 C120,336 125,248 125,248 Z" fill="#FFFFFF" />
-                
-                {/* Orange Header Strip on Document */}
-                <path d="M135,252 L170,232" stroke="#F59E0B" strokeWidth="4.5" strokeLinecap="round" />
-
-                {/* Document Grey Text Lines */}
-                <path d="M135,268 L165,251" stroke="#CBD5E1" strokeWidth="3" strokeLinecap="round" />
-                <path d="M135,282 L162,266" stroke="#CBD5E1" strokeWidth="3" strokeLinecap="round" />
-                <path d="M135,296 L158,283" stroke="#CBD5E1" strokeWidth="3" strokeLinecap="round" />
-
-                {/* Cyan Action Pill at Bottom of Document */}
-                <path d="M144,318 L158,310" stroke="#06B6D4" strokeWidth="4.5" strokeLinecap="round" />
-              </g>
-
-              {/* 6. Flat Coral ID Card (Floor Foreground) */}
-              <g>
-                {/* Card Shadow */}
-                <path d="M218,272 L285,233 L325,256 L258,295 Z" fill="#FCA5A5" opacity="0.35" />
-
-                {/* Card Thickness */}
-                <path d="M212,267 L252,290 L252,295 L212,272 Z" fill="#BE123C" />
-                <path d="M252,290 L318,252 L318,257 L252,295 Z" fill="#E11D48" />
-
-                {/* Card Top Face */}
-                <path d="M212,267 L278,229 L318,252 L252,290 Z" fill="url(#coralCardGrad)" />
-
-                {/* Card Profile Elements */}
-                <circle cx="245" cy="260" r="7.5" fill="#FFFFFF" opacity="0.9" />
-                <path d="M260,250 L298,242" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" opacity="0.9" />
-                <path d="M260,260 L290,254" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
-              </g>
-            </svg>
+            <img
+              src="/images/admin-illustration.png"
+              alt="Admin Security & Analytics Portal"
+              className="w-full max-w-[320px] sm:max-w-[350px] h-auto object-contain drop-shadow-md select-none"
+            />
           </div>
 
           <div />

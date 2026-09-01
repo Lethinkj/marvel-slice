@@ -163,14 +163,14 @@ export default function Banking() {
 
     setIsSubmitting(true);
 
-    const buttonClicked = enquiryType === 'topic' ? `Enquire Now (${selectedTopic})` : 'Explore Banking Paths';
+    const buttonClicked = enquiryType === 'topic' ? `Enroll Now (${selectedTopic})` : 'Explore Banking Paths';
 
     const payload = {
       full_name: formName.trim(),
       email: formEmail.trim(),
       phone: formPhone.trim(),
       enquiry_type: enquiryType,
-      topic_title: selectedTopic || 'General Banking Enquiry',
+      topic_title: selectedTopic || 'General Banking Enrollment',
       button_clicked: buttonClicked,
       terms_accepted: true,
       is_read: false,
@@ -366,13 +366,13 @@ export default function Banking() {
                         </div>
                       </div>
 
-                      {/* Enquire Action Button */}
+                      {/* Enroll Action Button */}
                       <button
                         type="button"
                         onClick={() => openApplyModal('topic', exam.title)}
                         className="w-full py-2.5 px-4 bg-brand-blue hover:bg-brand-orange text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-1.5 group/btn cursor-pointer mt-2"
                       >
-                        <span>Enquire Now</span>
+                        <span>Enroll Now</span>
                         <FiArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover/btn:translate-x-1.5" />
                       </button>
                     </div>
@@ -606,12 +606,12 @@ export default function Banking() {
               <div className="bg-brand-blue text-white px-5 sm:px-6 py-3.5 flex items-center justify-between relative border-b border-blue-600/30">
                 <div>
                   <h3 className="text-base sm:text-lg font-extrabold leading-tight">
-                    Banking Enquiry
+                    Banking Enrollment
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="bg-white/15 text-white border border-white/25 text-[11px] font-semibold px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-brand-orange" />
-                      {enquiryType === 'topic' ? `Exam: ${selectedTopic}` : 'General Banking Enquiry'}
+                      {enquiryType === 'topic' ? `Exam: ${selectedTopic}` : 'General Banking Enrollment'}
                     </span>
                   </div>
                 </div>
@@ -632,9 +632,9 @@ export default function Banking() {
                     <div className="w-14 h-14 bg-blue-50 text-brand-blue rounded-full flex items-center justify-center mx-auto border border-blue-200 shadow-sm">
                       <FiCheckCircle className="w-8 h-8 text-brand-blue" />
                     </div>
-                    <h4 className="text-xl font-bold text-dark-navy">Application Submitted!</h4>
+                    <h4 className="text-xl font-bold text-dark-navy">Enrollment Submitted!</h4>
                     <p className="text-sm text-slate-600 leading-relaxed max-w-xs mx-auto">
-                      Thank you for applying. Our banking academic advisors will reach out to you shortly.
+                      Thank you for enrolling. Our banking academic advisors will reach out to you shortly.
                     </p>
                     <button
                       type="button"
