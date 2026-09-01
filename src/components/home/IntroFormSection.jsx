@@ -152,7 +152,7 @@ export default function IntroFormSection({ section }) {
               </h2>
             )}
             {introText && (
-              <p className="text-sm sm:text-base leading-relaxed text-center lg:text-left text-slate-600 w-full">
+              <p className="text-sm sm:text-base leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-6 sm:indent-10">
                 {introText}
               </p>
             )}
