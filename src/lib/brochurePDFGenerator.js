@@ -2,19 +2,21 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { generateAIBrochureData } from './brochureAIService';
 
-// Consistent Color Palette
-const COLOR_PRIMARY_NAVY = [27, 54, 93];       // #1B365D - Marvel Deep Navy Blue
-const COLOR_PRIMARY_BLUE = [30, 86, 199];      // #1E56C7 - Accent Blue
-const COLOR_BRAND_ORANGE = [234, 88, 12];      // #EA580C - Marvel Vibrant Orange (Single Primary Accent)
-const COLOR_DARK_ORANGE  = [234, 88, 12];      // #EA580C - Deep Orange
-const COLOR_LIGHT_BG     = [248, 250, 252];    // #F8FAFC - Card Background
-const COLOR_BLUE_TINT    = [239, 246, 255];    // #EFF6FF - Soft Blue Box
-const COLOR_ORANGE_TINT  = [255, 247, 237];    // #FFF7ED - Soft Orange Box
-const COLOR_BORDER       = [226, 232, 240];    // #E2E8F0 - Clean Border Gray
-const COLOR_TEXT_DARK    = [15, 23, 42];       // #0F172A - Heading Navy/Black
-const COLOR_TEXT_BODY    = [51, 65, 85];       // #334155 - Body Text
-const COLOR_TEXT_MUTED   = [100, 116, 139];    // #64748B - Secondary Notes
-const COLOR_WATERMARK    = [244, 247, 252];    // #F4F7FC - Subtle Background Watermark
+// Consistent Color Palette inspired by the reference design
+const COLOR_PRIMARY_NAVY = [11, 43, 104];     // #0B2B68 - Deep Brand Blue
+const COLOR_ROYAL_BLUE   = [24, 76, 173];    // #184CAD - Vibrant Royal Blue
+const COLOR_ACCENT_GOLD  = [255, 183, 3];     // #FFB703 - Golden Yellow / Orange Accent
+const COLOR_BRAND_ORANGE = [234, 88, 12];     // #EA580C - Marvel Vibrant Orange
+const COLOR_SUCCESS_GREEN= [34, 197, 94];     // #22C55E - Checkmark Green
+const COLOR_LIGHT_BG     = [248, 250, 252];   // #F8FAFC - Card Background
+const COLOR_BLUE_TINT    = [239, 246, 255];   // #EFF6FF - Soft Blue Container
+const COLOR_GOLD_TINT    = [254, 243, 199];   // #FEF3C7 - Soft Gold Container
+const COLOR_BORDER       = [226, 232, 240];   // #E2E8F0 - Clean Border
+const COLOR_TEXT_DARK    = [15, 23, 42];      // #0F172A - Heading Dark Navy
+const COLOR_TEXT_BODY    = [51, 65, 85];      // #334155 - Body Text Slate
+const COLOR_TEXT_MUTED   = [100, 116, 139];   // #64748B - Notes Muted
+const COLOR_WATERMARK    = [244, 247, 252];   // #F4F7FC - Subtle Background Watermark
+const COLOR_WHITE        = [255, 255, 255];
 
 /**
  * Strips non-ASCII / problematic Unicode characters (like Rupee symbol ₹ or emojis)
@@ -63,7 +65,8 @@ async function loadLogoDataUrl(url) {
 }
 
 /**
- * Generates an extensive, perfectly aligned, professional educational PDF brochure.
+ * Generates an extensive, highly structured, beautifully styled course brochure PDF
+ * based on the reference design template and triggers browser download.
  */
 export async function generate12PageCourseBrochurePDF(course, siteSettings = {}) {
   const data = await generateAIBrochureData(course, siteSettings);
@@ -94,14 +97,21 @@ export async function generate12PageCourseBrochurePDF(course, siteSettings = {})
     pdf.restoreGraphicsState();
   }
 
-  // Draw Top Header on every page
+  // Draw Top Decorative Corner Tag
+  function drawCornerTag() {
+    setFill(COLOR_ACCENT_GOLD);
+    pdf.triangle(0, 0, 22, 0, 0, 22, 'F');
+  }
+
+  // Draw Page Header on pages 2+
   function drawPageHeader() {
     drawWatermark();
+    drawCornerTag();
 
     const headerY = 10;
+    let textStartX = margin;
 
     // Draw Logo on left corner
-    let textStartX = margin;
     if (logoInfo?.dataUrl) {
       try {
         const logoH = 10;
@@ -128,7 +138,7 @@ export async function generate12PageCourseBrochurePDF(course, siteSettings = {})
     setText(COLOR_BRAND_ORANGE);
     pdf.text('INSTITUTE FOR SOFTWARE LEARNING AND COMPETITIVE EXAMS', textStartX, headerY + 8.5);
 
-    // Right Contact Block (clean ASCII text, no emoji artifacts)
+    // Right Contact Block
     pdf.setFontSize(7);
     pdf.setFont('Helvetica', 'bold');
     setText(COLOR_PRIMARY_NAVY);
@@ -141,8 +151,8 @@ export async function generate12PageCourseBrochurePDF(course, siteSettings = {})
 
     // Single Consistent Accent Divider Line
     const lineY = headerY + 12;
-    setStroke(COLOR_BRAND_ORANGE);
-    pdf.setLineWidth(0.7);
+    setStroke(COLOR_ACCENT_GOLD);
+    pdf.setLineWidth(0.8);
     pdf.line(margin, lineY, pageW - margin, lineY);
   }
 
@@ -151,7 +161,7 @@ export async function generate12PageCourseBrochurePDF(course, siteSettings = {})
     pdf.roundedRect(margin, y, 13, 9.5, 1.5, 1.5, 'F');
     pdf.setFontSize(6.5);
     pdf.setFont('Helvetica', 'bold');
-    setText([255, 255, 255]);
+    setText(COLOR_WHITE);
     pdf.text('MS', margin + 6.5, y + 6.2, { align: 'center' });
   }
 
@@ -163,40 +173,51 @@ export async function generate12PageCourseBrochurePDF(course, siteSettings = {})
     }
   }
 
-  // Section Heading with perfectly measured underline
-  function addSectionHeading(title) {
-    checkSpace(20);
-    cursorY += 5;
-    pdf.setFontSize(12.5);
+  // Section Heading with gold accent bar
+  function addSectionHeading(title, subtitle = '') {
+    checkSpace(24);
+    cursorY += 4;
+
+    setFill(COLOR_PRIMARY_NAVY);
+    pdf.rect(margin, cursorY - 1, 3.5, 9, 'F');
+
+    pdf.setFontSize(13);
     pdf.setFont('Helvetica', 'bold');
     setText(COLOR_PRIMARY_NAVY);
-    pdf.text(sanitize(title), margin, cursorY);
+    pdf.text(sanitize(title), margin + 6, cursorY + 5.5);
 
-    // Single Consistent Accent Underline
-    cursorY += 2;
-    setStroke(COLOR_BRAND_ORANGE);
-    pdf.setLineWidth(1.0);
-    pdf.line(margin, cursorY, margin + 30, cursorY);
-    cursorY += 5.5;
+    cursorY += 10;
+
+    if (subtitle) {
+      pdf.setFontSize(8.5);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_ROYAL_BLUE);
+      pdf.text(sanitize(subtitle), margin + 6, cursorY);
+      cursorY += 5;
+    }
+
+    setStroke(COLOR_ACCENT_GOLD);
+    pdf.setLineWidth(0.6);
+    pdf.line(margin, cursorY, margin + 40, cursorY);
+    cursorY += 5;
   }
 
   // Subheading with clean vertical marker
   function addSubHeading(title) {
-    checkSpace(12);
+    checkSpace(14);
     cursorY += 3;
 
-    // Small vertical marker
-    setFill(COLOR_BRAND_ORANGE);
-    pdf.rect(margin, cursorY - 3.2, 2, 4, 'F');
+    setFill(COLOR_ACCENT_GOLD);
+    pdf.rect(margin, cursorY - 3.2, 2.5, 4.5, 'F');
 
-    pdf.setFontSize(9.5);
+    pdf.setFontSize(10);
     pdf.setFont('Helvetica', 'bold');
-    setText(COLOR_PRIMARY_BLUE);
-    pdf.text(sanitize(title), margin + 4.5, cursorY);
-    cursorY += 5;
+    setText(COLOR_PRIMARY_NAVY);
+    pdf.text(sanitize(title), margin + 5, cursorY);
+    cursorY += 5.5;
   }
 
-  // Paragraph formatting with standard line height & clean wrapping
+  // Paragraph formatting with standard line height
   function addParagraph(text, isMuted = false) {
     if (!text) return;
     const cleanStr = sanitize(text);
@@ -211,326 +232,790 @@ export async function generate12PageCourseBrochurePDF(course, siteSettings = {})
     checkSpace(requiredH);
 
     pdf.text(lines, margin, cursorY);
+    cursorY += lines.length * 4.2 + 2.5;
+  }
+
+  // Hierarchical Chapter / Topic Item with Green Checkmark
+  function addChapterItem(title) {
+    const clean = sanitize(title);
+    if (!clean) return;
+
+    checkSpace(8);
+    cursorY += 2;
+
+    // Green circular checkmark badge
+    setFill(COLOR_SUCCESS_GREEN);
+    pdf.circle(margin + 3, cursorY - 1, 2.8, 'F');
+    pdf.setFont('Helvetica', 'bold');
+    pdf.setFontSize(6.5);
+    setText(COLOR_WHITE);
+    pdf.text('v', margin + 3, cursorY + 0.5, { align: 'center' });
+
+    // Chapter Title
+    pdf.setFontSize(9);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_PRIMARY_NAVY);
+    const lines = pdf.splitTextToSize(clean, contentW - 10);
+    pdf.text(lines, margin + 8, cursorY);
     cursorY += lines.length * 4.2 + 2;
   }
 
-  // Multi-Line Bullet Point with zero overlapping text
+  // Sub-Topic with Golden Arrow
+  function addSubTopicItem(title, desc = '') {
+    const cleanTitle = sanitize(title);
+    const cleanDesc = sanitize(desc);
+    if (!cleanTitle && !cleanDesc) return;
+
+    const indent = 8;
+    const textX = margin + indent + 5;
+    const textW = contentW - indent - 5;
+
+    pdf.setFontSize(8.5);
+    const fullText = cleanDesc ? `${cleanTitle}: ${cleanDesc}` : cleanTitle;
+    const lines = pdf.splitTextToSize(fullText, textW);
+    checkSpace(lines.length * 4.2 + 2);
+
+    // Golden arrow symbol
+    pdf.setFont('Helvetica', 'bold');
+    pdf.setFontSize(8);
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('->', margin + indent, cursorY);
+
+    // Text content
+    pdf.setFont('Helvetica', 'normal');
+    setText(COLOR_TEXT_BODY);
+    pdf.text(lines, textX, cursorY);
+    cursorY += lines.length * 4.2 + 1.5;
+  }
+
+  // Individual bullet item
   function addBulletPoint(title, desc = '', indent = 4) {
     const cleanTitle = sanitize(title);
     const cleanDesc = sanitize(desc);
+    if (!cleanTitle && !cleanDesc) return;
 
     const bulletX = margin + indent;
     const textX = margin + indent + 4;
     const textW = contentW - indent - 4;
 
     if (cleanTitle && cleanDesc) {
-      // Formatted as: Title on line 1 in bold, Description beneath or inline
       pdf.setFontSize(8.5);
       const descLines = pdf.splitTextToSize(cleanDesc, textW);
-      const requiredH = (descLines.length + 1) * 4.2 + 3;
-      checkSpace(requiredH);
+      checkSpace((descLines.length + 1) * 4.2 + 3);
 
-      // Bullet dot
-      setFill(COLOR_BRAND_ORANGE);
-      pdf.circle(bulletX, cursorY - 1, 1, 'F');
+      setFill(COLOR_ACCENT_GOLD);
+      pdf.circle(bulletX, cursorY - 1, 1.2, 'F');
 
-      // Title in Bold Navy
       pdf.setFont('Helvetica', 'bold');
       setText(COLOR_PRIMARY_NAVY);
       pdf.text(cleanTitle, textX, cursorY);
       cursorY += 4.2;
 
-      // Description in Slate
       pdf.setFont('Helvetica', 'normal');
       setText(COLOR_TEXT_BODY);
       pdf.text(descLines, textX, cursorY);
       cursorY += descLines.length * 4.2 + 2;
     } else {
       const lineText = cleanTitle || cleanDesc;
-      if (!lineText) return;
-
       pdf.setFontSize(8.5);
-      const lines = pdf.splitTextToSize(lineText, textW);
-      const requiredH = lines.length * 4.2 + 2;
-      checkSpace(requiredH);
-
-      // Bullet dot
-      setFill(COLOR_BRAND_ORANGE);
-      pdf.circle(bulletX, cursorY - 1, 1, 'F');
-
       pdf.setFont('Helvetica', 'normal');
       setText(COLOR_TEXT_BODY);
+
+      const lines = pdf.splitTextToSize(lineText, textW);
+      checkSpace(lines.length * 4.2 + 2);
+
+      setFill(COLOR_ACCENT_GOLD);
+      pdf.circle(bulletX, cursorY - 1, 1.2, 'F');
+
       pdf.text(lines, textX, cursorY);
       cursorY += lines.length * 4.2 + 2;
     }
   }
 
-  // Callout Box
-  function addCalloutBox(title, text, type = 'blue') {
+  // Callout info box
+  function addCalloutBox(title, body, bgColor = COLOR_BLUE_TINT, borderColor = COLOR_ROYAL_BLUE) {
     const cleanTitle = sanitize(title);
-    const cleanText = sanitize(text);
-    if (!cleanText) return;
+    const cleanBody = sanitize(body);
 
-    const bg = type === 'orange' ? COLOR_ORANGE_TINT : COLOR_BLUE_TINT;
-    const border = type === 'orange' ? [254, 215, 170] : [191, 219, 254];
-    const textColor = type === 'orange' ? COLOR_DARK_ORANGE : COLOR_PRIMARY_BLUE;
-
-    pdf.setFontSize(8);
-    pdf.setFont('Helvetica', 'normal');
-    const lines = pdf.splitTextToSize(cleanText, contentW - 12);
-    const boxH = lines.length * 4 + 11;
+    pdf.setFontSize(8.5);
+    const lines = pdf.splitTextToSize(cleanBody, contentW - 12);
+    const boxH = lines.length * 4.2 + (cleanTitle ? 12 : 8);
 
     checkSpace(boxH + 4);
 
-    setFill(bg);
-    setStroke(border);
-    pdf.setLineWidth(0.3);
-    pdf.roundedRect(margin, cursorY, contentW, boxH, 2, 2, 'FD');
+    setFill(bgColor);
+    setStroke(borderColor);
+    pdf.setLineWidth(0.6);
+    pdf.roundedRect(margin, cursorY, contentW, boxH, 2.5, 2.5, 'FD');
 
-    // Left single accent color vertical bar
-    setFill(COLOR_BRAND_ORANGE);
-    pdf.rect(margin, cursorY, 2.2, boxH, 'F');
+    // Left thick accent line
+    setFill(borderColor);
+    pdf.roundedRect(margin, cursorY, 2.5, boxH, 1, 1, 'F');
 
-    pdf.setFontSize(8.5);
-    pdf.setFont('Helvetica', 'bold');
-    setText(textColor);
-    pdf.text(cleanTitle, margin + 6, cursorY + 5.5);
+    let textY = cursorY + 6;
+    if (cleanTitle) {
+      pdf.setFont('Helvetica', 'bold');
+      pdf.setFontSize(9);
+      setText(borderColor);
+      pdf.text(cleanTitle, margin + 6, textY);
+      textY += 5;
+    }
 
-    pdf.setFontSize(8);
     pdf.setFont('Helvetica', 'normal');
+    pdf.setFontSize(8.5);
     setText(COLOR_TEXT_BODY);
-    pdf.text(lines, margin + 6, cursorY + 10);
+    pdf.text(lines, margin + 6, textY);
 
     cursorY += boxH + 4;
   }
 
-  // ==========================================
-  // PAGE 1: HEADER & COURSE MAIN TITLE CARD
-  // ==========================================
-  drawPageHeader();
-  cursorY = 28;
+  // =========================================================================
+  // PAGE 1: FRONT COVER / HERO & AUTHORITY PAGE (Inspired by Reference Cover)
+  // =========================================================================
+  function renderFrontCover() {
+    drawCornerTag();
 
-  // Course Main Title Card
-  setFill(COLOR_LIGHT_BG);
-  setStroke(COLOR_BORDER);
-  pdf.setLineWidth(0.3);
-  pdf.roundedRect(margin, cursorY, contentW, 44, 2.5, 2.5, 'FD');
+    const bannerH = 74;
 
-  // Badge in top-right
-  setFill(COLOR_BRAND_ORANGE);
-  pdf.roundedRect(pageW - margin - 42, cursorY + 5, 38, 5.5, 1.2, 1.2, 'F');
-  pdf.setFontSize(6.5);
-  pdf.setFont('Helvetica', 'bold');
-  setText([255, 255, 255]);
-  pdf.text('CAREER PROGRAM', pageW - margin - 23, cursorY + 8.8, { align: 'center' });
+    // Top Dark Blue Header Banner
+    setFill(COLOR_PRIMARY_NAVY);
+    pdf.rect(0, 0, pageW, bannerH, 'F');
 
-  // Main Course Title
-  pdf.setFontSize(14);
-  pdf.setFont('Helvetica', 'bold');
-  setText(COLOR_PRIMARY_NAVY);
-  const cleanMainTitle = sanitize(data.meta.title);
-  const titleLines = pdf.splitTextToSize(cleanMainTitle, contentW - 48);
-  pdf.text(titleLines, margin + 6, cursorY + 11);
+    // Accent Gold curve accent
+    setFill(COLOR_ACCENT_GOLD);
+    pdf.rect(0, bannerH - 3, pageW, 3, 'F');
 
-  // Subtitle
-  pdf.setFontSize(8.5);
-  pdf.setFont('Helvetica', 'normal');
-  setText(COLOR_BRAND_ORANGE);
-  const cleanSub = sanitize(data.meta.subtitle);
-  const subLines = pdf.splitTextToSize(cleanSub, contentW - 12);
-  pdf.text(subLines, margin + 6, cursorY + 13 + titleLines.length * 5.5);
+    // Central Circular Logo Badge (Vertically Centered in Banner)
+    const badgeX = pageW - margin - 22;
+    const badgeY = bannerH / 2;
+    const badgeR = 23;
 
-  // Meta Stats Line
-  pdf.setFontSize(7.5);
-  pdf.setFont('Helvetica', 'bold');
-  setText(COLOR_PRIMARY_BLUE);
-  const metaText = `Duration: ${sanitize(data.meta.duration)}   •   Mode: ${sanitize(data.meta.mode)}   •   Category: ${sanitize(data.meta.category)}   •   Track: ${sanitize(data.meta.subCategory)}`;
-  pdf.text(metaText, margin + 6, cursorY + 39);
+    // Outer Glow Ring
+    setFill(COLOR_ACCENT_GOLD);
+    pdf.circle(badgeX, badgeY, badgeR + 1.5, 'F');
 
-  cursorY += 50;
+    // Inner White Badge
+    setFill(COLOR_WHITE);
+    pdf.circle(badgeX, badgeY, badgeR, 'F');
 
-  // Section 1: Executive Overview & Summary
-  addSectionHeading('1. Program Overview & Executive Summary');
-  data.overview.paragraphs.forEach(p => addParagraph(p));
-
-  addSubHeading('Key Curriculum Highlights');
-  data.overview.keyHighlights.forEach(h => addBulletPoint(h));
-
-  // Section 2: Target Audience & Prerequisites
-  addSectionHeading('2. Target Audience Profile & Prerequisites');
-  data.audience.paragraphs.forEach(p => addParagraph(p));
-
-  addSubHeading('Who Should Enroll in this Program?');
-  data.audience.targetProfiles.forEach(prof => {
-    addBulletPoint(prof.title, prof.desc);
-  });
-
-  addCalloutBox('Prerequisites & Eligibility Guidelines', data.audience.prerequisitesText, 'orange');
-
-  // Section 3: Learning Outcomes & Competencies
-  addSectionHeading('3. Program Learning Outcomes & Core Competencies');
-  data.outcomes.paragraphs.forEach(p => addParagraph(p));
-
-  addSubHeading('Competencies You Will Master');
-  data.outcomes.bulletPoints.forEach((outcome, idx) => {
-    addBulletPoint(`Competency ${idx + 1}`, outcome);
-  });
-
-  // Section 4: Complete In-Depth Curriculum & Syllabus Breakdown
-  addSectionHeading('4. Complete In-Depth Curriculum & Syllabus Breakdown');
-  addParagraph('The curriculum is engineered in sequential phases to guide students systematically from foundational computational principles to complex production-grade software architectures.');
-
-  data.modules.forEach((mod, idx) => {
-    const modNum = mod.moduleNumber || String(idx + 1).padStart(2, '0');
-    addSubHeading(`Module ${modNum}: ${mod.title || mod.name}`);
-
-    if (mod.objective || mod.description) {
-      addParagraph(mod.objective || mod.description);
-    }
-
-    if (Array.isArray(mod.topics) && mod.topics.length > 0) {
-      pdf.setFontSize(8.5);
+    // Brand Logo scaled to properly fill the circular badge
+    if (logoInfo?.dataUrl) {
+      try {
+        const ratio = (logoInfo.w || 1) / (logoInfo.h || 1);
+        let drawW = 36;
+        let drawH = drawW / ratio;
+        if (drawH > 32) {
+          drawH = 32;
+          drawW = drawH * ratio;
+        }
+        pdf.addImage(logoInfo.dataUrl, 'PNG', badgeX - drawW / 2, badgeY - drawH / 2, drawW, drawH);
+      } catch {
+        pdf.setFontSize(13);
+        pdf.setFont('Helvetica', 'bold');
+        setText(COLOR_PRIMARY_NAVY);
+        pdf.text('MARVEL', badgeX, badgeY - 2, { align: 'center' });
+        setText(COLOR_BRAND_ORANGE);
+        pdf.text('SLICE', badgeX, badgeY + 5, { align: 'center' });
+      }
+    } else {
+      pdf.setFontSize(13);
       pdf.setFont('Helvetica', 'bold');
       setText(COLOR_PRIMARY_NAVY);
-      checkSpace(6);
-      pdf.text('Topics & Concepts Covered:', margin + 4, cursorY);
-      cursorY += 4.5;
-
-      mod.topics.forEach(t => {
-        addBulletPoint(typeof t === 'string' ? t : (t.title || t.name || ''));
-      });
+      pdf.text('MARVEL', badgeX, badgeY - 2, { align: 'center' });
+      setText(COLOR_BRAND_ORANGE);
+      pdf.text('SLICE', badgeX, badgeY + 5, { align: 'center' });
     }
 
-    if (mod.handsOnLab || mod.practical_lab) {
-      addCalloutBox('Hands-On Practical Lab Assignment', mod.handsOnLab || mod.practical_lab, 'blue');
-    }
+    // Institute Authority Header (Aligned on Left)
+    const textMaxW = badgeX - badgeR - margin - 6;
 
-    cursorY += 2;
-  });
-
-  // Section 5: Technology & Tools Matrix
-  addSectionHeading('5. Comprehensive Technology & Tooling Matrix');
-  data.techMatrix.paragraphs.forEach(p => addParagraph(p));
-
-  data.techMatrix.categories.forEach(cat => {
-    addSubHeading(cat.title);
-    addParagraph(`Technologies & Developer Tools: ${cat.items.join('  •  ')}`);
-  });
-
-  // Section 6: Real-World Capstone Projects
-  addSectionHeading('6. Production Capstone Projects & Portfolio Building');
-  data.capstones.paragraphs.forEach(p => addParagraph(p));
-
-  data.capstones.projects.forEach((proj, idx) => {
-    addSubHeading(`Capstone ${idx + 1}: ${proj.title}`);
-    if (proj.subheading) {
-      addParagraph(proj.subheading, true);
-    }
-    proj.paragraphs.forEach(p => addParagraph(p));
-    addBulletPoint('Tech Stack Used', proj.techStack);
-    addCalloutBox('Portfolio & Recruiter Value', proj.portfolioImpact, 'orange');
-  });
-
-  // Section 7: Career Pathways & Placement Support
-  addSectionHeading('7. Career Pathways, Industry Demand & Placement Assistance');
-  data.career.paragraphs.forEach(p => addParagraph(p));
-
-  addSubHeading('Target Engineering Roles & Compensation Benchmarks');
-  data.career.jobRoles.forEach(r => {
-    addBulletPoint(`${r.role} (${r.salary})`, `${r.exp}. ${r.desc}`);
-  });
-
-  addSubHeading('The Marvel Slice 5-Step Placement Blueprint');
-  data.career.placementBlueprint.forEach(step => {
-    addBulletPoint(step.step, step.desc);
-  });
-
-  // Section 8: Certification & Mentorship Model
-  addSectionHeading('8. Verified Industry Certification & Mentorship Model');
-  data.certification.paragraphs.forEach(p => addParagraph(p));
-
-  addSubHeading('1-on-1 Mentorship & Code Review Ecosystem');
-  data.certification.mentorshipPillars.forEach(m => {
-    addBulletPoint(m.title, m.desc);
-  });
-
-  // Section 9: Admissions Process & FAQs
-  addSectionHeading('9. Admissions Process & Frequently Asked Questions');
-  addSubHeading('Simple 4-Step Enrollment Roadmap');
-  data.admissions.steps.forEach(step => {
-    addBulletPoint(step.step, step.desc);
-  });
-
-  addSubHeading('Frequently Asked Questions (FAQs)');
-  data.admissions.faqs.forEach(faq => {
-    checkSpace(18);
-    pdf.setFontSize(8.5);
+    pdf.setFontSize(15.5);
     pdf.setFont('Helvetica', 'bold');
-    setText(COLOR_PRIMARY_NAVY);
-    pdf.text(`Q: ${sanitize(faq.q)}`, margin + 2, cursorY);
-    cursorY += 4.5;
+    setText(COLOR_WHITE);
+    pdf.text('Leading Software & IT Training Institute', margin, 24, { maxWidth: textMaxW });
+
+    pdf.setFontSize(8);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('INSTITUTE FOR SOFTWARE LEARNING AND COMPETITIVE EXAMS', margin, 33, { maxWidth: textMaxW });
 
     pdf.setFontSize(8);
     pdf.setFont('Helvetica', 'normal');
-    setText(COLOR_TEXT_BODY);
-    const ansLines = pdf.splitTextToSize(sanitize(faq.a), contentW - 4);
-    pdf.text(ansLines, margin + 4, cursorY);
-    cursorY += ansLines.length * 4 + 3;
-  });
+    setText([224, 231, 255]);
+    pdf.text('20+ Years of Excellence in IT Training & Career Transformations', margin, 41, { maxWidth: textMaxW });
 
-  // Section 10: Campus Contact Information Box (Clean 2-Column Grid)
-  addSectionHeading('10. Admissions Office & Campus Contact Information');
-  checkSpace(44);
-
-  setFill(COLOR_PRIMARY_NAVY);
-  pdf.roundedRect(margin, cursorY, contentW, 38, 2.5, 2.5, 'F');
-
-  pdf.setFontSize(10);
-  pdf.setFont('Helvetica', 'bold');
-  setText(COLOR_BRAND_ORANGE);
-  pdf.text('Connect with Marvel Slice Admissions & Career Counseling', margin + 8, cursorY + 7.5);
-
-  const colW = (contentW - 16) / 2; // 81mm each column
-  const col1X = margin + 8;
-  const col2X = margin + 8 + colW + 4;
-
-  pdf.setFontSize(7.5);
-  pdf.setFont('Helvetica', 'normal');
-  setText([241, 245, 249]);
-
-  // Left Column
-  pdf.text(`Web: ${sanitize(data.meta.contact.website)}`, col1X, cursorY + 16);
-  pdf.text(`Email: ${sanitize(data.meta.contact.email)}`, col1X, cursorY + 23);
-  pdf.text(`Phone: ${sanitize(data.meta.contact.phone)}`, col1X, cursorY + 30);
-
-  // Right Column
-  const shortAddr = sanitize(data.meta.contact.address).slice(0, 42);
-  pdf.text(`Campus: ${shortAddr}...`, col2X, cursorY + 16);
-  pdf.text(`Weekdays: ${sanitize(data.meta.contact.weekdayHours)}`, col2X, cursorY + 23);
-  pdf.text(`Saturdays: ${sanitize(data.meta.contact.saturdayHours)}`, col2X, cursorY + 30);
-
-  cursorY += 42;
-
-  // Add Page Numbers and Footer to all pages
-  const pageCount = pdf.internal.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    pdf.setPage(i);
-    const footerY = 289;
-    setStroke(COLOR_BORDER);
-    pdf.setLineWidth(0.3);
-    pdf.line(margin, footerY - 3, pageW - margin, footerY - 3);
-
+    // Official curriculum badge inside banner
+    setFill([18, 55, 128]);
+    setStroke([35, 78, 160]);
+    pdf.setLineWidth(0.4);
+    pdf.roundedRect(margin, 48, 80, 7, 1.5, 1.5, 'FD');
     pdf.setFontSize(7);
     pdf.setFont('Helvetica', 'bold');
-    setText(COLOR_PRIMARY_NAVY);
-    pdf.text('MARVEL SLICE INSTITUTE FOR SOFTWARE LEARNING AND COMPETITIVE EXAMS', margin, footerY);
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('ACCREDITED PROFESSIONAL CAREER PROGRAM', margin + 4, 52.8);
 
+    // Main Course Title Section
+    cursorY = 88;
+
+    pdf.setFontSize(9);
     pdf.setFont('Helvetica', 'bold');
     setText(COLOR_BRAND_ORANGE);
-    pdf.text(`Page ${i} of ${pageCount}`, pageW - margin, footerY, { align: 'right' });
+    pdf.text('OFFICIAL CURRICULUM & CAREER SPECIFICATION', margin, cursorY);
+    cursorY += 6;
+
+    pdf.setFontSize(18);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_PRIMARY_NAVY);
+    const titleLines = pdf.splitTextToSize(sanitize(data.meta.title), contentW - 20);
+    pdf.text(titleLines, margin, cursorY);
+    cursorY += titleLines.length * 7 + 2;
+
+    if (data.meta.subtitle) {
+      pdf.setFontSize(9.5);
+      pdf.setFont('Helvetica', 'normal');
+      setText(COLOR_ROYAL_BLUE);
+      const subLines = pdf.splitTextToSize(sanitize(data.meta.subtitle), contentW);
+      pdf.text(subLines, margin, cursorY);
+      cursorY += subLines.length * 4.5 + 4;
+    }
+
+    // Meta Pill Tags (Duration, Mode, Placement)
+    const tagY = cursorY;
+    const tags = [
+      `Duration: ${data.meta.duration}`,
+      `Mode: ${data.meta.mode}`,
+      '100% Placement Support'
+    ];
+
+    let curTagX = margin;
+    tags.forEach(tag => {
+      const w = pdf.getTextWidth(tag) + 8;
+      setFill(COLOR_BLUE_TINT);
+      setStroke(COLOR_ROYAL_BLUE);
+      pdf.setLineWidth(0.4);
+      pdf.roundedRect(curTagX, tagY, w, 6.5, 1.5, 1.5, 'FD');
+
+      pdf.setFontSize(7.5);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_ROYAL_BLUE);
+      pdf.text(tag, curTagX + 4, tagY + 4.5);
+      curTagX += w + 4;
+    });
+
+    cursorY += 14;
+
+    // Authority Metrics 3-Pillar Card (Navy Container matching reference)
+    const cardY = cursorY;
+    const cardH = 26;
+
+    setFill(COLOR_PRIMARY_NAVY);
+    pdf.roundedRect(margin, cardY, contentW, cardH, 4, 4, 'F');
+
+    const colW = contentW / 3;
+
+    // Metric 1
+    pdf.setFontSize(12);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('20+ Years', margin + colW * 0.5, cardY + 9, { align: 'center' });
+    pdf.setFontSize(7.5);
+    pdf.setFont('Helvetica', 'normal');
+    setText(COLOR_WHITE);
+    pdf.text('Experience in Training & Placements', margin + colW * 0.5, cardY + 16, { align: 'center', maxWidth: colW - 6 });
+
+    // Divider Line 1
+    setStroke([50, 80, 140]);
+    pdf.setLineWidth(0.4);
+    pdf.line(margin + colW, cardY + 4, margin + colW, cardY + cardH - 4);
+
+    // Metric 2
+    pdf.setFontSize(12);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('1.5 Lakh+', margin + colW * 1.5, cardY + 9, { align: 'center' });
+    pdf.setFontSize(7.5);
+    pdf.setFont('Helvetica', 'normal');
+    setText(COLOR_WHITE);
+    pdf.text('Happy & Successful Learners', margin + colW * 1.5, cardY + 16, { align: 'center', maxWidth: colW - 6 });
+
+    // Divider Line 2
+    pdf.line(margin + colW * 2, cardY + 4, margin + colW * 2, cardY + cardH - 4);
+
+    // Metric 3
+    pdf.setFontSize(12);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('90,000+', margin + colW * 2.5, cardY + 9, { align: 'center' });
+    pdf.setFontSize(7.5);
+    pdf.setFont('Helvetica', 'normal');
+    setText(COLOR_WHITE);
+    pdf.text('Successful IT Placements', margin + colW * 2.5, cardY + 16, { align: 'center', maxWidth: colW - 6 });
+
+    cursorY += cardH + 10;
+
+    // Authorized Training & Certification Partner for Top Brands
+    pdf.setFontSize(9);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_PRIMARY_NAVY);
+    pdf.text('Authorized Training & Certification Partner for Top Brands', margin, cursorY);
+    cursorY += 5;
+
+    // Partner Brand Badges Box
+    const brandsBoxH = 34;
+    setFill(COLOR_LIGHT_BG);
+    setStroke(COLOR_BORDER);
+    pdf.setLineWidth(0.5);
+    pdf.roundedRect(margin, cursorY, contentW, brandsBoxH, 3, 3, 'FD');
+
+    const partnerBrands = [
+      ['IBM', 'Microsoft', 'Meta', 'Unity', 'Cisco'],
+      ['Autodesk', 'Adobe', 'Apple', 'AWS', 'Google Cloud']
+    ];
+
+    let brandY = cursorY + 10;
+    partnerBrands.forEach(row => {
+      const bColW = contentW / row.length;
+      row.forEach((bName, bIdx) => {
+        const bX = margin + bColW * bIdx + bColW / 2;
+        pdf.setFontSize(9);
+        pdf.setFont('Helvetica', 'bold');
+        setText(COLOR_TEXT_BODY);
+        pdf.text(bName, bX, brandY, { align: 'center' });
+      });
+      brandY += 13;
+    });
+
+    // Bottom Footer Banner
+    const footH = 14;
+    setFill(COLOR_PRIMARY_NAVY);
+    pdf.rect(0, pageH - footH, pageW, footH, 'F');
+
+    pdf.setFontSize(7.5);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('Marvel Slice Institute for Software Learning and Competitive Exams', margin, pageH - 6.5);
+
+    setText(COLOR_WHITE);
+    pdf.text('www.marvelslice.com | +91 63809 57390', pageW - margin, pageH - 6.5, { align: 'right' });
   }
 
-  // Save and download PDF
-  const cleanTitle = (data.meta.title || 'Course_Brochure').replace(/[^a-zA-Z0-9]+/g, '_');
-  pdf.save(`Marvel_Slice_${cleanTitle}_Brochure.pdf`);
+  // =========================================================================
+  // PAGE 2: TARGET AUDIENCE ("Who Can Take Up This Program?")
+  // =========================================================================
+  function renderTargetAudience() {
+    pdf.addPage();
+    drawPageHeader();
+    cursorY = 28;
+
+    addSectionHeading('Who Can Take Up Our Services & Programs?', 'Tailored Learning Tracks for Every Stage of Your Career');
+
+    addParagraph(
+      'Our programs are engineered with a modular, zero-to-advanced learning trajectory, ensuring accessible on-ramps for complete beginners alongside rigorous technical depth for experienced practitioners.'
+    );
+
+    const profiles = [
+      {
+        num: '01',
+        title: 'College Students & Freshers Seeking IT Jobs',
+        desc: 'Ideal for BE, B.Tech, BCA, MCA, and BSc graduates looking to secure high-paying core software engineering jobs through structured hands-on coding and mock interviews.'
+      },
+      {
+        num: '02',
+        title: 'Candidates Shifting Career from Non-IT to IT',
+        desc: 'Designed for professionals from mechanical, civil, commerce, or operations backgrounds seeking a mentored, step-by-step roadmap to transition into technology.'
+      },
+      {
+        num: '03',
+        title: 'IT Professionals Seeking Career Upskilling',
+        desc: 'Targeted at junior developers, QA automation testers, and support engineers aiming to upgrade into Full Stack, Cloud, DevOps, and Senior Engineering positions.'
+      },
+      {
+        num: '04',
+        title: 'Candidates with Career Gaps Returning to Tech',
+        desc: 'Specialized support for professionals restarting their careers after an employment break with refreshed skills, live portfolio projects, and placement drives.'
+      }
+    ];
+
+    cursorY += 2;
+    profiles.forEach(p => {
+      const cardH = 22;
+      checkSpace(cardH + 4);
+
+      setFill(COLOR_LIGHT_BG);
+      setStroke(COLOR_BORDER);
+      pdf.setLineWidth(0.5);
+      pdf.roundedRect(margin, cursorY, contentW, cardH, 2.5, 2.5, 'FD');
+
+      // Left Gold Accent Strip
+      setFill(COLOR_ACCENT_GOLD);
+      pdf.roundedRect(margin, cursorY, 3, cardH, 1, 1, 'F');
+
+      // Number badge
+      setFill(COLOR_PRIMARY_NAVY);
+      pdf.circle(margin + 12, cursorY + cardH / 2, 5, 'F');
+      pdf.setFontSize(8);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_WHITE);
+      pdf.text(p.num, margin + 12, cursorY + cardH / 2 + 2.5, { align: 'center' });
+
+      // Title
+      pdf.setFontSize(9.5);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_PRIMARY_NAVY);
+      pdf.text(p.title, margin + 22, cursorY + 7);
+
+      // Description
+      pdf.setFontSize(8);
+      pdf.setFont('Helvetica', 'normal');
+      setText(COLOR_TEXT_BODY);
+      const lines = pdf.splitTextToSize(p.desc, contentW - 26);
+      pdf.text(lines, margin + 22, cursorY + 12);
+
+      cursorY += cardH + 4;
+    });
+
+    cursorY += 4;
+    addCalloutBox(
+      'Admissions & Eligibility Criteria',
+      'No prior programming degree is mandatory. A basic familiarity with computer operations and a commitment to daily hands-on practice are all you need to get started. Pre-course foundational logic modules are included.',
+      COLOR_GOLD_TINT,
+      COLOR_BRAND_ORANGE
+    );
+  }
+
+  // =========================================================================
+  // PAGE 3: "8 Reasons to Choose Us for Your IT Training & Placements"
+  // =========================================================================
+  function render8Reasons() {
+    pdf.addPage();
+    drawPageHeader();
+    cursorY = 28;
+
+    addSectionHeading('8 Reasons to Choose Us for Your IT Training & Placements', 'The Marvel Slice Advantage: Proven Methodology for Career Success');
+
+    const reasons = [
+      { num: '1', title: 'Expert Career Guidance', desc: 'Personalized course matching based on qualification, market openings, and career goals.' },
+      { num: '2', title: 'IT Professional Trainers', desc: 'Learn directly from industry software architects with 10+ years enterprise experience.' },
+      { num: '3', title: 'Globally Valued Certification', desc: 'Receive verifiable certificates recognized by leading multinational technology firms.' },
+      { num: '4', title: 'Complete 4-Hour Daily Solid Training', desc: '2 hrs Technical hands-on + 1 hr Aptitude drills + 1 hr Soft skills and mock interviews.' },
+      { num: '5', title: 'Real-Time Capstone Projects', desc: 'Build and deploy enterprise-grade applications to showcase in technical interviews.' },
+      { num: '6', title: 'Online and Offline Classroom Modes', desc: 'Flexible learning schedules with interactive live lectures and HD session archives.' },
+      { num: '7', title: '100% Placement Support', desc: 'Dedicated resume restructuring, GitHub review, and direct referrals until you get placed.' },
+      { num: '8', title: '1,000+ IT Recruiting Corporate Partners', desc: 'Access exclusive recruitment drives across product startups and global IT leaders.' }
+    ];
+
+    reasons.forEach(r => {
+      const itemH = 16;
+      checkSpace(itemH + 3);
+
+      setFill(COLOR_LIGHT_BG);
+      setStroke(COLOR_BORDER);
+      pdf.setLineWidth(0.4);
+      pdf.roundedRect(margin, cursorY, contentW, itemH, 2, 2, 'FD');
+
+      // Left Number Pill
+      setFill(COLOR_PRIMARY_NAVY);
+      pdf.roundedRect(margin + 2, cursorY + 2, 10, itemH - 4, 1.5, 1.5, 'F');
+      pdf.setFontSize(9);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_ACCENT_GOLD);
+      pdf.text(r.num, margin + 7, cursorY + itemH / 2 + 2.5, { align: 'center' });
+
+      // Title & Desc
+      pdf.setFontSize(9);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_PRIMARY_NAVY);
+      pdf.text(r.title, margin + 16, cursorY + 5.5);
+
+      pdf.setFontSize(8);
+      pdf.setFont('Helvetica', 'normal');
+      setText(COLOR_TEXT_BODY);
+      pdf.text(r.desc, margin + 16, cursorY + 11);
+
+      cursorY += itemH + 3;
+    });
+  }
+
+  // =========================================================================
+  // PAGE 4: 4-HOUR SOLID TRAINING MODEL & METHODOLOGY
+  // =========================================================================
+  function renderTrainingModel() {
+    pdf.addPage();
+    drawPageHeader();
+    cursorY = 28;
+
+    addSectionHeading('Complete Job Training at One Place', 'The 4-Hour Daily Solid Training Framework (Investment is Less, Return is More)');
+
+    addParagraph(
+      'To ensure complete industry readiness, Marvel Slice delivers a holistic 4-hour daily structured regimen combining technical coding, aptitude problem solving, and corporate communication skills.'
+    );
+
+    cursorY += 2;
+
+    const pillars = [
+      {
+        hours: '2 hrs / day',
+        title: 'Technical Hands-On Skills',
+        desc: 'Interactive live coding, architectural design patterns, framework implementation, and daily lab challenges reviewed line-by-line by senior tech mentors.'
+      },
+      {
+        hours: '1 hr / day',
+        title: 'Aptitude & Logical Reasoning',
+        desc: 'Quantitative aptitude, logical deduction, algorithmic complexity drills, and company-specific assessment problem sets.'
+      },
+      {
+        hours: '1 hr / day',
+        title: 'Soft Skills & Interview Readiness',
+        desc: 'Professional communication, technical presentation, behavioral STAR methodology, mock interview simulations, and resume refinement.'
+      }
+    ];
+
+    pillars.forEach(p => {
+      const pH = 24;
+      checkSpace(pH + 4);
+
+      setFill(COLOR_BLUE_TINT);
+      setStroke(COLOR_ROYAL_BLUE);
+      pdf.setLineWidth(0.5);
+      pdf.roundedRect(margin, cursorY, contentW, pH, 3, 3, 'FD');
+
+      // Left Badge
+      setFill(COLOR_ROYAL_BLUE);
+      pdf.roundedRect(margin + 3, cursorY + 3, 26, 7, 1.5, 1.5, 'F');
+      pdf.setFontSize(7.5);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_WHITE);
+      pdf.text(p.hours, margin + 16, cursorY + 7.5, { align: 'center' });
+
+      // Title
+      pdf.setFontSize(9.5);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_PRIMARY_NAVY);
+      pdf.text(p.title, margin + 33, cursorY + 8);
+
+      // Description
+      pdf.setFontSize(8);
+      pdf.setFont('Helvetica', 'normal');
+      setText(COLOR_TEXT_BODY);
+      const lines = pdf.splitTextToSize(p.desc, contentW - 12);
+      pdf.text(lines, margin + 6, cursorY + 16);
+
+      cursorY += pH + 4;
+    });
+
+    cursorY += 4;
+    addSubHeading('Instructor-Led Sessions & Daily Task Tracking');
+    addParagraph(
+      'Every session is delivered live by industry experienced trainers. Daily assignments and practical tasks are assigned at the end of each class. Doubts are clarified immediately during interactive sessions, complemented by specialized Saturday mentoring workshops.'
+    );
+  }
+
+  // =========================================================================
+  // CURRICULUM & SYLLABUS MODULES (Pages 5+)
+  // =========================================================================
+  function renderCurriculumModules() {
+    pdf.addPage();
+    drawPageHeader();
+    cursorY = 28;
+
+    addSectionHeading('Comprehensive Phased Curriculum & Detailed Syllabus', 'Structured Step-by-Step Roadmap from Core Fundamentals to Cloud Deployment');
+
+    const modules = data.modules || [];
+
+    modules.forEach((mod, idx) => {
+      checkSpace(35);
+
+      // Module Banner Header
+      cursorY += 4;
+      const modH = 9;
+      setFill(COLOR_PRIMARY_NAVY);
+      pdf.roundedRect(margin, cursorY, contentW, modH, 1.5, 1.5, 'F');
+
+      // Left Tag
+      setFill(COLOR_ACCENT_GOLD);
+      pdf.roundedRect(margin + 1, cursorY + 1, 20, modH - 2, 1, 1, 'F');
+      pdf.setFontSize(7.5);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_PRIMARY_NAVY);
+      pdf.text(`MODULE ${mod.moduleNumber || idx + 1}`, margin + 11, cursorY + 6, { align: 'center' });
+
+      // Module Title
+      pdf.setFontSize(9);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_WHITE);
+      pdf.text(sanitize(mod.title), margin + 25, cursorY + 6);
+
+      cursorY += modH + 4;
+
+      if (mod.objective) {
+        pdf.setFontSize(8);
+        pdf.setFont('Helvetica', 'bold');
+        setText(COLOR_ROYAL_BLUE);
+        pdf.text(`Objective: ${sanitize(mod.objective)}`, margin + 2, cursorY);
+        cursorY += 5;
+      }
+
+      // Topics with Hierarchical Checkmark & Arrow System
+      const topics = mod.topics || [];
+      topics.forEach((t) => {
+        if (typeof t === 'string') {
+          addChapterItem(t);
+        } else if (t && typeof t === 'object') {
+          addChapterItem(t.title || t.name);
+          const subItems = t.subtopics || t.bullets || [];
+          subItems.forEach(sub => addSubTopicItem(sub));
+        }
+      });
+
+      // Hands-on Lab box
+      if (mod.handsOnLab) {
+        cursorY += 2;
+        addCalloutBox('Hands-on Lab Milestone', mod.handsOnLab, COLOR_GOLD_TINT, COLOR_BRAND_ORANGE);
+      }
+
+      cursorY += 3;
+    });
+  }
+
+  // =========================================================================
+  // PRODUCTION CAPSTONE PROJECTS
+  // =========================================================================
+  function renderCapstoneProjects() {
+    checkSpace(40);
+    addSectionHeading('Real-World Production Capstone Projects', 'Build a Distinguished GitHub Portfolio that Proves Your Technical Mastery');
+
+    addParagraph(
+      'Theory alone is insufficient to stand out. Every candidate builds and deploys 3 substantial, production-ready applications with automated tests and cloud hosting.'
+    );
+
+    const projects = data.projects || [];
+    projects.forEach((proj, idx) => {
+      const projH = 30;
+      checkSpace(projH + 4);
+
+      setFill(COLOR_LIGHT_BG);
+      setStroke(COLOR_BORDER);
+      pdf.setLineWidth(0.5);
+      pdf.roundedRect(margin, cursorY, contentW, projH, 2.5, 2.5, 'FD');
+
+      // Left Accent Strip
+      setFill(COLOR_ROYAL_BLUE);
+      pdf.roundedRect(margin, cursorY, 3, projH, 1, 1, 'F');
+
+      // Title & Tag
+      pdf.setFontSize(9.5);
+      pdf.setFont('Helvetica', 'bold');
+      setText(COLOR_PRIMARY_NAVY);
+      pdf.text(`Capstone ${idx + 1}: ${sanitize(proj.title)}`, margin + 6, cursorY + 7);
+
+      // Description
+      pdf.setFontSize(8);
+      pdf.setFont('Helvetica', 'normal');
+      setText(COLOR_TEXT_BODY);
+      const lines = pdf.splitTextToSize(sanitize(proj.description || proj.desc), contentW - 12);
+      pdf.text(lines, margin + 6, cursorY + 13);
+
+      cursorY += projH + 4;
+    });
+  }
+
+  // =========================================================================
+  // CERTIFICATION, PLACEMENT & OFFICIAL CONTACTS (Final Section)
+  // =========================================================================
+  function renderFinalSection() {
+    checkSpace(50);
+    addSectionHeading('Verified Certification & 100% Placement Assistance', 'Globally Recognized Credentials & Dedicated Career Support');
+
+    addSubHeading('Globally Valued Marvel Slice Certification');
+    addParagraph(
+      'Upon completing coursework, weekly labs, and project defenses, candidates receive the Marvel Slice Certified Professional credential, featuring permanent cryptographic online verification directly shareable on LinkedIn and technical resumes.'
+    );
+
+    addSubHeading('Dedicated 3-Step Placement Framework');
+    addBulletPoint('Step 1: Resume & GitHub Polish', 'ATS-compliant resume restructuring, LinkedIn profile optimization, and public portfolio polish.');
+    addBulletPoint('Step 2: Mock Interviews & Whiteboard Drills', 'Rigorous 1-on-1 technical mock interviews, behavioral coaching, and system design drills.');
+    addBulletPoint('Step 3: Direct Corporate Referrals', 'Profile shortlisting and direct recruitment drives across our 1,000+ corporate hiring partner network.');
+
+    // Official Contact Card
+    cursorY += 4;
+    const contactH = 26;
+    checkSpace(contactH + 4);
+
+    setFill(COLOR_PRIMARY_NAVY);
+    pdf.roundedRect(margin, cursorY, contentW, contactH, 3, 3, 'F');
+
+    pdf.setFontSize(10);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('Marvel Slice Institute for Software Learning and Competitive Exams', margin + 6, cursorY + 8);
+
+    pdf.setFontSize(8);
+    pdf.setFont('Helvetica', 'normal');
+    setText(COLOR_WHITE);
+    pdf.text('Phone: +91 63809 57390 / +91 80882 18609', margin + 6, cursorY + 15);
+    pdf.text('Email: sales@marvelslice.com', margin + 6, cursorY + 20);
+
+    pdf.setFontSize(8);
+    pdf.setFont('Helvetica', 'bold');
+    setText(COLOR_ACCENT_GOLD);
+    pdf.text('Website: www.marvelslice.com', pageW - margin - 6, cursorY + 18, { align: 'right' });
+
+    cursorY += contactH + 4;
+  }
+
+  // =========================================================================
+  // EXECUTION SEQUENCE
+  // =========================================================================
+  // 1. Front Cover Hero Page
+  renderFrontCover();
+
+  // 2. Who Can Take Up This Program?
+  renderTargetAudience();
+
+  // 3. 8 Reasons to Choose Us
+  render8Reasons();
+
+  // 4. Complete Job Training Model (4 hrs/day)
+  renderTrainingModel();
+
+  // 5. Comprehensive Syllabus & Modules
+  renderCurriculumModules();
+
+  // 6. Capstone Projects
+  renderCapstoneProjects();
+
+  // 7. Certification & Placement Contacts
+  renderFinalSection();
+
+  // =========================================================================
+  // NUMBER ALL PAGES (Footer)
+  // =========================================================================
+  const totalPages = pdf.internal.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    pdf.setPage(i);
+
+    // Skip footer on cover page 1
+    if (i === 1) continue;
+
+    const footY = pageH - 8;
+
+    // Footer divider line
+    setStroke(COLOR_BORDER);
+    pdf.setLineWidth(0.4);
+    pdf.line(margin, footY - 3, pageW - margin, footY - 3);
+
+    pdf.setFontSize(7);
+    pdf.setFont('Helvetica', 'normal');
+    setText(COLOR_TEXT_MUTED);
+    pdf.text('Marvel Slice Institute for Software Learning and Competitive Exams • www.marvelslice.com', margin, footY);
+    pdf.text(`Page ${i} of ${totalPages}`, pageW - margin, footY, { align: 'right' });
+  }
+
+  // Save the PDF directly to trigger the browser download
+  const rawTitle = course?.title || 'Course';
+  const cleanTitle = rawTitle.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_');
+  const fileName = `Marvel_Slice_${cleanTitle}_Brochure.pdf`;
+  pdf.save(fileName);
+
+  return pdf;
 }

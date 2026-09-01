@@ -68,21 +68,13 @@ function AnimatedAdminDashboardSvg() {
             <stop offset="0%" stopColor="#00B4D8" />
             <stop offset="100%" stopColor="#0077B6" />
           </linearGradient>
-          <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FF6B6B" />
-            <stop offset="100%" stopColor="#EE5253" />
-          </linearGradient>
-          <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
         </defs>
 
         {/* 1. Animated Rotating Mechanical Gears in Background */}
         <motion.g 
           animate={{ rotate: 360 }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          style={{ originX: "95px", originY: "185px" }}
+          style={{ transformOrigin: "95px 185px" }}
         >
           <circle cx="95" cy="185" r="32" fill="#E2E8F0" opacity="0.7" stroke="#CBD5E1" strokeWidth="4" strokeDasharray="10 8" />
           <circle cx="95" cy="185" r="14" fill="#FFFFFF" />
@@ -91,7 +83,7 @@ function AnimatedAdminDashboardSvg() {
         <motion.g 
           animate={{ rotate: -360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          style={{ originX: "75px", originY: "245px" }}
+          style={{ transformOrigin: "75px 245px" }}
         >
           <circle cx="75" cy="245" r="24" fill="#E2E8F0" opacity="0.6" stroke="#CBD5E1" strokeWidth="3" strokeDasharray="8 6" />
           <circle cx="75" cy="245" r="10" fill="#FFFFFF" />
@@ -129,43 +121,49 @@ function AnimatedAdminDashboardSvg() {
           <line x1="45" y1="12" x2="45" y2="48" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
           <line x1="70" y1="12" x2="70" y2="48" stroke="#E0F2FE" strokeWidth="3" strokeLinecap="round" />
 
-          {/* Animated Slider Knobs */}
-          <motion.circle 
-            animate={{ cy: [20, 36, 20] }} 
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }} 
-            cx="20" cy="20" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" 
-          />
-          <motion.circle 
-            animate={{ cy: [40, 18, 40] }} 
-            transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} 
-            cx="45" cy="40" r="5.5" fill="#FF6B6B" stroke="#C0392B" strokeWidth="2" 
-          />
-          <motion.circle 
-            animate={{ cy: [25, 42, 25] }} 
-            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.7 }} 
-            cx="70" cy="25" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" 
-          />
+          {/* Animated Slider Knobs using smooth translateY */}
+          <motion.g 
+            animate={{ y: [0, 16, 0] }} 
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <circle cx="20" cy="20" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" />
+          </motion.g>
+          <motion.g 
+            animate={{ y: [0, -18, 0] }} 
+            transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+          >
+            <circle cx="45" cy="40" r="5.5" fill="#FF6B6B" stroke="#C0392B" strokeWidth="2" />
+          </motion.g>
+          <motion.g 
+            animate={{ y: [0, 15, 0] }} 
+            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
+          >
+            <circle cx="70" cy="25" r="5.5" fill="#FFFFFF" stroke="#0077B6" strokeWidth="2" />
+          </motion.g>
         </g>
 
         {/* 7. Dynamic Animated Bar Chart at Screen Bottom */}
-        <g transform="translate(130, 175)">
+        <g transform="translate(130, 185)">
           {/* Bar 1 (Cyan) */}
           <motion.rect 
-            x="8" y="25" width="10" height="35" rx="3" fill="#00B4D8"
-            animate={{ height: [35, 45, 28, 35], y: [25, 15, 32, 25] }}
+            x="8" y="0" width="10" height="40" rx="3" fill="#00B4D8"
+            animate={{ scaleY: [0.75, 1.1, 0.6, 0.75] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "bottom" }}
           />
           {/* Bar 2 (Red/Orange) */}
           <motion.rect 
-            x="24" y="10" width="10" height="50" rx="3" fill="#FF6B6B"
-            animate={{ height: [50, 38, 54, 50], y: [10, 22, 6, 10] }}
+            x="24" y="-12" width="10" height="52" rx="3" fill="#FF6B6B"
+            animate={{ scaleY: [1, 0.75, 1.15, 1] }}
             transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+            style={{ transformOrigin: "bottom" }}
           />
           {/* Bar 3 (Dark Blue) */}
           <motion.rect 
-            x="40" y="30" width="10" height="30" rx="3" fill="#2563EB"
-            animate={{ height: [30, 48, 22, 30], y: [30, 12, 38, 30] }}
+            x="40" y="5" width="10" height="35" rx="3" fill="#2563EB"
+            animate={{ scaleY: [0.65, 1.2, 0.8, 0.65] }}
             transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            style={{ transformOrigin: "bottom" }}
           />
         </g>
 
@@ -480,7 +478,7 @@ export default function Login() {
             <motion.div 
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 p-3 bg-amber-50 border border-amber-200/80 rounded-xl flex items-start gap-2.5 text-amber-800 text-xs font-medium text-left"
+              className="mb-4 p-3 bg-amber-50 border border-amber-200/80 rounded-xl flex items-start gap-2 text-amber-800 text-xs font-medium text-left"
             >
               <FiClock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div className="leading-snug">{sessionExpiredMsg}</div>
@@ -492,7 +490,7 @@ export default function Login() {
             <motion.div 
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 p-3 bg-[#FFF0F2] border border-[#FFD0D6] rounded-xl flex items-start gap-2.5 text-left"
+              className="mb-4 p-3 bg-[#FFF0F2] border border-[#FFD0D6] rounded-xl flex items-start gap-2 text-left"
             >
               <FiAlertCircle className="w-4 h-4 text-[#FF3B5C] shrink-0 mt-0.5" />
               <div className="text-xs font-semibold text-[#E02444] leading-snug">
