@@ -74,7 +74,7 @@ export default function CourseHero({
 
             {/* Dynamic CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 mt-8 w-full sm:w-auto">
-              {/* Left CTA - Solid Orange */}
+              {/* Left CTA - Solid Brand Orange */}
               <button
                 type="button"
                 onClick={() => {
@@ -84,16 +84,16 @@ export default function CourseHero({
                     openEnquiryModal?.(course.cta_left || 'Talk to Advisor/Pay Now');
                   }
                 }}
-                className="w-full sm:w-auto px-6 py-3 bg-brand-orange hover:bg-brand-orange/90 text-white font-semibold text-sm sm:text-base rounded-xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer inline-flex items-center justify-center whitespace-nowrap"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-brand-orange hover:bg-amber-600 text-white font-bold text-xs sm:text-sm rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center whitespace-nowrap"
               >
                 {course.cta_left || 'Talk to Advisor/Pay Now'}
               </button>
 
-              {/* Right CTA - White with Blue Border */}
+              {/* Right CTA - Outline Brand Blue */}
               <button
                 type="button"
                 onClick={() => openEnquiryModal?.(course.cta_right || 'Download Brochure')}
-                className="w-full sm:w-auto px-6 py-3 bg-white hover:bg-blue-50/50 text-[#1E56C7] font-semibold text-sm sm:text-base rounded-xl border-2 border-[#1E56C7] hover:border-blue-700 transition-all duration-200 cursor-pointer inline-flex items-center justify-center whitespace-nowrap"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-white hover:bg-brand-blue hover:text-white text-brand-blue font-bold text-xs sm:text-sm rounded-full border-2 border-brand-blue shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center whitespace-nowrap"
               >
                 {course.cta_right || 'Download Brochure'}
               </button>
