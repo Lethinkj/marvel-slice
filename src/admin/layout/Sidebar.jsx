@@ -5,7 +5,14 @@ import { FiHome, FiFile, FiBookOpen, FiGrid, FiChevronDown, FiChevronLeft, FiChe
 import { useSiteSettings } from "../../hooks/useSupabase";
 
 const navGroups = [
-  { label: "Dashboard", icon: FiHome, items: [{ to: "/admin", label: "Dashboard", icon: FiHome }] },
+  { 
+    label: "Dashboard", 
+    icon: FiHome, 
+    items: [
+      { to: "/admin", label: "Dashboard", icon: FiHome },
+      { to: "/admin/analytics", label: "Live Analytics", icon: FiBarChart2 }
+    ] 
+  },
   {
     label: "All Pages", icon: FiFile,
     items: [

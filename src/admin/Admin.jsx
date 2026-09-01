@@ -55,6 +55,7 @@ import BlogCategoriesManager from './pages/BlogCategoriesManager';
 import BlogPageEditor from './pages/BlogPageEditor';
 import ProfileSettings from './pages/ProfileSettings';
 import LegalPageEditor from './pages/LegalPageEditor';
+import Analytics from './pages/Analytics';
 
 const pageSlugToEditor = { about: 'about', contact: 'contact', career: 'career', services: 'services', training: 'training' };
 
@@ -124,6 +125,7 @@ export default function Admin() {
           </ProtectedRoute>
         }>
           <Route index element={<Dashboard />} />
+          <Route path="analytics" element={<Analytics />} />
           <Route path="site-settings" element={<SiteSettings />} />
           <Route path="ai-settings" element={<AISettings />} />
           <Route path="nav-menu" element={<NavMenuManager />} />
