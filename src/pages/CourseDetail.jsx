@@ -117,7 +117,7 @@ function CourseTabs({ tabs, onApplyNow }) {
     return (
       <div className="space-y-6">
         {content.heading && (
-          <h2 className={`text-2xl font-bold text-dark-navy ${align("heading")}`}>
+          <h2 className={`font-bold text-2xl sm:text-3xl text-dark-navy ${align("heading")} whitespace-pre-line`}>
             {content.heading}
           </h2>
         )}
@@ -191,7 +191,7 @@ function OverviewSection({ course }) {
     <section id="overview" data-section="overview" className="py-16 bg-bg-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div>
-          <Reveal as="h2" className="text-2xl font-bold text-dark-navy text-center mb-10">Key Highlights</Reveal>
+          <Reveal as="h2" className="font-bold text-2xl sm:text-3xl text-dark-navy text-center mb-10 whitespace-pre-line">Key Highlights</Reveal>
           <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {highlights.map((h, i) => (
               <StaggerItem key={h.id || i}>
@@ -220,7 +220,7 @@ function ProjectsSection({ projects }) {
   return (
     <section id="projects" data-section="projects" className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-2xl font-bold text-dark-navy mb-8">Hands-On Projects</Reveal>
+        <Reveal as="h2" className="font-bold text-2xl sm:text-3xl text-dark-navy mb-8 whitespace-pre-line">Hands-On Projects</Reveal>
         <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {projectList.map((p, i) => {
             const techs = ensureArray(p.technologies);
@@ -254,7 +254,7 @@ function CertificationSection({ certifications }) {
   return (
     <section id="certification" data-section="certification" className="py-16 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-2xl sm:text-3xl font-extrabold text-[#1B365D] mb-10 text-center">
+        <Reveal as="h2" className="font-bold text-2xl sm:text-3xl text-dark-navy mb-10 text-center whitespace-pre-line">
           Certification
         </Reveal>
         <div className="max-w-5xl mx-auto space-y-8">
@@ -332,7 +332,7 @@ function FAQSection({ faqs }) {
   return (
     <section id="faqs" data-section="faqs" className="py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Reveal as="h2" className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">
+        <Reveal as="h2" className="font-bold text-2xl sm:text-3xl text-dark-navy mb-6 text-center whitespace-pre-line">
           Frequently Asked Questions
         </Reveal>
         <Stagger className="space-y-2 w-full">
@@ -766,7 +766,7 @@ export default function CourseDetail() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <Reveal as="h2" className="text-2xl font-bold text-dark-navy">More Courses You Might Like</Reveal>
+            <Reveal as="h2" className="font-bold text-2xl sm:text-3xl text-dark-navy whitespace-pre-line">More Courses You Might Like</Reveal>
             <Link
               to="/courses"
               className="inline-flex items-center gap-2 bg-brand-orange text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-amber-600 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer shrink-0 w-fit group"
