@@ -884,11 +884,11 @@ export default function CourseDetail() {
               className="bg-white rounded-2xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto cursor-default"
               onClick={e => e.stopPropagation()}
             >
-              <div className="px-5 py-4 bg-[#f59e0b] rounded-t-2xl flex items-start justify-between relative">
+              <div className="px-5 py-4 bg-brand-blue rounded-t-2xl flex items-start justify-between relative">
                 <div className="pr-4 min-w-0">
                   <h2 className="text-lg sm:text-xl font-extrabold !text-white leading-snug" style={{ color: '#ffffff' }}>Enquire Now</h2>
                   <div className="mt-1 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white text-dark-navy text-[11px] sm:text-xs font-semibold shadow-2xs max-w-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b] shrink-0"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-blue shrink-0"></span>
                     <span className="truncate">{course.title}</span>
                   </div>
                 </div>
@@ -909,10 +909,10 @@ export default function CourseDetail() {
                   <h3 className="text-lg font-bold text-gray-900 mb-1">Enquiry Submitted!</h3>
                   <p className="text-sm text-gray-500 leading-relaxed mb-6">
                     Thank you <strong className="text-gray-900">{enquiryForm.name}</strong>! Your enquiry for{' '}
-                    <strong className="text-gray-900">{course.title}</strong> via <span className="font-semibold text-brand-orange">"{enquirySource}"</span> has been recorded.
+                    <strong className="text-gray-900">{course.title}</strong> via <span className="font-semibold text-brand-blue">"{enquirySource}"</span> has been recorded.
                     Our course advisor will contact you shortly.
                   </p>
-                  <button onClick={() => setShowEnquiry(false)} className="px-6 py-2.5 text-sm font-semibold rounded-lg bg-brand-orange text-white hover:bg-brand-orange/90 transition-colors cursor-pointer">
+                  <button onClick={() => setShowEnquiry(false)} className="px-5 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-brand-blue text-white hover:bg-blue-700 transition-colors cursor-pointer">
                     Done
                   </button>
                 </div>
@@ -926,7 +926,7 @@ export default function CourseDetail() {
                       onChange={e => setEnquiryForm(p => ({ ...p, name: e.target.value }))}
                       placeholder="Enter your full name"
                       required
-                      className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                      className="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue transition-all"
                     />
                   </div>
 
@@ -938,7 +938,7 @@ export default function CourseDetail() {
                       onChange={e => setEnquiryForm(p => ({ ...p, email: e.target.value }))}
                       placeholder="you@example.com"
                       required
-                      className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                      className="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue transition-all"
                     />
                   </div>
 
@@ -950,7 +950,7 @@ export default function CourseDetail() {
                       onChange={e => setEnquiryForm(p => ({ ...p, phone: e.target.value }))}
                       placeholder="Enter 10-digit mobile number"
                       required
-                      className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-orange transition-all"
+                      className="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue transition-all"
                     />
                   </div>
 
@@ -969,7 +969,7 @@ export default function CourseDetail() {
                         if (enquiryError) setEnquiryError('');
                       }}
                       required
-                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-brand-orange focus:ring-brand-orange/20"
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-brand-blue focus:ring-brand-blue/20"
                     />
                     <span className="text-xs text-gray-600 leading-relaxed">
                       I agree to the{' '}
@@ -979,14 +979,16 @@ export default function CourseDetail() {
                     </span>
                   </label>
 
-                  <button
-                    type="submit"
-                    disabled={enquirySubmitting}
-                    className="w-full flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold rounded-xl bg-brand-orange text-white hover:bg-brand-orange/90 transition-all disabled:opacity-60 cursor-pointer shadow-md shadow-brand-orange/20 active:scale-95"
-                  >
-                    {enquirySubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-4 h-4" />}
-                    {enquirySubmitting ? 'Submitting Enquiry...' : 'Submit Enquiry'}
-                  </button>
+                  <div className="flex justify-center pt-1">
+                    <button
+                      type="submit"
+                      disabled={enquirySubmitting}
+                      className="inline-flex items-center justify-center gap-1.5 px-5 py-2 text-xs sm:text-sm font-bold rounded-xl bg-brand-blue text-white hover:bg-blue-700 transition-all disabled:opacity-60 cursor-pointer shadow-sm shadow-brand-blue/20 active:scale-95"
+                    >
+                      {enquirySubmitting ? <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend className="w-3.5 h-3.5" />}
+                      {enquirySubmitting ? 'Submitting Enquiry...' : 'Submit Enquiry'}
+                    </button>
+                  </div>
                 </form>
               )}
             </motion.div>

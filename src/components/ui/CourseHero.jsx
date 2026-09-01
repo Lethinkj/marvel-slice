@@ -1,42 +1,6 @@
 import HeroBackground from './HeroBackground';
 import { FiArrowLeft, FiCheck, FiCheckCircle, FiMessageCircle, FiArrowRight, FiDownload, FiPlay, FiBarChart2 } from 'react-icons/fi';
 
-/**
- * Dynamically split any course title into a 2-line visual hierarchy.
- * Line 1: Marvel Slice Primary Blue
- * Line 2: Marvel Slice Orange Accent
- */
-function splitCourseTitle(title) {
-  if (!title) return { line1: '', line2: '' };
-  const words = title.trim().split(/\s+/);
-  if (words.length === 1) {
-    return { line1: words[0], line2: '' };
-  }
-  if (words.length === 2) {
-    return { line1: words[0], line2: words[1] };
-  }
-
-  const lastWord = words[words.length - 1];
-  const commonSuffixes = [
-    'masterclass', 'bootcamp', 'program', 'course', 'specialization',
-    'certification', 'diploma', 'training', 'essentials', 'fundamentals',
-    'advanced', 'pro', 'express', 'complete', 'series'
-  ];
-
-  if (commonSuffixes.includes(lastWord.toLowerCase()) && words.length > 2) {
-    return {
-      line1: words.slice(0, words.length - 1).join(' '),
-      line2: lastWord,
-    };
-  }
-
-  const mid = Math.ceil(words.length / 2);
-  return {
-    line1: words.slice(0, mid).join(' '),
-    line2: words.slice(mid).join(' '),
-  };
-}
-
 export default function CourseHero({
   course,
   handleBackNavigation,
@@ -49,7 +13,6 @@ export default function CourseHero({
 }) {
   if (!course) return null;
 
-  const { line1, line2 } = splitCourseTitle(course.title);
   const rawPoints = course.checklist_items || course.points || course.highlights || [];
   const points = (Array.isArray(rawPoints) ? rawPoints : []).filter(Boolean).slice(0, 6);
 
@@ -75,9 +38,8 @@ export default function CourseHero({
           {/* LEFT SIDE (Content) ~ 48% width */}
           <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left">
             {/* Dynamic Title */}
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] font-extrabold text-[#1E56C7] leading-tight tracking-tight max-w-xl">
-              <span>{line1}</span>
-              {line2 && <span className="block mt-0.5">{line2}</span>}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] font-extrabold text-[#1E56C7] leading-tight tracking-tight max-w-xl whitespace-pre-line">
+              {course.title}
             </h1>
 
             {/* Optional Status Badge */}
