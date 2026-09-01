@@ -142,14 +142,12 @@ export default function UpcomingCoursesSection({ section }) {
         <Reveal>
           <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 text-center sm:text-left">
             <div className="text-center sm:text-left">
-              <div className="inline-flex flex-col items-center sm:items-start">
-                {heading && (
-                  <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
-                )}
-                <div className="mt-3 h-[3px] bg-brand-orange rounded-full w-4/5" />
-              </div>
+              {heading && (
+                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+              )}
+              <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto sm:mx-0 mt-3" />
               {subheading && (
-                <p className="text-text-gray text-sm sm:text-base leading-relaxed mt-4 whitespace-pre-line">{subheading}</p>
+                <p className="text-text-gray text-sm sm:text-base leading-relaxed mt-3 whitespace-pre-line">{subheading}</p>
               )}
             </div>
             <div className="flex items-center gap-3 shrink-0 pt-1">

@@ -36,8 +36,8 @@ function CourseButtons() {
   );
 }
 
-const statIconBg = ['bg-brand-orange/10', 'bg-blue-100', 'bg-emerald-100', 'bg-purple-100', 'bg-pink-100', 'bg-cyan-100', 'bg-indigo-100', 'bg-teal-100'];
-const statIconColor = ['text-brand-orange', 'text-blue-500', 'text-emerald-500', 'text-purple-500', 'text-pink-500', 'text-cyan-500', 'text-indigo-500', 'text-teal-500'];
+const statIconBg = ['bg-purple-100', 'bg-blue-100', 'bg-emerald-100', 'bg-pink-100', 'bg-cyan-100', 'bg-indigo-100', 'bg-teal-100', 'bg-amber-100'];
+const statIconColor = ['text-purple-500', 'text-blue-500', 'text-emerald-500', 'text-pink-500', 'text-cyan-500', 'text-indigo-500', 'text-teal-500', 'text-amber-500'];
 
 function StatsGrid({ stats }) {
   if (!stats || stats.length === 0) return null;
