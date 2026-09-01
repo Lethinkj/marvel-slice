@@ -755,7 +755,7 @@ export default function Career() {
                   onClick={() => handleTabChange(t.key)}
                   className={`px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer shadow-xs ${
                     tab === t.key
-                      ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/20'
+                      ? 'bg-brand-orange text-white shadow-md shadow-brand-orange/20'
                       : 'bg-white text-slate-600 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
                   }`}
                 >
