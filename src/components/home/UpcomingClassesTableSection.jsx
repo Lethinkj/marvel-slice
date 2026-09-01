@@ -91,7 +91,7 @@ export default function UpcomingClassesTableSection({ section, imageSection }) {
         <Reveal>
           <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
             {heading && (
-              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy whitespace-pre-line">{heading}</h2>
             )}
             <div className="w-16 h-[3px] bg-brand-orange rounded-full mt-3" />
             {subheading && (

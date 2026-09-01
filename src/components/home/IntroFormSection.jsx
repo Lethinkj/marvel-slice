@@ -87,7 +87,7 @@ function PillGrid({ pills }) {
 
 export default function IntroFormSection({ section }) {
   const content = section?.content || {};
-  const heading = section?.heading || '';
+  const heading = section?.heading || content.heading || '';
   const introText = content.intro_text || '';
   const stats = content.stats || [];
   const rawPills = Array.isArray(content.pill_buttons) ? content.pill_buttons : (content.pill_buttons || '').split('\n').filter(Boolean);

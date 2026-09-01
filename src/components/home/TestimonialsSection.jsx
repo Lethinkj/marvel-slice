@@ -126,7 +126,7 @@ export default function TestimonialsSection({ section }) {
         <Reveal>
           <div className="text-center">
             {heading && (
-              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy whitespace-pre-line">{heading}</h2>
             )}
             <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3" />
             {subheading && (

@@ -143,7 +143,7 @@ export default function UpcomingCoursesSection({ section }) {
           <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 text-center sm:text-left">
             <div className="text-center sm:text-left">
               {heading && (
-                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy">{heading}</h2>
+                <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy whitespace-pre-line">{heading}</h2>
               )}
               <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto sm:mx-0 mt-3" />
               {subheading && (
