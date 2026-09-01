@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import AccordionItem from '../components/ui/AccordionItem';
 import { supabase } from '../lib/supabaseClient';
-import { trackRegister, trackFormSubmit } from '../lib/analytics';
+import { trackRegister, trackFormSubmit, trackEnroll } from '../lib/analytics';
 import BankingTestimonialsSection from '../components/banking/BankingTestimonialsSection';
 
 const FAQS = [
@@ -135,6 +135,7 @@ export default function Banking() {
   const [previewImage, setPreviewImage] = useState(null);
 
   function openApplyModal(type = 'general', topic = 'General Banking Enquiry') {
+    trackEnroll(topic, 'banking_exams');
     setEnquiryType(type);
     setSelectedTopic(topic);
     setShowApplyModal(true);
