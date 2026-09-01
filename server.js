@@ -24,36 +24,30 @@ function row(label, value) {
   </tr>`;
 }
 
-async function sendMailNotification(toEmail, subject, htmlBody) {
-  if (!process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
-    console.warn('SMTP_EMAIL or SMTP_PASSWORD environment variables missing. Email notification skipped.');
+async function sendMailSafely(options) {
+  if (!process.env.ADMIN_EMAIL || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
+    console.warn('[server.js] Missing SMTP_EMAIL/SMTP_PASSWORD/ADMIN_EMAIL environment variables. Skipping email.');
     return;
   }
   try {
-    await transporter.sendMail({
-      from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`,
-      to: toEmail,
-      subject,
-      html: htmlBody,
-    });
+    await transporter.sendMail(options);
   } catch (err) {
-    console.error('Failed to send mail:', err);
+    console.error('[server.js] Error sending email:', err.message);
   }
 }
 
 async function handleApiRequest(req, res, body) {
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_EMAIL;
   const ts = new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' });
+  const adminEmail = process.env.ADMIN_EMAIL;
 
-  if (req.url === '/api/submit-contact' || req.url === '/api/submit-form' || req.url === '/api/submit-enquiry') {
+  if (req.url === '/api/submit-contact' || req.url === '/api/submit-form' || req.url === '/api/submit-enquiry' || req.url === '/api/submit-about') {
     const { full_name, name, email, phone, message, course_title, button_clicked } = body;
     const clientName = full_name || name || 'User';
     if (!email) return res.end(JSON.stringify({ error: 'Email is required' }));
 
-    const adminSubject = `New Inquiry from ${clientName}`;
     const adminHtml = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
       <div style="background:linear-gradient(135deg,#0B2D6B,#1E56C7);padding:24px 32px;">
-        <h1 style="color:#fff;margin:0;font-size:22px;">New Form Submission</h1>
+        <h1 style="color:#fff;margin:0;font-size:22px;">New Contact / Form Submission</h1>
         <p style="color:rgba(255,255,255,0.8);margin:6px 0 0;font-size:14px;">Submitted on ${ts}</p>
       </div>
       <div style="padding:24px 32px;">
@@ -62,12 +56,47 @@ async function handleApiRequest(req, res, body) {
           ${row('Email', email)}
           ${row('Phone', phone || '—')}
           ${course_title ? row('Course', course_title) : ''}
+          ${button_clicked ? row('Action', button_clicked) : ''}
           ${message ? row('Message', message.replace(/\n/g, '<br>')) : ''}
         </table>
       </div>
     </div>`;
 
-    if (adminEmail) await sendMailNotification(adminEmail, adminSubject, adminHtml);
+    const autoReplyHtml = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+      <div style="background:linear-gradient(135deg,#0B2D6B,#1E56C7);padding:24px 32px;">
+        <h1 style="color:#fff;margin:0;font-size:22px;">Thank You for Reaching Out</h1>
+      </div>
+      <div style="padding:24px 32px;">
+        <p style="font-size:15px;color:#1B2333;">Hi ${clientName},</p>
+        <p style="font-size:15px;color:#1B2333;">Thank you for contacting <strong>Marvel Slice</strong>. We have received your submission and our team will get back to you shortly.</p>
+      </div>
+    </div>`;
+
+    await sendMailSafely({ from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`, to: adminEmail, subject: `New Inquiry from ${clientName}`, html: adminHtml });
+    await sendMailSafely({ from: `"Marvel Slice" <${process.env.SMTP_EMAIL}>`, to: email, subject: 'Inquiry Received — Marvel Slice', html: autoReplyHtml });
+    return res.end(JSON.stringify({ success: true }));
+  }
+
+  if (req.url === '/api/submit-banking') {
+    const { full_name, email, phone, location, course_title } = body;
+    if (!full_name || !email) return res.end(JSON.stringify({ error: 'Name and email are required' }));
+
+    const adminHtml = `<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+      <div style="background:#0B2D6B;padding:24px 32px;">
+        <h1 style="color:#fff;margin:0;font-size:22px;">New Banking Course Enquiry</h1>
+      </div>
+      <div style="padding:24px 32px;">
+        <table style="width:100%;border-collapse:collapse;">
+          ${row('Full Name', full_name)}
+          ${row('Email', email)}
+          ${row('Phone', phone || '—')}
+          ${row('Location', location || '—')}
+          ${row('Course', course_title || 'Banking & Finance Training')}
+        </table>
+      </div>
+    </div>`;
+
+    await sendMailSafely({ from: `"Marvel Banking" <${process.env.SMTP_EMAIL}>`, to: adminEmail, subject: `Banking Enquiry from ${full_name}`, html: adminHtml });
     return res.end(JSON.stringify({ success: true }));
   }
 
@@ -97,7 +126,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Serve static dist folder for Webuzo / VPS
   const distDir = path.join(__dirname, 'dist');
   let filePath = path.join(distDir, req.url === '/' ? 'index.html' : req.url);
 
@@ -130,5 +158,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Production server running at http://localhost:${PORT}`);
+  console.log(`[Marvel Slice Production Docker Server] running on port ${PORT}`);
 });
