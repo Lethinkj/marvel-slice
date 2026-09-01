@@ -6,7 +6,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ChatWidget from './components/chat/ChatWidget';
 import FloatingContactButton from './components/FloatingContactButton';
-import { trackPageView } from './lib/analytics';
+import { trackPageView, initAnalytics } from './lib/analytics';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
@@ -31,7 +31,18 @@ function ScrollToTop() {
 
 function PageTracker() {
   const { pathname } = useLocation();
-  useEffect(() => { trackPageView(pathname); }, [pathname]);
+
+  useEffect(() => {
+    const gaId = import.meta.env?.VITE_GA_MEASUREMENT_ID;
+    if (gaId) {
+      initAnalytics(gaId);
+    }
+  }, []);
+
+  useEffect(() => {
+    trackPageView(pathname, document.title);
+  }, [pathname]);
+
   return null;
 }
 
