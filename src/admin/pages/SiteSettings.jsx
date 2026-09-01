@@ -66,12 +66,15 @@ function ImageUploader({ value, onChange, label }) {
   );
 }
 
+import { formatPhoneNumber, extractPhoneNumbers } from '../../lib/phoneUtils';
+
 export default function SiteSettings() {
   const queryClient = useQueryClient();
   const [form, setForm] = useState({
     logo_url: '',
     contact_email: '',
-    contact_phone: '',
+    contact_phone_1: '',
+    contact_phone_2: '',
     twitter: '',
     facebook: '',
     instagram: '',
@@ -103,10 +106,12 @@ export default function SiteSettings() {
           setSettingsId(settingsData.id);
           const social = settingsData.social_links || {};
           const hours = settingsData.working_hours || {};
+          const rawPhones = extractPhoneNumbers(settingsData.contact_phone || '');
           setForm({
             logo_url: settingsData.logo_url || '',
             contact_email: settingsData.contact_email || '',
-            contact_phone: settingsData.contact_phone || '',
+            contact_phone_1: rawPhones[0] || (settingsData.contact_phone ? formatPhoneNumber(settingsData.contact_phone) : ''),
+            contact_phone_2: rawPhones[1] || '',
             twitter: social.twitter || '',
             facebook: social.facebook || '',
             instagram: social.instagram || '',
@@ -133,10 +138,14 @@ export default function SiteSettings() {
     setSaved(false);
     setSaveError('');
 
+    const formattedP1 = formatPhoneNumber(form.contact_phone_1);
+    const formattedP2 = formatPhoneNumber(form.contact_phone_2);
+    const combinedPhone = [formattedP1, formattedP2].filter(Boolean).join(', ');
+
     const payload = {
       logo_url: form.logo_url || null,
       contact_email: form.contact_email || null,
-      contact_phone: form.contact_phone || null,
+      contact_phone: combinedPhone || null,
       social_links: {
         twitter: form.twitter || null,
         facebook: form.facebook || null,
@@ -199,7 +208,7 @@ export default function SiteSettings() {
               <h3 className="text-sm font-semibold text-black mb-4 flex items-center gap-2">
                 <FiMail className="w-4 h-4 text-cyan-600" /> Contact Information
               </h3>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Email</label>
                   <input
@@ -211,18 +220,34 @@ export default function SiteSettings() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Phone</label>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Primary Phone (Phone 1)</label>
                   <div className="relative">
                     <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
                     <input
                       type="text"
-                      value={form.contact_phone}
-                      onChange={(e) => setForm({ ...form, contact_phone: e.target.value })}
+                      value={form.contact_phone_1}
+                      onChange={(e) => setForm({ ...form, contact_phone_1: e.target.value })}
+                      onBlur={() => setForm(f => ({ ...f, contact_phone_1: formatPhoneNumber(f.contact_phone_1) }))}
                       className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
-                      placeholder="+91 6380957390, +91 9876543210"
+                      placeholder="+91 63809 57390"
                     />
                   </div>
-                  <p className="text-[11px] text-neutral-400 mt-1">Separate multiple phone numbers with a comma (,)</p>
+                  <p className="text-[11px] text-neutral-400 mt-1">E.g., +91 63809 57390</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">Secondary Phone (Phone 2)</label>
+                  <div className="relative">
+                    <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
+                    <input
+                      type="text"
+                      value={form.contact_phone_2}
+                      onChange={(e) => setForm({ ...form, contact_phone_2: e.target.value })}
+                      onBlur={() => setForm(f => ({ ...f, contact_phone_2: formatPhoneNumber(f.contact_phone_2) }))}
+                      className="w-full pl-9 pr-3 py-2 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500/20 focus:border-transparent transition-all"
+                      placeholder="+91 80882 18609"
+                    />
+                  </div>
+                  <p className="text-[11px] text-neutral-400 mt-1">E.g., +91 80882 18609</p>
                 </div>
               </div>
             </div>

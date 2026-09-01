@@ -4,17 +4,19 @@ import { FaXTwitter } from 'react-icons/fa6';
 import { useSiteSettings } from '../../hooks/useSupabase';
 import { trackCtaClick } from '../../lib/analytics';
 
+import { extractPhoneNumbers, cleanTelHref } from '../../lib/phoneUtils';
+
 export default function TopBar() {
   const { data: settings } = useSiteSettings();
 
   const email = settings?.contact_email || '';
-  const phone = settings?.contact_phone || '';
+  const phoneNumbers = extractPhoneNumbers(settings?.contact_phone || '+91 63809 57390, +91 80882 18609');
   const social = settings?.social_links || {};
 
   return (
     <div className="hidden sm:block bg-brand-blue text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {email && (
             <a
               href={`mailto:${email}`}
@@ -24,16 +26,22 @@ export default function TopBar() {
               <span className="hidden sm:inline">{email}</span>
             </a>
           )}
-          {phone && phone.split(',').map(p => p.trim()).filter(Boolean).map((num, i) => (
-            <a
-              key={i}
-              href={`tel:${num.replace(/\s+/g, '')}`}
-              className="flex items-center gap-1 text-xs lg:text-sm hover:underline"
-            >
-              <FiPhone className="w-3 h-3 shrink-0" />
-              <span className="hidden sm:inline">{num}</span>
-            </a>
-          ))}
+          {phoneNumbers.length > 0 && (
+            <div className="flex items-center gap-1.5 text-xs lg:text-sm">
+              <FiPhone className="w-3 h-3 shrink-0 text-white/90" />
+              {phoneNumbers.map((num, i) => (
+                <span key={i} className="inline-flex items-center">
+                  {i > 0 && <span className="text-white/60 mx-1.5 font-normal">/</span>}
+                  <a
+                    href={cleanTelHref(num)}
+                    className="hover:underline hover:text-amber-200 transition-colors"
+                  >
+                    {num}
+                  </a>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2 text-xs lg:text-sm font-medium">
           <a href="#" className="hover:underline transition-colors" onClick={() => trackCtaClick('Login', 'topbar')}>Login</a>

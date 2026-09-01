@@ -40,11 +40,13 @@ function NavColumn({ parentLabel, defaultChildren }) {
   );
 }
 
+import { extractPhoneNumbers, cleanTelHref } from '../../lib/phoneUtils';
+
 export default function Footer() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { data: settings } = useSiteSettings();
 
-  const phone = settings?.contact_phone || '';
+  const phoneNumbers = extractPhoneNumbers(settings?.contact_phone || '+91 63809 57390, +91 80882 18609');
   const email = settings?.contact_email || '';
   const address = settings?.address || '';
   const hours = settings?.working_hours || {};
@@ -83,8 +85,12 @@ export default function Footer() {
                   <span>{address}</span>
                 </p>
               )}
-              {phone && phone.split(',').map(p => p.trim()).filter(Boolean).map((num, i) => (
-                <a key={i} href={`tel:${num.replace(/\s+/g, '')}`} className="flex items-center gap-2.5 hover:text-brand-orange transition-colors">
+              {phoneNumbers.map((num, i) => (
+                <a
+                  key={i}
+                  href={cleanTelHref(num)}
+                  className="flex items-center gap-2.5 hover:text-brand-orange transition-colors"
+                >
                   <FiPhone className="w-4 h-4 shrink-0 text-brand-orange" />
                   <span>{num}</span>
                 </a>

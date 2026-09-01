@@ -7,6 +7,7 @@ import AccordionItem from './AccordionItem';
 import Reveal, { Stagger, StaggerItem } from './Reveal';
 import ContactSection from './ContactSection';
 import AnimatedNumber from './AnimatedNumber';
+import { extractPhoneNumbers, cleanTelHref } from '../../lib/phoneUtils';
 
 function safeParse(val) {
   if (Array.isArray(val)) return val;
@@ -256,7 +257,16 @@ export default function SectionRenderer({ section, className }) {
           {section.heading && <h2 className="text-xl sm:text-2xl font-bold text-dark-navy mb-6 text-center">{section.heading}</h2>}
           <div className="space-y-4">
             {section.address && <div className="flex items-start gap-4"><div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center shrink-0"><FiMapPin className="w-5 h-5 text-brand-orange" /></div><div className="text-text-gray text-base whitespace-pre-line">{section.address}</div></div>}
-            {section.phone && <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center shrink-0"><FiPhone className="w-5 h-5 text-brand-orange" /></div><a href={`tel:${section.phone}`} className="text-text-gray text-base hover:text-brand-orange transition-colors">{section.phone}</a></div>}
+            {section.phone && extractPhoneNumbers(section.phone).map((ph, idx) => (
+              <div key={idx} className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center shrink-0">
+                  <FiPhone className="w-5 h-5 text-brand-orange" />
+                </div>
+                <a href={cleanTelHref(ph)} className="text-text-gray text-base hover:text-brand-orange transition-colors">
+                  {ph}
+                </a>
+              </div>
+            ))}
             {section.email && <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center shrink-0"><FiMail className="w-5 h-5 text-brand-orange" /></div><a href={`mailto:${section.email}`} className="text-text-gray text-base hover:text-brand-orange transition-colors">{section.email}</a></div>}
           </div>
         </Reveal>

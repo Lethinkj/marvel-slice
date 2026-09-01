@@ -5,6 +5,8 @@ import Reveal from './Reveal';
 import { supabase } from '../../lib/supabaseClient';
 import { trackFormSubmit } from '../../lib/analytics';
 
+import { extractPhoneNumbers, cleanTelHref } from '../../lib/phoneUtils';
+
 function FloatingCircles() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -142,7 +144,9 @@ export default function ContactSection({ section }) {
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-1 gap-3.5 sm:gap-5 text-left w-full mx-auto lg:mx-0">
               {address && <ContactDetailItem icon={FiMapPin} label="Address" value={address} textColor={textColor} />}
-              {displayPhone && <ContactDetailItem icon={FiPhone} label="Phone" value={displayPhone} href={`tel:${telLink}`} textColor={textColor} />}
+              {extractPhoneNumbers(displayPhone).map((ph, idx) => (
+                <ContactDetailItem key={idx} icon={FiPhone} label={idx === 0 ? "Phone" : "Alt Phone"} value={ph} href={cleanTelHref(ph)} textColor={textColor} />
+              ))}
               {companyEmail && <ContactDetailItem icon={FiMail} label="Email" value={companyEmail} href={`mailto:${companyEmail}`} textColor={textColor} />}
               {businessHours && <ContactDetailItem icon={FiClock} label="Business Hours" value={businessHours} textColor={textColor} />}
             </div>
