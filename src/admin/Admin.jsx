@@ -6,6 +6,7 @@ import AdminLayout from './layout/AdminLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import SiteSettings from './pages/SiteSettings';
+import AISettings from './pages/AISettings';
 import NavMenuManager from './pages/NavMenuManager';
 import CoursesList from './pages/CoursesList';
 import CourseEditor from './pages/CourseEditor';
@@ -124,6 +125,7 @@ export default function Admin() {
         }>
           <Route index element={<Dashboard />} />
           <Route path="site-settings" element={<SiteSettings />} />
+          <Route path="ai-settings" element={<AISettings />} />
           <Route path="nav-menu" element={<NavMenuManager />} />
           <Route path="courses" element={<CoursesList />} />
           <Route path="courses/wizard" element={<CourseWizard />} />
