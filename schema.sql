@@ -1078,6 +1078,11 @@ create table if not exists job_openings (
   updated_at timestamptz default now()
 );
 alter table job_openings alter column department drop not null;
+alter table job_openings add column if not exists division text;
+alter table job_openings add column if not exists key_requirements text;
+alter table job_openings add column if not exists responsibilities text;
+alter table job_openings add column if not exists qualifications text;
+alter table job_openings add column if not exists apply_url text;
 
 -- 29. Career page content table (hero, section headings, form config)
 create table if not exists career_page_content (
