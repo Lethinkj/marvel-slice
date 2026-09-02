@@ -780,72 +780,62 @@ export default function Career() {
                   >
                     {pageItems.map((item, i) => {
                       const isIntern = item._type === 'intern';
+                      const empType = item.type || item.department || (isIntern ? 'Internship' : 'Job');
+                      const salaryVal = item.salary || item.stipend;
+                      const expVal = item.experience || item.duration;
+                      const locVal = item.location;
+
                       return (
                         <motion.div
                           key={`${item._type}-${item.id}`}
                           variants={cardVariants}
-                          whileHover={{ y: -5 }}
-                          className="bg-white rounded-2xl border border-gray-200 shadow-xs hover:shadow-md hover:border-slate-300 transition-all p-5 flex flex-col justify-between"
+                          whileHover={{ y: -4 }}
+                          className="group relative bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-brand-blue/40 transition-all duration-300 p-5 sm:p-6 flex flex-col justify-between h-full"
                         >
                           <div>
-                            {/* TOP ROW: Name + Badge (Left) | Stipend / Salary (Right Top) */}
-                            <div className="flex items-center justify-between gap-3 mb-3">
-                              <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                                <h3 className="font-bold text-slate-800 text-base leading-snug line-clamp-2 break-words min-w-0 flex-1" title={item.title}>
-                                  {item.title}
-                                </h3>
-                                <span className="text-[10px] font-bold text-brand-orange bg-orange-50 border border-orange-200/60 px-2 py-0.5 rounded-full shrink-0">
-                                  {isIntern ? 'Internship' : 'Job'}
-                                </span>
-                              </div>
-
-                              {/* RIGHT SIDE TOP: Salary or Stipend */}
-                              {(item.salary || item.stipend) && (
-                                <div className="flex items-center gap-1.5 shrink-0">
-                                  <span className="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-md bg-orange-50 text-brand-orange text-xs font-bold border border-orange-200/60">
-                                    {(item.salary || item.stipend).startsWith('₹') ? (item.salary || item.stipend) : `₹${item.salary || item.stipend}`}
-                                  </span>
+                            {/* TOP SECTION: Icon + Title & Salary (Left) | Pill Badge (Top-Right) */}
+                            <div className="flex items-start justify-between gap-3 mb-2">
+                              <div className="flex items-start gap-3 min-w-0 flex-1">
+                                <div className="w-10 h-10 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center shrink-0 mt-0.5">
+                                  <FiBriefcase className="w-5 h-5" />
                                 </div>
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-bold text-black text-base sm:text-lg leading-snug group-hover:text-brand-blue transition-colors line-clamp-2" title={item.title}>
+                                    {item.title}
+                                  </h3>
+                                </div>
+                              </div>
+                              {empType && (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-brand-orange border border-orange-200/60 shrink-0">
+                                  {empType}
+                                </span>
                               )}
                             </div>
-
-                            {/* FULL DESCRIPTION */}
-                            {item.description && (
-                              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">
-                                {item.description}
-                              </p>
-                            )}
                           </div>
 
-                          {/* BOTTOM ROW: Experience/Duration + Location (Left) & Apply Button (Right) */}
-                          <div className="flex items-center justify-between pt-3 border-t border-slate-100 mt-auto gap-3 w-full">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 min-w-0 flex-1">
-                              {(item.experience || item.duration) && (
-                                <span className="text-slate-600 text-xs flex items-center gap-1 font-semibold shrink-0">
-                                  <FiClock className="w-3.5 h-3.5 shrink-0 text-brand-orange" />
-                                  {item.experience || item.duration}
+                          {/* METADATA & ACTION SECTION BELOW DIVIDER */}
+                          <div className="pt-3.5 mt-4 border-t border-slate-100 flex items-center justify-between gap-3 w-full">
+                            <div className="flex flex-wrap items-center gap-3.5 min-w-0 flex-1 text-xs text-slate-500 font-medium">
+                              {expVal && (
+                                <span className="flex items-center gap-1.5 shrink-0" title={expVal}>
+                                  <FiClock className="w-3.5 h-3.5 text-brand-orange shrink-0" />
+                                  <span>{expVal}</span>
                                 </span>
                               )}
-                              {item.location && (
-                                <span className="text-slate-500 text-xs flex items-start gap-1 font-medium min-w-0">
-                                  <FiMapPin className="w-3.5 h-3.5 shrink-0 text-slate-400 mt-0.5" />
-                                  <span className="line-clamp-2 leading-tight break-words" title={item.location}>{item.location}</span>
+                              {locVal && (
+                                <span className="flex items-center gap-1.5 min-w-0" title={locVal}>
+                                  <FiMapPin className="w-3.5 h-3.5 text-brand-orange shrink-0" />
+                                  <span className="truncate max-w-[130px] sm:max-w-[150px]">{locVal}</span>
                                 </span>
                               )}
                             </div>
-                            <button
-                              onClick={() => {
-                                if (item.apply_url?.trim()) {
-                                  window.open(item.apply_url.trim(), '_blank', 'noopener,noreferrer');
-                                } else {
-                                  setSelectedJob(item);
-                                  setShowForm(true);
-                                }
-                              }}
-                              className="shrink-0 inline-flex items-center justify-center gap-1.5 bg-brand-blue hover:bg-blue-700 text-white font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm shadow-sm shadow-brand-blue/20 active:scale-95 transition-all cursor-pointer"
+                            <Link
+                              to={`/career/job/${item._type}/${item.id}`}
+                              className="shrink-0 inline-flex items-center justify-center gap-1.5 bg-brand-blue text-white font-bold text-xs sm:text-sm py-2 px-4.5 rounded-full hover:bg-blue-700 hover:shadow-md hover:shadow-brand-blue/20 active:scale-95 transition-all cursor-pointer"
                             >
-                              Apply Now <FiArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            </button>
+                              <span>View Details</span>
+                              <FiArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:translate-x-0.5 transition-transform" />
+                            </Link>
                           </div>
                         </motion.div>
                       );
