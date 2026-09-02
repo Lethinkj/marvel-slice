@@ -23,7 +23,7 @@ function ForgotPasswordModal({ open, onClose }) {
         >
           <FiX className="w-5 h-5" />
         </button>
-        <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#525CEB] flex items-center justify-center mx-auto border border-blue-100 shadow-xs">
+        <div className="w-14 h-14 rounded-2xl bg-blue-50 text-brand-blue flex items-center justify-center mx-auto border border-blue-100 shadow-xs">
           <FiKey className="w-7 h-7" />
         </div>
         <div className="space-y-2">
@@ -34,7 +34,7 @@ function ForgotPasswordModal({ open, onClose }) {
         </div>
         <button
           onClick={onClose}
-          className="w-full py-3 rounded-xl bg-[#525CEB] hover:bg-[#434dbf] text-white font-bold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-98"
+          className="w-full py-3 rounded-xl bg-brand-blue hover:bg-brand-orange text-white font-bold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-98"
         >
           Got it
         </button>
@@ -389,18 +389,18 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#525CEB] flex items-center justify-center p-4 sm:p-8 lg:p-12 relative overflow-hidden font-sans selection:bg-[#5B4DF5] selection:text-white">
+    <div className="min-h-screen w-full bg-brand-blue flex items-center justify-center p-4 sm:p-8 lg:p-12 relative overflow-hidden font-sans selection:bg-brand-blue selection:text-white">
       
       {/* 1. Multi-Stop Mesh Gradient Base */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(circle 800px at 0% 0%, rgba(136, 146, 255, 0.45), transparent 70%),
-            radial-gradient(circle 700px at 100% 0%, rgba(100, 110, 255, 0.4), transparent 60%),
-            radial-gradient(circle 900px at 100% 100%, rgba(45, 52, 190, 0.5), transparent 70%),
-            radial-gradient(circle 600px at 0% 100%, rgba(65, 75, 230, 0.45), transparent 60%),
-            linear-gradient(135deg, #4A54E8 0%, #5E67F6 50%, #767EFF 100%)
+            radial-gradient(circle 800px at 0% 0%, rgba(23, 92, 221, 0.45), transparent 70%),
+            radial-gradient(circle 700px at 100% 0%, rgba(30, 86, 199, 0.4), transparent 60%),
+            radial-gradient(circle 900px at 100% 100%, rgba(15, 60, 160, 0.5), transparent 70%),
+            radial-gradient(circle 600px at 0% 100%, rgba(20, 80, 200, 0.45), transparent 60%),
+            linear-gradient(135deg, #175cdd 0%, #1e56c7 50%, #2563eb 100%)
           `
         }}
       />
@@ -452,7 +452,7 @@ export default function Login() {
       <motion.div 
         animate={{ scale: [1, 1.12, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute -bottom-40 -right-40 w-[650px] h-[650px] rounded-full bg-[#353CC8]/50 blur-3xl pointer-events-none" 
+        className="absolute -bottom-40 -right-40 w-[650px] h-[650px] rounded-full bg-[#124bb3]/50 blur-3xl pointer-events-none" 
       />
 
       {/* 5. Subtle Floating Background Micro Icons */}
@@ -518,7 +518,7 @@ export default function Login() {
           {/* Welcome Heading */}
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
-              Welcome to <span className="text-[#525CEB]">Marvel</span> <span className="text-brand-orange">Slice</span>!
+              Welcome to <span className="text-brand-blue">Marvel</span> <span className="text-brand-orange">Slice</span>!
             </h1>
           </div>
 
@@ -574,7 +574,7 @@ export default function Login() {
                 EMAIL ADDRESS
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-blue-500">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-blue">
                   <FiMail className="w-4 h-4" />
                 </div>
                 <input
@@ -587,7 +587,7 @@ export default function Login() {
                   className={`w-full h-11 pl-10 pr-4 bg-white border rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none transition-all duration-200 shadow-2xs disabled:opacity-50 disabled:bg-slate-50 ${
                     touched.email && fieldErrors.email 
                       ? 'border-rose-500 focus:ring-4 focus:ring-rose-500/15 focus:border-rose-500' 
-                      : 'border-slate-200 hover:border-slate-300 focus:ring-4 focus:ring-[#525CEB]/15 focus:border-[#525CEB]'
+                      : 'border-slate-200 hover:border-slate-300 focus:ring-4 focus:ring-brand-blue/15 focus:border-brand-blue'
                   }`}
                 />
               </div>
@@ -605,7 +605,7 @@ export default function Login() {
                 PASSWORD
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-blue-500">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-blue">
                   <FiLock className="w-4 h-4" />
                 </div>
                 <input
@@ -618,7 +618,7 @@ export default function Login() {
                   className={`w-full h-11 pl-10 pr-11 bg-white border rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none transition-all duration-200 shadow-2xs disabled:opacity-50 disabled:bg-slate-50 ${
                     touched.password && fieldErrors.password 
                       ? 'border-rose-500 focus:ring-4 focus:ring-rose-500/15 focus:border-rose-500' 
-                      : 'border-slate-200 hover:border-slate-300 focus:ring-4 focus:ring-[#525CEB]/15 focus:border-[#525CEB]'
+                      : 'border-slate-200 hover:border-slate-300 focus:ring-4 focus:ring-brand-blue/15 focus:border-brand-blue'
                   }`}
                 />
                 <button
@@ -642,7 +642,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setForgotModalOpen(true)}
-                className="text-xs font-semibold text-[#525CEB] hover:text-[#434dbf] hover:underline transition-all cursor-pointer"
+                className="text-xs font-semibold text-brand-blue hover:text-brand-orange hover:underline transition-all cursor-pointer"
               >
                 Forgot password?
               </button>
@@ -650,7 +650,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading || ipBlocked}
-                className="px-9 py-2.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#525CEB] to-[#6974FF] hover:brightness-105 active:scale-95 text-white font-bold text-sm tracking-wide shadow-md shadow-[#525CEB]/30 hover:shadow-lg hover:shadow-[#525CEB]/40 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-9 py-2.5 sm:py-2.5 rounded-xl bg-brand-blue hover:bg-blue-700 active:scale-95 text-white font-bold text-sm tracking-wide shadow-md shadow-brand-blue/30 hover:shadow-lg hover:shadow-brand-blue/40 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
