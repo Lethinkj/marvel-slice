@@ -62,14 +62,13 @@ export default function ServicesSection({ section }) {
             {leftDescription && (
               <p className="text-text-gray text-sm leading-relaxed mt-3 text-center sm:text-left whitespace-pre-line">{leftDescription}</p>
             )}
-            <Button
-              variant="accent"
-              shape="pill"
+            <a
               href={ctaLink}
-              className="mt-4 self-center sm:self-start"
+              className="mt-4 self-center sm:self-start inline-flex items-center justify-center gap-2 bg-brand-orange text-white font-bold text-sm py-2.5 px-6 rounded-full hover:bg-brand-orange/90 hover:shadow-md hover:shadow-brand-orange/25 active:scale-95 transition-all cursor-pointer"
             >
-              {ctaText} <FiChevronRight />
-            </Button>
+              <span>{ctaText}</span>
+              <FiChevronRight className="w-4 h-4 text-white" />
+            </a>
           </Reveal>
 
           <Reveal variant="left" className="flex flex-col justify-center">
