@@ -307,303 +307,355 @@ export default function JobDetail() {
   }
 
   return (
-    <div className="bg-slate-50 pt-6 pb-10 sm:pt-8 sm:pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* BACK NAVIGATION */}
-        <Reveal className="mb-7">
-          <Link
-            to="/career"
-            className="group inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium text-sm transition-all cursor-pointer"
-          >
-            <FiArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            <span>Back to All Openings</span>
-          </Link>
-        </Reveal>
+    <div className="bg-white min-h-screen">
+      
+      {/* HERO / TOP HEADER BANNER (Grey Section) */}
+      <section className="bg-slate-50 border-b border-slate-200/80 py-10 sm:py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal className="mb-6">
+            <Link
+              to="/career"
+              className="group inline-flex items-center gap-2 text-slate-500 hover:text-dark-navy font-medium text-sm transition-all cursor-pointer"
+            >
+              <FiArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              <span>Back to All Openings</span>
+            </Link>
+          </Reveal>
 
-        {/* 1. TOP HEADING */}
-        <Reveal className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-[38px] font-bold text-dark-navy tracking-tight leading-tight">
-            {job.title}
-          </h1>
-        </Reveal>
-
-        {/* 2-COLUMN LAYOUT: LEFT CONTENT (Description + Table + Apply) + RIGHT QUICK CAREER ENQUIRY FORM */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start pl-0 lg:pl-6">
-          
-          {/* LEFT COLUMN: Structured Job Content & Details */}
-          <div className="lg:col-span-7 xl:col-span-7">
-            <Reveal>
-              {/* Division / Position Info */}
+          <Reveal>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               {(job.division || job.department) && (
-                <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200/70 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-brand-blue mb-6">
-                  <span>Division:</span>
-                  <span className="font-bold text-dark-navy">{job.division || job.department}</span>
+                <span className="inline-flex items-center gap-1.5 bg-blue-50 text-brand-blue border border-blue-200/70 font-bold px-3.5 py-1 rounded-full text-xs uppercase tracking-wider">
+                  Division: {job.division || job.department}
+                </span>
+              )}
+              {empType && (
+                <span className="inline-flex items-center gap-1.5 bg-slate-200/70 text-dark-navy font-semibold px-3.5 py-1 rounded-full text-xs">
+                  {empType}
+                </span>
+              )}
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-[40px] font-bold text-dark-navy tracking-tight leading-tight">
+              {job.title}
+            </h1>
+            
+            {/* Homepage signature underline accent */}
+            <div className="w-16 h-[3px] bg-brand-orange rounded-full mt-3 mb-5" />
+
+            {/* Quick Meta Row */}
+            <div className="flex flex-wrap items-center gap-y-2.5 gap-x-8 text-sm sm:text-base text-slate-600 border-t border-slate-200/80 pt-4 mt-2">
+              {locVal && (
+                <div>
+                  <span className="font-semibold text-dark-navy">Location: </span>
+                  <span className="text-slate-600">{locVal}</span>
                 </div>
               )}
+              {expVal && (
+                <div>
+                  <span className="font-semibold text-dark-navy">Experience: </span>
+                  <span className="text-slate-600">{expVal}</span>
+                </div>
+              )}
+              {salaryVal && (
+                <div>
+                  <span className="font-semibold text-dark-navy">{isIntern ? 'Stipend: ' : 'Salary: '}</span>
+                  <span className="text-slate-600">{salaryVal.startsWith('₹') ? salaryVal : `₹${salaryVal}`}</span>
+                </div>
+              )}
+              {job.duration && (
+                <div>
+                  <span className="font-semibold text-dark-navy">Duration: </span>
+                  <span className="text-slate-600">{job.duration}</span>
+                </div>
+              )}
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
-              {/* 1. MAIN DUTIES & RESPONSIBILITIES (Overview) */}
-              {job.description && (
-                <div className="mb-8">
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2 mb-3.5">
-                    <h2 className="text-sm sm:text-base font-bold text-dark-navy uppercase tracking-wider flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-brand-orange shrink-0" />
+      {/* 1. MAIN DUTIES & RESPONSIBILITIES (LEFT) & QUICK ENQUIRY FORM (RIGHT) (White Section) */}
+      <section className="bg-white py-12 sm:py-16 border-b border-slate-200/80">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+              
+              {/* LEFT SIDE: MAIN DUTIES & RESPONSIBILITIES */}
+              <div className="lg:col-span-7 xl:col-span-7">
+                {job.description && (
+                  <>
+                    <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy tracking-tight leading-tight">
                       Main Duties &amp; Responsibilities
                     </h2>
-                    {expVal && (
-                      <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200/60">
-                        Minimum Experience: {expVal}
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-slate-700 text-sm sm:text-base leading-relaxed whitespace-pre-line">
-                    {job.description}
-                  </div>
-                </div>
-              )}
-
-              {/* 2. KEY REQUIREMENTS */}
-              {job.key_requirements && (
-                <div className="mb-8">
-                  <div className="border-b border-slate-200 pb-2 mb-3.5">
-                    <h2 className="text-sm sm:text-base font-bold text-dark-navy uppercase tracking-wider flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-brand-orange shrink-0" />
-                      Key Requirements
-                    </h2>
-                  </div>
-                  <ul className="space-y-2.5 text-slate-700 text-sm sm:text-base leading-relaxed">
-                    {renderBulletList(job.key_requirements)}
-                  </ul>
-                </div>
-              )}
-
-              {/* 3. RESPONSIBILITIES */}
-              {job.responsibilities && (
-                <div className="mb-8">
-                  <div className="border-b border-slate-200 pb-2 mb-3.5">
-                    <h2 className="text-sm sm:text-base font-bold text-dark-navy uppercase tracking-wider flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-brand-orange shrink-0" />
-                      Responsibilities
-                    </h2>
-                  </div>
-                  <ul className="space-y-2.5 text-slate-700 text-sm sm:text-base leading-relaxed">
-                    {renderBulletList(job.responsibilities)}
-                  </ul>
-                </div>
-              )}
-
-              {/* 4. QUALIFICATION & EXPERIENCE */}
-              {job.qualifications && (
-                <div className="mb-8">
-                  <div className="border-b border-slate-200 pb-2 mb-3.5">
-                    <h2 className="text-sm sm:text-base font-bold text-dark-navy uppercase tracking-wider flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-brand-orange shrink-0" />
-                      Qualification &amp; Experience
-                    </h2>
-                  </div>
-                  <ul className="space-y-2.5 text-slate-700 text-sm sm:text-base leading-relaxed">
-                    {renderBulletList(job.qualifications)}
-                  </ul>
-                </div>
-              )}
-
-              {/* Job Details Table View & Apply Button */}
-              <div className="mt-8 pt-4 border-t border-slate-200">
-                {(empType || expVal || locVal || salaryVal || job.division || job.department) && (
-                  <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
-                    <table className="w-full text-left text-xs sm:text-sm md:text-base border-collapse">
-                      <tbody className="divide-y divide-slate-200">
-                        {empType && (
-                          <tr className="hover:bg-slate-50/60 transition-colors">
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-semibold text-slate-500 bg-slate-50/60 w-5/12 sm:w-1/3">
-                              Job Type
-                            </td>
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-medium text-slate-800">
-                              {empType}
-                            </td>
-                          </tr>
-                        )}
-                        {(job.division || job.department) && (
-                          <tr className="hover:bg-slate-50/60 transition-colors">
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-semibold text-slate-500 bg-slate-50/60">
-                              Division / Department
-                            </td>
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-medium text-slate-800">
-                              {job.division || job.department}
-                            </td>
-                          </tr>
-                        )}
-                        {job.duration && (
-                          <tr className="hover:bg-slate-50/60 transition-colors">
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-semibold text-slate-500 bg-slate-50/60">
-                              Duration
-                            </td>
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-medium text-slate-800">
-                              {job.duration}
-                            </td>
-                          </tr>
-                        )}
-                        {expVal && (
-                          <tr className="hover:bg-slate-50/60 transition-colors">
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-semibold text-slate-500 bg-slate-50/60">
-                              Experience Required
-                            </td>
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-medium text-slate-800">
-                              {expVal}
-                            </td>
-                          </tr>
-                        )}
-                        {locVal && (
-                          <tr className="hover:bg-slate-50/60 transition-colors">
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-semibold text-slate-500 bg-slate-50/60">
-                              Location
-                            </td>
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-medium text-slate-800">
-                              {locVal}
-                            </td>
-                          </tr>
-                        )}
-                        {salaryVal && (
-                          <tr className="hover:bg-slate-50/60 transition-colors">
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-semibold text-slate-500 bg-slate-50/60">
-                              Salary / Stipend
-                            </td>
-                            <td className="py-3 px-3.5 sm:py-3.5 sm:px-5 font-medium text-slate-800">
-                              {salaryVal.startsWith('₹') ? salaryVal : `₹${salaryVal}`}
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                    <div className="w-14 h-[3px] bg-brand-orange rounded-full mt-2.5 mb-5" />
+                    <div className="text-slate-600 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+                      {job.description}
+                    </div>
+                  </>
                 )}
-
-                {/* Apply Button directly below the table */}
-                <div className="mt-6 flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={openApplyModal}
-                    className="w-full sm:w-auto inline-flex items-center justify-center bg-brand-orange text-white font-bold text-sm py-2.5 px-8 rounded-full hover:bg-brand-orange/90 hover:shadow-md hover:shadow-brand-orange/25 active:scale-95 transition-all cursor-pointer"
-                  >
-                    Apply Now
-                  </button>
-                </div>
               </div>
-            </Reveal>
-          </div>
 
-          {/* RIGHT COLUMN: Career Enquiry Form (Submits to career_contact_submissions) */}
-          <div className="hidden lg:flex lg:col-span-5 xl:col-span-5 lg:sticky lg:top-24 lg:justify-start">
-            <Reveal className="w-full flex lg:justify-start">
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-xl overflow-hidden w-full max-w-[340px]">
-                <div className="bg-brand-blue px-5 py-3.5 text-white text-left">
-                  <h3 className="text-lg font-bold tracking-tight text-white" style={{ color: '#ffffff' }}>Enquiry</h3>
-                  <p className="text-[11px] font-medium mt-0.5" style={{ color: '#ffffff', opacity: 1 }}>
-                    Fill the form and our team will contact you shortly.
-                  </p>
-                </div>
-
-                {enquiryStatus?.type === 'success' ? (
-                  <div className="p-5 sm:p-6 text-center">
-                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-2.5">
-                      <FiCheck className="w-6 h-6 text-emerald-600" />
-                    </div>
-                    <h4 className="text-sm sm:text-base font-bold text-slate-800 mb-1">Enquiry Received!</h4>
-                    <p className="text-xs text-slate-600 leading-relaxed mb-4">{enquiryStatus.message}</p>
-                    <button
-                      type="button"
-                      onClick={() => setEnquiryStatus(null)}
-                      className="inline-flex items-center gap-2 bg-brand-blue hover:bg-blue-700 text-white font-semibold px-4 py-1.5 rounded-xl transition-all text-xs cursor-pointer"
-                    >
-                      Send Another Enquiry
-                    </button>
+              {/* RIGHT SIDE: QUICK CAREER ENQUIRY FORM */}
+              <div className="lg:col-span-5 xl:col-span-5">
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-md overflow-hidden">
+                  <div className="bg-brand-blue px-6 py-4 text-white text-left">
+                    <h3 className="text-lg font-bold tracking-tight text-white" style={{ color: '#ffffff' }}>Enquiry</h3>
+                    <p className="text-xs font-medium mt-0.5" style={{ color: '#ffffff', opacity: 0.9 }}>
+                      Fill the form and our team will contact you shortly.
+                    </p>
                   </div>
-                ) : (
-                  <form onSubmit={handleEnquirySubmit} noValidate className="p-4 sm:p-5 space-y-3">
-                    {enquiryStatus && (
-                      <div className="p-2.5 rounded-lg flex items-start gap-2 text-xs bg-red-50 border border-red-200 text-red-700">
-                        <FiAlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                        <span className="flex-1">{enquiryStatus.message}</span>
-                        <button type="button" onClick={() => setEnquiryStatus(null)} className="p-0.5 hover:opacity-70 rounded transition-opacity cursor-pointer">
-                          <FiX className="w-3.5 h-3.5" />
-                        </button>
+
+                  {enquiryStatus?.type === 'success' ? (
+                    <div className="p-6 text-center">
+                      <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <FiCheck className="w-6 h-6 text-emerald-600" />
                       </div>
-                    )}
-
-                    <div>
-                      <input
-                        name="full_name"
-                        value={enquiryForm.full_name}
-                        onChange={handleEnquiryChange}
-                        className={`w-full px-3.5 py-2.5 rounded-xl border bg-white text-slate-800 text-xs sm:text-sm focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${enquiryErrors.full_name ? 'border-red-300' : 'border-slate-200'}`}
-                        placeholder="Your Name *"
-                      />
-                      {enquiryErrors.full_name && <p className="text-[10px] text-red-500 mt-0.5">{enquiryErrors.full_name}</p>}
-                    </div>
-
-                    <div>
-                      <input
-                        name="email"
-                        type="email"
-                        value={enquiryForm.email}
-                        onChange={handleEnquiryChange}
-                        className={`w-full px-3.5 py-2.5 rounded-xl border bg-white text-slate-800 text-xs sm:text-sm focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${enquiryErrors.email ? 'border-red-300' : 'border-slate-200'}`}
-                        placeholder="Email Address *"
-                      />
-                      {enquiryErrors.email && <p className="text-[10px] text-red-500 mt-0.5">{enquiryErrors.email}</p>}
-                    </div>
-
-                    <div>
-                      <input
-                        name="phone"
-                        type="tel"
-                        value={enquiryForm.phone}
-                        onChange={handleEnquiryChange}
-                        className={`w-full px-3.5 py-2.5 rounded-xl border bg-white text-slate-800 text-xs sm:text-sm focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${enquiryErrors.phone ? 'border-red-300' : 'border-slate-200'}`}
-                        placeholder="Phone Number *"
-                      />
-                      {enquiryErrors.phone && <p className="text-[10px] text-red-500 mt-0.5">{enquiryErrors.phone}</p>}
-                    </div>
-
-                    <div className="pt-0.5">
-                      <label className="flex items-start gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={enquiryAgree}
-                          onChange={(e) => {
-                            setEnquiryAgree(e.target.checked);
-                            if (enquiryErrors.agree) setEnquiryErrors(prev => ({ ...prev, agree: '' }));
-                          }}
-                          className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-brand-blue focus:ring-brand-blue/20"
-                        />
-                        <span className="text-[11px] text-slate-600 leading-tight">
-                          I agree to the{' '}
-                          <a href="/terms" className="underline hover:opacity-80 text-brand-blue">Terms of Use</a>
-                          {' '}and{' '}
-                          <a href="/privacy" className="underline hover:opacity-80 text-brand-blue">Privacy Policy</a>.
-                        </span>
-                      </label>
-                      {enquiryErrors.agree && <p className="text-[10px] text-red-500 mt-0.5">{enquiryErrors.agree}</p>}
-                    </div>
-
-                    <div className="pt-2 flex justify-center">
+                      <h4 className="text-base font-bold text-dark-navy mb-1">Enquiry Received!</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed mb-4">{enquiryStatus.message}</p>
                       <button
-                        type="submit"
-                        disabled={enquirySubmitting}
-                        className="inline-flex items-center justify-center bg-brand-blue text-white font-bold text-xs sm:text-sm py-2 px-7 rounded-full hover:bg-blue-700 hover:shadow-md hover:shadow-brand-blue/25 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        type="button"
+                        onClick={() => setEnquiryStatus(null)}
+                        className="inline-flex items-center gap-2 bg-brand-blue hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl transition-all text-xs cursor-pointer"
                       >
-                        {enquirySubmitting ? 'Sending...' : 'Send'}
+                        Send Another Enquiry
                       </button>
                     </div>
-                  </form>
+                  ) : (
+                    <form onSubmit={handleEnquirySubmit} noValidate className="p-5 space-y-4">
+                      {enquiryStatus && (
+                        <div className="p-3 rounded-lg flex items-start gap-2 text-xs bg-red-50 border border-red-200 text-red-700">
+                          <FiAlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                          <span className="flex-1">{enquiryStatus.message}</span>
+                          <button type="button" onClick={() => setEnquiryStatus(null)} className="p-0.5 hover:opacity-70 rounded transition-opacity cursor-pointer">
+                            <FiX className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+
+                      <div>
+                        <input
+                          name="full_name"
+                          value={enquiryForm.full_name}
+                          onChange={handleEnquiryChange}
+                          className={`w-full px-3.5 py-2.5 rounded-xl border bg-white text-slate-800 text-xs sm:text-sm focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${enquiryErrors.full_name ? 'border-red-300' : 'border-slate-200'}`}
+                          placeholder="Your Name *"
+                        />
+                        {enquiryErrors.full_name && <p className="text-[11px] text-red-500 mt-1">{enquiryErrors.full_name}</p>}
+                      </div>
+
+                      <div>
+                        <input
+                          name="email"
+                          type="email"
+                          value={enquiryForm.email}
+                          onChange={handleEnquiryChange}
+                          className={`w-full px-3.5 py-2.5 rounded-xl border bg-white text-slate-800 text-xs sm:text-sm focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${enquiryErrors.email ? 'border-red-300' : 'border-slate-200'}`}
+                          placeholder="Email Address *"
+                        />
+                        {enquiryErrors.email && <p className="text-[11px] text-red-500 mt-1">{enquiryErrors.email}</p>}
+                      </div>
+
+                      <div>
+                        <input
+                          name="phone"
+                          type="tel"
+                          value={enquiryForm.phone}
+                          onChange={handleEnquiryChange}
+                          className={`w-full px-3.5 py-2.5 rounded-xl border bg-white text-slate-800 text-xs sm:text-sm focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all outline-none placeholder:text-slate-400 ${enquiryErrors.phone ? 'border-red-300' : 'border-slate-200'}`}
+                          placeholder="Phone Number *"
+                        />
+                        {enquiryErrors.phone && <p className="text-[11px] text-red-500 mt-1">{enquiryErrors.phone}</p>}
+                      </div>
+
+                      <div className="pt-1">
+                        <label className="flex items-start gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={enquiryAgree}
+                            onChange={(e) => {
+                              setEnquiryAgree(e.target.checked);
+                              if (enquiryErrors.agree) setEnquiryErrors(prev => ({ ...prev, agree: '' }));
+                            }}
+                            className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-brand-blue focus:ring-brand-blue/20"
+                          />
+                          <span className="text-xs text-slate-600 leading-tight">
+                            I agree to the{' '}
+                            <a href="/terms" className="underline hover:opacity-80 text-brand-blue">Terms of Use</a>
+                            {' '}and{' '}
+                            <a href="/privacy" className="underline hover:opacity-80 text-brand-blue">Privacy Policy</a>.
+                          </span>
+                        </label>
+                        {enquiryErrors.agree && <p className="text-[11px] text-red-500 mt-1">{enquiryErrors.agree}</p>}
+                      </div>
+
+                      <div className="pt-2 flex justify-center">
+                        <button
+                          type="submit"
+                          disabled={enquirySubmitting}
+                          className="w-auto inline-flex items-center justify-center bg-brand-orange text-white font-bold text-sm py-2.5 px-8 rounded-full hover:bg-brand-orange/90 hover:shadow-md hover:shadow-brand-orange/25 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                          {enquirySubmitting ? 'Sending...' : 'Send'}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              </div>
+
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 2 & 3. KEY REQUIREMENTS (LEFT) & RESPONSIBILITIES (RIGHT) (Grey Section) */}
+      {(job.key_requirements || job.responsibilities) && (
+        <section className="bg-slate-50 py-12 sm:py-16 border-b border-slate-200/80">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Reveal>
+              <div className={`grid grid-cols-1 ${job.key_requirements && job.responsibilities ? 'md:grid-cols-2' : ''} gap-8 lg:gap-12 items-start`}>
+                
+                {/* LEFT COLUMN: KEY REQUIREMENTS */}
+                {job.key_requirements && (
+                  <div>
+                    <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy tracking-tight leading-tight">
+                      Key Requirements
+                    </h2>
+                    <div className="w-14 h-[3px] bg-brand-orange rounded-full mt-2.5 mb-5" />
+                    <ul className="space-y-3.5 text-slate-600 text-sm sm:text-base leading-relaxed">
+                      {renderBulletList(job.key_requirements)}
+                    </ul>
+                  </div>
                 )}
+
+                {/* RIGHT COLUMN: RESPONSIBILITIES */}
+                {job.responsibilities && (
+                  <div>
+                    <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy tracking-tight leading-tight">
+                      Responsibilities
+                    </h2>
+                    <div className="w-14 h-[3px] bg-brand-orange rounded-full mt-2.5 mb-5" />
+                    <ul className="space-y-3.5 text-slate-600 text-sm sm:text-base leading-relaxed">
+                      {renderBulletList(job.responsibilities)}
+                    </ul>
+                  </div>
+                )}
+
               </div>
             </Reveal>
           </div>
+        </section>
+      )}
 
+      {/* 4. QUALIFICATION & EXPERIENCE (White Section) */}
+      {job.qualifications && (
+        <section className="bg-white py-12 sm:py-16 border-b border-slate-200/80">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Reveal>
+              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy tracking-tight leading-tight">
+                Qualification &amp; Experience
+              </h2>
+              <div className="w-14 h-[3px] bg-brand-orange rounded-full mt-2.5 mb-5" />
+              <ul className="space-y-3.5 text-slate-600 text-sm sm:text-base leading-relaxed">
+                {renderBulletList(job.qualifications)}
+              </ul>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      {/* 5. POSITION SUMMARY TABLE & APPLY NOW BUTTON (Grey Section) */}
+      <section className="bg-slate-50 py-12 sm:py-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="max-w-2xl mx-auto text-center">
+              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy tracking-tight leading-tight">
+                Position Summary
+              </h2>
+              <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3 mb-8" />
+
+              {(empType || expVal || locVal || salaryVal || job.division || job.department || job.duration) && (
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs mb-8 text-left">
+                  <table className="w-full text-left text-xs sm:text-sm md:text-base border-collapse">
+                    <tbody className="divide-y divide-slate-200">
+                      {empType && (
+                        <tr className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3.5 px-5 font-semibold text-dark-navy bg-slate-50/70 w-5/12 sm:w-1/3">
+                            Type
+                          </td>
+                          <td className="py-3.5 px-5 font-medium text-slate-700">
+                            {empType}
+                          </td>
+                        </tr>
+                      )}
+                      {(job.division || job.department) && (
+                        <tr className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3.5 px-5 font-semibold text-dark-navy bg-slate-50/70">
+                            Division / Department
+                          </td>
+                          <td className="py-3.5 px-5 font-medium text-slate-700">
+                            {job.division || job.department}
+                          </td>
+                        </tr>
+                      )}
+                      {job.duration && (
+                        <tr className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3.5 px-5 font-semibold text-dark-navy bg-slate-50/70">
+                            Duration
+                          </td>
+                          <td className="py-3.5 px-5 font-medium text-slate-700">
+                            {job.duration}
+                          </td>
+                        </tr>
+                      )}
+                      {expVal && (
+                        <tr className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3.5 px-5 font-semibold text-dark-navy bg-slate-50/70">
+                            Experience Required
+                          </td>
+                          <td className="py-3.5 px-5 font-medium text-slate-700">
+                            {expVal}
+                          </td>
+                        </tr>
+                      )}
+                      {locVal && (
+                        <tr className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3.5 px-5 font-semibold text-dark-navy bg-slate-50/70">
+                            Location
+                          </td>
+                          <td className="py-3.5 px-5 font-medium text-slate-700">
+                            {locVal}
+                          </td>
+                        </tr>
+                      )}
+                      {salaryVal && (
+                        <tr className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3.5 px-5 font-semibold text-dark-navy bg-slate-50/70">
+                            {isIntern ? 'Stipend' : 'Salary Range'}
+                          </td>
+                          <td className="py-3.5 px-5 font-medium text-slate-700">
+                            {salaryVal.startsWith('₹') ? salaryVal : `₹${salaryVal}`}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Apply Button */}
+              <div>
+                <button
+                  type="button"
+                  onClick={openApplyModal}
+                  className="inline-flex items-center justify-center bg-brand-orange text-white font-bold text-base py-3.5 px-12 rounded-full hover:bg-brand-orange/90 hover:shadow-xl hover:shadow-brand-orange/25 active:scale-95 transition-all cursor-pointer"
+                >
+                  Apply Now
+                </button>
+              </div>
+            </div>
+          </Reveal>
         </div>
-
-      </div>
+      </section>
 
       {/* Application Form Modal (Submits to career_submissions with Resume upload) */}
       {showForm && (
