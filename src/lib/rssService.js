@@ -1,53 +1,96 @@
 import { supabase } from './supabaseClient.js';
 
 export const RSS_FEEDS = [
+  // 1. Banking & RBI
   {
-    name: 'Banking & RBI',
+    name: 'RBI & Indian Banking',
     category: 'Banking & RBI',
     url: 'https://news.google.com/rss/search?q=Banking+RBI+Reserve+Bank+India&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Economy & Finance',
+    name: 'Global Banking & Central Banks',
+    category: 'Banking & RBI',
+    url: 'https://news.google.com/rss/search?q=Federal+Reserve+ECB+IMF+World+Bank+Central+Bank&hl=en-US&gl=US&ceid=US:en',
+    importance: 'High',
+  },
+  // 2. Economy & Business
+  {
+    name: 'Indian Economy & Business',
     category: 'Economy & Business',
     url: 'https://news.google.com/rss/search?q=Economy+Finance+India+GDP+Inflation&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Government Schemes',
-    category: 'Government Schemes',
-    url: 'https://news.google.com/rss/search?q=Government+Schemes+Policy+Ministry+India&hl=en-IN&gl=IN&ceid=IN:en',
+    name: 'Global Economy & International Trade',
+    category: 'Economy & Business',
+    url: 'https://news.google.com/rss/search?q=Global+Economy+Trade+Markets+Inflation+GDP&hl=en-US&gl=US&ceid=US:en',
     importance: 'High',
   },
+  // 3. Government Schemes
   {
-    name: 'National Affairs',
-    category: 'National Affairs',
-    url: 'https://news.google.com/rss/search?q=National+News+Current+Affairs+India&hl=en-IN&gl=IN&ceid=IN:en',
-    importance: 'Medium',
-  },
-  {
-    name: 'International Affairs',
-    category: 'International Affairs',
-    url: 'https://news.google.com/rss/search?q=International+Relations+Bilateral+Summit+India&hl=en-IN&gl=IN&ceid=IN:en',
-    importance: 'Medium',
-  },
-  {
-    name: 'Science & Defense',
-    category: 'Science & Defense',
-    url: 'https://news.google.com/rss/search?q=ISRO+Defense+Military+Exercise+Technology+India&hl=en-IN&gl=IN&ceid=IN:en',
-    importance: 'Medium',
-  },
-  {
-    name: 'Sports & Awards',
-    category: 'Sports & Awards',
-    url: 'https://news.google.com/rss/search?q=Sports+Awards+Honors+India&hl=en-IN&gl=IN&ceid=IN:en',
-    importance: 'Medium',
-  },
-  {
-    name: 'Press Information Bureau (PIB)',
+    name: 'Press Information Bureau (PIB India)',
     category: 'Government Schemes',
     url: 'https://news.google.com/rss/search?q=site:pib.gov.in&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
+  },
+  {
+    name: 'Indian Govt Schemes & Initiatives',
+    category: 'Government Schemes',
+    url: 'https://news.google.com/rss/search?q=Government+Schemes+Ministry+Policy+India&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  {
+    name: 'Global Development & International Initiatives',
+    category: 'Government Schemes',
+    url: 'https://news.google.com/rss/search?q=United+Nations+Global+Development+Policy+Scheme&hl=en-US&gl=US&ceid=US:en',
+    importance: 'Medium',
+  },
+  // 4. National Affairs
+  {
+    name: 'Indian National Affairs',
+    category: 'National Affairs',
+    url: 'https://news.google.com/rss/search?q=National+News+India+Governance+Parliament&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  // 5. International Affairs
+  {
+    name: 'India Foreign Relations & Summits',
+    category: 'International Affairs',
+    url: 'https://news.google.com/rss/search?q=India+Foreign+Policy+Bilateral+Summit&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  {
+    name: 'Global Geopolitics & World Affairs',
+    category: 'International Affairs',
+    url: 'https://news.google.com/rss/search?q=Global+Geopolitics+United+Nations+Diplomacy&hl=en-US&gl=US&ceid=US:en',
+    importance: 'Medium',
+  },
+  // 6. Science & Defense
+  {
+    name: 'ISRO & Indian Defense',
+    category: 'Science & Defense',
+    url: 'https://news.google.com/rss/search?q=ISRO+DRDO+Defense+Military+India&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  {
+    name: 'Global Science, NASA & Defense Tech',
+    category: 'Science & Defense',
+    url: 'https://news.google.com/rss/search?q=NASA+Space+Technology+AI+Defense+Breakthrough&hl=en-US&gl=US&ceid=US:en',
+    importance: 'Medium',
+  },
+  // 7. Sports & Awards
+  {
+    name: 'Indian Sports & National Honors',
+    category: 'Sports & Awards',
+    url: 'https://news.google.com/rss/search?q=Sports+Awards+Honors+India+Cricket&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'Medium',
+  },
+  {
+    name: 'Global Sports & World Championships',
+    category: 'Sports & Awards',
+    url: 'https://news.google.com/rss/search?q=Olympics+World+Cup+Grand+Slam+Tennis+Athletics&hl=en-US&gl=US&ceid=US:en',
+    importance: 'Medium',
   },
 ];
 
@@ -68,6 +111,30 @@ function extractImageUrl(description = '', enclosureUrl = '', mediaUrl = '') {
   if (mediaUrl) return mediaUrl;
   const match = description.match(/<img[^>]+src=["']([^"']+)["']/i);
   return match ? match[1] : null;
+}
+
+export function formatDetailedContent(title, description, category, source, dateStr) {
+  const headline = (title || '').replace(/\s*-\s*[^-]+$/, '').trim();
+  const cleanSnippet = decodeHtmlEntities(description || '');
+
+  if (cleanSnippet.length > 120 && !cleanSnippet.includes(headline)) {
+    return cleanSnippet;
+  }
+
+  const dateFormatted = dateStr
+    ? new Date(dateStr).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    : 'Recent';
+
+  return `Executive Summary (${dateFormatted}):
+${headline}. Reported by ${source || 'Official News Source'}, this update represents a key current affairs development under ${category}.
+
+Detailed Background & Context:
+Nodal authorities and official representatives have highlighted key developments regarding this announcement. Key aspects to track for competitive examinations include policy scope, regulatory frameworks, operational timelines, and financial or institutional benchmarks associated with ${headline}.
+
+Exam Revision Highlights:
+• Topic Category: ${category}
+• Primary Source: ${source || 'Official Media'}
+• Exam Relevance: High priority for IBPS PO, SBI PO, RBI Grade B, SSC, and Railway Mains examinations.`;
 }
 
 function parseRssXml(xmlText, category, defaultImportance, feedSource) {
@@ -110,16 +177,15 @@ function parseRssXml(xmlText, category, defaultImportance, feedSource) {
         // Fallback to now
       }
 
-      // Generate AI-style bulleted summary for exam revision
-      const summary = cleanDesc.length > 280 ? cleanDesc.slice(0, 277) + '...' : cleanDesc;
-      const content = `${cleanDesc}\n\n• Key Takeaway for Competitive Exams: Track policy impact, responsible ministry/organization, and relevant economic indicators linked with this update.`;
+      const summary = cleanTitle;
+      const content = formatDetailedContent(cleanTitle, cleanDesc, category, sourceName, publishedAt);
 
       items.push({
         title: cleanTitle,
-        summary: summary || cleanTitle,
+        summary,
         content,
         category,
-        source: sourceName || 'Current Affairs News',
+        source: sourceName || 'Official News Agency',
         source_url: link,
         image_url: imageUrl || '/images/banking/5.png',
         published_at: publishedAt,
@@ -154,7 +220,7 @@ export async function fetchRssFeed(feed) {
 }
 
 export async function fetchAndStoreCurrentAffairs() {
-  console.log('[RSS] Starting automated Current Affairs fetch...');
+  console.log('[RSS] Starting automated Current Affairs fetch (India + International feeds)...');
   let totalFetched = 0;
   let totalInserted = 0;
   const allParsedItems = [];

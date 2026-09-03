@@ -25,6 +25,7 @@ import Reasoning from './pages/Reasoning';
 import English from './pages/English';
 import BankingAwareness from './pages/BankingAwareness';
 import CurrentAffairs from './pages/CurrentAffairs';
+import CurrentAffairsDetail from './pages/CurrentAffairsDetail';
 import { pageTransition } from './lib/motion';
 
 const Admin = lazy(() => import('./admin/Admin'));
@@ -112,6 +113,7 @@ function AnimatedRoutes() {
       <Route path="/english" element={<English />} />
       <Route path="/banking-awareness" element={<BankingAwareness />} />
       <Route path="/current-affairs" element={<CurrentAffairs />} />
+      <Route path="/current-affairs/:id" element={<CurrentAffairsDetail />} />
       <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
       <Route path="/competitive-exam" element={<Navigate to="/banking" replace />} />
       <Route path="/terms" element={<LegalPage pageKey="terms" />} />

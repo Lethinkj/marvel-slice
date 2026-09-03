@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   FiArrowLeft,
@@ -9,12 +9,10 @@ import {
   FiSearch,
   FiCalendar,
   FiGlobe,
-  FiExternalLink,
-  FiBookmark,
   FiChevronLeft,
   FiChevronRight,
 } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { RSS_FEEDS, fetchRssFeed } from '../lib/rssService';
 
@@ -37,7 +35,6 @@ export default function CurrentAffairs() {
   const [activeCategory, setActiveCategory] = useState('All Topics');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedArticle, setSelectedArticle] = useState(null);
 
   // Fetch articles from Supabase current_affairs
   const { data: dbArticles, isLoading: isDbLoading } = useQuery({
@@ -48,7 +45,7 @@ export default function CurrentAffairs() {
         .select('*')
         .eq('is_published', true)
         .order('published_at', { ascending: false })
-        .limit(100);
+        .limit(200);
 
       if (error) {
         console.warn('Supabase current_affairs query note:', error.message);
@@ -64,7 +61,7 @@ export default function CurrentAffairs() {
     queryKey: ['current_affairs_rss_fallback'],
     queryFn: async () => {
       if (dbArticles && dbArticles.length > 0) return [];
-      const results = await Promise.all(RSS_FEEDS.slice(0, 4).map((f) => fetchRssFeed(f)));
+      const results = await Promise.all(RSS_FEEDS.slice(0, 6).map((f) => fetchRssFeed(f)));
       const combined = results.flat();
       return combined.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
     },
@@ -160,7 +157,7 @@ export default function CurrentAffairs() {
                   Daily Current Affairs & Exam Notes
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                  Filtered and categorized automatically for competitive exam revision.
+                  India & International news updates, categorized automatically for competitive exam revision.
                 </p>
               </div>
 
@@ -172,7 +169,7 @@ export default function CurrentAffairs() {
                   value={searchQuery}
                   onChange={handleSearchChange}
                   placeholder="Search articles, RBI, schemes..."
-                  className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all shadow-xs"
+                  className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all shadow-xs text-slate-900"
                 />
                 {searchQuery && (
                   <button
@@ -198,7 +195,7 @@ export default function CurrentAffairs() {
                     className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
                       isActive
                         ? 'bg-brand-blue text-white border-brand-blue shadow-md'
-                        : 'bg-white text-slate-600 border-slate-200 hover:border-brand-blue/40 hover:text-brand-blue'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-brand-blue/40 hover:text-brand-blue'
                     }`}
                   >
                     {cat}
@@ -211,7 +208,7 @@ export default function CurrentAffairs() {
             {isDbLoading || isRssLoading ? (
               <div className="py-16 text-center space-y-3">
                 <FiLoader className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
-                <p className="text-sm font-semibold text-slate-600">Loading latest current affairs updates...</p>
+                <p className="text-sm font-semibold text-slate-700">Loading latest current affairs updates...</p>
               </div>
             ) : filteredArticles.length === 0 ? (
               <div className="bg-white rounded-2xl p-10 text-center border border-slate-200 space-y-3 max-w-md mx-auto">
@@ -233,53 +230,55 @@ export default function CurrentAffairs() {
             ) : (
               <div className="space-y-8">
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {paginatedArticles.map((art, idx) => (
-                    <motion.div
-                      key={art.id || art.source_url || idx}
-                      whileHover={{ y: -4 }}
-                      transition={{ duration: 0.2 }}
-                      className="bg-white border border-[#E5ECF5] hover:border-brand-orange/40 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
-                    >
-                      <div className="p-5 space-y-3">
-                        {/* Top Badges */}
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-blue-50 text-brand-blue border border-blue-200/80">
-                            {art.category || 'General'}
-                          </span>
-                          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
-                            <FiCalendar className="w-3 h-3 text-slate-400" />
-                            <span>{formatDate(art.published_at)}</span>
+                  {paginatedArticles.map((art, idx) => {
+                    const articleLink = `/current-affairs/${art.id || encodeURIComponent(art.source_url)}`;
+                    return (
+                      <motion.div
+                        key={art.id || art.source_url || idx}
+                        whileHover={{ y: -4 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white border border-[#E5ECF5] hover:border-brand-orange/40 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                      >
+                        <Link to={articleLink} className="p-5 space-y-3 block">
+                          {/* Top Badges */}
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-blue-50 text-brand-blue border border-blue-200/80">
+                              {art.category || 'General'}
+                            </span>
+                            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                              <FiCalendar className="w-3 h-3 text-slate-400" />
+                              <span>{formatDate(art.published_at)}</span>
+                            </div>
                           </div>
+
+                          {/* Title */}
+                          <h3 className="text-sm font-bold text-dark-navy leading-snug group-hover:text-brand-blue transition-colors line-clamp-2">
+                            {art.title}
+                          </h3>
+
+                          {/* Summary */}
+                          <p className="text-xs text-slate-700 leading-relaxed line-clamp-3">
+                            {art.summary}
+                          </p>
+                        </Link>
+
+                        {/* Footer / Action */}
+                        <div className="px-5 py-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between">
+                          <span className="text-[11px] font-semibold text-slate-600 truncate max-w-[140px]">
+                            Source: {art.source || 'Official News'}
+                          </span>
+
+                          <Link
+                            to={articleLink}
+                            className="text-xs font-bold text-brand-orange hover:text-orange-600 inline-flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <span>Read Article</span>
+                            <FiArrowRight className="w-3.5 h-3.5" />
+                          </Link>
                         </div>
-
-                        {/* Title */}
-                        <h3 className="text-sm font-bold text-dark-navy leading-snug group-hover:text-brand-blue transition-colors line-clamp-2">
-                          {art.title}
-                        </h3>
-
-                        {/* Summary */}
-                        <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
-                          {art.summary}
-                        </p>
-                      </div>
-
-                      {/* Footer / Action */}
-                      <div className="px-5 py-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-slate-500 truncate max-w-[140px]">
-                          Source: {art.source || 'Official News'}
-                        </span>
-
-                        <button
-                          type="button"
-                          onClick={() => setSelectedArticle(art)}
-                          className="text-xs font-bold text-brand-orange hover:text-orange-600 inline-flex items-center gap-1 cursor-pointer transition-colors"
-                        >
-                          <span>Read Takeaway</span>
-                          <FiArrowRight className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    );
+                  })}
                 </div>
 
                 {/* PAGINATION CONTROLS */}
@@ -296,7 +295,7 @@ export default function CurrentAffairs() {
                         type="button"
                         disabled={currentPage === 1}
                         onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
-                        className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-600 hover:bg-slate-50 hover:border-brand-blue/30 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all inline-flex items-center gap-1"
+                        className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-brand-blue/30 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all inline-flex items-center gap-1"
                       >
                         <FiChevronLeft className="w-3.5 h-3.5" />
                         <span>Prev</span>
@@ -315,7 +314,7 @@ export default function CurrentAffairs() {
                             className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                               currentPage === p
                                 ? 'bg-brand-blue text-white shadow-xs'
-                                : 'bg-white border border-slate-200 text-slate-600 hover:border-brand-blue/40'
+                                : 'bg-white border border-slate-200 text-slate-700 hover:border-brand-blue/40'
                             }`}
                           >
                             {p}
@@ -327,7 +326,7 @@ export default function CurrentAffairs() {
                         type="button"
                         disabled={currentPage === totalPages}
                         onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
-                        className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-600 hover:bg-slate-50 hover:border-brand-blue/30 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all inline-flex items-center gap-1"
+                        className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-brand-blue/30 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all inline-flex items-center gap-1"
                       >
                         <span>Next</span>
                         <FiChevronRight className="w-3.5 h-3.5" />
@@ -340,91 +339,6 @@ export default function CurrentAffairs() {
           </div>
         </section>
       </div>
-
-      {/* ARTICLE DETAIL MODAL */}
-      <AnimatePresence>
-        {selectedArticle && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-blue-100 max-h-[90vh] flex flex-col"
-            >
-              {/* Modal Header */}
-              <div className="bg-brand-blue text-white px-6 py-4 flex items-center justify-between border-b border-blue-600/30">
-                <div>
-                  <span className="text-[11px] uppercase font-extrabold tracking-wider bg-white/15 px-2.5 py-0.5 rounded-md text-white border border-white/20">
-                    {selectedArticle.category || 'Current Affairs'}
-                  </span>
-                  <p className="text-xs text-white/80 mt-1">
-                    Published: {formatDate(selectedArticle.published_at)} • Source: {selectedArticle.source || 'News'}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedArticle(null)}
-                  className="w-7 h-7 rounded-full bg-white text-red-500 hover:bg-red-50 hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-xs"
-                >
-                  <FiX className="w-4 h-4 stroke-[2.5]" />
-                </button>
-              </div>
-
-              {/* Modal Content */}
-              <div className="p-6 overflow-y-auto space-y-5 flex-1">
-                <h3 className="text-lg sm:text-xl font-extrabold text-dark-navy leading-snug">
-                  {selectedArticle.title}
-                </h3>
-
-                <div className="p-4 bg-blue-50/70 border border-blue-100 rounded-2xl space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-brand-blue uppercase tracking-wider">
-                    <FiBookmark className="w-4 h-4" />
-                    <span>Summary & Exam Relevance</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                    {selectedArticle.summary}
-                  </p>
-                </div>
-
-                {selectedArticle.content && (
-                  <div className="space-y-2">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Detailed Exam Notes</h4>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
-                      {selectedArticle.content}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Modal Footer */}
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-                {selectedArticle.source_url ? (
-                  <a
-                    href={selectedArticle.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-blue hover:text-brand-orange transition-colors"
-                  >
-                    <span>Read Original Article on {selectedArticle.source || 'News'}</span>
-                    <FiExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                ) : (
-                  <span className="text-xs text-slate-400">Verified News Source</span>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedArticle(null)}
-                  className="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
-                >
-                  Close
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
