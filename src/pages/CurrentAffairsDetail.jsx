@@ -11,7 +11,8 @@ import {
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
-import { RSS_FEEDS, fetchRssFeed, formatDetailedContent } from '../lib/rssService';
+import { formatDetailedContent } from '../lib/rssService';
+import { deduplicateCurrentAffairs } from '../data/defaultCurrentAffairs';
 import Reveal from '../components/ui/Reveal';
 
 export default function CurrentAffairsDetail() {
@@ -35,7 +36,7 @@ export default function CurrentAffairsDetail() {
         if (!error && data) return data;
       }
 
-      // If not UUID or not found, try matching by source_url encode
+      // If not UUID or not found in DB table directly, try matching by source_url encode
       const { data: allData } = await supabase
         .from('current_affairs')
         .select('*')
@@ -61,15 +62,10 @@ export default function CurrentAffairsDetail() {
         .select('*')
         .eq('is_published', true)
         .order('published_at', { ascending: false })
-        .limit(6);
+        .limit(20);
 
-      if (data) {
-        return data.filter((art) => art.id !== id).slice(0, 3);
-      }
-
-      // Fallback
-      const results = await fetchRssFeed(RSS_FEEDS[0]);
-      return results.slice(0, 3);
+      const unique = deduplicateCurrentAffairs(data || []);
+      return unique.filter((art) => art.id !== id && art.title !== dbArticle?.title).slice(0, 3);
     },
     enabled: !!dbArticle,
     staleTime: 5 * 60 * 1000,

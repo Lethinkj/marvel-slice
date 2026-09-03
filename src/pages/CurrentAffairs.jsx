@@ -14,7 +14,7 @@ import {
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
-import { RSS_FEEDS, fetchRssFeed } from '../lib/rssService';
+import { deduplicateCurrentAffairs } from '../data/defaultCurrentAffairs';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -58,23 +58,9 @@ export default function CurrentAffairs({ isTodayOnly = false }) {
     staleTime: 2 * 60 * 1000,
   });
 
-  // Live RSS Fallback Query if DB table is being initialized
-  const { data: rssFallbackArticles, isLoading: isRssLoading } = useQuery({
-    queryKey: ['current_affairs_rss_fallback'],
-    queryFn: async () => {
-      if (dbArticles && dbArticles.length > 0) return [];
-      const results = await Promise.all(RSS_FEEDS.slice(0, 6).map((f) => fetchRssFeed(f)));
-      const combined = results.flat();
-      return combined.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-    },
-    enabled: (!dbArticles || dbArticles.length === 0) && !isDbLoading,
-    staleTime: 5 * 60 * 1000,
-  });
-
   const articles = useMemo(() => {
-    if (dbArticles && dbArticles.length > 0) return dbArticles;
-    return rssFallbackArticles || [];
-  }, [dbArticles, rssFallbackArticles]);
+    return deduplicateCurrentAffairs(dbArticles || []);
+  }, [dbArticles]);
 
   const filteredArticles = useMemo(() => {
     return articles.filter((art) => {
@@ -170,26 +156,27 @@ export default function CurrentAffairs({ isTodayOnly = false }) {
                 </p>
               </div>
 
-              {/* Search Bar */}
-              <div className="relative w-full md:w-72">
-                <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="Search articles, RBI, schemes..."
-                  className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all shadow-xs text-slate-900"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => { setSearchQuery(''); setCurrentPage(1); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
-                  >
-                    <FiX className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
+              {!isTodayOnly && (
+                <div className="relative w-full md:w-72">
+                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="Search articles, RBI, schemes..."
+                    className="w-full pl-10 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all shadow-xs text-slate-900"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => { setSearchQuery(''); setCurrentPage(1); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                    >
+                      <FiX className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Date-wise Filter Bar for Today's Affairs */}
@@ -247,20 +234,26 @@ export default function CurrentAffairs({ isTodayOnly = false }) {
                   />
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsExactDateMode(false);
-                    setCurrentPage(1);
-                  }}
-                  className={`sm:ml-auto px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer border ${
-                    !isExactDateMode
-                      ? 'bg-slate-800 text-white border-slate-800 shadow-xs'
-                      : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
-                  }`}
-                >
-                  Show All Recent
-                </button>
+                {/* Search Bar Placed in this Position */}
+                <div className="relative w-full sm:w-64 sm:ml-auto">
+                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    placeholder="Search articles..."
+                    className="w-full pl-10 pr-8 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all shadow-xs text-slate-900"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => { setSearchQuery(''); setCurrentPage(1); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                    >
+                      <FiX className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
@@ -286,7 +279,7 @@ export default function CurrentAffairs({ isTodayOnly = false }) {
             </div>
 
             {/* Articles Grid */}
-            {isDbLoading || isRssLoading ? (
+            {isDbLoading ? (
               <div className="py-16 text-center space-y-3">
                 <FiLoader className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
                 <p className="text-sm font-semibold text-slate-700">Loading latest current affairs updates...</p>

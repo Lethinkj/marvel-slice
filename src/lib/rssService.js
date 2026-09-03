@@ -3,93 +3,123 @@ import { supabase } from './supabaseClient.js';
 export const RSS_FEEDS = [
   // 1. Banking & RBI
   {
-    name: 'RBI & Indian Banking',
+    name: 'Economic Times & RBI',
     category: 'Banking & RBI',
-    url: 'https://news.google.com/rss/search?q=Banking+RBI+Reserve+Bank+India&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=Banking+RBI+Reserve+Bank+India+site:economictimes.indiatimes.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Global Banking & Central Banks',
+    name: 'Livemint & Business Banking',
     category: 'Banking & RBI',
-    url: 'https://news.google.com/rss/search?q=Federal+Reserve+ECB+IMF+World+Bank+Central+Bank&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=Banking+Finance+site:livemint.com&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  {
+    name: 'Financial Express Banking',
+    category: 'Banking & RBI',
+    url: 'https://news.google.com/rss/search?q=Banking+RBI+Monetary+Policy+site:financialexpress.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   // 2. Economy & Business
   {
-    name: 'Indian Economy & Business',
+    name: 'Economic Times Economy',
     category: 'Economy & Business',
-    url: 'https://news.google.com/rss/search?q=Economy+Finance+India+GDP+Inflation&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=Economy+GDP+Inflation+India+site:economictimes.indiatimes.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Global Economy & International Trade',
+    name: 'Business Standard Policy',
     category: 'Economy & Business',
-    url: 'https://news.google.com/rss/search?q=Global+Economy+Trade+Markets+Inflation+GDP&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=Economy+Trade+Markets+site:business-standard.com&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  {
+    name: 'Livemint Economy & Markets',
+    category: 'Economy & Business',
+    url: 'https://news.google.com/rss/search?q=Economy+Markets+GST+site:livemint.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   // 3. Government Schemes
   {
-    name: 'Press Information Bureau (PIB India)',
+    name: 'PIB India Official Schemes',
     category: 'Government Schemes',
-    url: 'https://news.google.com/rss/search?q=site:pib.gov.in&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=site:pib.gov.in+Scheme+Yojana+Ministry&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Indian Govt Schemes & Initiatives',
+    name: 'The Hindu Govt Policies',
     category: 'Government Schemes',
-    url: 'https://news.google.com/rss/search?q=Government+Schemes+Ministry+Policy+India&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=Government+Scheme+Ministry+site:thehindu.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Global Development & International Initiatives',
+    name: 'Indian Express Schemes',
     category: 'Government Schemes',
-    url: 'https://news.google.com/rss/search?q=United+Nations+Global+Development+Policy+Scheme&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=Scheme+Cabinet+Approval+site:indianexpress.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'Medium',
   },
   // 4. National Affairs
   {
-    name: 'Indian National Affairs',
+    name: 'The Hindu National News',
     category: 'National Affairs',
-    url: 'https://news.google.com/rss/search?q=National+News+India+Governance+Parliament&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=National+News+India+Parliament+site:thehindu.com&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  {
+    name: 'Indian Express National',
+    category: 'National Affairs',
+    url: 'https://news.google.com/rss/search?q=National+Governance+Supreme+Court+site:indianexpress.com&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
+  },
+  {
+    name: 'Times of India National',
+    category: 'National Affairs',
+    url: 'https://news.google.com/rss/search?q=India+National+News+site:timesofindia.indiatimes.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   // 5. International Affairs
   {
-    name: 'India Foreign Relations & Summits',
+    name: 'The Hindu World & Diplomacy',
     category: 'International Affairs',
-    url: 'https://news.google.com/rss/search?q=India+Foreign+Policy+Bilateral+Summit&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=India+Foreign+Policy+Summit+site:thehindu.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Global Geopolitics & World Affairs',
+    name: 'BBC World News & India',
     category: 'International Affairs',
-    url: 'https://news.google.com/rss/search?q=Global+Geopolitics+United+Nations+Diplomacy&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=Global+Geopolitics+United+Nations+site:bbc.com&hl=en-US&gl=US&ceid=US:en',
+    importance: 'High',
+  },
+  {
+    name: 'Reuters World News',
+    category: 'International Affairs',
+    url: 'https://news.google.com/rss/search?q=International+Affairs+Diplomacy+site:reuters.com&hl=en-US&gl=US&ceid=US:en',
     importance: 'Medium',
   },
   // 6. Science & Defense
   {
-    name: 'ISRO & Indian Defense',
+    name: 'ISRO, DRDO & Defense News',
     category: 'Science & Defense',
-    url: 'https://news.google.com/rss/search?q=ISRO+DRDO+Defense+Military+India&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=ISRO+DRDO+Defense+Military+site:thehindu.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'High',
   },
   {
-    name: 'Global Science, NASA & Defense Tech',
+    name: 'Tech & Science Express',
     category: 'Science & Defense',
-    url: 'https://news.google.com/rss/search?q=NASA+Space+Technology+AI+Defense+Breakthrough&hl=en-US&gl=US&ceid=US:en',
-    importance: 'Medium',
+    url: 'https://news.google.com/rss/search?q=Science+Defense+Technology+site:indianexpress.com&hl=en-IN&gl=IN&ceid=IN:en',
+    importance: 'High',
   },
   // 7. Sports & Awards
   {
-    name: 'Indian Sports & National Honors',
+    name: 'The Hindu Sports & Honors',
     category: 'Sports & Awards',
-    url: 'https://news.google.com/rss/search?q=Sports+Awards+Honors+India+Cricket&hl=en-IN&gl=IN&ceid=IN:en',
+    url: 'https://news.google.com/rss/search?q=Sports+Awards+Cricket+Olympics+site:thehindu.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'Medium',
   },
   {
-    name: 'Global Sports & World Championships',
+    name: 'Indian Express Sports & Awards',
     category: 'Sports & Awards',
-    url: 'https://news.google.com/rss/search?q=Olympics+World+Cup+Grand+Slam+Tennis+Athletics&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=Sports+World+Cup+Awards+site:indianexpress.com&hl=en-IN&gl=IN&ceid=IN:en',
     importance: 'Medium',
   },
 ];
@@ -199,24 +229,33 @@ function parseRssXml(xmlText, category, defaultImportance, feedSource) {
 }
 
 export async function fetchRssFeed(feed) {
-  try {
-    const response = await fetch(feed.url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      },
-    });
+  const proxies = [
+    feed.url,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(feed.url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(feed.url)}`,
+  ];
 
-    if (!response.ok) {
-      console.warn(`[RSS] Failed to fetch feed ${feed.name}: ${response.status}`);
-      return [];
+  for (const targetUrl of proxies) {
+    try {
+      const response = await fetch(targetUrl, {
+        headers: {
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+        },
+      });
+
+      if (!response.ok) continue;
+
+      const xmlText = await response.text();
+      const items = parseRssXml(xmlText, feed.category, feed.importance, feed.name);
+      if (items && items.length > 0) {
+        return items;
+      }
+    } catch {
+      // Try next proxy candidate
     }
-
-    const xmlText = await response.text();
-    return parseRssXml(xmlText, feed.category, feed.importance, feed.name);
-  } catch (err) {
-    console.error(`[RSS] Error fetching feed ${feed.name}:`, err.message);
-    return [];
   }
+
+  return [];
 }
 
 export async function fetchAndStoreCurrentAffairs() {
