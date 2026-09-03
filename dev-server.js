@@ -422,14 +422,14 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-// Automated 6-hour Current Affairs RSS Sync
-const SIX_HOURS = 6 * 60 * 60 * 1000;
+// Automated 3-hour Current Affairs RSS Sync
+const THREE_HOURS = 3 * 60 * 60 * 1000;
 setTimeout(() => {
   fetchAndStoreCurrentAffairs().catch((e) => console.error('[dev-server] Initial RSS fetch error:', e));
 }, 5000);
 setInterval(() => {
   fetchAndStoreCurrentAffairs().catch((e) => console.error('[dev-server] Scheduled RSS fetch error:', e));
-}, SIX_HOURS);
+}, THREE_HOURS);
 
 server.listen(PORT, () => {
   console.log(`[dev-server] API server running on http://localhost:${PORT}`);

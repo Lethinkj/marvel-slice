@@ -166,12 +166,12 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`[Marvel Slice Production Docker Server] running on port ${PORT}`);
   
-  // Automated 6-hour Current Affairs RSS Sync
-  const SIX_HOURS = 6 * 60 * 60 * 1000;
+  // Automated 3-hour Current Affairs RSS Sync
+  const THREE_HOURS = 3 * 60 * 60 * 1000;
   setTimeout(() => {
     fetchAndStoreCurrentAffairs().catch((e) => console.error('[server.js] Initial RSS fetch error:', e));
   }, 5000);
   setInterval(() => {
     fetchAndStoreCurrentAffairs().catch((e) => console.error('[server.js] Scheduled RSS fetch error:', e));
-  }, SIX_HOURS);
+  }, THREE_HOURS);
 });

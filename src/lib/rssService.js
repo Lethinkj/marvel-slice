@@ -262,14 +262,14 @@ export async function fetchAndStoreCurrentAffairs() {
     if (newItems.length > 0) {
       const { data: inserted, error: insertErr } = await supabase
         .from('current_affairs')
-        .insert(newItems)
+        .upsert(newItems, { onConflict: 'source_url', ignoreDuplicates: true })
         .select('id');
 
       if (insertErr) {
         console.error('[RSS] Supabase insertion error:', insertErr.message);
       } else {
-        totalInserted = inserted ? inserted.length : newItems.length;
-        console.log(`[RSS] Successfully inserted ${totalInserted} new Current Affairs articles.`);
+        totalInserted = inserted ? inserted.length : 0;
+        console.log(`[RSS] Successfully processed ${newItems.length} articles (${totalInserted} new inserted).`);
       }
     } else {
       console.log('[RSS] All fetched articles are already up to date.');
