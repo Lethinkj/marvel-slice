@@ -12,13 +12,25 @@ export const topNav = [
   {
     label: 'Competitive Exam',
     children: [
-      { label: 'Banking', path: '/banking' },
-      { label: 'Aptitude', path: '/aptitude' },
-      { label: 'Reasoning', path: '/reasoning' },
-      { label: 'English', path: '/english' },
-      { label: 'Banking Awareness', path: '/banking-awareness' },
-      { label: 'Current Affairs', path: '/current-affairs' }
-    ]
+      {
+        label: 'Banking',
+        children: [
+          { label: 'About Banking', path: '/banking' },
+          { label: 'Aptitude', path: '/aptitude' },
+          { label: 'Reasoning', path: '/reasoning' },
+          { label: 'English', path: '/english' },
+          { label: 'Banking Awareness', path: '/banking-awareness' },
+          {
+            label: 'Affairs',
+            children: [
+              { label: 'Current Affairs', path: '/current-affairs' },
+              { label: "Today's Affairs", path: '/todays-affairs' },
+            ],
+          },
+          { label: 'Mock Exam', path: '/mock-exam' },
+        ],
+      },
+    ],
   },
   { label: 'Services', path: '/services' },
   { label: 'Career', path: '/career' },

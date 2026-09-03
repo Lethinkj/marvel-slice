@@ -16,12 +16,14 @@ function NavColumn({ parentLabel, defaultChildren }) {
 
   if (parentLabel === 'Competitive Exam') {
     const ceDefaults = [
-      { label: 'Banking', path: '/banking' },
+      { label: 'About Banking', path: '/banking' },
       { label: 'Aptitude', path: '/aptitude' },
       { label: 'Reasoning', path: '/reasoning' },
       { label: 'English', path: '/english' },
       { label: 'Banking Awareness', path: '/banking-awareness' },
-      { label: 'Current Affairs', path: '/current-affairs' }
+      { label: 'Current Affairs', path: '/current-affairs' },
+      { label: "Today's Affairs", path: '/todays-affairs' },
+      { label: 'Mock Exam', path: '/mock-exam' }
     ];
     ceDefaults.forEach(def => {
       if (!items.some(item => item.label === def.label)) {

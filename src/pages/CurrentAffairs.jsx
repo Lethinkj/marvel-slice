@@ -29,12 +29,14 @@ const CATEGORIES = [
   'Sports & Awards',
 ];
 
-export default function CurrentAffairs() {
+export default function CurrentAffairs({ isTodayOnly = false }) {
   const navigate = useNavigate();
 
   const [activeCategory, setActiveCategory] = useState('All Topics');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [isExactDateMode, setIsExactDateMode] = useState(true);
 
   // Fetch articles from Supabase current_affairs
   const { data: dbArticles, isLoading: isDbLoading } = useQuery({
@@ -76,6 +78,11 @@ export default function CurrentAffairs() {
 
   const filteredArticles = useMemo(() => {
     return articles.filter((art) => {
+      let matchesDate = true;
+      if (isTodayOnly && isExactDateMode && selectedDate) {
+        const artDateStr = art.published_at ? new Date(art.published_at).toISOString().split('T')[0] : '';
+        matchesDate = artDateStr === selectedDate;
+      }
       const matchesCategory =
         activeCategory === 'All Topics' ||
         art.category?.toLowerCase() === activeCategory.toLowerCase();
@@ -84,9 +91,9 @@ export default function CurrentAffairs() {
         art.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         art.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         art.category?.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+      return matchesDate && matchesCategory && matchesSearch;
     });
-  }, [articles, activeCategory, searchQuery]);
+  }, [articles, activeCategory, searchQuery, isTodayOnly, isExactDateMode, selectedDate]);
 
   const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE) || 1;
 
@@ -105,9 +112,11 @@ export default function CurrentAffairs() {
     setCurrentPage(1);
   }
 
-  function handlePageChange(pageNum) {
-    setCurrentPage(pageNum);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  function handlePageChange(newPage) {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   function getPageNumbers(current, total) {
@@ -154,10 +163,10 @@ export default function CurrentAffairs() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-dark-navy">
-                  Daily Current Affairs & Exam Notes
+                  {isTodayOnly ? "Today's Current Affairs & Exam Notes" : "Daily Current Affairs & Exam Notes"}
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                  Curated National & International news updates structured for competitive exam revision.
+                  {isTodayOnly ? "Live today's national & international news updates structured for competitive exam revision." : "Curated National & International news updates structured for competitive exam revision."}
                 </p>
               </div>
 
@@ -182,6 +191,78 @@ export default function CurrentAffairs() {
                 )}
               </div>
             </div>
+
+            {/* Date-wise Filter Bar for Today's Affairs */}
+            {isTodayOnly && (
+              <div className="flex flex-wrap items-center gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mr-2">
+                  <FiCalendar className="w-4 h-4 text-brand-orange" />
+                  <span>Filter Date:</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedDate(new Date().toISOString().split('T')[0]);
+                    setIsExactDateMode(true);
+                    setCurrentPage(1);
+                  }}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                    isExactDateMode && selectedDate === new Date().toISOString().split('T')[0]
+                      ? 'bg-brand-orange text-white border-brand-orange shadow-xs'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-brand-orange/40 hover:text-brand-orange'
+                  }`}
+                >
+                  Today
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const y = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+                    setSelectedDate(y);
+                    setIsExactDateMode(true);
+                    setCurrentPage(1);
+                  }}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                    isExactDateMode && selectedDate === new Date(Date.now() - 86400000).toISOString().split('T')[0]
+                      ? 'bg-brand-orange text-white border-brand-orange shadow-xs'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-brand-orange/40 hover:text-brand-orange'
+                  }`}
+                >
+                  Yesterday
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <label className="text-xs text-slate-500 font-semibold">Pick Date:</label>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => {
+                      setSelectedDate(e.target.value);
+                      setIsExactDateMode(true);
+                      setCurrentPage(1);
+                    }}
+                    className="px-3 py-1 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-800 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange cursor-pointer"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsExactDateMode(false);
+                    setCurrentPage(1);
+                  }}
+                  className={`sm:ml-auto px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer border ${
+                    !isExactDateMode
+                      ? 'bg-slate-800 text-white border-slate-800 shadow-xs'
+                      : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
+                  }`}
+                >
+                  Show All Recent
+                </button>
+              </div>
+            )}
 
             {/* Category Filter Tabs */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">

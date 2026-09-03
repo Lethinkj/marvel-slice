@@ -26,6 +26,7 @@ import English from './pages/English';
 import BankingAwareness from './pages/BankingAwareness';
 import CurrentAffairs from './pages/CurrentAffairs';
 import CurrentAffairsDetail from './pages/CurrentAffairsDetail';
+import MockExam from './pages/MockExam';
 import { pageTransition } from './lib/motion';
 
 const Admin = lazy(() => import('./admin/Admin'));
@@ -71,6 +72,7 @@ function CourseNavRedirect() {
     if (subSlug === 'english') return <Navigate to="/english" replace />;
     if (subSlug === 'banking-awareness') return <Navigate to="/banking-awareness" replace />;
     if (subSlug === 'current-affairs') return <Navigate to="/current-affairs" replace />;
+    if (subSlug === 'todays-affairs') return <Navigate to="/todays-affairs" replace />;
     if (subSlug === 'banking') return <Navigate to="/banking" replace />;
     return <Navigate to="/banking" replace />;
   }
@@ -113,7 +115,9 @@ function AnimatedRoutes() {
       <Route path="/english" element={<English />} />
       <Route path="/banking-awareness" element={<BankingAwareness />} />
       <Route path="/current-affairs" element={<CurrentAffairs />} />
+      <Route path="/todays-affairs" element={<CurrentAffairs isTodayOnly={true} />} />
       <Route path="/current-affairs/:id" element={<CurrentAffairsDetail />} />
+      <Route path="/mock-exam" element={<MockExam />} />
       <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
       <Route path="/competitive-exam" element={<Navigate to="/banking" replace />} />
       <Route path="/terms" element={<LegalPage pageKey="terms" />} />
@@ -143,12 +147,12 @@ function AnimatedRoutes() {
 
 function PublicLayout() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-x-hidden w-full max-w-full">
       <ScrollToTop />
       <PageTracker />
       <TopBar />
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden">
         <AnimatedRoutes />
       </main>
       <Footer />
