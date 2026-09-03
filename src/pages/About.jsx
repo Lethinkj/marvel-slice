@@ -59,7 +59,7 @@ export default function About() {
           {data.heading && (
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-dark-navy tracking-tight">{data.heading}</h1>
-              <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3 mb-4" />
+              <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3 mb-6" />
             </div>
           )}
           {data.subheading && <p className="text-sm sm:text-base text-text-gray max-w-2xl mx-auto leading-relaxed">{data.subheading}</p>}
