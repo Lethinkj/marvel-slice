@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiStar, FiBriefcase } from 'react-icons/fi';
+import { FiStar, FiBriefcase, FiAward } from 'react-icons/fi';
 import Reveal from '../ui/Reveal';
 import { supabase } from '../../lib/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 
 function TestimonialCard({ item }) {
   const count = Math.min(5, Math.max(1, parseInt(item.rating, 10) || 5));
-  const subtitle = item.role || item.exam_name || item.badge_text || '';
 
   return (
     <div className="group relative flex h-full w-full flex-col justify-between overflow-hidden rounded-3xl border border-blue-100/80 bg-white p-6 sm:p-8 md:px-10 shadow-[0_10px_28px_rgba(30,86,199,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(30,86,199,0.13)]">
@@ -36,12 +35,28 @@ function TestimonialCard({ item }) {
         <div className="min-w-0 flex-1">
           <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#0B1E48] tracking-tight leading-snug break-words">{item.name}</h3>
 
-          {subtitle && (
-            <div className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-blue-50/90 px-3 py-0.5 text-xs sm:text-sm font-semibold text-[#1E56C7] border border-blue-100/80 w-fit max-w-full">
-              <FiBriefcase className="w-3.5 h-3.5 text-[#1E56C7] shrink-0" />
-              <span className="leading-snug break-words">{subtitle}</span>
-            </div>
-          )}
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {item.role && (
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50/90 px-3 py-0.5 text-xs sm:text-sm font-semibold text-[#1E56C7] border border-blue-100/80 w-fit max-w-full">
+                <FiBriefcase className="w-3.5 h-3.5 text-[#1E56C7] shrink-0" />
+                <span className="leading-snug break-words">{item.role}</span>
+              </div>
+            )}
+
+            {item.bank_name && (
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50/90 px-3 py-0.5 text-xs sm:text-sm font-semibold text-emerald-700 border border-emerald-200/80 w-fit max-w-full">
+                <FiAward className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span className="leading-snug break-words">{item.bank_name}</span>
+              </div>
+            )}
+
+            {!item.role && !item.bank_name && (item.exam_name || item.badge_text) && (
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50/90 px-3 py-0.5 text-xs sm:text-sm font-semibold text-[#1E56C7] border border-blue-100/80 w-fit max-w-full">
+                <FiBriefcase className="w-3.5 h-3.5 text-[#1E56C7] shrink-0" />
+                <span className="leading-snug break-words">{item.exam_name || item.badge_text}</span>
+              </div>
+            )}
+          </div>
 
           {/* Star Rating */}
           <div className="mt-1.5 flex items-center gap-1">
@@ -56,8 +71,8 @@ function TestimonialCard({ item }) {
       <div className="relative z-10 my-4 sm:my-5 border-t border-blue-50/90" />
 
       {/* QUOTE CONTENT BODY */}
-      <div className="relative z-10 flex-1 flex flex-col justify-start text-left">
-        <p className="text-sm sm:text-base md:text-[17px] font-medium leading-relaxed text-slate-700 whitespace-pre-line">
+      <div className="relative z-10 flex-1 flex flex-col justify-start">
+        <p className="text-justify [text-align-last:left] text-sm sm:text-base md:text-[17px] font-medium leading-relaxed text-slate-700 whitespace-pre-line">
           “{item.quote}”
         </p>
       </div>
