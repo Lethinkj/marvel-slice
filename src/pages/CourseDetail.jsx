@@ -122,7 +122,7 @@ function CourseTabs({ tabs, onApplyNow }) {
           </h2>
         )}
         {content.paragraph && (
-          <p className={`text-gray-500 leading-relaxed ${align("paragraph")} ${align("paragraph") === "text-center" ? "max-w-2xl mx-auto" : ""}`}>
+          <p className="leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-4 sm:indent-6 whitespace-pre-line text-sm sm:text-base">
             {content.paragraph}
           </p>
         )}
@@ -132,7 +132,7 @@ function CourseTabs({ tabs, onApplyNow }) {
           </h3>
         )}
         {content.text && (
-          <div className={`text-gray-700 leading-relaxed whitespace-pre-line ${align("text")}`}>
+          <div className="leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-4 sm:indent-6 whitespace-pre-line text-sm sm:text-base">
             {content.text}
           </div>
         )}
@@ -143,18 +143,18 @@ function CourseTabs({ tabs, onApplyNow }) {
   }
 
   return (
-    <section className="py-16">
+    <section className="py-8 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal variant="up">
-          <div className="w-full overflow-x-auto scrollbar-none pb-1">
+          <div className="relative z-30 w-full overflow-x-auto scrollbar-none pb-4 -mb-4">
             <TabBar
               tabs={tabList.map(t => t.label)}
               activeIndex={active}
               onChange={setActive}
             />
           </div>
-          <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-xl shadow-slate-200/50 overflow-hidden">
-            <div className="p-6 sm:p-8">
+          <div className="relative z-10 bg-white rounded-b-2xl rounded-tr-2xl border border-gray-200 shadow-xl shadow-slate-200/50 overflow-hidden">
+            <div className="p-4 sm:p-8">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab?.id || active}
@@ -230,7 +230,11 @@ function ProjectsSection({ projects }) {
                     ))}
                   </div>
                 )}
-                {p.description && <p className="text-sm text-gray-600 leading-relaxed">{p.description}</p>}
+                {p.description && (
+                  <p className="leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-4 sm:indent-6 whitespace-pre-line text-sm sm:text-base">
+                    {p.description}
+                  </p>
+                )}
               </StaggerItem>
             );
           })}
@@ -268,7 +272,7 @@ function CertificationSection({ certifications }) {
                   )}
                   <div className={`${imgUrl ? "md:col-span-6" : "md:col-span-12"} p-6 sm:p-8 lg:p-10 flex flex-col justify-center space-y-5`}>
                     {cert.description && (
-                      <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
+                      <p className="leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-4 sm:indent-6 whitespace-pre-line text-sm sm:text-base">
                         {cert.description}
                       </p>
                     )}
