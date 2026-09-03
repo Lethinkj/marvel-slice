@@ -100,9 +100,9 @@ function ensureArray(val) {
 }
 
 function CourseTabs({ tabs, onApplyNow }) {
+  const [active, setActive] = useState(0);
   const tabList = ensureArray(tabs);
   if (tabList.length === 0) return null;
-  const [active, setActive] = useState(0);
   const activeTab = tabList[active] || tabList[0];
 
   function renderContent(t) {
@@ -146,16 +146,18 @@ function CourseTabs({ tabs, onApplyNow }) {
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal variant="up">
-          <div className="flex items-center justify-between gap-4">
-            <TabBar
-              tabs={tabList.map(t => t.label)}
-              activeIndex={active}
-              onChange={setActive}
-            />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-3 sm:mb-0">
+            <div className="overflow-x-auto scrollbar-none pb-1 w-full">
+              <TabBar
+                tabs={tabList.map(t => t.label)}
+                activeIndex={active}
+                onChange={setActive}
+              />
+            </div>
             <button
               type="button"
               onClick={() => onApplyNow?.('Apply Now')}
-              className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 hover:shadow-lg hover:-translate-y-0.5 transition-all text-sm font-bold shadow-sm cursor-pointer active:scale-95"
+              className="hidden sm:inline-flex shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 hover:shadow-lg transition-all text-sm font-bold shadow-sm cursor-pointer active:scale-95"
             >
               Apply Now
               <FiArrowRight className="w-4 h-4" />
@@ -192,18 +194,18 @@ function OverviewSection({ course }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div>
           <Reveal as="h2" className="font-bold text-2xl sm:text-3xl text-dark-navy text-center mb-10 whitespace-pre-line">Key Highlights</Reveal>
-          <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <Stagger className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4 max-w-5xl mx-auto">
             {highlights.map((h, i) => (
               <StaggerItem key={h.id || i}>
-                <div className="bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-brand-orange/30 flex items-center gap-4 px-4 py-4 border border-gray-100 transition-all duration-300 group cursor-pointer">
-                  <div className="shrink-0 w-1 self-stretch rounded-full bg-blue-600 group-hover:bg-brand-orange transition-colors" />
-                  <div className="w-10 h-10 rounded-full bg-indigo-50 group-hover:bg-amber-100/70 flex items-center justify-center shrink-0 transition-colors">
+                <div className="bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-brand-orange/30 flex flex-col sm:flex-row items-center text-center sm:text-left gap-2 sm:gap-4 p-2.5 sm:px-4 sm:py-4 border border-gray-100 transition-all duration-300 group cursor-pointer h-full justify-center sm:justify-start">
+                  <div className="hidden sm:block shrink-0 w-1 self-stretch rounded-full bg-blue-600 group-hover:bg-brand-orange transition-colors" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-indigo-50 group-hover:bg-amber-100/70 flex items-center justify-center shrink-0 transition-colors">
                     {(() => {
                       const IconComp = HIGHLIGHT_ICONS[h.icon] || FiAward;
-                      return <IconComp className="w-5 h-5 text-indigo-500 group-hover:text-brand-orange transition-colors" />;
+                      return <IconComp className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 group-hover:text-brand-orange transition-colors" />;
                     })()}
                   </div>
-                  <span className="font-semibold text-dark-navy text-sm group-hover:text-brand-orange transition-colors">{h.label}</span>
+                  <span className="font-semibold text-dark-navy text-xs sm:text-sm group-hover:text-brand-orange transition-colors leading-snug break-words">{h.label}</span>
                 </div>
               </StaggerItem>
             ))}
@@ -326,9 +328,9 @@ function CertificationSection({ certifications }) {
 }
 
 function FAQSection({ faqs }) {
+  const [openIdx, setOpenIdx] = useState(null);
   const faqList = ensureArray(faqs);
   if (faqList.length === 0) return null;
-  const [openIdx, setOpenIdx] = useState(null);
   return (
     <section id="faqs" data-section="faqs" className="py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
