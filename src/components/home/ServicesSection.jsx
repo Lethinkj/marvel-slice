@@ -43,7 +43,7 @@ export default function ServicesSection({ section }) {
         </div>
         {intro && (
           <Reveal className="text-text-gray mb-12 text-center">
-            <p className="text-sm sm:text-base leading-relaxed whitespace-pre-line">{intro}</p>
+            <p className="text-sm sm:text-base leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-6 sm:indent-10 whitespace-pre-line">{intro}</p>
           </Reveal>
         )}
 
@@ -60,7 +60,7 @@ export default function ServicesSection({ section }) {
             )}
             <h3 className="font-bold text-xl mt-6 text-dark-navy text-center sm:text-left">{leftHeading}</h3>
             {leftDescription && (
-              <p className="text-text-gray text-sm leading-relaxed mt-3 text-center sm:text-left whitespace-pre-line">{leftDescription}</p>
+              <p className="text-sm sm:text-base leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-6 sm:indent-10 whitespace-pre-line mt-3">{leftDescription}</p>
             )}
             <a
               href={ctaLink}
@@ -82,7 +82,7 @@ export default function ServicesSection({ section }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-dark-navy text-base">{service.title}</h4>
-                      <p className="text-text-gray text-sm leading-relaxed mt-1 whitespace-pre-line">{service.description}</p>
+                      <p className="text-xs sm:text-sm leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-4 sm:indent-6 whitespace-pre-line mt-1">{service.description}</p>
                     </div>
                   </div>
                   {i < servicesList.length - 1 && <div className="border-b border-gray-100" />}

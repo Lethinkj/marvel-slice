@@ -81,12 +81,12 @@ export default function CourseHero({
       <HeroBackground />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Link */}
+        {/* Back Link - Hidden on Mobile */}
         {handleBackNavigation && (
           <button
             type="button"
             onClick={handleBackNavigation}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1E56C7] hover:text-blue-700 transition-colors mb-5 cursor-pointer group"
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-[#1E56C7] hover:text-blue-700 transition-colors mb-5 cursor-pointer group"
           >
             <FiArrowLeft className="w-4 h-4 text-[#1E56C7] group-hover:-translate-x-1 transition-transform duration-200" />
             <span>Back</span>
@@ -95,9 +95,9 @@ export default function CourseHero({
 
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* LEFT SIDE (Content) ~ 48% width */}
-          <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left">
+          <div className="lg:col-span-6 flex flex-col items-start text-left">
             {/* Dynamic Title */}
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] font-extrabold text-[#1E56C7] leading-tight tracking-tight max-w-xl text-center lg:text-left whitespace-pre-line">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] font-extrabold text-[#1E56C7] leading-tight tracking-tight max-w-xl text-left whitespace-pre-line">
               {course.title}
             </h1>
 

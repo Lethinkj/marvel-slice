@@ -146,22 +146,12 @@ function CourseTabs({ tabs, onApplyNow }) {
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Reveal variant="up">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-3 sm:mb-0">
-            <div className="overflow-x-auto scrollbar-none pb-1 w-full">
-              <TabBar
-                tabs={tabList.map(t => t.label)}
-                activeIndex={active}
-                onChange={setActive}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => onApplyNow?.('Apply Now')}
-              className="hidden sm:inline-flex shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-brand-orange text-white rounded-full hover:bg-brand-orange/90 hover:shadow-lg transition-all text-sm font-bold shadow-sm cursor-pointer active:scale-95"
-            >
-              Apply Now
-              <FiArrowRight className="w-4 h-4" />
-            </button>
+          <div className="w-full overflow-x-auto scrollbar-none pb-1">
+            <TabBar
+              tabs={tabList.map(t => t.label)}
+              activeIndex={active}
+              onChange={setActive}
+            />
           </div>
           <div className="bg-white rounded-b-xl border-x border-b border-gray-200 shadow-xl shadow-slate-200/50 overflow-hidden">
             <div className="p-6 sm:p-8">

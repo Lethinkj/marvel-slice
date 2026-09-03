@@ -146,9 +146,9 @@ export default function IntroFormSection({ section }) {
     <section className="relative overflow-hidden bg-white">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10 sm:py-16">
         <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          <Reveal variant="up" className="lg:col-span-7 xl:col-span-8 space-y-4 sm:space-y-6 text-center lg:text-left">
+          <Reveal variant="up" className="lg:col-span-7 xl:col-span-8 space-y-4 sm:space-y-6 text-left">
             {heading && (
-              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy text-center lg:text-left leading-tight sm:leading-snug max-w-none whitespace-pre-line">
+              <h2 className="font-bold text-2xl sm:text-3xl text-dark-navy text-left leading-tight sm:leading-snug max-w-none whitespace-pre-line">
                 {heading}
               </h2>
             )}

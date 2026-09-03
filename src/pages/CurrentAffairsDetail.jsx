@@ -148,7 +148,7 @@ export default function CurrentAffairsDetail() {
           <button
             type="button"
             onClick={handleBackNavigation}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-orange transition-colors cursor-pointer group mb-2"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-orange transition-colors cursor-pointer group mb-2"
           >
             <FiArrowLeft className="w-4 h-4 text-slate-400 group-hover:text-brand-orange transition-transform group-hover:-translate-x-1" />
             <span>Back</span>
