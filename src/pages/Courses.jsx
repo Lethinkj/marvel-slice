@@ -272,6 +272,12 @@ export default function Courses() {
   const [viewMode, setViewMode] = useState("grid");
   const rawParent = searchParams.get("parent");
   if (rawParent === "competitive-exam") {
+    const cat = searchParams.get("category");
+    if (cat === "aptitude") return <Navigate to="/aptitude" replace />;
+    if (cat === "reasoning") return <Navigate to="/reasoning" replace />;
+    if (cat === "english") return <Navigate to="/english" replace />;
+    if (cat === "banking-awareness") return <Navigate to="/banking-awareness" replace />;
+    if (cat === "current-affairs") return <Navigate to="/current-affairs" replace />;
     return <Navigate to="/banking" replace />;
   }
   const parentParam = rawParent || PARENTS[0].slug;

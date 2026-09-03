@@ -20,6 +20,11 @@ import Contact from './pages/Contact';
 import ServicesPage from './pages/ServicesPage';
 import LegalPage from './pages/LegalPage';
 import Banking from './pages/Banking';
+import Aptitude from './pages/Aptitude';
+import Reasoning from './pages/Reasoning';
+import English from './pages/English';
+import BankingAwareness from './pages/BankingAwareness';
+import CurrentAffairs from './pages/CurrentAffairs';
 import { pageTransition } from './lib/motion';
 
 const Admin = lazy(() => import('./admin/Admin'));
@@ -59,7 +64,16 @@ function CourseNavRedirect() {
   const { subSlug } = useParams();
   const loc = useLocation();
   const isCE = loc.pathname.includes("competitive-exam") || loc.pathname.startsWith("/courses/ce/");
-  const parent = isCE ? "competitive-exam" : "software-learning";
+  if (isCE) {
+    if (subSlug === 'aptitude') return <Navigate to="/aptitude" replace />;
+    if (subSlug === 'reasoning') return <Navigate to="/reasoning" replace />;
+    if (subSlug === 'english') return <Navigate to="/english" replace />;
+    if (subSlug === 'banking-awareness') return <Navigate to="/banking-awareness" replace />;
+    if (subSlug === 'current-affairs') return <Navigate to="/current-affairs" replace />;
+    if (subSlug === 'banking') return <Navigate to="/banking" replace />;
+    return <Navigate to="/banking" replace />;
+  }
+  const parent = "software-learning";
   const categoryParam = subSlug ? `&category=${subSlug}` : '';
   return <Navigate to={`/courses?parent=${parent}${categoryParam}&view=list`} replace />;
 }
@@ -93,6 +107,11 @@ function AnimatedRoutes() {
       <Route path="/upcoming-classes" element={<AllUpcomingClasses />} />
       <Route path="/services" element={<ServicesPage />} />
       <Route path="/banking" element={<Banking />} />
+      <Route path="/aptitude" element={<Aptitude />} />
+      <Route path="/reasoning" element={<Reasoning />} />
+      <Route path="/english" element={<English />} />
+      <Route path="/banking-awareness" element={<BankingAwareness />} />
+      <Route path="/current-affairs" element={<CurrentAffairs />} />
       <Route path="/software-learning" element={<Navigate to="/courses?parent=software-learning" replace />} />
       <Route path="/competitive-exam" element={<Navigate to="/banking" replace />} />
       <Route path="/terms" element={<LegalPage pageKey="terms" />} />

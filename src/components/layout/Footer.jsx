@@ -15,9 +15,19 @@ function NavColumn({ parentLabel, defaultChildren }) {
     : (defaultChildren ? [...defaultChildren] : []);
 
   if (parentLabel === 'Competitive Exam') {
-    if (!items.some(item => item.label === 'Banking')) {
-      items.push({ label: 'Banking', path: '/banking' });
-    }
+    const ceDefaults = [
+      { label: 'Banking', path: '/banking' },
+      { label: 'Aptitude', path: '/aptitude' },
+      { label: 'Reasoning', path: '/reasoning' },
+      { label: 'English', path: '/english' },
+      { label: 'Banking Awareness', path: '/banking-awareness' },
+      { label: 'Current Affairs', path: '/current-affairs' }
+    ];
+    ceDefaults.forEach(def => {
+      if (!items.some(item => item.label === def.label)) {
+        items.push(def);
+      }
+    });
   }
 
   if (items.length === 0) return null;

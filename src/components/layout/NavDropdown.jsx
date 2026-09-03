@@ -29,10 +29,12 @@ function isItemOrSubtreeActive(item, currentPath, parentParam, resolvedChildren)
     return true;
   }
 
+  const compPaths = ['/banking', '/aptitude', '/reasoning', '/english', '/banking-awareness', '/current-affairs'];
+  const isCompetitivePath = compPaths.some(p => currentPath === p || currentPath.startsWith(p + '/')) || currentPath.includes('competitive-exam') || currentPath.startsWith('/courses/ce/') || parentParam === 'competitive-exam' || parentParam === 'ce';
+
   // 3. Category & Course route matching for Software Learning
   if (label === 'Software Learning') {
-    const isCompetitive = currentPath === '/banking' || currentPath.startsWith('/banking') || currentPath.includes('competitive-exam') || currentPath.startsWith('/courses/ce/') || parentParam === 'competitive-exam' || parentParam === 'ce';
-    if (!isCompetitive && (
+    if (!isCompetitivePath && (
       currentPath.startsWith('/courses') ||
       currentPath.startsWith('/software-learning')
     )) {
@@ -42,7 +44,7 @@ function isItemOrSubtreeActive(item, currentPath, parentParam, resolvedChildren)
 
   // 4. Competitive Exam matching
   if (label === 'Competitive Exam') {
-    if (currentPath === '/banking' || currentPath.startsWith('/banking') || currentPath.includes('competitive-exam') || currentPath.startsWith('/courses/ce/') || parentParam === 'competitive-exam' || parentParam === 'ce') {
+    if (isCompetitivePath) {
       return true;
     }
   }
