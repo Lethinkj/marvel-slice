@@ -565,12 +565,10 @@ export default function Banking() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="text-center mb-10 sm:mb-14">
-              <div className="inline-flex flex-col items-center">
-                <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy tracking-tight">
-                  Frequently Asked Questions
-                </h2>
-                <div className="mt-3.5 h-[3.5px] bg-brand-orange rounded-full w-16 sm:w-20" />
-              </div>
+              <h2 className="font-extrabold text-2xl sm:text-3xl lg:text-4xl text-dark-navy tracking-tight">
+                Frequently Asked Questions
+              </h2>
+              <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3" />
             </div>
           </Reveal>
 
