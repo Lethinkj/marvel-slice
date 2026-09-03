@@ -722,7 +722,7 @@ export default function Banking() {
                             <span>Submitting...</span>
                           </>
                         ) : (
-                          <span>Submit Application</span>
+                          <span>Submit</span>
                         )}
                       </button>
                     </div>
