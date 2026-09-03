@@ -5,7 +5,8 @@ import SaveBar from '../components/SaveBar';
 import SaveCancelBar from '../components/SaveCancelBar';
 import PageShell from '../components/ui/PageShell';
 import useDirty from '../hooks/useDirty';
-import { FiUpload, FiStar, FiAward } from 'react-icons/fi';
+import { FiUpload, FiStar, FiAward, FiCrop } from 'react-icons/fi';
+import ImageCropperModal from '../components/ImageCropperModal';
 
 export default function BankingTestimonialEditor() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export default function BankingTestimonialEditor() {
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [showCropper, setShowCropper] = useState(false);
 
   const defaultForm = {
     name: '',
@@ -75,6 +77,20 @@ export default function BankingTestimonialEditor() {
     } else {
       const { data } = supabase.storage.from('pages').getPublicUrl(path);
       setForm(prev => ({ ...prev, avatar_url: data.publicUrl }));
+    }
+    setUploading(false);
+  }
+
+  async function handleCropSave(croppedFile) {
+    setUploading(true);
+    setSaveError('');
+    const path = `testimonials/banking_cropped_${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+    const { error } = await supabase.storage.from('pages').upload(path, croppedFile);
+    if (!error) {
+      const { data } = supabase.storage.from('pages').getPublicUrl(path);
+      setForm(prev => ({ ...prev, avatar_url: data.publicUrl }));
+    } else {
+      setSaveError('Crop save failed: ' + error.message);
     }
     setUploading(false);
   }
@@ -238,7 +254,7 @@ export default function BankingTestimonialEditor() {
             <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase tracking-wider">
               Candidate Photo / Avatar
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               {form.avatar_url ? (
                 <img src={form.avatar_url} alt="Candidate" className="w-12 h-12 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs" />
               ) : null}
@@ -248,7 +264,7 @@ export default function BankingTestimonialEditor() {
                 value={form.avatar_url}
                 onChange={handleChange}
                 placeholder="Paste photo image URL or upload file..."
-                className="flex-1 px-3.5 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all"
+                className="flex-1 min-w-[200px] px-3.5 py-2.5 border border-admin-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all"
               />
               <label className="cursor-pointer inline-flex items-center justify-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 hover:border-brand-blue hover:text-brand-blue hover:bg-blue-50/50 transition-all bg-white shrink-0 font-medium">
                 {uploading ? (
@@ -261,6 +277,17 @@ export default function BankingTestimonialEditor() {
                 )}
                 <input ref={inputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
               </label>
+
+              {form.avatar_url && (
+                <button
+                  type="button"
+                  onClick={() => setShowCropper(true)}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg bg-blue-50 text-brand-blue border border-blue-200 text-xs font-bold hover:bg-blue-100 transition-all cursor-pointer shadow-xs"
+                >
+                  <FiCrop className="w-4 h-4 text-brand-blue" />
+                  <span>Edit Crop & Position</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -293,6 +320,13 @@ export default function BankingTestimonialEditor() {
         </div>
       </form>
       <SaveCancelBar saving={saving} saved={saved} saveError={saveError} onSave={handleSave} onDiscard={() => navigate('/admin/banking-testimonials')} />
+      {showCropper && form.avatar_url && (
+        <ImageCropperModal
+          imageUrl={form.avatar_url}
+          onClose={() => setShowCropper(false)}
+          onCropSave={handleCropSave}
+        />
+      )}
     </PageShell>
   );
 }
