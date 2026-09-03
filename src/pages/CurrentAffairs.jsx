@@ -157,7 +157,7 @@ export default function CurrentAffairs() {
                   Daily Current Affairs & Exam Notes
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                  India & International news updates, categorized automatically for competitive exam revision.
+                  Curated National & International news updates structured for competitive exam revision.
                 </p>
               </div>
 
@@ -263,14 +263,14 @@ export default function CurrentAffairs() {
                         </Link>
 
                         {/* Footer / Action */}
-                        <div className="px-5 py-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between">
-                          <span className="text-[11px] font-semibold text-slate-600 truncate max-w-[140px]">
+                        <div className="px-5 py-3 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between gap-3">
+                          <span className="text-[11px] font-semibold text-slate-600 leading-tight">
                             Source: {art.source || 'Official News'}
                           </span>
 
                           <Link
                             to={articleLink}
-                            className="text-xs font-bold text-brand-orange hover:text-orange-600 inline-flex items-center gap-1 cursor-pointer transition-colors"
+                            className="text-xs font-bold text-brand-orange hover:text-orange-600 inline-flex items-center gap-1 cursor-pointer transition-colors shrink-0"
                           >
                             <span>Read Article</span>
                             <FiArrowRight className="w-3.5 h-3.5" />
