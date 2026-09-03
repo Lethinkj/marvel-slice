@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams, Link } from 'react-router-dom';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { trackFormSubmit, trackDownload } from '../lib/analytics';
 import Reveal from '../components/ui/Reveal';
 import CTABannerSection from '../components/home/CTABannerSection';
 import {
-  FiMapPin, FiClock, FiDollarSign,
-  FiSearch, FiExternalLink, FiChevronRight, FiChevronLeft,
+  FiMapPin, FiClock,
+  FiSearch, FiChevronRight, FiChevronLeft,
   FiBriefcase, FiUpload, FiSend, FiCheck,
   FiAlertCircle, FiX, FiArrowRight,
 } from 'react-icons/fi';
@@ -221,8 +221,6 @@ export default function Career() {
 
   const fc = pageContent?.form_config || {};
   const formCfg = fc.form || {};
-  const section2HeadingAlign = fc.section2_heading_align || 'center';
-  const section2SubheadingAlign = fc.section2_subheading_align || 'center';
   const formEnabled = formCfg.enabled !== false;
 
   const ctaConfig = fc.cta_banner || {};
@@ -676,31 +674,42 @@ export default function Career() {
 
       <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
         {fc.headline && (
-          <h2 className="text-4xl font-extrabold text-brand-orange">
-            {fc.headline}
-          </h2>
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-dark-navy">
+              {fc.headline}
+            </h2>
+            <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3 mb-6" />
+          </div>
         )}
-        <div className="w-16 h-0.5 bg-brand-orange mx-auto rounded-full mt-3" />
 
         {fc.subtitle && (
-          <p className="text-xl font-bold text-brand-orange mt-8">
+          <h3 className="text-lg sm:text-xl font-bold text-dark-navy mt-4 mb-2">
             {fc.subtitle}
-          </p>
+          </h3>
         )}
 
         {fc.description && (
-          <p className="text-slate-500 text-base w-full max-w-none mx-auto mt-3">
-            {fc.description}
-          </p>
+          <div className="max-w-4xl mx-auto mt-3">
+            {fc.description.split('\n\n').filter(Boolean).map((p, idx) => (
+              <p
+                key={idx}
+                className="text-sm sm:text-base leading-relaxed text-justify [text-align-last:left] text-slate-600 w-full indent-6 sm:indent-10 whitespace-pre-line mb-4"
+              >
+                {p}
+              </p>
+            ))}
+          </div>
         )}
 
         <div className="mt-10">
         {fc.categoriesSubtitle && (
-          <h3 className="text-2xl font-bold text-brand-orange mt-1">
-            {fc.categoriesSubtitle}
-          </h3>
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold text-dark-navy mt-1">
+              {fc.categoriesSubtitle}
+            </h3>
+            <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3 mb-6" />
+          </div>
         )}
-        <div className="w-12 h-1 bg-brand-orange mx-auto rounded-full mt-2" />
 
         {roleCategories?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 max-w-6xl mx-auto text-left">
@@ -712,7 +721,7 @@ export default function Career() {
                 <div className={`p-3 rounded-xl flex items-center justify-center shrink-0 ${idx % 2 === 0 ? 'bg-brand-green/10 text-brand-green' : 'bg-brand-orange/10 text-brand-orange'}`}>
                   <FiBriefcase className="w-5 h-5" />
                 </div>
-                <span className="text-gray-900 font-semibold text-sm md:text-base">
+                <span className="text-dark-navy font-semibold text-sm md:text-base">
                   {cat.name}
                 </span>
               </div>
@@ -731,18 +740,20 @@ export default function Career() {
 
       <div ref={jobsRef} className="bg-gradient-to-b from-orange-50/40 via-slate-50 to-slate-50">
         <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className={`mb-8 text-${section2HeadingAlign}`}>
+          <div className="mb-8 text-center">
             {pageContent?.section2_heading && (
-              <h2 className="text-3xl font-extrabold text-slate-900 mt-2 whitespace-pre-line">
-                {pageContent.section2_heading}
-              </h2>
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-dark-navy whitespace-pre-line">
+                  {pageContent.section2_heading}
+                </h2>
+                <div className="w-16 h-[3px] bg-brand-orange rounded-full mx-auto mt-3 mb-6" />
+              </div>
             )}
             {pageContent?.section2_subheading && (
-              <p className="text-slate-600 text-sm mt-1 whitespace-pre-line">
+              <p className="text-slate-500 text-xs sm:text-sm font-normal max-w-2xl mx-auto leading-relaxed whitespace-pre-line">
                 {pageContent.section2_subheading}
               </p>
             )}
-            <div className="w-16 h-[3px] bg-brand-orange mx-auto rounded-full mt-3" />
           </div>
 
           {/* Category Tabs: All, Jobs, Internships */}
@@ -782,10 +793,9 @@ export default function Career() {
                     exit="exit"
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                   >
-                    {pageItems.map((item, i) => {
+                    {pageItems.map((item) => {
                       const isIntern = item._type === 'intern';
                       const empType = item.type || item.department || (isIntern ? 'Internship' : 'Job');
-                      const salaryVal = item.salary || item.stipend;
                       const expVal = item.experience || item.duration;
                       const locVal = item.location;
 
