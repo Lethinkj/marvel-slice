@@ -664,7 +664,7 @@ export default function English() {
                             <span>Submitting...</span>
                           </>
                         ) : (
-                          <span>Submit Application</span>
+                          <span>Submit</span>
                         )}
                       </button>
                     </div>
