@@ -161,7 +161,7 @@ export default function CourseHero({
               <button
                 type="button"
                 onClick={() => openEnquiryModal?.(course.cta_right || 'Download Brochure')}
-                className="flex-1 px-3 sm:px-6 py-3 sm:py-3.5 bg-white hover:bg-brand-blue hover:text-white text-brand-blue font-bold text-xs sm:text-sm rounded-full border-2 border-brand-blue shadow-sm active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center whitespace-nowrap text-center"
+                className="flex-1 px-3 sm:px-6 py-3 sm:py-3.5 bg-brand-blue hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-md active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center whitespace-nowrap text-center"
               >
                 {course.cta_right || 'Download Brochure'}
               </button>
@@ -186,7 +186,7 @@ export default function CourseHero({
               <button
                 type="button"
                 onClick={() => openEnquiryModal?.(course.cta_right || 'Download Brochure')}
-                className="px-8 py-3.5 bg-white hover:bg-brand-blue hover:text-white text-brand-blue font-bold text-sm rounded-full border-2 border-brand-blue shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center whitespace-nowrap"
+                className="px-8 py-3.5 bg-brand-blue hover:bg-blue-700 text-white font-bold text-sm rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center whitespace-nowrap"
               >
                 {course.cta_right || 'Download Brochure'}
               </button>
