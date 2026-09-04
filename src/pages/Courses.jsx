@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, useParams, Link, Navigate } from "react-router-dom";
+import { useSearchParams, useParams, Link, Navigate, useNavigate } from "react-router-dom";
 import {
   FiBookOpen,
   FiChevronDown,
@@ -264,7 +264,16 @@ function CourseListItem({ course }) {
 }
 
 export default function Courses() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleResetToAllCourses = useCallback((e) => {
+    if (e) e.preventDefault();
+    setSearch("");
+    setSearchParams({});
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate("/courses");
+  }, [setSearchParams, navigate]);
   const { categorySlug } = useParams();
   const [search, setSearch] = useState("");
   const [userExpanded, setUserExpanded] = useState(null);
@@ -430,35 +439,7 @@ export default function Courses() {
     [hasUserInteracted, userExpanded, activeNavId, isActiveOrChild],
   );
 
-  useEffect(() => {
-    if (!parentParam || activeNavId || !navItems || !currentTree.length) return;
-    const first = currentTree[0]?.children?.[0];
-    if (!first) return;
-    const slug = first.path
-      ? first.path.replace(/.*\//, "")
-      : first.label.toLowerCase().replace(/\s+/g, "-");
-    const next = new URLSearchParams();
-    next.set("parent", parentParam);
-    next.set("category", slug);
-    setSearchParams(next, { replace: true });
-  }, [parentParam, activeNavId, navItems, currentTree, setSearchParams]);
 
-  // Auto-select first category if none selected
-  useEffect(() => {
-    if (!parentParam || !navItems || !currentTree.length) return;
-    if (!searchParams.get("category") && currentTree.length > 0) {
-      const first = currentTree[0]?.children?.[0] || currentTree[0];
-      if (first) {
-        const slug = first.path
-          ? first.path.replace(/.*\//, "")
-          : first.label.toLowerCase().replace(/\s+/g, "-");
-        const next = new URLSearchParams();
-        next.set("parent", parentParam);
-        next.set("category", slug);
-        setSearchParams(next, { replace: true });
-      }
-    }
-  }, [parentParam, navItems, currentTree, searchParams, setSearchParams]);
 
   const filteredCourses = useMemo(() => {
     if (!courses) return [];
@@ -764,25 +745,12 @@ export default function Courses() {
               </div>
             )}
 
-            {/* Mobile-mode header & category accordion */}
+            {/* Mobile-mode header */}
             {!listOnly && (
-              <div className="lg:hidden mb-5 space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-[#1B365D] tracking-tight">
-                    {activeNavId ? navItems?.find((n) => n.id === activeNavId)?.label || "Category Courses" : "Software Courses"}
-                  </h2>
-                </div>
-                <MobileCatList
-                  parentTree={currentTree}
-                  activeCategory={activeCategory}
-                  countFor={countFor}
-                  onSelectParent={(parentNode, parentSlug) => {
-                    selectParentCategory(parentParam, parentSlug);
-                  }}
-                  onSelectChild={(child, childSlug) => {
-                    selectCategory(childSlug);
-                  }}
-                />
+              <div className="lg:hidden mb-4">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-[#1B365D] tracking-tight">
+                  All Courses
+                </h1>
               </div>
             )}
 
@@ -802,7 +770,7 @@ export default function Courses() {
             )}
 
             {/* Toolbar row: Search Bar & View Toggle */}
-            <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200 w-full flex-wrap sm:flex-nowrap">
+            <div className="hidden lg:flex items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200 w-full flex-wrap sm:flex-nowrap">
               {/* Course Count */}
               <p className="text-sm font-semibold text-slate-600 shrink-0">
                 <span className="font-extrabold text-slate-900">
@@ -913,13 +881,14 @@ export default function Courses() {
                   {!listOnly && (
                     <Pagination page={page} total={totalItems} onPage={setPage} />
                   )}
-                  {listOnly && totalItems > 0 && (
+                  {(listOnly || activeCategory || activeNavId) && totalItems > 0 && (
                     <div className="flex justify-end mt-8">
                       <Link
-                        to={`/courses?parent=${parentParam}`}
-                        className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                        to="/courses"
+                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                        className="inline-flex items-center justify-center gap-2 bg-brand-orange hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-full text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer"
                       >
-                        Explore more courses
+                        <span>Explore All Courses</span>
                         <FiChevronRight className="w-4 h-4" />
                       </Link>
                     </div>
@@ -985,6 +954,18 @@ export default function Courses() {
                       </div>
                     );
                   })}
+                  {(activeCategory || listOnly || activeNavId) && (
+                    <div className="flex justify-center mt-8">
+                      <Link
+                        to="/courses"
+                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                        className="inline-flex items-center justify-center gap-2 bg-brand-orange hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-full text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer"
+                      >
+                        <span>Explore All Courses</span>
+                        <FiChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
