@@ -64,10 +64,22 @@ export default function Contact() {
     );
   }
 
+  const heroImg = data?.hero_image || '';
+  const mobileHeroImg = data?.mobile_hero_image || data?.form_config?.mobile_hero_image || '';
+
   return (
     <div>
-      {data.hero_image && (
-        <Reveal variant="fadeIn" className="w-full max-w-[1900px] mx-auto"><img src={data.hero_image} alt="" className="w-full h-auto" /></Reveal>
+      {(heroImg || mobileHeroImg) && (
+        <Reveal variant="fadeIn" className="w-full max-w-[1900px] mx-auto overflow-hidden">
+          {mobileHeroImg ? (
+            <picture>
+              <source media="(max-width: 639px)" srcSet={mobileHeroImg} />
+              <img src={heroImg || mobileHeroImg} alt="" className="w-full h-[260px] sm:h-auto object-cover" />
+            </picture>
+          ) : (
+            <img src={heroImg} alt="" className="w-full h-[260px] sm:h-auto object-cover" />
+          )}
+        </Reveal>
       )}
 
       {(data.heading || data.subheading) && (

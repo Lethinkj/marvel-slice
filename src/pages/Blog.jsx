@@ -8,7 +8,7 @@ import Reveal, { Stagger, StaggerItem } from '../components/ui/Reveal';
 import { useBlogPosts, useBlogCategories, useRecentPosts, usePopularTags, useBlogPost } from '../hooks/useBlog';
 import { useSiteSettings } from '../hooks/useSupabase';
 
-function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading }) {
+function Hero({ search, onSearchChange, onSearch, heroImage, mobileHeroImage, heading, subheading }) {
   const searchBar = (
     <div className="max-w-xl mx-auto flex flex-row items-center gap-0 shadow-sm rounded-xl w-full">
       <div className="relative flex-1">
@@ -36,8 +36,15 @@ function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading
   return (
     <div className="w-full max-w-[1900px] mx-auto">
       <section className="relative text-white overflow-hidden w-full max-w-[1900px] mx-auto min-h-[240px] sm:h-[360px] lg:h-[400px] flex items-center justify-center py-8 sm:py-0">
-        {heroImage ? (
-          <img src={heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        {heroImage || mobileHeroImage ? (
+          mobileHeroImage ? (
+            <picture className="absolute inset-0 w-full h-full">
+              <source media="(max-width: 639px)" srcSet={mobileHeroImage} />
+              <img src={heroImage || mobileHeroImage} alt="" className="w-full h-full object-cover" />
+            </picture>
+          ) : (
+            <img src={heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          )
         ) : (
           <div className="absolute inset-0 bg-dark-navy" />
         )}
@@ -369,7 +376,7 @@ export default function Blog() {
 
   return (
     <div>
-      <Hero key={[settings?.blog_hero_image, settings?.blog_heading, settings?.blog_subheading].filter(Boolean).join('|') || 'default'} search={search} onSearchChange={setSearch} onSearch={handleSearch} heroImage={settings?.blog_hero_image} heading={settings?.blog_heading} subheading={settings?.blog_subheading} />
+      <Hero key={[settings?.blog_hero_image, settings?.blog_mobile_hero_image, settings?.blog_heading, settings?.blog_subheading].filter(Boolean).join('|') || 'default'} search={search} onSearchChange={setSearch} onSearch={handleSearch} heroImage={settings?.blog_hero_image} mobileHeroImage={settings?.blog_mobile_hero_image} heading={settings?.blog_heading} subheading={settings?.blog_subheading} />
               <CategoryPills categories={categories || []} active={category} onChange={(slug) => { const next = new URLSearchParams(); if (slug) next.set('category', slug); setSearchParams(next); }} />
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {isLoading ? (

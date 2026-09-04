@@ -211,6 +211,7 @@ export default function ServicesPage() {
         const faqsSec = sections.find((s) => s.section_type === 'faq_list');
         return {
           hero_image: page.hero_image || '',
+          mobile_hero_image: page.mobile_hero_image || page.form_config?.mobile_hero_image || '',
           heading: page.heading || '',
           subheading: page.subheading || '',
           services: cards?.items || [],
@@ -234,13 +235,20 @@ export default function ServicesPage() {
     );
   }
 
-  const { hero_image, heading, subheading, services = [], faqs = [], faqHeading, faqSubheading, timeline = null } = pageData || {};
+  const { hero_image, mobile_hero_image, heading, subheading, services = [], faqs = [], faqHeading, faqSubheading, timeline = null } = pageData || {};
 
   return (
     <div className="bg-white">
-      {hero_image && (
-        <Reveal variant="fadeIn" className="w-full max-w-[1900px] mx-auto">
-          <img src={hero_image} alt="" className="w-full h-auto" />
+      {(hero_image || mobile_hero_image) && (
+        <Reveal variant="fadeIn" className="w-full max-w-[1900px] mx-auto overflow-hidden">
+          {mobile_hero_image ? (
+            <picture>
+              <source media="(max-width: 639px)" srcSet={mobile_hero_image} />
+              <img src={hero_image || mobile_hero_image} alt="" className="w-full h-auto" />
+            </picture>
+          ) : (
+            <img src={hero_image} alt="" className="w-full h-auto" />
+          )}
         </Reveal>
       )}
 

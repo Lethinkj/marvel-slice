@@ -150,9 +150,11 @@ function PublicLayout() {
     <div className="flex flex-col min-h-screen w-full max-w-full relative">
       <ScrollToTop />
       <PageTracker />
-      <TopBar />
-      <Header />
-      <main className="flex-1 w-full max-w-full overflow-x-hidden">
+      <div className="fixed top-0 left-0 right-0 z-50 w-full">
+        <TopBar />
+        <Header />
+      </div>
+      <main className="flex-1 w-full max-w-full overflow-x-hidden pt-[60px] lg:pt-[104px]">
         <AnimatedRoutes />
       </main>
       <Footer />

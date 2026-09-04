@@ -633,12 +633,21 @@ export default function Career() {
     );
   }
 
+  const heroImg = pageContent?.hero_image || '';
+  const mobileHeroImg = pageContent?.mobile_hero_image || pageContent?.form_config?.mobile_hero_image || '';
+
   return (
     <div>
-
-      {pageContent?.hero_image ? (
-        <div className="relative w-full max-w-[1900px] mx-auto">
-          <img src={pageContent.hero_image} alt="" className="w-full h-auto" />
+      {(heroImg || mobileHeroImg) ? (
+        <div className="relative w-full max-w-[1900px] mx-auto overflow-hidden">
+          {mobileHeroImg ? (
+            <picture>
+              <source media="(max-width: 639px)" srcSet={mobileHeroImg} />
+              <img src={heroImg || mobileHeroImg} alt="" className="w-full h-auto" />
+            </picture>
+          ) : (
+            <img src={heroImg} alt="" className="w-full h-auto" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
           <div className="absolute inset-0 flex items-end">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 lg:pb-10">
