@@ -252,44 +252,43 @@ export default function BankingV2() {
 
   return (
     <div className="bg-white min-h-screen text-slate-800 relative">
-      {/* Dynamic CSS override to hide the global site header on BankingV2 page */}
+      {/* Hide site's global white header on BankingV2 page */}
       <style>{`
         header {
           display: none !important;
         }
       `}</style>
 
-      {/* 0. STANDALONE HEADER & SUB-HEADER MENU FOR BANKING V2 */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-white border-b border-slate-200 shadow-xs">
-        {/* Top Header Row: Logo (Left), Search Bar (Center), Login / Sign In Text (Right) */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[58px] sm:h-[64px] flex items-center justify-between gap-3 sm:gap-6">
-          {/* Left Logo */}
+      {/* 0. STANDALONE BLUE HEADER & SUB-HEADER MENU FOR BANKING V2 */}
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-brand-blue text-white border-b border-blue-700 shadow-md">
+        {/* Top Header Row: Logo & Name (Left), Search Bar (Center), Login / Sign In Text (Right) */}
+        <div className="w-full px-4 sm:px-6 lg:px-8 h-[58px] sm:h-[64px] flex items-center justify-between gap-3 sm:gap-6">
+          {/* Left Logo & Name */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0">
             {settings?.logo_url ? (
-              <img src={settings.logo_url} alt="Marvel Slice" className="h-9 sm:h-11 w-auto object-contain" />
-            ) : (
-              <span className="text-lg sm:text-2xl font-extrabold text-brand-blue tracking-tight">
-                Marvel <span className="text-brand-orange">Slice</span>
-              </span>
-            )}
+              <img src={settings.logo_url} alt="Marvel Slice" className="h-9 sm:h-11 w-auto object-contain bg-white/10 p-1 rounded-lg border border-white/20" />
+            ) : null}
+            <span className="text-lg sm:text-2xl font-extrabold text-white tracking-tight">
+              Marvel <span className="text-brand-orange">Slice</span>
+            </span>
           </Link>
 
           {/* Center Search Bar */}
           <div className="flex-1 max-w-md mx-2 sm:mx-6">
             <div className="relative w-full">
-              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
+              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/70 w-4 h-4 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search banking topics, exams..."
-                className="w-full pl-9 pr-8 py-1.5 sm:py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-full focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 text-slate-700 placeholder-slate-400 transition-all"
+                className="w-full pl-9 pr-8 py-1.5 sm:py-2 text-xs sm:text-sm bg-white/15 border border-white/25 rounded-full focus:outline-none focus:bg-white/25 focus:border-white text-white placeholder-white/70 transition-all"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white cursor-pointer"
                 >
                   <FiX className="w-3.5 h-3.5" />
                 </button>
@@ -302,59 +301,59 @@ export default function BankingV2() {
             <button
               type="button"
               onClick={() => openApplyModal('general', 'Login / Sign In')}
-              className="text-slate-700 hover:text-brand-blue transition-colors cursor-pointer"
+              className="text-white/90 hover:text-white transition-colors cursor-pointer"
             >
               Log In
             </button>
-            <span className="text-slate-300">/</span>
+            <span className="text-white/40">/</span>
             <button
               type="button"
               onClick={() => openApplyModal('general', 'Login / Sign In')}
-              className="text-brand-blue hover:text-brand-orange transition-colors font-bold cursor-pointer"
+              className="text-brand-orange hover:text-amber-300 transition-colors font-bold cursor-pointer"
             >
               Sign Up
             </button>
           </div>
         </div>
 
-        {/* Sub-Header Line Menu Bar - Full Width, Left-Aligned (justify-start) */}
-        <div className="w-full bg-blue-50/90 border-t border-blue-100/80 shadow-xs">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Sub-Header Line Menu Bar - Full Width White Bar, Left-Aligned (justify-start) */}
+        <div className="w-full bg-white text-slate-800 border-t border-b border-slate-200/80 shadow-xs">
+          <div className="w-full px-4 sm:px-6 lg:px-8">
             <nav
               role="menubar"
-              className="flex items-center justify-start gap-1 sm:gap-2.5 py-1.5 overflow-x-auto no-scrollbar whitespace-nowrap text-xs sm:text-sm font-semibold"
+              className="flex items-center justify-start gap-1 sm:gap-2.5 py-2 overflow-x-auto no-scrollbar whitespace-nowrap text-xs sm:text-sm font-semibold"
             >
               <Link
                 to="/bankingv2"
-                className="shrink-0 px-3 py-1.5 rounded-md bg-brand-blue text-white font-bold shadow-xs"
+                className="shrink-0 px-3.5 py-1.5 rounded-md bg-brand-blue text-white font-extrabold shadow-xs"
               >
                 About Banking
               </Link>
 
               <Link
                 to="/aptitude"
-                className="shrink-0 px-3 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-100/70 font-semibold transition-colors"
+                className="shrink-0 px-3.5 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-50 font-semibold transition-colors"
               >
                 Aptitude
               </Link>
 
               <Link
                 to="/reasoning"
-                className="shrink-0 px-3 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-100/70 font-semibold transition-colors"
+                className="shrink-0 px-3.5 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-50 font-semibold transition-colors"
               >
                 Reasoning
               </Link>
 
               <Link
                 to="/english"
-                className="shrink-0 px-3 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-100/70 font-semibold transition-colors"
+                className="shrink-0 px-3.5 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-50 font-semibold transition-colors"
               >
                 English
               </Link>
 
               <Link
                 to="/banking-awareness"
-                className="shrink-0 px-3 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-100/70 font-semibold transition-colors"
+                className="shrink-0 px-3.5 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-50 font-semibold transition-colors"
               >
                 Banking Awareness
               </Link>
@@ -370,10 +369,10 @@ export default function BankingV2() {
                   type="button"
                   onClick={() => setAffairsOpen((prev) => !prev)}
                   aria-expanded={affairsOpen}
-                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  className={`inline-flex items-center gap-1 px-3.5 py-1.5 rounded-md transition-colors cursor-pointer ${
                     affairsOpen
                       ? 'bg-brand-blue text-white font-bold shadow-xs'
-                      : 'text-slate-700 hover:text-brand-blue hover:bg-blue-100/70 font-semibold'
+                      : 'text-slate-700 hover:text-brand-blue hover:bg-blue-50 font-semibold'
                   }`}
                 >
                   <span>Affairs</span>
@@ -391,7 +390,7 @@ export default function BankingV2() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 6, scale: 0.96 }}
                       transition={{ duration: 0.15, ease: 'easeOut' }}
-                      className="absolute left-0 top-full mt-1 w-44 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-50 overflow-hidden"
+                      className="absolute left-0 top-full mt-1 w-44 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-50 overflow-hidden text-slate-800"
                     >
                       <Link
                         to="/current-affairs"
@@ -414,7 +413,7 @@ export default function BankingV2() {
 
               <Link
                 to="/mock-exam"
-                className="shrink-0 px-3 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-100/70 font-semibold transition-colors"
+                className="shrink-0 px-3.5 py-1.5 rounded-md text-slate-700 hover:text-brand-blue hover:bg-blue-50 font-semibold transition-colors"
               >
                 Mock Exam
               </Link>
