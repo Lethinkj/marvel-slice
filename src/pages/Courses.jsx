@@ -290,7 +290,6 @@ export default function Courses() {
     return <Navigate to="/banking" replace />;
   }
   const parentParam = rawParent || PARENTS[0].slug;
-  const activeCategory = searchParams.get("category") || categorySlug || null;
   const listOnly = searchParams.get("view") === "list";
   const page = parseInt(searchParams.get("page") || "1", 10);
 
@@ -414,16 +413,40 @@ export default function Courses() {
 
   const currentTree = tree[parentParam] || [];
 
+  const explicitCategoryParam = searchParams.get("category") || categorySlug || null;
+
+  const defaultCategorySlug = useMemo(() => {
+    if (!currentTree || currentTree.length === 0) return null;
+    const firstNode = currentTree[0]?.children?.[0] || currentTree[0];
+    if (!firstNode) return null;
+    return firstNode.path
+      ? firstNode.path.replace(/.*\//, "")
+      : firstNode.label.toLowerCase().replace(/\s+/g, "-");
+  }, [currentTree]);
+
+  const desktopActiveCategory = explicitCategoryParam || defaultCategorySlug;
+
   const activeNavId = useMemo(() => {
-    if (!activeCategory || !navItems) return null;
+    if (!desktopActiveCategory || !navItems) return null;
     const found = navItems.find((ni) => {
       const slug = ni.path
         ? ni.path.replace(/.*\//, "")
         : ni.label.toLowerCase().replace(/\s+/g, "-");
-      return slug === activeCategory;
+      return slug === desktopActiveCategory;
     });
     return found?.id || null;
-  }, [activeCategory, navItems]);
+  }, [desktopActiveCategory, navItems]);
+
+  const mobileActiveNavId = useMemo(() => {
+    if (!explicitCategoryParam || !navItems) return null;
+    const found = navItems.find((ni) => {
+      const slug = ni.path
+        ? ni.path.replace(/.*\//, "")
+        : ni.label.toLowerCase().replace(/\s+/g, "-");
+      return slug === explicitCategoryParam;
+    });
+    return found?.id || null;
+  }, [explicitCategoryParam, navItems]);
 
   const isActiveOrChild = useCallback((parentNode, activeId) => {
     if (!activeId) return false;
@@ -438,8 +461,6 @@ export default function Courses() {
     },
     [hasUserInteracted, userExpanded, activeNavId, isActiveOrChild],
   );
-
-
 
   const filteredCourses = useMemo(() => {
     if (!courses) return [];
@@ -474,14 +495,14 @@ export default function Courses() {
     const processedCourseIds = new Set();
 
     currentTree.forEach((parentNode) => {
-      const isParentMatch = activeNavId === parentNode.id;
-      const hasMatchingChild = parentNode.children?.some((c) => c.id === activeNavId);
+      const isParentMatch = mobileActiveNavId === parentNode.id;
+      const hasMatchingChild = parentNode.children?.some((c) => c.id === mobileActiveNavId);
 
-      if (activeNavId && !isParentMatch && !hasMatchingChild) {
+      if (mobileActiveNavId && !isParentMatch && !hasMatchingChild) {
         return;
       }
 
-      if (!activeNavId || isParentMatch) {
+      if (!mobileActiveNavId || isParentMatch) {
         const parentCourses = (courseMap[parentNode.id] || []).filter((c) => {
           if (!search) return true;
           const q = search.toLowerCase();
@@ -503,7 +524,7 @@ export default function Courses() {
 
       if (parentNode.children && parentNode.children.length > 0) {
         parentNode.children.forEach((child) => {
-          if (activeNavId && child.id !== activeNavId && !isParentMatch) {
+          if (mobileActiveNavId && child.id !== mobileActiveNavId && !isParentMatch) {
             return;
           }
 
@@ -528,7 +549,7 @@ export default function Courses() {
       }
     });
 
-    if (!activeNavId) {
+    if (!mobileActiveNavId) {
       const remainingCourses = courses.filter((c) => {
         if (processedCourseIds.has(c.id)) return false;
         if (!search) return true;
@@ -549,7 +570,7 @@ export default function Courses() {
     }
 
     return sections;
-  }, [currentTree, courseMap, courses, search, activeNavId]);
+  }, [currentTree, courseMap, courses, search, mobileActiveNavId]);
 
   function toggleParent(id) {
     setHasUserInteracted(true);
@@ -570,7 +591,7 @@ export default function Courses() {
     const parentSlug = parentNode.path
       ? parentNode.path.replace(/.*\//, "")
       : parentNode.label.toLowerCase().replace(/\s+/g, "-");
-    const isParentActive = activeCategory === parentSlug;
+    const isParentActive = desktopActiveCategory === parentSlug;
     const expanded = shouldExpand(parentNode);
     const hasChildren = parentNode.children.length > 0;
 
@@ -643,7 +664,7 @@ export default function Courses() {
                   const childSlug = child.path
                     ? child.path.replace(/.*\//, "")
                     : child.label.toLowerCase().replace(/\s+/g, "-");
-                  const isChildActive = activeCategory === childSlug;
+                  const isChildActive = desktopActiveCategory === childSlug;
                   return (
                     <button
                       key={child.id}
@@ -942,6 +963,18 @@ export default function Courses() {
                       </div>
                     );
                   })}
+                  {explicitCategoryParam && (
+                    <div className="flex justify-center mt-8">
+                      <Link
+                        to="/courses"
+                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                        className="inline-flex items-center justify-center gap-2 bg-brand-orange hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-full text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer"
+                      >
+                        <span>Explore All Courses</span>
+                        <FiChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
