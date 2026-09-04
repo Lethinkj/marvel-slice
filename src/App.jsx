@@ -20,6 +20,7 @@ import Contact from './pages/Contact';
 import ServicesPage from './pages/ServicesPage';
 import LegalPage from './pages/LegalPage';
 import Banking from './pages/Banking';
+import BankingV2 from './pages/BankingV2';
 import Aptitude from './pages/Aptitude';
 import Reasoning from './pages/Reasoning';
 import English from './pages/English';
@@ -110,6 +111,7 @@ function AnimatedRoutes() {
       <Route path="/upcoming-classes" element={<AllUpcomingClasses />} />
       <Route path="/services" element={<ServicesPage />} />
       <Route path="/banking" element={<Banking />} />
+      <Route path="/bankingv2" element={<BankingV2 />} />
       <Route path="/aptitude" element={<Aptitude />} />
       <Route path="/reasoning" element={<Reasoning />} />
       <Route path="/english" element={<English />} />
@@ -154,7 +156,7 @@ function PublicLayout() {
         <TopBar />
         <Header />
       </div>
-      <main className="flex-1 w-full max-w-full overflow-x-hidden pt-[60px] lg:pt-[104px]">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden pt-[96px] lg:pt-[140px]">
         <AnimatedRoutes />
       </main>
       <Footer />
