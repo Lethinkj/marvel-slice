@@ -761,17 +761,28 @@ export default function CourseDetail() {
       {/* Related Courses */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div className="flex flex-row items-center justify-between gap-4 mb-8">
             <Reveal as="h2" className="font-bold text-2xl sm:text-3xl text-dark-navy whitespace-pre-line">More Courses You Might Like</Reveal>
             <Link
               to="/courses"
-              className="inline-flex items-center gap-2 bg-brand-orange text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-amber-600 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer shrink-0 w-fit group"
+              className="hidden sm:inline-flex items-center gap-2 bg-brand-orange text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-amber-600 shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer shrink-0 w-fit group"
             >
               <span>Explore All Courses</span>
               <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
           <RelatedCoursesWithId courseId={course.id} />
+
+          {/* Mobile Only: Explore All Courses button below cards */}
+          <div className="mt-8 flex justify-center sm:hidden">
+            <Link
+              to="/courses"
+              className="inline-flex items-center justify-center gap-2 bg-brand-orange text-white font-bold text-xs px-5 py-2.5 rounded-full hover:bg-amber-600 shadow-sm active:scale-95 transition-all cursor-pointer w-auto text-center group"
+            >
+              <span>Explore All Courses</span>
+              <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </section>
 
