@@ -148,6 +148,9 @@ function AnimatedRoutes() {
 }
 
 function PublicLayout() {
+  const { pathname } = useLocation();
+  const isV2Page = pathname === '/bankingv2';
+
   return (
     <div className="flex flex-col min-h-screen w-full max-w-full relative">
       <ScrollToTop />
@@ -156,7 +159,7 @@ function PublicLayout() {
         <TopBar />
         <Header />
       </div>
-      <main className="flex-1 w-full max-w-full overflow-x-hidden pt-[96px] lg:pt-[140px]">
+      <main className={`flex-1 w-full max-w-full overflow-x-hidden ${isV2Page ? 'pt-[96px] lg:pt-[140px]' : 'pt-[60px] lg:pt-[104px]'}`}>
         <AnimatedRoutes />
       </main>
       <Footer />

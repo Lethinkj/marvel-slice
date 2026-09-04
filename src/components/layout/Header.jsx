@@ -276,7 +276,7 @@ export default function Header() {
         </button>
       </div>
 
-      <SubHeaderMenu currentPath={pathname} />
+      {pathname === '/bankingv2' && <SubHeaderMenu currentPath={pathname} />}
 
       <AnimatePresence>
         {mobileOpen && (
