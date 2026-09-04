@@ -902,6 +902,18 @@ export default function Courses() {
                   {!listOnly && (
                     <Pagination page={page} total={totalItems} onPage={setPage} />
                   )}
+                  {listOnly && (
+                    <div className="flex justify-center mt-8">
+                      <Link
+                        to="/courses"
+                        onClick={handleExploreAll}
+                        className="inline-flex items-center justify-center gap-2 bg-brand-orange hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-full text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer"
+                      >
+                        <span>Explore All Courses</span>
+                        <FiChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -967,7 +979,7 @@ export default function Courses() {
                     <div className="flex justify-center mt-8">
                       <Link
                         to="/courses"
-                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                        onClick={handleExploreAll}
                         className="inline-flex items-center justify-center gap-2 bg-brand-orange hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-full text-xs sm:text-sm shadow-sm hover:shadow-md transition-all cursor-pointer"
                       >
                         <span>Explore All Courses</span>
