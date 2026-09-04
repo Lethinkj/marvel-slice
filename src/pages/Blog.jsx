@@ -35,47 +35,23 @@ function Hero({ search, onSearchChange, onSearch, heroImage, heading, subheading
 
   return (
     <div className="w-full max-w-[1900px] mx-auto">
-      {/* MOBILE VIEW ONLY (< 640px) */}
-      <div className="block sm:hidden">
-        <Reveal variant="fadeIn" className="relative w-full h-[220px] overflow-hidden">
-          {heroImage ? (
-            <img src={heroImage} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-dark-navy" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 z-10" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 z-20">
-            <h1 className="text-xl font-extrabold text-white leading-snug mb-1">
-              {heading || 'Latest Articles & News'}
-            </h1>
-            <p className="text-xs !text-white max-w-xs leading-relaxed mb-3">
-              {subheading || 'Insights, tutorials, and stories from the Marvel Slice team'}
-            </p>
-            <div className="w-full px-2">
-              {searchBar}
-            </div>
-          </div>
-        </Reveal>
-      </div>
-
-      {/* DESKTOP VIEW ONLY (>= 640px) */}
-      <section className="hidden sm:flex relative text-white overflow-hidden w-full max-w-[1900px] mx-auto sm:h-[360px] lg:h-[400px] items-center justify-center">
+      <section className="relative text-white overflow-hidden w-full max-w-[1900px] mx-auto min-h-[240px] sm:h-[360px] lg:h-[400px] flex items-center justify-center py-8 sm:py-0">
         {heroImage ? (
           <img src={heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
         ) : (
           <div className="absolute inset-0 bg-dark-navy" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/30 z-10" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col items-center justify-center text-center relative z-20 w-full py-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col items-center justify-center text-center relative z-20 w-full">
           <Reveal>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight text-white">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight text-white">
               {heading || 'Latest Articles & News'}
             </h1>
-            <p className="mt-3 text-base sm:text-lg !text-white max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-2 sm:mt-3 text-xs sm:text-lg !text-white max-w-2xl mx-auto leading-relaxed">
               {subheading || 'Insights, tutorials, and stories from the Marvel Slice team'}
             </p>
           </Reveal>
-          <div className="mt-8 w-full max-w-xl mx-auto">
+          <div className="mt-5 sm:mt-8 w-full max-w-xl mx-auto">
             {searchBar}
           </div>
         </div>

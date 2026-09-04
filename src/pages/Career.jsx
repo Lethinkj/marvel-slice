@@ -642,11 +642,9 @@ export default function Career() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
           <div className="absolute inset-0 flex items-end">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 lg:pb-10">
-              {pageContent.hero_heading && (
-                <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white">
-                  {pageContent.hero_heading}
-                </h1>
-              )}
+              <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white">
+                {pageContent.hero_heading || 'Career Opportunities'}
+              </h1>
               {pageContent.hero_subheading && (
                 <p className="text-sm sm:text-base text-white/80 mt-1.5 max-w-2xl">
                   {pageContent.hero_subheading}
@@ -655,14 +653,12 @@ export default function Career() {
             </div>
           </div>
         </div>
-      ) : (pageContent?.hero_heading || pageContent?.hero_subheading) ? (
+      ) : (
         <div className="bg-gradient-to-br from-dark-navy to-brand-blue py-16 sm:py-20">
           <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {pageContent?.hero_heading && (
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4">
-                {pageContent.hero_heading}
-              </h1>
-            )}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4">
+              {pageContent?.hero_heading || 'Career Opportunities'}
+            </h1>
             {pageContent?.hero_subheading && (
               <p className="text-white/80 text-lg sm:text-xl max-w-2xl mx-auto">
                 {pageContent.hero_subheading}
@@ -670,7 +666,7 @@ export default function Career() {
             )}
           </Reveal>
         </div>
-      ) : null}
+      )}
 
       <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
         {fc.headline && (

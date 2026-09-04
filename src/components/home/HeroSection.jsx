@@ -146,11 +146,21 @@ export default function HeroSection({ section }) {
       {(bannerImage || showGradient) && headline && (
         <div className="bg-neutral-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark-navy leading-[1.15] whitespace-pre-line">
-              {headline}
-            </h1>
+            {bannerHeading ? (
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark-navy leading-[1.15] whitespace-pre-line">
+                {headline}
+              </h2>
+            ) : (
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark-navy leading-[1.15] whitespace-pre-line">
+                {headline}
+              </h1>
+            )}
           </div>
         </div>
+      )}
+
+      {!bannerHeading && !headline && (
+        <h1 className="sr-only">Marvel Software Learning & Competitive Exam Training</h1>
       )}
 
       {!bannerImage && !showGradient && (headline || description || featureBullets.length > 0 || buttons.length > 0 || studentImageUrl) && (

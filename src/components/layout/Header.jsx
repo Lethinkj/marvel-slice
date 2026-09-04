@@ -40,8 +40,18 @@ export const topNav = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   const { data: settings } = useSiteSettings();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (mobileOpen) {
@@ -55,7 +65,13 @@ export default function Header() {
   }, [mobileOpen]);
 
   return (
-    <header className="bg-white sticky top-0 z-50" style={{ boxShadow: '0 15px 35px rgba(0, 0, 0, 0.15)' }}>
+    <header
+      className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md transition-all duration-300 ${
+        scrolled
+          ? 'shadow-[0_10px_30px_rgba(0,0,0,0.12)] border-b border-gray-100/80'
+          : 'shadow-[0_4px_20px_rgba(0,0,0,0.08)]'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-[60px] lg:h-[68px]">
         <Link to="/" className="flex items-center gap-3 shrink-0">
           {settings?.logo_url && (
