@@ -493,26 +493,39 @@ export default function Courses() {
     const processedCourseIds = new Set();
 
     currentTree.forEach((parentNode) => {
-      const parentCourses = (courseMap[parentNode.id] || []).filter((c) => {
-        if (!search) return true;
-        const q = search.toLowerCase();
-        return (
-          (c.title || "").toLowerCase().includes(q) ||
-          (c.slug || "").toLowerCase().includes(q)
-        );
-      });
+      const isParentMatch = activeNavId === parentNode.id;
+      const hasMatchingChild = parentNode.children?.some((c) => c.id === activeNavId);
 
-      if (parentCourses.length > 0) {
-        sections.push({
-          id: parentNode.id,
-          label: parentNode.label,
-          courses: parentCourses,
+      if (activeNavId && !isParentMatch && !hasMatchingChild) {
+        return;
+      }
+
+      if (!activeNavId || isParentMatch) {
+        const parentCourses = (courseMap[parentNode.id] || []).filter((c) => {
+          if (!search) return true;
+          const q = search.toLowerCase();
+          return (
+            (c.title || "").toLowerCase().includes(q) ||
+            (c.slug || "").toLowerCase().includes(q)
+          );
         });
-        parentCourses.forEach((c) => processedCourseIds.add(c.id));
+
+        if (parentCourses.length > 0) {
+          sections.push({
+            id: parentNode.id,
+            label: parentNode.label,
+            courses: parentCourses,
+          });
+          parentCourses.forEach((c) => processedCourseIds.add(c.id));
+        }
       }
 
       if (parentNode.children && parentNode.children.length > 0) {
         parentNode.children.forEach((child) => {
+          if (activeNavId && child.id !== activeNavId && !isParentMatch) {
+            return;
+          }
+
           const childCourses = (courseMap[child.id] || []).filter((c) => {
             if (!search) return true;
             const q = search.toLowerCase();
@@ -534,26 +547,28 @@ export default function Courses() {
       }
     });
 
-    const remainingCourses = courses.filter((c) => {
-      if (processedCourseIds.has(c.id)) return false;
-      if (!search) return true;
-      const q = search.toLowerCase();
-      return (
-        (c.title || "").toLowerCase().includes(q) ||
-        (c.slug || "").toLowerCase().includes(q)
-      );
-    });
-
-    if (remainingCourses.length > 0) {
-      sections.push({
-        id: "other",
-        label: "Other Courses",
-        courses: remainingCourses,
+    if (!activeNavId) {
+      const remainingCourses = courses.filter((c) => {
+        if (processedCourseIds.has(c.id)) return false;
+        if (!search) return true;
+        const q = search.toLowerCase();
+        return (
+          (c.title || "").toLowerCase().includes(q) ||
+          (c.slug || "").toLowerCase().includes(q)
+        );
       });
+
+      if (remainingCourses.length > 0) {
+        sections.push({
+          id: "other",
+          label: "Other Courses",
+          courses: remainingCourses,
+        });
+      }
     }
 
     return sections;
-  }, [currentTree, courseMap, courses, search]);
+  }, [currentTree, courseMap, courses, search, activeNavId]);
 
   function toggleParent(id) {
     setHasUserInteracted(true);
@@ -749,12 +764,25 @@ export default function Courses() {
               </div>
             )}
 
-            {/* Mobile-mode header */}
+            {/* Mobile-mode header & category accordion */}
             {!listOnly && (
-              <div className="lg:hidden mb-4">
-                <h2 className="text-xl sm:text-2xl font-extrabold text-[#1B365D] tracking-tight">
-                  Courses
-                </h2>
+              <div className="lg:hidden mb-5 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-[#1B365D] tracking-tight">
+                    {activeNavId ? navItems?.find((n) => n.id === activeNavId)?.label || "Category Courses" : "Software Courses"}
+                  </h2>
+                </div>
+                <MobileCatList
+                  parentTree={currentTree}
+                  activeCategory={activeCategory}
+                  countFor={countFor}
+                  onSelectParent={(parentNode, parentSlug) => {
+                    selectParentCategory(parentParam, parentSlug);
+                  }}
+                  onSelectChild={(child, childSlug) => {
+                    selectCategory(childSlug);
+                  }}
+                />
               </div>
             )}
 
