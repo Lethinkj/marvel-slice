@@ -350,16 +350,16 @@ export default function MockExam() {
               className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-brand-blue px-6 py-5 text-white relative">
+              <div className="bg-brand-blue px-6 py-5 text-white relative text-center flex flex-col items-center justify-center">
                 <button
                   onClick={closeApplyModal}
-                  className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-1.5 rounded-full text-white transition-colors cursor-pointer"
-                  aria-label="Close"
+                  className="absolute top-3 right-3 bg-white shadow-md text-red-600 hover:text-red-700 hover:scale-105 p-1.5 rounded-full transition-all cursor-pointer border border-slate-200 z-10 flex items-center justify-center"
+                  aria-label="Close modal"
                 >
-                  <FiX className="w-4 h-4" />
+                  <FiX className="w-4 h-4 text-red-600" />
                 </button>
-                <h3 className="text-lg font-bold text-white">Enroll for Mock Exam Series</h3>
-                <p className="text-xs text-white/80 mt-0.5">{selectedTopic}</p>
+                <h3 className="text-lg font-bold text-white text-center">Enroll for Mock Exam Series</h3>
+                <p className="text-xs text-white/80 mt-0.5 text-center">{selectedTopic}</p>
               </div>
 
               {isSubmitted ? (
