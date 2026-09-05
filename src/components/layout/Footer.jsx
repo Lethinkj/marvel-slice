@@ -8,6 +8,11 @@ import { useSiteSettings } from '../../hooks/useSupabase';
 import { topNav } from './Header';
 import { useNavChildren } from '../../hooks/useSupabase';
 
+function formatFooterLabel(str) {
+  if (!str || typeof str !== 'string') return str || '';
+  return str.replace(/(?:\s+[vV]|\s*[∨▼🔻])\s*$/g, '').trim();
+}
+
 function NavColumn({ parentLabel, defaultChildren }) {
   const { data: children } = useNavChildren(parentLabel);
   const items = (children && children.length > 0)
@@ -16,34 +21,39 @@ function NavColumn({ parentLabel, defaultChildren }) {
 
   if (parentLabel === 'Competitive Exam') {
     const ceDefaults = [
-      { label: 'About Banking', path: '/banking' },
-      { label: 'Aptitude', path: '/aptitude' },
-      { label: 'Reasoning', path: '/reasoning' },
-      { label: 'English', path: '/english' },
-      { label: 'Banking Awareness', path: '/banking-awareness' },
-      { label: 'Current Affairs', path: '/current-affairs' },
-      { label: "Today's Affairs", path: '/todays-affairs' },
-      { label: 'Mock Exam', path: '/mock-exam' }
+      { label: 'Banking', path: '/banking' }
     ];
-    ceDefaults.forEach(def => {
-      if (!items.some(item => item.label === def.label)) {
-        items.push(def);
-      }
-    });
+    return (
+      <div className="col-span-1 lg:pt-10 text-center sm:text-left">
+        <h4 className="font-semibold text-base sm:text-sm uppercase tracking-wider mb-3 text-white/90 text-center sm:text-left">
+          {formatFooterLabel(parentLabel)}
+        </h4>
+        <ul className="space-y-2.5 text-center sm:text-left">
+          {ceDefaults.map((child, i) => (
+            <li key={i}>
+              <Link to={child.path || '#'}
+                className="text-sm text-gray-300 hover:text-brand-orange transition-colors py-0.5 inline-block">
+                {formatFooterLabel(child.label)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   }
 
   if (items.length === 0) return null;
   return (
     <div className="col-span-1 lg:pt-10 text-center sm:text-left">
       <h4 className="font-semibold text-base sm:text-sm uppercase tracking-wider mb-3 text-white/90 text-center sm:text-left">
-        {parentLabel}
+        {formatFooterLabel(parentLabel)}
       </h4>
       <ul className="space-y-2.5 text-center sm:text-left">
         {items.map((child, i) => (
           <li key={i}>
             <Link to={child.path || '#'}
               className="text-sm text-gray-300 hover:text-brand-orange transition-colors py-0.5 inline-block">
-              {child.label}
+              {formatFooterLabel(child.label)}
             </Link>
           </li>
         ))}
@@ -88,13 +98,12 @@ export default function Footer() {
           <div className="col-span-1 sm:col-span-2 lg:col-span-1 sm:pb-6 sm:border-b sm:border-white/10 lg:border-b-0 lg:pb-0 text-center sm:text-left">
             <div className="flex justify-center sm:justify-start mb-4">
               <Link to="/" aria-label="Go to Homepage" className="inline-flex items-center gap-3 group">
-                {settings?.logo_url ? (
-                  <img src={settings.logo_url} alt="Marvel Slice" className="h-16 sm:h-20 w-auto object-contain transition-transform duration-200 group-hover:scale-105" />
-                ) : (
-                  <span className="text-xl sm:text-2xl font-extrabold text-white">
-                    Marvel <span className="text-brand-orange">Slice</span>
-                  </span>
+                {settings?.logo_url && (
+                  <img src={settings.logo_url} alt="Marvel Slice Logo" className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105" />
                 )}
+                <span className="text-xl sm:text-2xl font-extrabold text-white">
+                  Marvel <span className="text-brand-orange">Slice</span>
+                </span>
               </Link>
             </div>
             <div className="space-y-3 text-sm text-gray-300 text-center sm:text-left">
@@ -135,7 +144,7 @@ export default function Footer() {
               {linkItems.map((item, i) => (
                 <li key={i}>
                   <Link to={item.path} className="text-sm text-gray-300 hover:text-brand-orange transition-colors py-0.5 inline-block">
-                    {item.label}
+                    {formatFooterLabel(item.label)}
                   </Link>
                 </li>
               ))}
